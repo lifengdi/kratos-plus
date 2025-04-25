@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*
-Theme Name: Kratos
-Text Domain: kratos
+Theme Name: Dylan
+Text Domain: Dylan
 Version: 4.3.2
 Requires PHP: 8.0
 Requires at least: 5.3.0
@@ -3230,8 +3230,8 @@ ol {
   z-index: 9;
   visibility: hidden;
   padding: 2px;
-  width: 230px;
-  height: 102px;
+  max-width: 300px;
+  max-height:200px;
   background-color: #fff;
   box-shadow: 0
     2px
@@ -3243,17 +3243,6 @@ ol {
       0,
       0.11
     );
-  transition: all
-    0.15s
-    ease-out;
-  transform: perspective(
-      500px
-    )
-    rotateX(
-      -15deg
-    );
-  transform-origin: 50%
-    0;
 }
 
 .k-main
@@ -3284,6 +3273,57 @@ ol {
   .open {
   visibility: visible;
   transform: none;
+  overflow-y: auto;
+}
+
+/* 设置滚动条样式 */
+.k-main
+.details
+.comments
+.comment-respond
+.comment-textarea
+.text-bar
+.open::-webkit-scrollbar {
+  width: 6px;
+}
+.k-main
+.details
+.comments
+.comment-respond
+.comment-textarea
+.text-bar
+.open::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.k-main
+.details
+.comments
+.comment-respond
+.comment-textarea
+.text-bar
+.open::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 3px;
+}
+.k-main
+.details
+.comments
+.comment-respond
+.comment-textarea
+.text-bar
+.open::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+/* 兼容 Firefox */
+.k-main
+.details
+.comments
+.comment-respond
+.comment-textarea
+.text-bar
+.open {
+  scrollbar-width: thin;
+  scrollbar-color: #000 #f1f1f1;
 }
 
 .k-main
@@ -4590,4 +4630,90 @@ ol {
     .kicon {
     font-size: 38px;
   }
+}
+.wp-smiley {
+  width: auto !important;
+  max-width: 1.5em !important;
+  height: auto !important;
+  max-height: 1.5em !important;
+}
+
+@import "/wp-content/uploads/font-awesome/css/font-awesome.min.css";
+
+.k-main .details .article .content code {
+  border: none;
+}
+.enlighter-t-monokai .enlighter span {
+  line-height: 1.8em;
+}
+.k-main .sidebar .widget_links ul li{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.k-main .details .article .content table {
+  display: table;
+  overflow: auto;
+  width: auto;
+  table-layout: fixed;
+  word-break: break-word;
+}
+.k-main .details .toolbar .share .btn-share {
+  padding: 3px;
+  border: 1px solid #78ce79;
+  border-radius: 0;
+  color: #78ce79;
+  font-size: 16px;
+}
+.k-main .details .toolbar .share .btn-share:hover {
+  background-color: #78ce79;
+  color: #fff!important;
+}
+.wpd-comment-text pre {
+  background-color: #2b2b2b;
+  padding: 0.6em;
+  color: #f8f8f2;
+  font-family: "Source Code Pro","Liberation Mono","Courier New",Courier,monospace;
+  font-weight: normal;
+}
+.k-main .sidebar img {
+  min-height:1em;
+  /* 	max-height: auto; */
+  width:auto;
+}
+.wp-smiley {
+  display: inline-block;
+  min-height:1em;
+  max-height: 2.3em;
+  vertical-align: bottom;
+  margin: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  height:expression(this.height==96?"3em":this.height);
+}
+#percentageCounter {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0px;
+  height: 4px;
+  border-radius: 1.5px;
+  background: linear-gradient(to right, #4cd964, #5ac8fa, #007aff);
+  transition: width 0.05s;
+}
+.content-area{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  padding-top: 5px;
+}
+.wedocs-shortcode-wrap ul.wedocs-docs-list {
+  max-width: 100%;
+}
+.k-main .details .article .content code {
+  color: unset;
+}
+.k-main .details .article .content pre{
+  background-color: #272822;
 }
