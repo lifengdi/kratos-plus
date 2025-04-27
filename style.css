@@ -4639,8 +4639,6 @@ ol {
   max-height: 1.5em !important;
 }
 
-@import "/wp-content/uploads/font-awesome/css/font-awesome.min.css";
-
 .k-main .details .article .content code {
   border: none;
 }
