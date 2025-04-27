@@ -3228,10 +3228,11 @@ ol {
   .smile {
   position: absolute;
   z-index: 9;
-  visibility: hidden;
+  display: none;
   padding: 2px;
-  max-width: 300px;
+  max-width: 302px;
   max-height:200px;
+  overflow: auto;
   background-color: #fff;
   box-shadow: 0
     2px
@@ -3271,7 +3272,7 @@ ol {
   .comment-textarea
   .text-bar
   .open {
-  visibility: visible;
+  display: block;
   transform: none;
   overflow-y: auto;
 }
