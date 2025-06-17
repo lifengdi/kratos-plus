@@ -4716,3 +4716,25 @@ ol {
 .k-main .details .article .content pre{
   background-color: #272822;
 }
+/* 字体相关css */
+@import url("https://font.sec.miui.com/font/css?family=MiSans:400,450:Chinese_Simplify,Latin&display=swap");
+@font-face {
+  font-family: "MiSans", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+}
+*:not([class*="icon"]):not(i) {
+  font-family: "MiSans" !important;
+}
+
+.k-main .details .article .content pre{
+  background: #272822 !important;
+}
+.k-main .details .comments .comment-respond .comment-textarea .text-bar .tool a img {
+  width: 100%;
+  height: 100%;
+}
+.k-main .details .comments .children {
+  margin-bottom: 0;
+  padding-left: 30px !important;
+}
