@@ -38,20 +38,23 @@ License URI: https://github.com/lifengdi/kratos/blob/main/LICENSE
 --------------------------------------------------------------*/
 /* 字体相关css */
 @import url("/* configure custom font URL in WP Admin */");
+
 @font-face {
     font-family: "HarmonyOS Sans SC", sans-serif;
     font-weight: normal;
     font-style: normal;
 }
+
 *:not([class*="icon"]):not(i):not(pre):not(code):not([class*="language-"]):not([class*="token"]) {
     font-family: "HarmonyOS Sans SC";
 }
+
 body {
     overflow-x: hidden;
     background: #f5f5f5;
     font-weight: 400;
     font-size: 16px;
-    font-family: "HarmonyOS Sans SC",-apple-system,
+    font-family: "HarmonyOS Sans SC", -apple-system,
     BlinkMacSystemFont,
     opensans,
     Optima,
@@ -87,9 +90,7 @@ ul {
 
 ul,
 ol {
-    margin: 0
-    0
-    16px;
+    margin: 0 0 16px;
     padding-left: 16px;
 }
 
@@ -113,17 +114,13 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 0
-    0
-    30px
-    0;
+    margin: 0 0 30px 0;
     color: #111;
     font-weight: 400;
 }
 
 .tooltip-inner {
-    padding: 7px
-    6px;
+    padding: 7px 6px;
     font-size: 13px;
 }
 
@@ -190,28 +187,21 @@ button:focus {
 ::-webkit-scrollbar-thumb {
     min-width: 25px;
     min-height: 25px;
-    border: 1px
-    solid
-    #e0e0e0;
+    border: 1px solid #e0e0e0;
     background-color: #bbbbbb;
 }
 
 ::-webkit-scrollbar-track {
-    border: 1px
-    solid
-    #efefef;
+    border: 1px solid #efefef;
     background-color: #f7f7f7;
 }
 
 .k-main.color {
-    padding: 90px
-    0
-    20px;
+    padding: 90px 0 20px;
 }
 
 .k-main.banner {
-    padding: 20px
-    0;
+    padding: 20px 0;
 }
 
 @media only screen and (max-width: 992px) {
@@ -319,23 +309,19 @@ li {
     width: 24px;
     height: 2px;
     background: #ffffff;
-    transition: all
-    0.3s
-    ease-out;
+    transition: all 0.3s ease-out;
 }
 
 .k-nav
 .second-line {
-    margin: 5px
-    0;
+    margin: 5px 0;
 }
 
 .nav-close
 .first-line {
     transform: rotate(
             45deg
-    )
-    translate3d(
+    ) translate3d(
             5px,
             5px,
             0
@@ -356,8 +342,7 @@ li {
 .third-line {
     transform: rotate(
             -45deg
-    )
-    translate3d(
+    ) translate3d(
             5px,
             -5px,
             0
@@ -412,11 +397,8 @@ li {
 .navbar-light
 .navbar-nav
 .dropdown-menu {
-    margin: 2px
-    0
-    0;
-    padding: 5px
-    0;
+    margin: 2px 0 0;
+    padding: 5px 0;
     min-width: 140px;
     border: none;
     font-size: 15px;
@@ -446,16 +428,11 @@ li {
 @media only screen and (min-width: 992px) {
     .k-nav {
         height: 70px;
-        border-bottom: 1px
-        solid
-        transparent;
+        border-bottom: 1px solid transparent;
         background: transparent;
-        -webkit-transition: background-color
-        0.2s;
-        -moz-transition: background-color
-        0.2s;
-        transition: background-color
-        0.2s;
+        -webkit-transition: background-color 0.2s;
+        -moz-transition: background-color 0.2s;
+        transition: background-color 0.2s;
         -webkit-transform: translate3d(
                 0,
                 0,
@@ -485,8 +462,7 @@ li {
 
     .k-nav
     .navbar-brand {
-        padding: 3px
-        0;
+        padding: 3px 0;
         color: #fff;
     }
 
@@ -529,21 +505,16 @@ li {
     .k-nav.is-fixed {
         position: fixed;
         top: -67px;
-        border-bottom: 1px
-        solid
-        white;
+        border-bottom: 1px solid white;
         background-color: rgba(
                 255,
                 255,
                 255,
                 0.9
         );
-        -webkit-transition: -webkit-transform
-        0.2s;
-        -moz-transition: -moz-transform
-        0.2s;
-        transition: transform
-        0.2s;
+        -webkit-transition: -webkit-transform 0.2s;
+        -moz-transition: -moz-transform 0.2s;
+        transition: transform 0.2s;
     }
 
     .k-nav.is-fixed
@@ -714,8 +685,7 @@ li {
 .content {
     position: relative;
     height: 300px;
-    background-position: center
-    center;
+    background-position: center center;
     background-size: cover;
 }
 
@@ -728,10 +698,7 @@ li {
     z-index: 10;
     width: 100%;
     color: #fff;
-    text-shadow: 2px
-    2px
-    2px
-    #666;
+    text-shadow: 2px 2px 2px #666;
     cursor: default;
 }
 
@@ -795,9 +762,7 @@ li {
 .k-main
 .board
 .article-carousel {
-    margin: 0
-    0
-    23px;
+    margin: 0 0 23px;
 }
 
 .k-main
@@ -814,10 +779,7 @@ li {
 .article-carousel
 .carousel-caption
 h5 {
-    margin: 0
-    0
-    5px
-    0;
+    margin: 0 0 5px 0;
 }
 
 .k-main
@@ -849,8 +811,7 @@ p {
 .k-main
 .board
 .paginations {
-    margin: 10px
-    auto;
+    margin: 10px auto;
     width: 100%;
     text-align: center;
     font-size: 14px;
@@ -859,8 +820,7 @@ p {
 .k-main.color
 .board
 .paginations {
-    margin: 23px
-    auto;
+    margin: 23px auto;
 }
 
 .k-main
@@ -868,8 +828,7 @@ p {
 .paginations
 a {
     margin-top: 5px;
-    padding: 5px
-    12px;
+    padding: 5px 12px;
     background: #fff;
     color: #444;
 }
@@ -878,8 +837,7 @@ a {
 .board
 .paginations
 .current {
-    padding: 5px
-    12px;
+    padding: 5px 12px;
     background: #336699;
     color: #fff;
     font-weight: 400;
@@ -889,8 +847,7 @@ a {
 .board
 .paginations
 .dots {
-    padding: 5px
-    12px;
+    padding: 5px 12px;
     background: #fff;
     color: #444;
 }
@@ -938,11 +895,8 @@ a {
 .paginations
 a
 span {
-    padding: 5px
-    12px;
-    border: solid
-    1px
-    #336699;
+    padding: 5px 12px;
+    border: solid 1px #336699;
     background-color: #f0f8ff;
     color: #336699;
     text-decoration: none;
@@ -963,11 +917,8 @@ span,
 .paginations
 a
 span:hover {
-    padding: 5px
-    12px;
-    border: solid
-    1px
-    #336699;
+    padding: 5px 12px;
+    border: solid 1px #336699;
     background: #336699;
     color: #fff;
     font-weight: 400;
@@ -981,15 +932,10 @@ span:hover {
 .board
 .article-panel {
     position: relative;
-    margin: 0
-    0
-    23px;
+    margin: 0 0 23px;
     border-radius: 0;
     background-color: #fff;
-    box-shadow: 0
-    1px
-    2px
-    rgba(
+    box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
@@ -1060,10 +1006,7 @@ img {
 .article-panel
 .a-post {
     margin-left: 255px;
-    padding: 21px
-    20px
-    0
-    3px;
+    padding: 21px 20px 0 3px;
     height: 160px;
 }
 
@@ -1083,9 +1026,7 @@ img {
 .header {
     display: -webkit-box;
     overflow: hidden;
-    margin: 3px
-    0
-    6px;
+    margin: 3px 0 6px;
     max-height: 25px;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
@@ -1103,9 +1044,7 @@ img {
     top: -2px;
     display: inline-block;
     margin-right: 5px;
-    padding: 4px
-    6px
-    3px;
+    padding: 4px 6px 3px;
     border-radius: 0;
     background-color: #336699;
     color: #fff;
@@ -1137,15 +1076,9 @@ span.label {
     right: -4px;
     width: 0;
     height: 0;
-    border-top: 4px
-    solid
-    transparent;
-    border-bottom: 4px
-    solid
-    transparent;
-    border-left: 4px
-    solid
-    #336699;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #336699;
     content: "";
     vertical-align: top;
 }
@@ -1213,11 +1146,8 @@ p {
 .a-meta {
     clear: both;
     overflow: hidden;
-    padding: 8px
-    20px;
-    border-top: 1px
-    solid
-    #f3f3f3;
+    padding: 8px 20px;
+    border-top: 1px solid #f3f3f3;
     font-size: 12px;
     line-height: 27px;
 }
@@ -1274,8 +1204,7 @@ span
 .board
 .article-panel
 .search-title {
-    padding: 20px
-    25px;
+    padding: 20px 25px;
     color: #000;
     font-size: 18px;
 }
@@ -1338,8 +1267,7 @@ img {
     .article-panel
     .a-post {
         margin-left: 0;
-        padding: 0
-        12px;
+        padding: 0 12px;
         height: auto;
     }
 
@@ -1348,9 +1276,7 @@ img {
     .article-panel
     .a-post
     .header {
-        margin: 0
-        0
-        9px;
+        margin: 0 0 9px;
     }
 
     .k-main
@@ -1391,8 +1317,7 @@ img {
     .board
     .article-panel
     .a-meta {
-        padding: 5px
-        12px;
+        padding: 5px 12px;
     }
 
     .k-main
@@ -1420,28 +1345,19 @@ img {
 .details
 .article {
     background-color: #fff;
-    -webkit-box-shadow: 0
-    1px
-    2px
-    rgba(
+    -webkit-box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
             0.1
     );
-    -moz-box-shadow: 0
-    1px
-    2px
-    rgba(
+    -moz-box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
             0.1
     );
-    box-shadow: 0
-    1px
-    2px
-    rgba(
+    box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
@@ -1455,9 +1371,7 @@ img {
 .details
 .article
 .breadcrumb-box {
-    border-bottom: 1px
-    solid
-    #f7f7f7;
+    border-bottom: 1px solid #f7f7f7;
 }
 
 .k-main
@@ -1480,8 +1394,7 @@ img {
 .breadcrumb-box
 .breadcrumb {
     margin-bottom: 0;
-    padding: 12px
-    16px;
+    padding: 12px 16px;
     border-radius: 0;
     background-color: inherit;
     font-size: 13px;
@@ -1519,9 +1432,7 @@ li {
 .details
 .article
 .header {
-    padding: 0
-    20px
-    16px;
+    padding: 0 20px 16px;
     text-align: center;
 }
 
@@ -1530,9 +1441,7 @@ li {
 .article
 .header
 .title {
-    padding: 24px
-    0
-    0;
+    padding: 24px 0 0;
     border: none;
     word-break: break-word;
 }
@@ -1574,9 +1483,7 @@ a {
 .details
 .article
 .content {
-    padding: 0
-    20px
-    16px;
+    padding: 0 20px 16px;
     word-wrap: break-word;
     line-height: 1.8;
     word-break: break-word;
@@ -1662,11 +1569,8 @@ h2:not(
 .content
 h2.title {
     margin: 16px -20px;
-    padding: 0
-    10px;
-    border-left: 5px
-    solid
-    #336699;
+    padding: 0 10px;
+    border-left: 5px solid #336699;
     background-color: rgba(
             243,
             243,
@@ -1758,9 +1662,7 @@ p {
 blockquote {
     margin-bottom: 16px;
     padding: 16px;
-    border-left: 6px
-    solid
-    #dce6f0;
+    border-left: 6px solid #dce6f0;
     background: #f2f7fb;
     color: #819198;
     font-size: 15px;
@@ -1789,13 +1691,10 @@ p:last-child {
 .article
 .content
 hr {
-    margin: 24px
-    0;
+    margin: 24px 0;
     height: 1px;
     border: none;
-    border-top: 1px
-    solid
-    #a5a5a5;
+    border-top: 1px solid #a5a5a5;
 }
 
 .k-main
@@ -1803,10 +1702,8 @@ hr {
 .article
 .content
 pre {
-    margin: 10px
-    0;
-    padding: 11px
-    16px;
+    margin: 10px 0;
+    padding: 11px 16px;
     border-radius: 4px;
     background-color: #f8f8f8;
     word-wrap: break-word;
@@ -1820,10 +1717,8 @@ pre {
 .article
 .content
 code {
-    margin: 0
-    3px;
-    padding: 2px
-    4px;
+    margin: 0 3px;
+    padding: 2px 4px;
     border-radius: 4px;
     background-color: #eff0f1;
     color: #e83e8c;
@@ -1837,37 +1732,21 @@ code {
 .content
 kbd {
     display: inline-block;
-    margin: -3px
-    1.6px
-    0;
-    padding: 2.4px
-    9.6px;
-    border: 1px
-    solid
-    #adb3b9;
+    margin: -3px 1.6px 0;
+    padding: 2.4px 9.6px;
+    border: 1px solid #adb3b9;
     border-radius: 3px;
     background-color: #e1e3e5;
-    box-shadow: 0
-    1px
-    0
-    rgba(
+    box-shadow: 0 1px 0 rgba(
             12,
             13,
             14,
             0.2
     ),
-    0
-    0
-    0
-    2px
-    #fff
-    inset;
+    0 0 0 2px #fff inset;
     color: #242729;
     vertical-align: middle;
-    text-shadow: 0
-    1px
-    0
-    #fff;
+    text-shadow: 0 1px 0 #fff;
     white-space: nowrap;
     font-size: 10px;
     line-height: 1.5;
@@ -2052,11 +1931,8 @@ th,
 .content
 table
 td {
-    padding: 8px
-    16px;
-    border: 1px
-    solid
-    #e9ebec;
+    padding: 8px 16px;
+    border: 1px solid #e9ebec;
 }
 
 .k-main
@@ -2098,8 +1974,7 @@ tr:nth-child(
 .article
 .content
 .card-header {
-    padding: 6px
-    15px;
+    padding: 6px 15px;
 }
 
 .k-main
@@ -2107,8 +1982,7 @@ tr:nth-child(
 .article
 .content
 .card-body {
-    padding: 10px
-    15px;
+    padding: 10px 15px;
 }
 
 .k-main
@@ -2116,8 +1990,7 @@ tr:nth-child(
 .article
 .content
 .alert {
-    padding: 10px
-    15px;
+    padding: 10px 15px;
 }
 
 .k-main
@@ -2127,11 +2000,8 @@ tr:nth-child(
 .downbtn {
     display: inline-block;
     margin-bottom: 16px;
-    padding: 3px
-    10px;
-    border: 1px
-    solid
-    #39aaf9;
+    padding: 3px 10px;
+    border: 1px solid #39aaf9;
     background: #39aaf9;
     color: #fff;
     font-size: 14px;
@@ -2201,9 +2071,7 @@ iframe {
 .details
 .article
 .copyright {
-    padding: 0
-    16px
-    16px;
+    padding: 0 16px 16px;
 }
 
 .k-main
@@ -2224,12 +2092,8 @@ span {
 .details
 .article
 .footer {
-    padding: 0
-    16px
-    10px;
-    border-top: 1px
-    solid
-    #f2f2f2;
+    padding: 0 16px 10px;
+    border-top: 1px solid #f2f2f2;
 }
 
 .k-main
@@ -2268,12 +2132,8 @@ span {
 .footer
 .tags
 a {
-    margin: 0
-    5px
-    0
-    0;
-    padding: 2px
-    7px;
+    margin: 0 5px 0 0;
+    padding: 2px 7px;
     background-color: #a9a9a9;
     color: #fff;
     font-size: 13px;
@@ -2285,9 +2145,7 @@ a {
 .content
 .accordion {
     margin-bottom: 16px;
-    border: 1px
-    solid
-    #e5e8ed;
+    border: 1px solid #e5e8ed;
 }
 
 .k-main
@@ -2297,8 +2155,7 @@ a {
 .accordion
 .acheader {
     position: relative;
-    padding: 5px
-    15px;
+    padding: 5px 15px;
     background: #f7f8fa;
 }
 
@@ -2359,9 +2216,7 @@ span {
 .accordion
 .contents {
     display: none;
-    border-top: 1px
-    solid
-    #e6e6e6;
+    border-top: 1px solid #e6e6e6;
 }
 
 .k-main
@@ -2371,8 +2226,7 @@ span {
 .accordion
 .contents
 .inner {
-    padding: 5px
-    15px;
+    padding: 5px 15px;
 }
 
 .lg-outer {
@@ -2384,9 +2238,7 @@ span {
     .details
     .article
     .header {
-        padding: 0
-        16px
-        12px;
+        padding: 0 16px 12px;
     }
 
     .k-main
@@ -2485,8 +2337,7 @@ span {
     .article
     .content
     .alert {
-        padding: 10px
-        15px;
+        padding: 10px 15px;
         font-size: 15px;
     }
 
@@ -2503,8 +2354,7 @@ span {
     .article
     .content
     .card-body {
-        padding: 12px
-        15px;
+        padding: 12px 15px;
     }
 
     .k-main
@@ -2526,28 +2376,19 @@ span {
     margin-top: 16px;
     padding: 20px;
     background-color: #fff;
-    -webkit-box-shadow: 0
-    1px
-    2px
-    rgba(
+    -webkit-box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
             0.1
     );
-    -moz-box-shadow: 0
-    1px
-    2px
-    rgba(
+    -moz-box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
             0.1
     );
-    box-shadow: 0
-    1px
-    2px
-    rgba(
+    box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
@@ -2628,9 +2469,7 @@ a {
 .share
 .btn-donate {
     padding: 3px;
-    border: 1px
-    solid
-    #336699;
+    border: 1px solid #336699;
     border-radius: 0;
     color: #336699;
 }
@@ -2659,9 +2498,7 @@ a {
 .share
 .btn-thumbs {
     padding: 3px;
-    border: 1px
-    solid
-    #fb5235;
+    border: 1px solid #fb5235;
     border-radius: 0;
     color: #fb5235;
 }
@@ -2725,13 +2562,10 @@ input:checked
 
 .donate-box
 .pay-button {
-    margin: 10px
-    5px;
+    margin: 10px 5px;
     width: 132px;
     height: 45px;
-    border: 1px
-    solid
-    #e6e6e6;
+    border: 1px solid #e6e6e6;
     border-radius: 2px;
     text-align: center;
     line-height: 40px;
@@ -2771,14 +2605,10 @@ a {
 .post-navigation
 .nav-previous {
     float: left;
-    padding: 7px
-    18px;
+    padding: 7px 18px;
     max-width: 50%;
     background-color: #fff;
-    box-shadow: 0
-    1px
-    5px
-    rgba(
+    box-shadow: 0 1px 5px rgba(
             0,
             0,
             0,
@@ -2792,14 +2622,10 @@ a {
 .post-navigation
 .nav-next {
     float: right;
-    padding: 7px
-    18px;
+    padding: 7px 18px;
     max-width: 50%;
     background-color: #fff;
-    box-shadow: 0
-    1px
-    5px
-    rgba(
+    box-shadow: 0 1px 5px rgba(
             0,
             0,
             0,
@@ -2813,13 +2639,10 @@ a {
     .details
     .toolbar
     .meta {
-        margin: 14px
-        0;
+        margin: 14px 0;
         padding-bottom: 16px;
         width: 100%;
-        border-bottom: 1px
-        solid
-        #eee;
+        border-bottom: 1px solid #eee;
     }
 
     .k-main
@@ -2873,33 +2696,22 @@ a {
 .details
 .comments {
     margin-top: 16px;
-    padding: 1.6px
-    16px
-    16px;
+    padding: 1.6px 16px 16px;
     border-radius: 2px;
     background-color: #fff;
-    -webkit-box-shadow: 0
-    1px
-    2px
-    rgba(
+    -webkit-box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
             0.1
     );
-    -moz-box-shadow: 0
-    1px
-    2px
-    rgba(
+    -moz-box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
             0.1
     );
-    box-shadow: 0
-    1px
-    2px
-    rgba(
+    box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
@@ -2934,9 +2746,7 @@ a {
 .details
 .comments
 .input-group-text {
-    border: 1px
-    solid
-    #eeeeee;
+    border: 1px solid #eeeeee;
     background-color: #f8f8f8;
 }
 
@@ -2944,9 +2754,7 @@ a {
 .details
 .comments
 .form-control {
-    border: 1px
-    solid
-    #eeeeee;
+    border: 1px solid #eeeeee;
 }
 
 .k-main
@@ -2954,11 +2762,8 @@ a {
 .comments
 .title {
     margin-bottom: 0;
-    padding: 16px
-    0;
-    border-bottom: 1px
-    solid
-    #f0f0f0;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
     font-size: 19px;
     cursor: default;
 }
@@ -2967,8 +2772,7 @@ a {
 .details
 .comments
 .comment {
-    padding: 16px
-    0;
+    padding: 16px 0;
     list-style: none;
 }
 
@@ -2977,9 +2781,7 @@ a {
 .comments
 .list
 > li {
-    border-bottom: 1px
-    solid
-    #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .k-main
@@ -2999,9 +2801,7 @@ img {
     display: block;
     width: 50px;
     height: 50px;
-    border: 1px
-    solid
-    #eaeaea;
+    border: 1px solid #eaeaea;
     border-radius: 50%;
 }
 
@@ -3111,9 +2911,7 @@ a {
 .comments
 .comment-respond
 .comment-textarea {
-    border: 1px
-    solid
-    #eee;
+    border: 1px solid #eee;
     border-radius: 3px;
     background-color: hsla(
             0,
@@ -3142,8 +2940,7 @@ textarea {
 .comment-textarea
 .text-bar {
     overflow: hidden;
-    padding: 6.4px
-    8px;
+    padding: 6.4px 8px;
     background-color: #f8f8f8;
 }
 
@@ -3188,8 +2985,7 @@ img {
 .comment-respond
 .comment-textarea
 .addbtn {
-    padding: 0
-    8px;
+    padding: 0 8px;
     color: #333333;
 }
 
@@ -3209,8 +3005,7 @@ img {
 .comment-textarea
 #cancel-comment-reply-link {
     display: inline-block;
-    padding: 6px
-    12px;
+    padding: 6px 12px;
     border: none;
     border-radius: 3px;
     background-color: rgba(
@@ -3241,14 +3036,10 @@ img {
     display: none;
     padding: 2px;
     max-width: 302px;
-    max-height:200px;
-    overflow:auto;
+    max-height: 200px;
+    overflow: auto;
     background-color: #fff;
-    box-shadow: 0
-    2px
-    10px
-    2px
-    rgba(
+    box-shadow: 0 2px 10px 2px rgba(
             0,
             0,
             0,
@@ -3269,9 +3060,7 @@ a {
     padding: 4px;
     width: 32px;
     height: 32px;
-    border: 2px
-    solid
-    #fff;
+    border: 2px solid #fff;
     background-color: #f0f0f0;
 }
 
@@ -3297,6 +3086,7 @@ a {
 .open::-webkit-scrollbar {
     width: 6px;
 }
+
 .k-main
 .details
 .comments
@@ -3306,6 +3096,7 @@ a {
 .open::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
+
 .k-main
 .details
 .comments
@@ -3316,6 +3107,7 @@ a {
     background: #000;
     border-radius: 3px;
 }
+
 .k-main
 .details
 .comments
@@ -3325,6 +3117,7 @@ a {
 .open::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
 /* 兼容 Firefox */
 .k-main
 .details
@@ -3343,9 +3136,7 @@ a {
 .comment-respond
 .error {
     padding: 20px;
-    border: 1px
-    solid
-    #e5e5e5;
+    border: 1px solid #e5e5e5;
     border-radius: 4px;
     background-color: hsla(
             0,
@@ -3366,9 +3157,7 @@ a {
 .details
 .children {
     margin-left: 15px;
-    border-top: 1px
-    solid
-    #f0f0f0;
+    border-top: 1px solid #f0f0f0;
 }
 
 #commentpage {
@@ -3384,9 +3173,7 @@ a {
     background-color: #336699;
     color: #fff;
     font-size: 14px;
-    transition: all
-    0.15s
-    ease-in-out;
+    transition: all 0.15s ease-in-out;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -3435,17 +3222,11 @@ img {
 .k-main
 .sidebar
 .widget {
-    margin: 0
-    0
-    23px;
-    padding: 15px
-    30px;
+    margin: 0 0 23px;
+    padding: 15px 30px;
     border-radius: 0;
     background-color: #fff;
-    box-shadow: 0
-    1px
-    2px
-    rgba(
+    box-shadow: 0 1px 2px rgba(
             0,
             0,
             0,
@@ -3480,9 +3261,7 @@ img {
 .w-about
 .wrapper
 img {
-    margin: -50px
-    0
-    0;
+    margin: -50px 0 0;
     width: 100px;
     height: 100px;
     border: rgba(
@@ -3490,9 +3269,7 @@ img {
             255,
             255,
             0.4
-    )
-    4px
-    solid;
+    ) 4px solid;
     border-radius: 50%;
 }
 
@@ -3500,9 +3277,7 @@ img {
 .sidebar
 .w-about
 .textwidget {
-    padding: 5px
-    20px
-    20px;
+    padding: 5px 20px 20px;
 }
 
 .k-main
@@ -3576,9 +3351,10 @@ p {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .k-main
 .sidebar
-.w-recommended .bookmark-item:hover{
+.w-recommended .bookmark-item:hover {
     color: #0097ee;
 }
 
@@ -3609,13 +3385,9 @@ p {
 .sidebar
 .title {
     position: relative;
-    margin: 0
-    0
-    15px;
+    margin: 0 0 15px;
     padding-bottom: 7px;
-    border-bottom: 1px
-    solid
-    #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
     font-size: 17px;
     cursor: default;
 }
@@ -3638,14 +3410,9 @@ p {
 .item
 a {
     display: inline-block;
-    margin: 0
-    1px
-    1px
-    0;
+    margin: 0 1px 1px 0;
     padding: 2px 10px;
-    border: 1px
-    solid
-    #eeeeee;
+    border: 1px solid #eeeeee;
     color: #333;
     list-style: none;
     text-align: center;
@@ -3662,12 +3429,8 @@ a {
 ul
 li {
     display: inline-block;
-    margin: 0
-    1px
-    10px
-    0;
-    padding: 2px
-    0;
+    margin: 0 1px 10px 0;
+    padding: 2px 0;
     width: 164px;
     color: #333;
     list-style: none;
@@ -3715,9 +3478,7 @@ li:hover {
 .nav-link,
 .nav-tabs
 .nav-link.active {
-    border-bottom: 2px
-    solid
-    #336699;
+    border-bottom: 2px solid #336699;
     background-color: #fff;
     color: #333;
 }
@@ -3729,12 +3490,9 @@ li:hover {
 
 .nav-tabs
 .nav-link {
-    padding: 8px
-    28px;
+    padding: 8px 28px;
     border: 0;
-    border-bottom: 2px
-    solid
-    #f2f2f2;
+    border-bottom: 2px solid #f2f2f2;
 }
 
 .nav-tabs {
@@ -3787,9 +3545,7 @@ tr {
 tbody
 a {
     display: block;
-    border: 1px
-    solid
-    #336699;
+    border: 1px solid #336699;
     background: #edf8ff;
 }
 
@@ -3820,8 +3576,7 @@ th {
 .comments
 a {
     display: block;
-    padding: 13px
-    0;
+    padding: 13px 0;
 }
 
 .k-main
@@ -3829,9 +3584,7 @@ a {
 .w-comments
 .comments
 a:first-child {
-    padding: 0
-    0
-    13px;
+    padding: 0 0 13px;
 }
 
 .k-main
@@ -3841,9 +3594,7 @@ a:first-child {
 a:not(
     :last-child
   ) {
-    border-bottom: 1px
-    solid
-    #eee;
+    border-bottom: 1px solid #eee;
 }
 
 .k-main
@@ -3871,9 +3622,7 @@ img {
     width: 50px;
     height: 50px;
     max-width: 100%;
-    border: 1px
-    solid
-    #eaeaea;
+    border: 1px solid #eaeaea;
     border-radius: 50%;
 }
 
@@ -3960,14 +3709,9 @@ ul
 li {
     display: inline-block;
     overflow: hidden;
-    margin: 0
-    1px
-    4px
-    0;
+    margin: 0 1px 4px 0;
     width: 164px;
-    border: 1px
-    solid
-    #eeeeee;
+    border: 1px solid #eeeeee;
     list-style: none;
     text-align: center;
     text-overflow: ellipsis;
@@ -3993,8 +3737,7 @@ ul
 li
 a {
     display: block;
-    padding: 4px
-    0;
+    padding: 4px 0;
     color: #333;
 }
 
@@ -4056,13 +3799,8 @@ a {
 .item
 .ul-toc {
     position: relative;
-    padding: 20px
-    10px
-    20px
-    0;
-    border-left: 1px
-    solid
-    #eee;
+    padding: 20px 10px 20px 0;
+    border-left: 1px solid #eee;
 }
 
 .k-main
@@ -4080,9 +3818,7 @@ a {
     left: -6px;
     width: 11px;
     height: 11px;
-    border: 2px
-    solid
-    #336699;
+    border: 2px solid #336699;
     border-radius: 15px;
     background-color: #fff;
     content: "";
@@ -4116,8 +3852,7 @@ ul
 li
 a {
     display: block;
-    margin: 0
-    10px;
+    margin: 0 10px;
     padding: 8px;
     border-radius: 4px;
     color: #333;
@@ -4153,9 +3888,7 @@ li::before {
     left: -6px;
     width: 11px;
     height: 11px;
-    border: 3px
-    solid
-    #fff;
+    border: 3px solid #fff;
     border-radius: 15px;
     background: #a7a7a7;
     content: "";
@@ -4215,8 +3948,7 @@ li:hover::before {
 @media screen and (max-width: 1310px) {
     .nav-tabs
     .nav-link {
-        padding: 8px
-        22px;
+        padding: 8px 22px;
     }
 
     .k-main
@@ -4276,10 +4008,7 @@ li:hover::before {
     z-index: 2;
     width: 100%;
     height: 101%;
-    background: url(assets/img/404.svg)
-    no-repeat
-    center
-    center;
+    background: url(assets/img/404.svg) no-repeat center center;
     background-size: cover;
 }
 
@@ -4316,8 +4045,7 @@ li:hover::before {
     position: relative;
     width: 100%;
     height: 500px;
-    background-position: center
-    center;
+    background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -4443,8 +4171,7 @@ li:hover::before {
 --------------------------------------------------------------*/
 
 .k-footer {
-    padding: 40px
-    0;
+    padding: 40px 0;
     background: #23282d;
 }
 
@@ -4478,10 +4205,7 @@ p
     margin-right: 6px;
     width: 14px;
     height: 1pc;
-    background: url(assets/img/police-ico.png)
-    0
-    0
-    no-repeat;
+    background: url(assets/img/police-ico.png) 0 0 no-repeat;
     vertical-align: middle;
 }
 
@@ -4606,8 +4330,7 @@ input {
     width: 100%;
     height: 40px;
     border: 0;
-    background: 0
-    0;
+    background: 0 0;
     color: #fff;
     font-size: 17px;
 }
@@ -4621,8 +4344,7 @@ input {
 .social
 a {
     display: inline-block;
-    padding: 0
-    7px;
+    padding: 0 7px;
 }
 
 .k-footer
@@ -4634,8 +4356,7 @@ a
 
 @media screen and (max-width: 768px) {
     .k-footer {
-        padding: 30px
-        0;
+        padding: 30px 0;
     }
 
     .k-footer
@@ -4650,26 +4371,32 @@ a
         font-size: 38px;
     }
 }
+
 .wp-smiley {
     width: auto !important;
     max-width: 1.5em !important;
     height: auto !important;
     max-height: 1.5em !important;
 }
-.k-main .details .article .content pre{
+
+.k-main .details .article .content pre {
     background: #272822 !important;
 }
+
 .k-main .details .comments .comment-respond .comment-textarea .text-bar .tool a img {
     width: 100%;
     height: 100%;
 }
+
 .k-main .details .comments .children {
     margin-bottom: 0;
     padding-left: 30px !important;
 }
+
 .k-main .details .article .header {
     text-align: unset;
 }
+
 .k-main thead {
     border-bottom: 3px #e9ebec solid;
 }
