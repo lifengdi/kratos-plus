@@ -529,9 +529,9 @@ function wpcdi_get_comment_info($comment_ip, $user_agent) {
  */
 function wpcdi_add_info_after_comment_content($comment_text, $comment) {
     // 仅前台显示，且评论已通过审核
-    if (is_admin() || $comment->comment_approved != 1) {
-        return $comment_text;
-    }
+//     if (is_admin() || $comment->comment_approved != 1) {
+//         return $comment_text;
+//     }
 	$location_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="#e9ecef" stroke="#495057" stroke-width="2">
 		  <path d="M12 3c-2.5 0-4.5 2-4.5 4.5c0 2.5 2 5.5 4.5 9c2.5-3.5 4.5-6.5 4.5-9C16.5 5 14.5 3 12 3z"/>
 		  <circle cx="12" cy="7.5" r="1.5" fill="#495057"/>
