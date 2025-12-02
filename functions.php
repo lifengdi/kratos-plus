@@ -46,14 +46,6 @@ require get_template_directory() . '/inc/theme-volcengine.php';
 // SMTP 配置
 require get_template_directory() . '/inc/theme-smtp.php';
 
-// copyright
-function feed_copyright($content) {
-    if(is_single() or is_feed()) {
-        $sitename = get_bloginfo('name');
-        $siteurl = home_url();
-        $content.= '<blockquote style="margin:10px 0;font-size:16px;">除非注明，否则均为<a rel="bookmark" title="'.$sitename.'" href="'.$siteurl.'">'.$sitename.'</a>原创文章，转载必须以链接形式标明本文链接';
-        $content.= '<p>本文链接：<a rel="bookmark" title="'.get_the_title().'" href="'.get_permalink().'">'.get_permalink().'</a></p></blockquote>';
-    }
-    return $content;
-}
-add_filter ('the_content', 'feed_copyright');
+require get_template_directory() . '/inc/theme-extends.php';
+
+require get_template_directory() . '/inc/theme-comment-extends.php';
