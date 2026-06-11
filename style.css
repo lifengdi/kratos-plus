@@ -1,17 +1,17 @@
 @charset "UTF-8";
 /*
-Theme Name: Dylan Li
-Text Domain: Dylan Li
-Version: 4.3.2
+Theme Name: Kratos+
+Text Domain: kratos
+Version: 1.0.0
 Requires PHP: 8.0
 Requires at least: 5.3.0
-Description: 主题提供了多种针对自媒体博客需求的侧栏工具，删繁就简专注于用户的阅读体验，优化的邮件中心为你的网站留存加分添彩。
-Tags: 博客, 双栏, 响应式, 自定义背景, 自定义颜色, 自定义图标, 自定义菜单, 特色图像, 收录优化, 邮件中心, 主题选项, 小工具, 文章置顶, 无障碍友好
+Description: Kratos+ 在 Seaton Jiang 的 Kratos 主题（GPL-3.0）基础上二次开发，新增可视化代码高亮、布局自定义、评论数学验证码等功能。本主题继承 GPL-3.0 协议。
+Tags: 博客, 双栏, 响应式, 代码高亮, 自定义背景, 自定义颜色, 自定义菜单, 特色图像, 邮件中心, 主题选项, 小工具
 Author: Dylan Li
 Author URI: https://www.lifengdi.com
-Theme URI: https://github.com/lifengdi/kratos
+Theme URI: https://github.com/lifengdi/kratos-plus
 License: GPL-3.0 License
-License URI: https://github.com/lifengdi/kratos/blob/main/LICENSE
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 /*--------------------------------------------------------------
@@ -1701,7 +1701,7 @@ hr {
 .details
 .article
 .content
-pre {
+pre:not([class*="language-"]):not(.hljs) {
     margin: 10px 0;
     padding: 11px 16px;
     border-radius: 4px;
@@ -1716,7 +1716,7 @@ pre {
 .details
 .article
 .content
-code {
+code:not([class*="language-"]):not(.hljs) {
     margin: 0 3px;
     padding: 2px 4px;
     border-radius: 4px;
@@ -1757,7 +1757,7 @@ kbd {
 .article
 .content
 pre
-code {
+code:not([class*="language-"]):not(.hljs) {
     margin: 0;
     padding: 0;
     background-color: transparent;
@@ -3383,6 +3383,28 @@ p {
 
 .k-main
 .sidebar
+.w-recommended
+.nav-tabs {
+    flex-wrap: nowrap;
+}
+
+.k-main
+.sidebar
+.w-recommended
+.nav-tabs
+.nav-link {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-right: 0;
+    padding-left: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.k-main
+.sidebar
 .title {
     position: relative;
     margin: 0 0 15px;
@@ -4379,8 +4401,8 @@ a
     max-height: 1.5em !important;
 }
 
-.k-main .details .article .content pre {
-    background: #272822 !important;
+.k-main .details .article .content pre:not([class*="language-"]):not(.hljs) {
+    background: #272822;
 }
 
 .k-main .details .comments .comment-respond .comment-textarea .text-bar .tool a img {

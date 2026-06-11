@@ -3,6 +3,7 @@
 /**
  * 主题选项
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2025.02.08
  */
@@ -22,6 +23,22 @@ if (!function_exists('kratos_option')) {
         }
 
         return $default;
+    }
+}
+
+if (!function_exists('kratos_layout_cols')) {
+    function kratos_layout_cols($single_full = false)
+    {
+        $main = (int) kratos_option('g_main_col', 8);
+        $side = (int) kratos_option('g_sidebar_col', 4);
+        $main = max(1, min(12, $main));
+        $side = max(0, min(12 - $main, $side));
+        return array(
+            'main_full' => 'col-lg-12',
+            'main' => 'col-lg-' . ($single_full ? 12 : $main),
+            'sidebar' => 'col-lg-' . ($side > 0 ? $side : 4),
+            'has_sidebar' => $side > 0 && !$single_full,
+        );
     }
 }
 
@@ -48,9 +65,9 @@ CSF::createOptions($prefix, array(
     'show_all_options' => false,
     'sticky_header' => false,
     'admin_bar_menu_icon' => 'dashicons-admin-generic',
-    'framework_title' => '主题设置<small style="margin-left:10px">Kratos v' . THEME_VERSION . '</small>',
+    'framework_title' => '主题设置<small style="margin-left:10px">Kratos+ v' . THEME_VERSION . '</small>',
     'theme' => 'light',
-    'footer_credit' => '感谢使用 <a target="_blank" href="https://github.com/seatonjiang/kratos">Kratos</a> 主题进行创作，欢迎加入主题交流群：<a target="_blank" href="https://qm.qq.com/q/yNBa2CSHd0">315990636</a>',
+    'footer_credit' => '感谢使用 Kratos+ 主题进行创作。本主题基于 <a target="_blank" href="https://github.com/seatonjiang/kratos">Kratos</a>（GPL-3.0）二次开发。',
 ));
 
 CSF::createSection($prefix, array(
@@ -103,7 +120,7 @@ CSF::createSection($prefix, array(
             'id' => 'g_rip',
             'type' => 'switcher',
             'title' => __('哀悼功能', 'kratos'),
-            'subtitle' => __('启用/禁用站点首页黑白功能', 'kratos'),
+            'subtitle' => __('启用/禁用全站黑白功能', 'kratos'),
             'default' => false,
         ),
         array(
@@ -268,6 +285,149 @@ CSF::createSection($prefix, array(
                 'g_wechat' => false,
                 'g_wechat_img' => get_template_directory_uri() . '/assets/img/200.png',
             ),
+        ),
+        array(
+            'id' => 'g_comment_captcha_fieldset',
+            'type' => 'fieldset',
+            'title' => __('评论验证码', 'kratos'),
+            'subtitle' => __('在评论表单中加入"X + Y = ?"算术验证，简单挡机器人', 'kratos'),
+            'fields' => array(
+                array(
+                    'id' => 'g_comment_captcha',
+                    'type' => 'switcher',
+                    'title' => __('功能开关', 'kratos'),
+                    'subtitle' => __('启用/关闭评论验证码', 'kratos'),
+                    'text_on' => __('开启', 'kratos'),
+                    'text_off' => __('关闭', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_comment_captcha_max',
+                    'type' => 'number',
+                    'title' => __('数字最大值', 'kratos'),
+                    'subtitle' => __('运算用的随机数上限（1 到该值），默认 10', 'kratos'),
+                    'min' => 5,
+                    'max' => 99,
+                    'default' => 10,
+                ),
+            ),
+            'default' => array(
+                'g_comment_captcha' => false,
+                'g_comment_captcha_max' => 10,
+            ),
+        ),
+        array(
+            'id' => 'g_main_col',
+            'type' => 'slider',
+            'title' => __('主体宽度', 'kratos'),
+            'subtitle' => __('基于 Bootstrap 12 栅格的主体内容列宽，建议与侧边栏宽度之和等于 12', 'kratos'),
+            'min' => 5,
+            'max' => 11,
+            'step' => 1,
+            'default' => 8,
+        ),
+        array(
+            'id' => 'g_sidebar_col',
+            'type' => 'slider',
+            'title' => __('侧边栏宽度', 'kratos'),
+            'subtitle' => __('基于 Bootstrap 12 栅格的侧边栏列宽，建议与主体宽度之和等于 12', 'kratos'),
+            'min' => 1,
+            'max' => 7,
+            'step' => 1,
+            'default' => 4,
+        ),
+        array(
+            'id' => 'g_container_max',
+            'type' => 'number',
+            'title' => __('页面主体最大宽度 (px)', 'kratos'),
+            'subtitle' => __('在大屏幕下页面容器的最大宽度，最小 960，留空表示不限制（自适应屏幕宽度）', 'kratos'),
+            'min' => 960,
+            'default' => 1280,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'global_fields',
+    'title' => __('代码高亮', 'kratos'),
+    'icon' => 'fas fa-code',
+    'fields' => array(
+        array(
+            'id' => 'g_codehl',
+            'type' => 'switcher',
+            'title' => __('代码高亮', 'kratos'),
+            'subtitle' => __('启用/禁用文章代码块的语法高亮显示', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_codehl_engine',
+            'type' => 'select',
+            'title' => __('高亮方案', 'kratos'),
+            'subtitle' => __('Prism.js 与 highlight.js 为前端方案，highlight.php 为服务端渲染', 'kratos'),
+            'options' => array(
+                'prism' => 'Prism.js (推荐)',
+                'hljs' => 'highlight.js',
+                'highlight_php' => 'highlight.php (服务端)',
+            ),
+            'default' => 'prism',
+            'dependency' => array('g_codehl', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_codehl_source',
+            'type' => 'button_set',
+            'title' => __('资源加载方式', 'kratos'),
+            'subtitle' => __('CDN 加载速度更快；本地缓存切到本地后会一次性预下载所有 Prism 语言/主题与 hljs 主题（约 2MB），无需 .htaccess/Nginx 配置，跨服务器通用', 'kratos'),
+            'options' => array(
+                'cdn' => 'CDN',
+                'local' => __('本地缓存', 'kratos'),
+            ),
+            'default' => 'cdn',
+            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|prism,hljs'),
+        ),
+        array(
+            'type' => 'callback',
+            'title' => __('本地缓存状态', 'kratos'),
+            'function' => 'kratos_codehl_render_warmup_panel',
+            'dependency' => array('g_codehl|g_codehl_source', '==|==', 'true|local'),
+        ),
+        array(
+            'id' => 'g_codehl_cdn_base',
+            'type' => 'text',
+            'title' => __('CDN 根路径', 'kratos'),
+            'subtitle' => __('npm 风格 CDN 根 URL，留空使用默认 jsdelivr。可换成 unpkg 或国内镜像', 'kratos'),
+            'default' => 'https://cdn.jsdelivr.net/npm',
+            'dependency' => array('g_codehl|g_codehl_source', '==|==', 'true|cdn'),
+        ),
+        array(
+            'id' => 'g_codehl_theme_prism',
+            'type' => 'select',
+            'title' => __('Prism 主题', 'kratos'),
+            'subtitle' => __('Prism 官方核心主题 + prism-themes 社区扩展，共 45 款', 'kratos'),
+            'options' => kratos_codehl_prism_options(),
+            'default' => 'core/prism-tomorrow',
+            'dependency' => array('g_codehl|g_codehl_engine', '==|==', 'true|prism'),
+        ),
+        array(
+            'id' => 'g_codehl_theme_hljs',
+            'type' => 'select',
+            'title' => __('highlight 主题', 'kratos'),
+            'subtitle' => __('highlight.js 官方主题（73 款），highlight.js 与 highlight.php 共享配色', 'kratos'),
+            'options' => kratos_codehl_hljs_options(),
+            'default' => 'github-dark',
+            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|hljs,highlight_php'),
+        ),
+        array(
+            'type' => 'callback',
+            'title' => __('主题预览', 'kratos'),
+            'function' => 'kratos_codehl_render_preview',
+            'dependency' => array('g_codehl', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_codehl_linenum',
+            'type' => 'switcher',
+            'title' => __('显示行号', 'kratos'),
+            'subtitle' => __('仅 Prism.js 与 highlight.js 方案生效', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|prism,hljs'),
         ),
     ),
 ));
@@ -889,7 +1049,7 @@ CSF::createSection($prefix, array(
             'id' => 'top_title',
             'type' => 'text',
             'title' => __('图片标题', 'kratos'),
-            'default' => __('Kratos', 'kratos'),
+            'default' => __('Kratos+', 'kratos'),
         ),
         array(
             'id' => 'top_describe',
@@ -1199,16 +1359,13 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'content',
-            'content' => '<ul style="margin: 0 auto;"> <li>' . __('PHP 版本：', 'kratos') . PHP_VERSION . '</li> <li>' . __('Kratos 版本：', 'kratos') . THEME_VERSION . '</li> <li>' . __('WordPress 版本：', 'kratos') . $wp_version . '</li> <li>' . __('User Agent 信息：', 'kratos') . '<span id="user-agent"></span></li> </ul><script>document.getElementById("user-agent").textContent = navigator.userAgent;</script>',
-        ),
-
-        array(
-            'type' => 'subheading',
-            'content' => __('资料文档', 'kratos'),
-        ),
-        array(
-            'type' => 'content',
-            'content' => '<ul style="margin: 0 auto;"><li>' . __('问题反馈：', 'kratos') . '<a href="https://github.com/seatonjiang/kratos/issues" target="_blank">https://github.com/seatonjiang/kratos/issues</a></li> <li>' . __('使用说明：', 'kratos') . '<a href="https://github.com/seatonjiang/kratos/wiki" target="_blank">https://github.com/seatonjiang/kratos/wiki</a></li> <li>' . __('更新日志：', 'kratos') . '<a href="https://github.com/seatonjiang/kratos/releases" target="_blank">https://github.com/seatonjiang/kratos/releases</a></li> </ul>',
+            'content' => '<ul style="margin: 0 auto;">'
+                . '<li>' . __('主题名称：', 'kratos') . 'Kratos+</li>'
+                . '<li>' . __('主题版本：', 'kratos') . THEME_VERSION . '</li>'
+                . '<li>' . __('PHP 版本：', 'kratos') . PHP_VERSION . '</li>'
+                . '<li>' . __('WordPress 版本：', 'kratos') . $wp_version . '</li>'
+                . '<li>' . __('User Agent 信息：', 'kratos') . '<span id="user-agent"></span></li>'
+                . '</ul><script>document.getElementById("user-agent").textContent = navigator.userAgent;</script>',
         ),
         array(
             'type' => 'subheading',
@@ -1216,15 +1373,11 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'content',
-            'content' => __('主题源码使用 <a href="https://github.com/seatonjiang/kratos/blob/main/LICENSE" target="_blank">GPL-3.0 协议</a> 进行许可，说明文档使用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 进行许可。', 'kratos'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('打赏支持', 'kratos'),
-        ),
-        array(
-            'type' => 'content',
-            'content' => '如果您有用到我开发维护的项目，请考虑支持一下我的工作，让我可以持续的维护它们，您可在爱发电（<a href="https://afdian.com/a/seatonjiang" target="_blank">https://afdian.com/a/seatonjiang</a>）中进行打赏，谢谢！',
+            'content' => __(
+                '<p>本主题 <strong>Kratos+</strong> 由 <a href="https://www.lifengdi.com" target="_blank">Dylan Li</a> 在 <a href="https://github.com/seatonjiang/kratos" target="_blank">Kratos</a> 主题（原作者 Seaton Jiang）的基础上二次开发，新增可视化代码高亮、布局自定义、评论数学验证码等功能。</p>'
+                . '<p>本主题继承原主题 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU GPL-3.0</a> 协议许可，原作者及所有引用第三方组件的版权署名均予以保留。再次分发须遵守 GPL-3.0 协议要求，包括开源、保留版权声明和许可信息。</p>',
+                'kratos'
+            ),
         ),
     ),
 ));

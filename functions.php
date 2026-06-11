@@ -3,15 +3,20 @@
 /**
  * 模板函数
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2025.02.08
  */
 
-define('THEME_VERSION', '4.3.2');
+define('THEME_VERSION', '1.0.0');
 
 if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;
 }
+
+// 代码高亮（必须在 CSF 之前 require —— CSF autoload 会立即加载 theme-options.php，
+// 而 theme-options.php 在字段定义里调用了本文件里的 kratos_codehl_*_options() 等函数）
+require get_template_directory() . '/inc/theme-codehighlight.php';
 
 // 主题配置
 require get_template_directory() . '/inc/codestar-framework/autoload.php';
@@ -49,3 +54,6 @@ require get_template_directory() . '/inc/theme-smtp.php';
 require get_template_directory() . '/inc/theme-extends.php';
 
 require get_template_directory() . '/inc/theme-comment-extends.php';
+
+// 评论验证码
+require get_template_directory() . '/inc/theme-comment-captcha.php';

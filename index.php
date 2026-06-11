@@ -3,14 +3,16 @@
 /**
  * 首页模板
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2022.01.26
  */
-get_header(); ?>
+get_header();
+$kratos_cols = kratos_layout_cols(); ?>
 <div class="k-main <?php echo kratos_option('top_img_switch', true) ? 'banner' : 'color' ?>" style="background:<?php echo kratos_option('g_background', '#f5f5f5'); ?>">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 board">
+            <div class="<?php echo $kratos_cols['main']; ?> board">
                 <?php if (is_home() && kratos_option('g_carousel', false)) {
                     kratos_carousel();
                 }
@@ -36,7 +38,7 @@ get_header(); ?>
                 pagelist();
                 wp_reset_query(); ?>
             </div>
-            <div class="col-lg-4 sidebar sticky-sidebar d-none d-lg-block">
+            <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
                 <?php dynamic_sidebar('home_sidebar'); ?>
             </div>
         </div>

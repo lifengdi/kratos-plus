@@ -3,6 +3,7 @@
 /**
  * 站点相关函数
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2023.04.05
  */
@@ -96,7 +97,7 @@ add_filter('robots_txt', function ($output, $public) {
 // 哀悼黑白站点
 function mourning()
 {
-    if (is_home() && kratos_option('g_rip', false)) {
+    if (kratos_option('g_rip', false)) {
         echo '<style type="text/css">html{filter: grayscale(100%);-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);-ms-filter: grayscale(100%);-o-filter: grayscale(100%);filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);filter: gray;-webkit-filter: grayscale(1); } </style>';
     }
 }

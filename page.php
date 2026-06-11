@@ -3,15 +3,17 @@
 /**
  * 页面模板
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2024.01.17
  */
 
-get_header(); ?>
+get_header();
+$kratos_cols = kratos_layout_cols(); ?>
 <div class="k-main <?php echo kratos_option('top_img_switch', true) ? 'banner' : 'color' ?>" style="background:<?php echo kratos_option('g_background', '#f5f5f5'); ?>">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 details">
+            <div class="<?php echo $kratos_cols['main']; ?> details">
                 <?php if (have_posts()) : the_post();
                     update_post_caches($posts); ?>
                     <div class="article py-4">
@@ -53,7 +55,7 @@ get_header(); ?>
                 <?php endif; ?>
                 <?php comments_template(); ?>
             </div>
-            <div class="col-lg-4 sidebar sticky-sidebar d-none d-lg-block">
+            <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
                 <?php dynamic_sidebar('page_sidebar'); ?>
             </div>
         </div>

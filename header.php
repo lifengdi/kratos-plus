@@ -3,6 +3,7 @@
 /**
  * 主题页眉
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2023.03.30
  */
@@ -98,7 +99,7 @@
                             echo '<div class="title">' . single_cat_title('', false) . '</div>';
                             echo '<div class="mate">' . strip_tags(category_description()) . '</div>';
                         } else {
-                            echo '<div class="title">' . kratos_option('top_title', 'Kratos') . '</div>';
+                            echo '<div class="title">' . kratos_option('top_title', 'Kratos+') . '</div>';
                             echo '<div class="mate">' . kratos_option('top_describe', __('专注于用户阅读体验的响应式博客主题', 'kratos')) . '</div>';
                         }
                         ?>

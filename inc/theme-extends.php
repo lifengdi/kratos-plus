@@ -114,3 +114,39 @@ function custom_archive_plugin_styles() {
     </style>';
 }
 add_action( 'wp_head', 'custom_archive_plugin_styles' );
+
+/**
+ * CSF（codestar-framework）框架硬编码的 lf26-cdn-tos.bytecdntp.com 已下线，
+ * 后台主题设置页加载 Font Awesome / CodeMirror 报 404。把那些 URL 改写到 jsdelivr 上的等价资源。
+ */
+function kratos_csf_rewrite_dead_cdn($src, $handle = '')
+{
+    if (strpos($src, 'lf26-cdn-tos.bytecdntp.com') === false) {
+        return $src;
+    }
+    // Font Awesome 5.15.4: /cdn/font-awesome/5.15.4/css/all.min.css → @fortawesome/fontawesome-free@5.15.4/css/all.min.css
+    if (preg_match('#/font-awesome/(\d+\.\d+\.\d+)/css/(.+\.css)$#', $src, $m)) {
+        return 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@' . $m[1] . '/css/' . $m[2];
+    }
+    if (preg_match('#/font-awesome/(\d+\.\d+\.\d+)/webfonts/(.+)$#', $src, $m)) {
+        return 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@' . $m[1] . '/webfonts/' . $m[2];
+    }
+    // Font Awesome 4.x：/cdn/font-awesome/4.7.0/css/font-awesome.min.css → font-awesome@4.7.0/css/font-awesome.min.css
+    if (preg_match('#/font-awesome/4(\.\d+\.\d+)/(.+)$#', $src, $m)) {
+        return 'https://cdn.jsdelivr.net/npm/font-awesome@4' . $m[1] . '/' . $m[2];
+    }
+    // CodeMirror：/cdn/codemirror/5.62.2/codemirror.min.css → codemirror@5.62.2/lib/codemirror.min.css
+    //              /cdn/codemirror/5.62.2/addon/mode/loadmode.min.js → codemirror@5.62.2/addon/mode/loadmode.min.js
+    if (preg_match('#/codemirror/(\d+\.\d+\.\d+)/(.+)$#', $src, $m)) {
+        $ver = $m[1];
+        $sub = $m[2];
+        // 主文件在 lib/，addon/mode/keymap/theme 等在原相对路径
+        if (preg_match('#^codemirror\.(min\.)?(css|js)$#', $sub)) {
+            return 'https://cdn.jsdelivr.net/npm/codemirror@' . $ver . '/lib/' . $sub;
+        }
+        return 'https://cdn.jsdelivr.net/npm/codemirror@' . $ver . '/' . $sub;
+    }
+    return $src;
+}
+add_filter('style_loader_src', 'kratos_csf_rewrite_dead_cdn', 10, 2);
+add_filter('script_loader_src', 'kratos_csf_rewrite_dead_cdn', 10, 2);

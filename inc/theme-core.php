@@ -3,6 +3,7 @@
 /**
  * 核心函数
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2024.08.05
  */
@@ -95,6 +96,9 @@ function theme_autoload()
                 height: 100%;
             }');
         }
+        $g_container_max = kratos_option('g_container_max', 1280);
+        $g_container_max = ($g_container_max === '' || $g_container_max === false) ? 'none' : (max(960, intval($g_container_max)) . 'px');
+        wp_add_inline_style('kratos', '@media (min-width: 1310px) { .k-header .container, .k-main > .container, .k-footer .container { max-width: ' . $g_container_max . ' !important; } }');
         // js
         wp_enqueue_script('bootstrap-bundle', ASSET_PATH . '/assets/js/bootstrap.bundle.min.js', array('jquery'), '4.5.0', true);
         wp_enqueue_script('layer', ASSET_PATH . '/assets/js/layer.min.js', array('jquery'), '3.1.1', true);
@@ -222,12 +226,20 @@ if (kratos_option('g_replace_gravatar_url_fieldset')['g_replace_gravatar_url'] ?
     add_filter('get_avatar_url', 'replace_gravatar_url');
 }
 
-// 主题更新检测
-//$myUpdateChecker = PucFactory::buildUpdateChecker(
-//    'https://gitee.com/seatonjiang/kratos/raw/main/inc/update-checker/update.json',
-//    get_template_directory() . '/functions.php',
-//    'Kratos'
-//);
+// Kratos+ 主题自动更新（GitHub Release）
+//   - 仓库：https://github.com/lifengdi/kratos-plus（main 分支）
+//   - PUC v5 会自动定期从 GitHub API 拉取最新 release 的 tag 与 style.css 比对版本号；
+//   - 命中新版后 WP 后台 → 主题列表 → "更新可用"按钮即可一键升级；
+//   - enableReleaseAssets() 表示从 release 上传的 zip 附件下载，避免源 tarball 含 vendor / 开发文件。
+$kratosPlusUpdater = PucFactory::buildUpdateChecker(
+    'https://github.com/lifengdi/kratos-plus/',
+    get_template_directory() . '/style.css',
+    'kratos-plus'
+);
+$kratosPlusUpdater->setBranch('main');
+if (method_exists($kratosPlusUpdater, 'getVcsApi')) {
+    $kratosPlusUpdater->getVcsApi()->enableReleaseAssets();
+}
 
 // 禁止生成多种尺寸图片
 if (kratos_option('g_removeimgsize', false)) {

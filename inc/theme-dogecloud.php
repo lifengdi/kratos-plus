@@ -3,6 +3,7 @@
 /**
  * dogecloud 对象存储
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2022.01.26
  */

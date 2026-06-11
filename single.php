@@ -3,20 +3,19 @@
 /**
  * 文章内容
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2022.05.27
  */
 
 get_header();
-$col_array = array(
-    'one_side' => 'col-lg-12',
-    'two_side' => 'col-lg-8'
-);
+$kratos_layout = kratos_option('g_article_widgets', 'two_side');
+$kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
 ?>
 <div class="k-main <?php echo kratos_option('top_img_switch', true) ? 'banner' : 'color' ?>" style="background:<?php echo kratos_option('g_background', '#f5f5f5'); ?>">
     <div class="container">
         <div class="row">
-            <div class="<?php echo $col_array[kratos_option('g_article_widgets', 'two_side')] ?> details">
+            <div class="<?php echo $kratos_layout === 'one_side' ? $kratos_cols['main_full'] : $kratos_cols['main']; ?> details">
                 <?php if (have_posts()) : the_post();
                     update_post_caches($posts); ?>
                     <div class="article">
@@ -163,8 +162,8 @@ $col_array = array(
                 </nav>
                 <?php comments_template(); ?>
             </div>
-            <?php if (kratos_option('g_article_widgets', 'two_side') == 'two_side') { ?>
-                <div class="col-lg-4 sidebar sticky-sidebar d-none d-lg-block">
+            <?php if ($kratos_layout === 'two_side') { ?>
+                <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
                     <?php dynamic_sidebar('single_sidebar'); ?>
                 </div>
             <?php } ?>

@@ -3,6 +3,7 @@
 /**
  * 文章相关函数
  * @author Seaton Jiang <hi@seatonjiang.com>
+ * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2023.04.04
  */
