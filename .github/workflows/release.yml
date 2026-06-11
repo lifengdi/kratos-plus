@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: ver
+        run: |
+          # tag 形如 refs/tags/v1.0.0；剥掉前缀得到 1.0.0
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Verify style.css Version matches tag
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          STYLE_VER=$(grep -E "^Version:" style.css | head -n1 | sed -E 's/^Version:[[:space:]]*//' | tr -d '\r')
+          echo "tag version : $VERSION"
+          echo "style.css   : $STYLE_VER"
+          if [ "$VERSION" != "$STYLE_VER" ]; then
+            echo "::error::style.css Version ($STYLE_VER) does not match tag (v$VERSION)."
+            exit 1
+          fi
+
+      - name: Build distribution zip
+        id: zip
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          ZIP_NAME="kratos-plus-${{ steps.ver.outputs.version }}.zip"
+          # 在父目录打包，让 zip 内顶层目录为 kratos-plus/，
+          # WP 升级时会用此 zip 替换 wp-content/themes/kratos-plus/ 整个目录
+          STAGE_DIR="$RUNNER_TEMP/stage"
+          mkdir -p "$STAGE_DIR/kratos-plus"
+          # 用 git archive 拿一份与 tag 完全一致、且不含 .git 的源（rsync 排除开发期文件）
+          git archive --format=tar "$TAG" | tar -x -C "$STAGE_DIR/kratos-plus"
+          # 额外清理（git archive 已忽略 .git，下面再去掉运行时不需要的工作区元数据）
+          rm -rf "$STAGE_DIR/kratos-plus/.github" \
+                 "$STAGE_DIR/kratos-plus/.idea" \
+                 "$STAGE_DIR/kratos-plus/.eslintignore" \
+                 "$STAGE_DIR/kratos-plus/.prettierignore" \
+                 "$STAGE_DIR/kratos-plus/.gitignore" \
+                 "$STAGE_DIR/kratos-plus/CLAUDE.md" \
+                 "$STAGE_DIR/kratos-plus/crowdin.yml" \
+                 "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"
+          (cd "$STAGE_DIR" && zip -r "$RUNNER_TEMP/$ZIP_NAME" "kratos-plus")
+          ls -lh "$RUNNER_TEMP/$ZIP_NAME"
+          echo "zip_path=$RUNNER_TEMP/$ZIP_NAME" >> "$GITHUB_OUTPUT"
+          echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Create / update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: Kratos+ ${{ steps.ver.outputs.tag }}
+          generate_release_notes: true
+          files: ${{ steps.zip.outputs.zip_path }}
