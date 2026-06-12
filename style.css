@@ -36,25 +36,16 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 /*--------------------------------------------------------------
 1. 全局
 --------------------------------------------------------------*/
-/* 字体相关css */
-@import url("/* configure custom font URL in WP Admin */");
-
-@font-face {
-    font-family: "HarmonyOS Sans SC", sans-serif;
-    font-weight: normal;
-    font-style: normal;
-}
-
-*:not([class*="icon"]):not(i):not(pre):not(code):not([class*="language-"]):not([class*="token"]) {
-    font-family: "HarmonyOS Sans SC";
-}
+/* 字体相关样式：自定义字体的远程加载与全站强制 font-family 已迁移到后台
+ * （功能配置 → 自定义字体），由 inc/theme-core.php 在 wp_head 阶段按选项注入。
+ * 这里仅保留 body 的字体栈作为系统字体兜底。 */
 
 body {
     overflow-x: hidden;
     background: #f5f5f5;
     font-weight: 400;
     font-size: 16px;
-    font-family: "HarmonyOS Sans SC", -apple-system,
+    font-family: -apple-system,
     BlinkMacSystemFont,
     opensans,
     Optima,

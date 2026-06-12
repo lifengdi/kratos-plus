@@ -316,6 +316,46 @@ CSF::createSection($prefix, array(
             ),
         ),
         array(
+            'id' => 'g_font_fieldset',
+            'type' => 'fieldset',
+            'title' => __('自定义字体', 'kratos'),
+            'subtitle' => __('启用后通过 CDN 加载自定义字体，并在全站（除代码块/图标外）强制使用', 'kratos'),
+            'fields' => array(
+                array(
+                    'id' => 'g_font_enable',
+                    'type' => 'switcher',
+                    'title' => __('功能开关', 'kratos'),
+                    'subtitle' => __('启用/关闭自定义字体', 'kratos'),
+                    'text_on' => __('开启', 'kratos'),
+                    'text_off' => __('关闭', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_font_family',
+                    'type' => 'text',
+                    'title' => __('字体名称', 'kratos'),
+                    'subtitle' => __('CSS font-family 值，如 HarmonyOS Sans SC', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_font_url',
+                    'type' => 'text',
+                    'title' => __('CDN URL', 'kratos'),
+                    'subtitle' => __('字体的 CSS / @font-face 文件地址，留空则不加载远程文件（依赖系统已安装该字体）', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_font_fallback',
+                    'type' => 'text',
+                    'title' => __('字体兜底栈', 'kratos'),
+                    'subtitle' => __('当首选字体未加载时使用的备用字体栈，如 sans-serif 或 -apple-system, BlinkMacSystemFont, sans-serif', 'kratos'),
+                ),
+            ),
+            'default' => array(
+                'g_font_enable' => false,
+                'g_font_family' => '',
+                'g_font_url' => '',
+                'g_font_fallback' => 'sans-serif',
+            ),
+        ),
+        array(
             'id' => 'g_main_col',
             'type' => 'slider',
             'title' => __('主体宽度', 'kratos'),
