@@ -71,7 +71,7 @@ a {
 }
 
 a:hover {
-    color: #0097ee;
+    color: #2B5278;
     text-decoration: none;
 }
 
@@ -1111,7 +1111,7 @@ a {
 .header
 .title
 a:hover {
-    color: #0097ee;
+    color: #2B5278;
 }
 
 .k-main
@@ -1186,7 +1186,7 @@ span
 .a-meta
 span
 > a:hover {
-    color: #0097ee;
+    color: #2B5278;
     text-decoration: none;
 }
 
@@ -3355,7 +3355,7 @@ p {
 .k-main
 .sidebar
 .w-recommended .bookmark-item:hover {
-    color: #0097ee;
+    color: #2B5278;
 }
 
 .k-main
@@ -3453,7 +3453,7 @@ li {
     display: inline-block;
     margin: 0 1px 10px 0;
     padding: 2px 0;
-    width: 164px;
+    width: 40%;
     color: #333;
     list-style: none;
     font-size: 15px;
@@ -4216,7 +4216,7 @@ a {
 .k-footer
 p
 a:hover {
-    color: #0097ee;
+    color: #2B5278;
 }
 
 .k-footer
