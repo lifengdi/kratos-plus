@@ -59,6 +59,23 @@ function theme_autoload()
         if (is_child_theme()) {
             wp_enqueue_style('kratos-child', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
         }
+        // 自定义字体（功能配置 → 自定义字体 fieldset）
+        $g_font = kratos_option('g_font_fieldset', array());
+        if (!empty($g_font['g_font_enable'])) {
+            $font_family = trim((string)($g_font['g_font_family'] ?? ''));
+            $font_url = trim((string)($g_font['g_font_url'] ?? ''));
+            $font_fallback = trim((string)($g_font['g_font_fallback'] ?? 'sans-serif'));
+            if ($font_family !== '') {
+                $stack = '"' . str_replace('"', '', $font_family) . '"' . ($font_fallback !== '' ? ', ' . $font_fallback : '');
+                $css = '';
+                if ($font_url !== '') {
+                    $css .= '@import url("' . esc_url($font_url) . '");';
+                }
+                // 全站强制使用自定义字体，但排除代码块 / 图标 / 高亮 token，避免破坏 Prism / hljs / iconfont 显示
+                $css .= '*:not([class*="icon"]):not(i):not(pre):not(code):not([class*="language-"]):not([class*="token"]){font-family:' . $stack . ';}';
+                wp_add_inline_style('kratos', $css);
+            }
+        }
         if (kratos_option('g_adminbar', true)) {
             $admin_bar_css = "
             @media screen and (min-width: 782px) {
@@ -101,23 +118,7 @@ function theme_autoload()
         $g_container_max = ($g_container_max === '' || $g_container_max === false) ? 'none' : (max(960, intval($g_container_max)) . 'px');
         wp_add_inline_style('kratos', '@media (min-width: 1310px) { .k-header .container, .k-main > .container, .k-footer .container { max-width: ' . $g_container_max . ' !important; } }');
 
-        // 自定义字体（功能配置 → 自定义字体 fieldset）
-        $g_font = kratos_option('g_font_fieldset', array());
-        if (!empty($g_font['g_font_enable'])) {
-            $font_family = trim((string)($g_font['g_font_family'] ?? ''));
-            $font_url = trim((string)($g_font['g_font_url'] ?? ''));
-            $font_fallback = trim((string)($g_font['g_font_fallback'] ?? 'sans-serif'));
-            if ($font_family !== '') {
-                $stack = '"' . str_replace('"', '', $font_family) . '"' . ($font_fallback !== '' ? ', ' . $font_fallback : '');
-                $css = '';
-                if ($font_url !== '') {
-                    $css .= '@import url("' . esc_url($font_url) . '");';
-                }
-                // 全站强制使用自定义字体，但排除代码块 / 图标 / 高亮 token，避免破坏 Prism / hljs / iconfont 显示
-                $css .= '*:not([class*="icon"]):not(i):not(pre):not(code):not([class*="language-"]):not([class*="token"]){font-family:' . $stack . ';}';
-                wp_add_inline_style('kratos', $css);
-            }
-        }
+
 
         // js
         wp_enqueue_script('bootstrap-bundle', ASSET_PATH . '/assets/js/bootstrap.bundle.min.js', array('jquery'), '4.5.0', true);
