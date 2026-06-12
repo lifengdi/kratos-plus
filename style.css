@@ -1752,7 +1752,7 @@ code:not([class*="language-"]):not(.hljs) {
     margin: 0;
     padding: 0;
     background-color: transparent;
-    color: #fff;
+    /*color: #fff;*/
 }
 
 .k-main
