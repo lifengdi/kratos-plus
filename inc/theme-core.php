@@ -10,9 +10,10 @@
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
-// CDN 资源地址
+// CDN 资源地址：开启"静态资源加速"时走 jsdelivr 上 lifengdi/kratos-plus 仓库当前 tag。
+// jsdelivr 会按 GitHub Release 同步资源，发布新版后约 10 分钟内可用。
 if (kratos_option('g_cdn', false)) {
-    $asset_path = 'https://cdn.jsdelivr.net/gh/seatonjiang/kratos@v' . THEME_VERSION;
+    $asset_path = 'https://cdn.jsdelivr.net/gh/lifengdi/kratos-plus@v' . THEME_VERSION;
 } else {
     $asset_path = get_template_directory_uri();
 }
