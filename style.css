@@ -4392,9 +4392,9 @@ a
     max-height: 1.5em !important;
 }
 
-.k-main .details .article .content pre:not([class*="language-"]):not(.hljs) {
-    background: #272822;
-}
+/*.k-main .details .article .content pre:not([class*="language-"]):not(.hljs) {*/
+/*    background: #272822;*/
+/*}*/
 
 .k-main .details .comments .comment-respond .comment-textarea .text-bar .tool a img {
     width: 100%;
