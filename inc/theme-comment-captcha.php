@@ -136,6 +136,8 @@ add_action('comment_form_after', 'kratos_captcha_render');
 /**
  * 提交校验：preprocess_comment 是 ajax / 普通提交都会过的钩子
  *  - 所有访客（含已登录用户）都校验；trackback / pingback 跳过
+ *  - 后台管理员在 wp-admin 内回复 / 编辑评论时跳过：admin-ajax 的 replyto-comment、
+ *    wp-admin/comment.php 编辑保存等路径都不会带验证码字段，强校验会让后台回复失败
  *  - 答案错或 token 过期 → wp_die 抛错（comment_callback / wp_handle_comment_submission 都会捕获并返回错误）
  */
 function kratos_captcha_validate($commentdata)
@@ -145,6 +147,9 @@ function kratos_captcha_validate($commentdata)
     }
     $type = isset($commentdata['comment_type']) ? $commentdata['comment_type'] : '';
     if ($type !== '' && $type !== 'comment') {
+        return $commentdata;
+    }
+    if (is_admin() && current_user_can('moderate_comments')) {
         return $commentdata;
     }
     $token = isset($_POST['kratos_captcha_token']) ? sanitize_text_field(wp_unslash($_POST['kratos_captcha_token'])) : '';
