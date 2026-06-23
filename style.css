@@ -3045,7 +3045,7 @@ img {
 .comment-textarea
 .text-bar
 .smile
-a {
+.smile-panel a {
     float: left;
     display: block;
     padding: 4px;
@@ -3053,6 +3053,12 @@ a {
     height: 32px;
     border: 2px solid #fff;
     background-color: #f0f0f0;
+}
+
+.smile .smile-panel.active::after {
+    content: "";
+    display: block;
+    clear: both;
 }
 
 .k-main
@@ -3119,6 +3125,55 @@ a {
 .open {
     scrollbar-width: thin;
     scrollbar-color: #000 #f1f1f1;
+}
+
+/* 表情分组 tab */
+.smile .smile-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    scrollbar-width: thin;
+}
+
+.smile .smile-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.smile .smile-tabs::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+}
+
+.smile .smile-tabs .smile-tab {
+    flex: 0 0 auto;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #666;
+    white-space: nowrap;
+    border-right: 1px solid #eee;
+    text-decoration: none;
+}
+
+.smile .smile-tabs .smile-tab.active {
+    color: #333;
+    background: #fff;
+    border-bottom: 2px solid #007bff;
+    margin-bottom: -1px;
+}
+
+.smile .smile-panel {
+    display: none;
+}
+
+.smile .smile-panel.active {
+    display: block;
 }
 
 .k-main

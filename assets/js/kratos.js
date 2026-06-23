@@ -206,6 +206,23 @@
           return false;
         }
       );
+      $(document).on(
+        "click",
+        ".smile .smile-tab",
+        function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var target = $(this).data("target");
+          var $smile = $(this).closest(".smile");
+          $smile.find(".smile-tab").removeClass("active");
+          $(this).addClass("active");
+          $smile
+            .find(".smile-panel")
+            .removeClass("active")
+            .filter('[data-group="' + target + '"]')
+            .addClass("active");
+        }
+      );
     };
 
   var postlikeConfig =

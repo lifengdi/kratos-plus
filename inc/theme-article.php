@@ -358,96 +358,118 @@ function disable_emojis_tinymce($plugins)
     return array_diff($plugins, array('wpemoji'));
 }
 
+/**
+ * 扫描 assets/img/smilies/ 子目录，返回分组结构。
+ *
+ * 约定：每个一级子目录 = 一个表情包；目录里的图片文件名（去扩展名）= shortcode 名。
+ * `default/` 组的 shortcode 不带前缀（如 :1:），其他组带组前缀（如 :pepe/happy:）。
+ *
+ * @return array<string, array{label: string, smilies: array<int, array{shortcode: string, file: string, alt: string}>}>
+ */
+function kratos_get_smilies_groups()
+{
+    $base_dir = get_template_directory() . '/assets/img/smilies';
+    if (!is_dir($base_dir)) {
+        return array();
+    }
+
+    $mtimes = array(filemtime($base_dir));
+    $group_paths = array();
+    foreach ((array)scandir($base_dir) as $item) {
+        if ($item === '.' || $item === '..') {
+            continue;
+        }
+        $path = $base_dir . '/' . $item;
+        if (!is_dir($path)) {
+            continue;
+        }
+        if (!preg_match('/^[A-Za-z0-9_\-]+$/', $item)) {
+            continue;
+        }
+        $mtimes[] = filemtime($path);
+        $group_paths[$item] = $path;
+    }
+
+    $cache_key = 'kratos_smilies_groups_' . md5(implode('|', $mtimes));
+    $cached = get_transient($cache_key);
+    if (is_array($cached)) {
+        return apply_filters('kratos_smilies_groups', $cached);
+    }
+
+    $allowed_ext = array('png', 'gif', 'jpg', 'jpeg', 'webp');
+    $ext_pattern = '/^([A-Za-z0-9_\-]+)\.(' . implode('|', $allowed_ext) . ')$/i';
+    $groups = array();
+
+    foreach ($group_paths as $group_slug => $group_path) {
+        $smilies = array();
+        foreach ((array)scandir($group_path) as $f) {
+            if ($f === '.' || $f === '..') {
+                continue;
+            }
+            if (!preg_match($ext_pattern, $f, $m)) {
+                continue;
+            }
+            $name = $m[1];
+            $shortcode = ($group_slug === 'default')
+                ? ':' . $name . ':'
+                : ':' . $group_slug . '/' . $name . ':';
+            $smilies[] = array(
+                'shortcode' => $shortcode,
+                'file' => $group_slug . '/' . $f,
+                'alt' => $name,
+            );
+        }
+
+        usort($smilies, function ($a, $b) {
+            return strnatcasecmp($a['alt'], $b['alt']);
+        });
+
+        if (empty($smilies)) {
+            continue;
+        }
+
+        $groups[$group_slug] = array(
+            'label' => $group_slug === 'default' ? __('默认', 'kratos') : $group_slug,
+            'smilies' => $smilies,
+        );
+    }
+
+    uksort($groups, function ($a, $b) {
+        if ($a === 'default') {
+            return -1;
+        }
+        if ($b === 'default') {
+            return 1;
+        }
+        return strcasecmp($a, $b);
+    });
+
+    set_transient($cache_key, $groups, HOUR_IN_SECONDS);
+
+    return apply_filters('kratos_smilies_groups', $groups);
+}
+
+/**
+ * 把分组拍平为 shortcode => 相对路径 的映射，供 $wpsmiliestrans 使用。
+ */
+function kratos_get_smilies_map()
+{
+    $map = array();
+    foreach (kratos_get_smilies_groups() as $group) {
+        foreach ($group['smilies'] as $s) {
+            $map[$s['shortcode']] = $s['file'];
+        }
+    }
+    uksort($map, function ($a, $b) {
+        return strlen($b) - strlen($a);
+    });
+    return apply_filters('kratos_smilies_map', $map);
+}
+
 function smilies_reset()
 {
     global $wpsmiliestrans;
-
-    $wpsmiliestrans = array(
-        ':1:' => '1.png',
-        ':2:' => '2.png',
-        ':3:' => '3.png',
-        ':4:' => '4.png',
-        ':5:' => '5.png',
-        ':6:' => '6.png',
-        ':7:' => '7.png',
-        ':8:' => '8.png',
-        ':9:' => '9.png',
-        ':11:' => '11.png',
-        ':12:' => '12.png',
-        ':13:' => '13.png',
-        ':14:' => '14.png',
-        ':15:' => '15.png',
-        ':17:' => '17.png',
-        ':18:' => '18.png',
-        ':19:' => '19.png',
-        ':20:' => '20.png',
-        ':21:' => '21.png',
-        ':22:' => '22.png',
-        ':23:' => '23.png',
-        ':24:' => '24.png',
-        ':25:' => '25.png',
-        ':26:' => '26.png',
-        ':27:' => '27.png',
-        ':28:' => '28.png',
-        ':29:' => '29.png',
-        ':30:' => '30.png',
-        ':31:' => '31.png',
-        ':32:' => '32.png',
-        ':33:' => '33.png',
-        ':34:' => '34.png',
-        ':35:' => '35.png',
-        ':36:' => '36.png',
-        ':37:' => '37.png',
-        ':38:' => '38.png',
-        ':39:' => '39.png',
-        ':40:' => '40.png',
-        ':41:' => '41.png',
-        ':42:' => '42.png',
-        ':43:' => '43.png',
-        ':44:' => '44.png',
-        ':46:' => '46.png',
-        ':47:' => '47.png',
-        ':48:' => '48.png',
-        ':49:' => '49.png',
-        ':50:' => '50.png',
-        ':51:' => '51.png',
-        ':52:' => '52.png',
-        ':53:' => '53.png',
-        ':54:' => '54.png',
-        ':55:' => '55.png',
-        ':57:' => '57.png',
-        ':58:' => '58.png',
-        ':60:' => '60.png',
-        ':61:' => '61.png',
-        ':62:' => '62.png',
-        ':63:' => '63.png',
-        ':64:' => '64.png',
-        ':65:' => '65.png',
-        ':66:' => '66.png',
-        ':67:' => '67.png',
-        ':69:' => '69.png',
-        ':72:' => '72.png',
-        ':74:' => '74.png',
-        ':76:' => '76.png',
-        ':77:' => '77.png',
-        ':78:' => '78.png',
-        ':79:' => '79.png',
-        ':80:' => '80.png',
-        ':81:' => '81.png',
-        ':82:' => '82.png',
-        ':85:' => '85.png',
-        ':86:' => '86.png',
-        ':87:' => '87.png',
-        ':90:' => '90.png',
-        ':92:' => '92.png',
-        ':93:' => '93.png',
-        ':94:' => '94.png',
-        ':95:' => '95.png',
-        ':96:' => '96.png',
-        ':97:' => '97.png',
-        ':98:' => '98.png',
-        ':99:' => '99.png',
-    );
+    $wpsmiliestrans = kratos_get_smilies_map();
 }
 smilies_reset();
 
@@ -459,12 +481,13 @@ add_action('media_buttons', 'smilies_custom_button');
 
 function get_wpsmiliestrans()
 {
-    global $wpsmiliestrans;
-    global $output;
-
-    $wpsmilies = array_unique($wpsmiliestrans);
-    foreach ($wpsmilies as $alt => $src_path) {
-        $output .= '<a class="add-smily" data-smilies="' . $alt . '"><img class="wp-smiley" src="' . ASSET_PATH . '/assets/img/smilies/' . rtrim($src_path, "png") . 'png" /></a>';
+    $output = '';
+    foreach (kratos_get_smilies_groups() as $group_slug => $group) {
+        $output .= '<div class="smilies-group" data-group="' . esc_attr($group_slug) . '"><span class="smilies-group-label">' . esc_html($group['label']) . '</span>';
+        foreach ($group['smilies'] as $s) {
+            $output .= '<a class="add-smily" data-smilies="' . esc_attr($s['shortcode']) . '"><img class="wp-smiley" src="' . esc_url(ASSET_PATH . '/assets/img/smilies/' . $s['file']) . '" alt="' . esc_attr($s['alt']) . '" /></a>';
+        }
+        $output .= '</div>';
     }
     return $output;
 }

@@ -5,20 +5,27 @@
  * @author Seaton Jiang <hi@seatonjiang.com>
  * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
- * @version 2022.01.26
  */
-$smilies = join("\n", array_map(function ($s) {
-    return '<a href="javascript:grin(\':' . $s . ':\')"><img class="d-block" src="'
-        . apply_filters('smilies_src', ASSET_PATH . "/assets/img/smilies/{$s}.png", "{$s}.png", site_url())
-        . "\" alt='{$s}'></a>";
-}, [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    '11', '12', '13', '14', '15', '17', '18', '19', '20', '21',
-    '22', '23', '24', '25', '26', '27', '28', '29', '30', '31',
-    '32', '33', '34', '35', '36', '37', '38', '39', '40', '41',
-    '42', '43', '44',  '46', '47', '48', '49', '50', '51',
-    '52', '53', '54', '55', '57', '58',  '60', '61', '62',
-    '63', '64', '65', '66', '67', '69',  '72', '74', '76', '77',
-    '78', '79', '80', '81', '82', '85', '86', '87',
-    '90', '92', '93', '94', '95', '96', '97', '98', '99'
-]));
+$kratos_groups = kratos_get_smilies_groups();
+$kratos_group_keys = array_keys($kratos_groups);
+
+$kratos_tabs = '';
+$kratos_panels = '';
+foreach ($kratos_groups as $slug => $group) {
+    $is_active = ($slug === reset($kratos_group_keys));
+    $kratos_tabs .= '<a href="javascript:;" class="smile-tab' . ($is_active ? ' active' : '') . '" data-target="' . esc_attr($slug) . '">' . esc_html($group['label']) . '</a>';
+
+    $items = '';
+    foreach ($group['smilies'] as $s) {
+        $items .= '<a href="javascript:grin(\'' . esc_js($s['shortcode']) . '\')"><img class="d-block" src="'
+            . esc_url(apply_filters('smilies_src', ASSET_PATH . '/assets/img/smilies/' . $s['file'], $s['file'], site_url()))
+            . '" alt="' . esc_attr($s['alt']) . '"></a>';
+    }
+    $kratos_panels .= '<div class="smile-panel' . ($is_active ? ' active' : '') . '" data-group="' . esc_attr($slug) . '">' . $items . '</div>';
+}
+
+$smilies = '';
+if (count($kratos_groups) > 1) {
+    $smilies .= '<div class="smile-tabs">' . $kratos_tabs . '</div>';
+}
+$smilies .= '<div class="smile-panels">' . $kratos_panels . '</div>';
