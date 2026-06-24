@@ -1486,6 +1486,7 @@ a {
 .content
 video {
     width: 100%;
+    height: auto;
 }
 
 .k-main
@@ -1559,8 +1560,7 @@ h2:not(
 .article
 .content
 h2.title {
-    margin: 16px -20px;
-    padding: 0 10px;
+    padding: 10px;
     border-left: 5px solid #336699;
     background-color: rgba(
             243,
@@ -1568,8 +1568,6 @@ h2.title {
             243,
             0.7
     );
-    font-size: 20px;
-    line-height: 41px;
 }
 
 .k-main
@@ -3256,6 +3254,17 @@ span {
 .sidebar
 img {
     width: 100%;
+    height: auto;
+}
+
+/* WP 原生小工具豁免：最新评论的头像、最新文章的缩略图按其内联尺寸渲染，
+ * 不被上一条 .k-main .sidebar img { width:100% } 拉伸。 */
+.k-main .sidebar .widget_recent_comments img,
+.k-main .sidebar .widget_recent_entries img,
+.k-main .sidebar .wp-block-latest-comments img,
+.k-main .sidebar .wp-block-latest-posts img {
+    width: auto;
+    max-width: 100%;
     height: auto;
 }
 

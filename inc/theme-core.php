@@ -37,6 +37,42 @@ function theme_languages()
 }
 add_action('after_setup_theme', 'theme_languages');
 
+/**
+ * 自动给文章正文中的"裸 <img>"包一层 <a href="原图">，使 lightGallery
+ * 的选择器（a[href$=".jpg/.png/..."]）能命中所有图片。
+ *
+ * 触发条件：图片的 src 后缀是 jpg/jpeg/png/gif/bmp/webp（与 kratos.js
+ * lightGalleryConfig 选择器一致）；如果 <img> 已经被 <a> 包裹，跳过。
+ *
+ * 兼容：经典编辑器粘贴的图片、外链 <img>、Markdown 转换的 <img>。
+ * Gutenberg 插入并显式选了"链接到媒体文件"的图片自带 <a>，不会被二次处理。
+ */
+function kratos_wrap_image_with_anchor($content)
+{
+    if (empty($content) || stripos($content, '<img') === false) {
+        return $content;
+    }
+
+    return preg_replace_callback(
+        '#(<a\b[^>]*>\s*)?(<img\b[^>]*?\bsrc=([\'"])([^\'"]+?)\3[^>]*>)(\s*</a>)?#i',
+        function ($m) {
+            // 已经有 <a> 包裹（前后都匹配到），直接保留
+            if (!empty($m[1]) && !empty($m[5])) {
+                return $m[0];
+            }
+            $src = $m[4];
+            // 抽掉 query/fragment 再判后缀，避免被 ?x-tos-process=... 干扰
+            $clean = preg_replace('/[?#].*$/', '', $src);
+            if (!preg_match('/\.(jpe?g|png|gif|bmp|webp)$/i', $clean)) {
+                return $m[0];
+            }
+            return '<a href="' . esc_url($src) . '">' . $m[2] . '</a>';
+        },
+        $content
+    );
+}
+add_filter('the_content', 'kratos_wrap_image_with_anchor', 99);
+
 // 资源加载
 function theme_autoload()
 {

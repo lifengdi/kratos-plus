@@ -39,6 +39,9 @@ require get_template_directory() . '/inc/theme-widgets.php';
 // 文章增强
 require get_template_directory() . '/inc/theme-shortcode.php';
 
+// Gutenberg 区块（短码快捷入口）
+require get_template_directory() . '/inc/theme-gutenberg-blocks.php';
+
 // 添加导航目录
 require get_template_directory() . '/inc/theme-navwalker.php';
 
