@@ -115,6 +115,84 @@ function kratos_blocks_register()
 add_action('init', 'kratos_blocks_register', 20);
 
 /**
+ * 独立块：kratos/search —— 给 Gutenberg 编辑器一个"主题搜索小工具"入口。
+ *
+ * 与传统 widget_search::widget() 输出完全一致（同 DOM、同 placeholder、同 i18n
+ * 文案），便于和小工具页拖入的搜索保持视觉一致。
+ *
+ * 单实例输入框 id（searchform / search-widgets / searchsubmit）保留与传统
+ * widget 一致 —— 同一页面只放一个该块，否则与 widget 冲突。
+ */
+
+/**
+ * 检测当前 render_callback 是否被 WP_Widget_Block 调用（即在小工具区渲染）。
+ * 该类的 widget() 方法会在 stack 顶层；用 backtrace 反查最稳。
+ */
+function kratos_is_widget_block_context()
+{
+    foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 15) as $f) {
+        if (isset($f['class']) && $f['class'] === 'WP_Widget_Block') {
+            return true;
+        }
+    }
+    return false;
+}
+
+function kratos_block_search_render($attrs)
+{
+    $title = isset($attrs['title']) ? trim((string) $attrs['title']) : '';
+
+    $inner = '';
+    if ($title !== '') {
+        $inner .= '<div class="title">' . esc_html($title) . '</div>';
+    }
+    $inner .= '<div class="item"> <form role="search" method="get" id="searchform" class="searchform" action="'
+        . esc_url(home_url('/'))
+        . '"> <div class="input-group mt-2 mb-2"> <input type="text" name="s" id="search-widgets" class="form-control" placeholder="'
+        . esc_attr(__('搜点什么呢?', 'kratos'))
+        . '"> <div class="input-group-append"> <button class="btn btn-primary btn-search" type="submit" id="searchsubmit">'
+        . esc_html(__('搜索', 'kratos'))
+        . '</button> </div> </div> </form></div>';
+
+    // 小工具区：外层已被 WP_Widget_Block 包装为 <div class="widget widget_block w-search">，
+    // 不再叠一层 .widget.w-search，避免重复包裹（padding/border 叠加）
+    if (kratos_is_widget_block_context()) {
+        return $inner;
+    }
+
+    // 文章/页面正文：自己包一层 .widget.w-search，让主题既有 .widget.w-search 选择器生效
+    return '<div class="widget w-search">' . $inner . '</div>';
+}
+
+/**
+ * 让 widget block 容器在内含 kratos/search 时携带 w-search 类，
+ * 这样在小工具区也能匹配主题 .widget.w-search 样式（保留 widget_block 类不动）。
+ * 该 filter 在 WP 5.8+ 由 WP_Widget_Block 提供。
+ */
+function kratos_widget_block_classname($classname, $block_name)
+{
+    if ($block_name === 'kratos/search') {
+        return trim($classname . ' w-search');
+    }
+    return $classname;
+}
+add_filter('widget_block_dynamic_classname', 'kratos_widget_block_classname', 10, 2);
+
+function kratos_block_search_register()
+{
+    if (!function_exists('register_block_type')) {
+        return;
+    }
+    register_block_type('kratos/search', array(
+        'attributes' => array(
+            'title' => array('type' => 'string', 'default' => ''),
+        ),
+        'render_callback' => 'kratos_block_search_render',
+    ));
+}
+add_action('init', 'kratos_block_search_register', 20);
+
+/**
  * 区块插入器分类。WP 5.8+ 用 block_categories_all，旧版本用 block_categories；
  * 两者签名兼容，同时挂上即可。
  */

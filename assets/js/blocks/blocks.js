@@ -150,4 +150,70 @@
             save: function () { return null; }
         } );
     } );
+
+    /* -------------------------------------------------------------- */
+    /* kratos/search —— 主题搜索小工具的 Gutenberg 入口                  */
+    /* 与传统 widget_search 输出一致；编辑器内只显示一个简化预览 + 标题   */
+    /* 设置项，渲染走 PHP render_callback                                */
+    /* -------------------------------------------------------------- */
+    registerBlockType( 'kratos/search', {
+        apiVersion: 2,
+        title: '搜索（Kratos+）',
+        description: '主题自带样式的搜索小工具，与侧栏 Search widget 输出一致',
+        category: 'widgets',
+        icon: 'search',
+        keywords: [ 'search', '搜索', 'kratos' ],
+        attributes: {
+            title: { type: 'string', default: '' }
+        },
+        edit: function ( props ) {
+            var a = props.attributes;
+            var setAttr = props.setAttributes;
+            var blockProps = useBlockProps( {
+                className: 'kratos-block kratos-block--search'
+            } );
+            return el( 'div', blockProps,
+                el( TextControl, {
+                    label: __( '标题（可选）', 'kratos' ),
+                    help: __( '留空则不显示标题', 'kratos' ),
+                    value: a.title || '',
+                    onChange: function ( v ) { setAttr( { title: v } ); }
+                } ),
+                el( 'div', {
+                    className: 'kratos-block__search-preview',
+                    style: {
+                        display: 'flex',
+                        gap: '4px',
+                        marginTop: '8px'
+                    }
+                },
+                    el( 'input', {
+                        type: 'text',
+                        disabled: true,
+                        placeholder: __( '搜点什么呢?', 'kratos' ),
+                        style: {
+                            flex: '1 1 auto',
+                            padding: '6px 10px',
+                            border: '1px solid #ced4da',
+                            borderRadius: '4px',
+                            background: '#fff'
+                        }
+                    } ),
+                    el( 'button', {
+                        type: 'button',
+                        disabled: true,
+                        style: {
+                            padding: '6px 14px',
+                            border: 0,
+                            borderRadius: '4px',
+                            background: '#336699',
+                            color: '#fff',
+                            cursor: 'default'
+                        }
+                    }, __( '搜索', 'kratos' ) )
+                )
+            );
+        },
+        save: function () { return null; }
+    } );
 } )( window.wp );
