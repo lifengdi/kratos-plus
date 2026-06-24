@@ -1,0 +1,520 @@
+@charset "UTF-8";
+/*
+ * Kratos+ 暗夜模式样式表
+ * 作用域: html[data-theme="dark"]
+ * 在 style.css 之后加载，仅覆盖必要的颜色相关属性。
+ */
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --kr-bg: #14171a;
+    --kr-bg-elev: #1c1f24;
+    --kr-bg-soft: #23272d;
+    --kr-fg: #d6d8db;
+    --kr-fg-strong: #ececed;
+    --kr-fg-muted: #8b919a;
+    --kr-border: #2a2f37;
+    --kr-link: #6ea8ff;
+    --kr-link-hover: #91bdff;
+    --kr-accent: #4f86c6;
+    --kr-code-bg: #1a1d22;
+    --kr-code-fg: #e36ea2;
+    --kr-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 1. 全局 */
+html[data-theme="dark"] body {
+    background: var(--kr-bg);
+    color: var(--kr-fg);
+}
+
+/* .k-main 容器在各模板里用内联 style 写死了 background（取自后台 g_background 选项，
+ * 默认 #f5f5f5；404.php 直接写死 #ffffff），内联样式优先级高于普通选择器，
+ * 暗夜模式下必须用 !important 才能覆盖。 */
+html[data-theme="dark"] .k-main {
+    background: var(--kr-bg) !important;
+}
+
+html[data-theme="dark"] p,
+html[data-theme="dark"] ol,
+html[data-theme="dark"] ul {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6 {
+    color: var(--kr-fg-strong);
+}
+
+html[data-theme="dark"] a {
+    color: var(--kr-link);
+}
+
+html[data-theme="dark"] a:hover {
+    color: var(--kr-link-hover);
+}
+
+html[data-theme="dark"] ::selection {
+    background: #3a4250;
+    color: #fff;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background-color: #444b55;
+    border-color: #2a2f37;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-track {
+    background-color: #1a1d22;
+    border-color: #14171a;
+}
+
+/* 2. 顶部 banner overlay：用更深的遮罩 */
+html[data-theme="dark"] .k-header .banner .overlay {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+/* 3. 文章列表 */
+html[data-theme="dark"] .k-main .board .article-panel {
+    background-color: var(--kr-bg-elev);
+    box-shadow: var(--kr-shadow);
+}
+
+html[data-theme="dark"] .k-main .board .article-panel .a-post .header .title a {
+    color: var(--kr-fg-strong);
+}
+
+html[data-theme="dark"] .k-main .board .article-panel .a-post .header .title a:hover {
+    color: var(--kr-link-hover);
+}
+
+html[data-theme="dark"] .k-main .board .article-panel .a-post .content,
+html[data-theme="dark"] .k-main .board .article-panel .a-post .content p {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .board .article-panel .a-meta {
+    border-top-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .board .article-panel .a-meta span,
+html[data-theme="dark"] .k-main .board .article-panel .a-meta span > a {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .board .article-panel .a-meta span > a:hover {
+    color: var(--kr-link-hover);
+}
+
+html[data-theme="dark"] .k-main .board .article-panel .search-title {
+    color: var(--kr-fg-strong);
+}
+
+/* 4. 分页 */
+html[data-theme="dark"] .k-main .board .paginations a,
+html[data-theme="dark"] .k-main .board .paginations .dots {
+    background: var(--kr-bg-elev);
+    color: var(--kr-fg);
+}
+
+/* 5. 文章正文 */
+html[data-theme="dark"] .k-main .details .article {
+    background-color: var(--kr-bg-elev);
+    box-shadow: var(--kr-shadow);
+}
+
+html[data-theme="dark"] .k-main .details .article .breadcrumb-box {
+    border-bottom-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .details .article .header .meta {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .details .article .header .meta > span:not(:last-child):after {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .details .article .content p {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .article .content h2.title {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-left-color: var(--kr-accent);
+    color: var(--kr-fg-strong);
+}
+
+html[data-theme="dark"] .k-main .details .article .content blockquote {
+    background: #1a2129;
+    border-left-color: #2c3a4a;
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .details .article .content hr {
+    border-top-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .details .article .content pre:not([class*="language-"]):not(.hljs) {
+    background-color: var(--kr-code-bg);
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .article .content code:not([class*="language-"]):not(.hljs) {
+    background-color: var(--kr-code-bg);
+    color: var(--kr-code-fg);
+}
+
+html[data-theme="dark"] .k-main .details .article .content kbd {
+    background-color: #2a2f37;
+    border-color: #3a4150;
+    color: var(--kr-fg-strong);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4), 0 0 0 2px #14171a inset;
+    text-shadow: none;
+}
+
+html[data-theme="dark"] .k-main .details .article .content table th,
+html[data-theme="dark"] .k-main .details .article .content table td {
+    border-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .details .article .content table tr:nth-child(2n) {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+html[data-theme="dark"] .k-main thead {
+    border-bottom-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .details .article .copyright span {
+    background-color: #1a2027;
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .article .footer {
+    border-top-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .details .article .footer .tags span,
+html[data-theme="dark"] .k-main .details .article .footer .tool span {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .article .footer .tags a {
+    background-color: #3a4150;
+    color: var(--kr-fg-strong);
+}
+
+/* 文章导航上一篇 / 下一篇 */
+html[data-theme="dark"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"] .k-main .details .post-navigation .nav-next {
+    background-color: var(--kr-bg-elev);
+    box-shadow: var(--kr-shadow);
+}
+
+html[data-theme="dark"] .k-main .details .post-navigation .nav-previous a,
+html[data-theme="dark"] .k-main .details .post-navigation .nav-next a {
+    color: var(--kr-fg-muted);
+}
+
+/* 6. 内容工具区 */
+html[data-theme="dark"] .k-main .details .toolbar {
+    background-color: var(--kr-bg-elev);
+    box-shadow: var(--kr-shadow);
+}
+
+html[data-theme="dark"] .k-main .details .toolbar .motto {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .details .toolbar .meta .name a {
+    color: var(--kr-fg-strong);
+}
+
+/* 7. 文章评论 */
+html[data-theme="dark"] .k-main .details .comments {
+    background-color: var(--kr-bg-elev);
+    box-shadow: var(--kr-shadow);
+}
+
+html[data-theme="dark"] .k-main .details .comments .title {
+    border-bottom-color: var(--kr-border);
+    color: var(--kr-fg-strong);
+}
+
+html[data-theme="dark"] .k-main .details .comments .list > li,
+html[data-theme="dark"] .k-main .details .children {
+    border-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment .info .author_name,
+html[data-theme="dark"] .k-main .details .comments .comment .info .author_name a {
+    color: var(--kr-fg-strong);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment .info .content p,
+html[data-theme="dark"] .k-main .details .comments .comment .info .content p span {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment .info .meta,
+html[data-theme="dark"] .k-main .details .comments .comment .info .meta a {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment .avatar img {
+    border-color: var(--kr-border);
+}
+
+/* 评论表单 */
+html[data-theme="dark"] .k-main .details .comments .input-group-text,
+html[data-theme="dark"] .k-main .details .comments .form-control {
+    background-color: var(--kr-bg-soft);
+    border-color: var(--kr-border);
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .comments .form-control::placeholder {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea {
+    border-color: var(--kr-border);
+    background-color: var(--kr-bg-soft);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea textarea {
+    background-color: transparent;
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea textarea::placeholder {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea .text-bar {
+    background-color: #1a1d22;
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea .addbtn,
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea .addbtn:hover {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile {
+    background-color: var(--kr-bg-elev);
+    box-shadow: 0 2px 10px 2px rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .smile .smile-tabs {
+    background: var(--kr-bg-soft);
+    border-bottom-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .smile .smile-tabs .smile-tab {
+    border-right-color: var(--kr-border);
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .smile .smile-tabs .smile-tab.active {
+    background: var(--kr-bg-elev);
+    color: var(--kr-fg-strong);
+    border-bottom-color: var(--kr-link);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile .smile-panel a {
+    background-color: var(--kr-bg-soft);
+    border-color: var(--kr-bg-elev);
+}
+
+html[data-theme="dark"] .k-main .details .comments .comment-respond .error {
+    background-color: var(--kr-bg-soft);
+    border-color: var(--kr-border);
+}
+
+/* 8. 小工具（侧边栏） */
+html[data-theme="dark"] .k-main .sidebar .widget {
+    background-color: var(--kr-bg-elev);
+    box-shadow: var(--kr-shadow);
+}
+
+html[data-theme="dark"] .k-main .sidebar .title {
+    border-bottom-color: var(--kr-border);
+    color: var(--kr-fg-strong);
+}
+
+html[data-theme="dark"] .k-main .sidebar .title::after {
+    background-color: var(--kr-accent);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-tags .item a,
+html[data-theme="dark"] .k-main .sidebar .widget_links ul li a,
+html[data-theme="dark"] .k-main .sidebar .widget_categories ul li a,
+html[data-theme="dark"] .k-main .sidebar .widget_archive ul li a,
+html[data-theme="dark"] .k-main .sidebar .w-toc .item ul li a {
+    color: var(--kr-fg);
+    border-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-tags .item a {
+    border-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .sidebar .widget_categories ul li,
+html[data-theme="dark"] .k-main .sidebar .widget_archive ul li {
+    border-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-tags .item a:hover,
+html[data-theme="dark"] .k-main .sidebar .widget_links ul li:hover,
+html[data-theme="dark"] .k-main .sidebar .widget_categories ul li:hover,
+html[data-theme="dark"] .k-main .sidebar .widget_archive ul li:hover,
+html[data-theme="dark"] .k-main .sidebar .w-toc .item ul li a:hover {
+    background-color: var(--kr-bg-soft);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-recommended .bookmark-item {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-recommended .bookmark-item:hover {
+    color: var(--kr-link-hover);
+}
+
+html[data-theme="dark"] .nav-tabs .nav-link {
+    border-bottom-color: var(--kr-border);
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .nav-tabs .nav-item.show .nav-link,
+html[data-theme="dark"] .nav-tabs .nav-link.active {
+    background-color: var(--kr-bg-elev);
+    color: var(--kr-fg-strong);
+    border-bottom-color: var(--kr-link);
+}
+
+html[data-theme="dark"] .k-main .sidebar tbody a {
+    background: rgba(79, 134, 198, 0.1);
+    border-color: var(--kr-accent);
+    color: var(--kr-fg-strong);
+}
+
+/* 评论 widget */
+html[data-theme="dark"] .k-main .sidebar .w-comments .comments a:not(:last-child) {
+    border-bottom-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-comments .comments .message {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-comments .comments .meta .author,
+html[data-theme="dark"] .k-main .sidebar .w-comments .comments .meta .date {
+    color: var(--kr-fg-muted);
+}
+
+/* 目录小工具 */
+html[data-theme="dark"] .k-main .sidebar .w-toc .item .ul-toc {
+    border-left-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-toc .item .ul-toc::before,
+html[data-theme="dark"] .k-main .sidebar .w-toc .item .ul-toc::after {
+    border-color: var(--kr-accent);
+    background-color: var(--kr-bg-elev);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-toc .item ul li::before {
+    border-color: var(--kr-bg-elev);
+    background: #6c7280;
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-toc .item li:hover::before {
+    background: var(--kr-accent);
+}
+
+/* 9. 表单 / 输入控件兜底 */
+html[data-theme="dark"] input[type="text"],
+html[data-theme="dark"] input[type="email"],
+html[data-theme="dark"] input[type="url"],
+html[data-theme="dark"] input[type="search"],
+html[data-theme="dark"] input[type="password"],
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+    background-color: var(--kr-bg-soft);
+    color: var(--kr-fg);
+    border-color: var(--kr-border);
+}
+
+html[data-theme="dark"] ::-webkit-input-placeholder { color: var(--kr-fg-muted); }
+html[data-theme="dark"] :-ms-input-placeholder { color: var(--kr-fg-muted); }
+html[data-theme="dark"] ::-moz-placeholder { color: var(--kr-fg-muted); }
+
+/* 10. 404 */
+html[data-theme="dark"] .k-main .page404 .overlay:before,
+html[data-theme="dark"] .k-main .page404 .overlay:after {
+    background: var(--kr-bg);
+}
+
+html[data-theme="dark"] .k-main .page404 .content .action .back-index {
+    border-color: var(--kr-border);
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .page404 .content .action .back-index:hover {
+    background-color: var(--kr-bg-soft);
+    border-color: var(--kr-border);
+    color: var(--kr-fg-strong);
+}
+
+/* 11. 页脚（本来就是深色，做轻微微调） */
+html[data-theme="dark"] .k-footer {
+    background: #0e1013;
+}
+
+/* 12. 暗夜模式切换按钮：与搜索按钮 .search 同款，紧贴其上方
+ *  原工具箱（从下到上）: search(30) → wechat(80)/gotop(80 或 haswechat 130)
+ *  插入后（从下到上）  : search(30) → darkmode(80) → wechat(130)/gotop(130 或 haswechat 180) */
+.k-footer .f-toolbox .darkmode {
+    bottom: 80px;
+    display: table;
+    background: rgba(132, 132, 132, 0.7);
+    cursor: pointer;
+}
+
+.k-footer .f-toolbox .darkmode .darkmode-ico {
+    display: table-cell;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 18px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    /* 月亮 */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'><path d='M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z'/></svg>");
+}
+
+html[data-theme="dark"] .k-footer .f-toolbox .darkmode .darkmode-ico {
+    /* 太阳 */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41'/></svg>");
+}
+
+/* 切换按钮挂载后，把原本 80/130 的 wechat/gotop 各上移 50px，给暗夜按钮腾位 */
+body.has-kratos-darkmode-toggle .k-footer .f-toolbox .wechat {
+    bottom: 130px;
+}
+
+body.has-kratos-darkmode-toggle .k-footer .f-toolbox .gotop {
+    bottom: 130px;
+}
+
+body.has-kratos-darkmode-toggle .k-footer .f-toolbox .gotop.gotop-haswechat {
+    bottom: 180px;
+}

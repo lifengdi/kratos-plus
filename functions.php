@@ -57,3 +57,6 @@ require get_template_directory() . '/inc/theme-comment-extends.php';
 
 // 评论验证码
 require get_template_directory() . '/inc/theme-comment-captcha.php';
+
+// 暗夜模式
+require get_template_directory() . '/inc/theme-darkmode.php';

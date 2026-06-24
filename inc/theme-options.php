@@ -474,6 +474,81 @@ CSF::createSection($prefix, array(
 
 CSF::createSection($prefix, array(
     'parent' => 'global_fields',
+    'title' => __('暗夜模式', 'kratos'),
+    'icon' => 'fas fa-moon',
+    'fields' => array(
+        array(
+            'id' => 'g_darkmode',
+            'type' => 'switcher',
+            'title' => __('功能开关', 'kratos'),
+            'subtitle' => __('启用/关闭暗夜模式（含时间段自动切换、跟随系统、手动切换按钮）', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_darkmode_default',
+            'type' => 'button_set',
+            'title' => __('默认模式', 'kratos'),
+            'subtitle' => __('用户首次访问且未手动切换时的默认呈现', 'kratos'),
+            'options' => array(
+                'light'    => __('浅色', 'kratos'),
+                'dark'     => __('暗色', 'kratos'),
+                'auto'     => __('跟随系统', 'kratos'),
+                'schedule' => __('按时间段', 'kratos'),
+            ),
+            'default' => 'light',
+            'dependency' => array('g_darkmode', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_darkmode_start',
+            'type' => 'text',
+            'title' => __('暗色开始时间', 'kratos'),
+            'subtitle' => __('24 小时制 HH:MM，例如 19:00', 'kratos'),
+            'default' => '19:00',
+            'placeholder' => '19:00',
+            'attributes' => array(
+                'type' => 'time',
+            ),
+            'dependency' => array('g_darkmode|g_darkmode_default', '==|==', 'true|schedule'),
+        ),
+        array(
+            'id' => 'g_darkmode_end',
+            'type' => 'text',
+            'title' => __('暗色结束时间', 'kratos'),
+            'subtitle' => __('24 小时制 HH:MM，例如 07:00；当结束时间小于开始时间时表示跨午夜', 'kratos'),
+            'default' => '07:00',
+            'placeholder' => '07:00',
+            'attributes' => array(
+                'type' => 'time',
+            ),
+            'dependency' => array('g_darkmode|g_darkmode_default', '==|==', 'true|schedule'),
+        ),
+        array(
+            'id' => 'g_darkmode_toggle',
+            'type' => 'switcher',
+            'title' => __('前台切换按钮', 'kratos'),
+            'subtitle' => __('在页面右下角显示浮动的明/暗切换按钮，访客手动切换会覆盖默认模式（保存在浏览器本地）', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_darkmode', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_darkmode_remember_days',
+            'type' => 'number',
+            'title' => __('用户偏好记住天数', 'kratos'),
+            'subtitle' => __('访客手动切换的偏好保留天数，0 表示永久保留', 'kratos'),
+            'min' => 0,
+            'max' => 365,
+            'default' => 30,
+            'dependency' => array('g_darkmode|g_darkmode_toggle', '==|==', 'true|true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'global_fields',
     'title' => __('颜色配置', 'kratos'),
     'icon' => 'fas fa-arrow-right',
     'fields' => array(

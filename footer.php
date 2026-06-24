@@ -29,6 +29,11 @@
                 <input type="text" name="s" id="search-footer" placeholder="<?php _e('搜点什么呢?', 'kratos'); ?>" style="display:none" />
             </form>
         </div>
+        <?php if (kratos_option('g_darkmode', false) && kratos_option('g_darkmode_toggle', true)) { ?>
+            <div class="darkmode" role="button" tabindex="0" aria-pressed="false" aria-label="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>" title="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>">
+                <span class="darkmode-ico" aria-hidden="true"></span>
+            </div>
+        <?php } ?>
     </div>
     <div class="container">
         <div class="row">
