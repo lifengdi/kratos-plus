@@ -530,32 +530,59 @@ function wpcdi_get_comment_info($comment_ip, $user_agent) {
  * @return string 追加后的评论内容
  */
 function wpcdi_add_info_after_comment_content($comment_text, $comment) {
-    // 仅前台显示，且评论已通过审核
-//     if (is_admin() || $comment->comment_approved != 1) {
-//         return $comment_text;
-//     }
-	$location_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="#e9ecef" stroke="#495057" stroke-width="2">
+    // 总开关：关闭则原样返回
+    if (!kratos_option('g_comment_info_enabled', true)) {
+        return $comment_text;
+    }
+
+    // 哪些项要展示：浏览器 / 系统 / 归属地
+    $display = kratos_option('g_comment_info_display', array('browser', 'os', 'location'));
+    if (!is_array($display)) {
+        $display = array('browser', 'os', 'location');
+    }
+    $display = array_filter($display); // 去掉 CSF checkbox 取消选中后存的空字符串
+    if (empty($display)) {
+        return $comment_text;
+    }
+
+    $show_browser  = in_array('browser', $display, true);
+    $show_os       = in_array('os', $display, true);
+    $show_location = in_array('location', $display, true);
+
+    // 获取评论者 IP、UA
+    $comment_ip = sanitize_text_field($comment->comment_author_IP);
+    $user_agent = sanitize_text_field($comment->comment_agent);
+
+    $info = wpcdi_get_comment_info($comment_ip, $user_agent);
+
+    $location_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="#e9ecef" stroke="#495057" stroke-width="2">
 		  <path d="M12 3c-2.5 0-4.5 2-4.5 4.5c0 2.5 2 5.5 4.5 9c2.5-3.5 4.5-6.5 4.5-9C16.5 5 14.5 3 12 3z"/>
 		  <circle cx="12" cy="7.5" r="1.5" fill="#495057"/>
 		</svg>';
 
-    // 获取评论者IP、UA并过滤
-    $comment_ip = sanitize_text_field($comment->comment_author_IP);
-    $user_agent = sanitize_text_field($comment->comment_agent);
+    $item_style = 'white-space: nowrap;display: inline-flex; align-items: center;';
+    $items = array();
 
-    // 获取设备/地理信息
-    $info = wpcdi_get_comment_info($comment_ip, $user_agent);
+    if ($show_os) {
+        $os_icon = wpcdi_get_svg_icon('os', $info['os']);
+        $items[] = '<span style="' . $item_style . '">' . $os_icon . '<span>' . esc_html($info['os']) . '</span></span>';
+    }
+    if ($show_browser) {
+        $browser_icon = wpcdi_get_svg_icon('browser', $info['browser']);
+        $items[] = '<span style="' . $item_style . '">' . $browser_icon . '<span>' . esc_html($info['browser']) . '</span></span>';
+    }
+    if ($show_location) {
+        $items[] = '<span style="' . $item_style . '">' . $location_icon . '<span>' . esc_html($info['location']) . '</span></span>';
+    }
 
-    // 核心调用：通过$GLOBALS['UA_ICON']获取图标（Unknown兜底）
-    $browser_icon = wpcdi_get_svg_icon('browser', $info['browser']);
-    $os_icon = wpcdi_get_svg_icon('os', $info['os']);
+    if (empty($items)) {
+        return $comment_text;
+    }
 
+    $info_html = '<div class="wpcdi-comment-info" style="flex-wrap: wrap;white-space: normal;padding-top:10px; font-size: 12px; color: #495057; line-height: 1.5; display: flex; align-items: center; gap: 5px;">'
+        . implode('', $items)
+        . '</div>';
 
-    // 拼接带精美图标的信息块（优化样式，更贴合现代UI）
-    $info_html = '<div class="wpcdi-comment-info" style="flex-wrap: wrap;white-space: normal;padding-top:10px; font-size: 12px; color: #495057; line-height: 1.5; display: flex; align-items: center; gap: 5px;">
-    <span style="white-space: nowrap;display: inline-flex; align-items: center;">' . $os_icon . '<span>' . esc_html($info['os']) . '</span></span>
-    <span style="white-space: nowrap;display: inline-flex; align-items: center;">' . $browser_icon . '<span>' . esc_html($info['browser']) . '</span></span><span style="white-space: nowrap;display: inline-flex; align-items: center;">' . $location_icon . '<span>'  . esc_html($info['location']) . '</span></span></div>';
-    // 追加到评论内容后方
     return $comment_text . $info_html;
 }
 // 绑定评论内容钩子，优先级10，参数2
