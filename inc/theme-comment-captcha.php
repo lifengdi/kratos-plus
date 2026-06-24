@@ -3,8 +3,8 @@
 /**
  * 评论数字加减法验证码
  *
- * - 后台开关：g_comment_captcha_fieldset.g_comment_captcha
- * - 数字范围：1 ~ g_comment_captcha_fieldset.g_comment_captcha_max（默认 10）
+ * - 后台开关：主题设置 → 评论配置 → 通用配置 → g_comment_captcha
+ * - 数字范围：1 ~ g_comment_captcha_max（默认 10）
  * - 表单注入：comment_form_after 钩子；用 transient 按 token 存正确答案，避免依赖 PHP session
  * - 服务端校验：preprocess_comment 钩子；命中错误用 wp_die（与 WP 评论提交链路兼容，前端 ajax 也会显示）
  *
@@ -15,14 +15,12 @@ defined('ABSPATH') || exit;
 
 function kratos_captcha_enabled()
 {
-    $opt = kratos_option('g_comment_captcha_fieldset', array());
-    return !empty($opt['g_comment_captcha']);
+    return (bool) kratos_option('g_comment_captcha', false);
 }
 
 function kratos_captcha_max()
 {
-    $opt = kratos_option('g_comment_captcha_fieldset', array());
-    $max = isset($opt['g_comment_captcha_max']) ? intval($opt['g_comment_captcha_max']) : 10;
+    $max = intval(kratos_option('g_comment_captcha_max', 10));
     return max(2, min(99, $max));
 }
 

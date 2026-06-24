@@ -312,11 +312,13 @@ function wpcdi_get_comment_info($comment_ip, $user_agent) {
         $info['os'] = '未知系统';
     }
 
-    // 2. 解析地理位置
+    // 2. 解析地理位置（基于 ip2region 离线数据库，由 inc/ip2region/ip2region-updater.php 维护）
     try {
-        if (class_exists('WP_Statistics\Service\Geolocation\GeolocationFactory')) {
+        $location_data = function_exists('kratos_ip2region_lookup')
+            ? kratos_ip2region_lookup($comment_ip)
+            : ['country' => '', 'region' => '', 'city' => ''];
 
-            $location_data = WP_Statistics\Service\Geolocation\GeolocationFactory::getLocation($comment_ip);
+        if (!empty($location_data['country']) || !empty($location_data['region']) || !empty($location_data['city'])) {
 
             // 提取关键信息（按需使用）
 				$country_map = [

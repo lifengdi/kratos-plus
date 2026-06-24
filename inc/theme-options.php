@@ -287,35 +287,6 @@ CSF::createSection($prefix, array(
             ),
         ),
         array(
-            'id' => 'g_comment_captcha_fieldset',
-            'type' => 'fieldset',
-            'title' => __('评论验证码', 'kratos'),
-            'subtitle' => __('在评论表单中加入"X + Y = ?"算术验证，简单挡机器人', 'kratos'),
-            'fields' => array(
-                array(
-                    'id' => 'g_comment_captcha',
-                    'type' => 'switcher',
-                    'title' => __('功能开关', 'kratos'),
-                    'subtitle' => __('启用/关闭评论验证码', 'kratos'),
-                    'text_on' => __('开启', 'kratos'),
-                    'text_off' => __('关闭', 'kratos'),
-                ),
-                array(
-                    'id' => 'g_comment_captcha_max',
-                    'type' => 'number',
-                    'title' => __('数字最大值', 'kratos'),
-                    'subtitle' => __('运算用的随机数上限（1 到该值），默认 10', 'kratos'),
-                    'min' => 5,
-                    'max' => 99,
-                    'default' => 10,
-                ),
-            ),
-            'default' => array(
-                'g_comment_captcha' => false,
-                'g_comment_captcha_max' => 10,
-            ),
-        ),
-        array(
             'id' => 'g_font_fieldset',
             'type' => 'fieldset',
             'title' => __('自定义字体', 'kratos'),
@@ -1079,6 +1050,76 @@ CSF::createSection($prefix, array(
                 'g_donate_wechat' => get_template_directory_uri() . '/assets/img/200.png',
                 'g_donate_alipay' => get_template_directory_uri() . '/assets/img/200.png',
             ),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'comment_fields',
+    'title' => __('评论配置', 'kratos'),
+    'icon' => 'fas fa-comments',
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'comment_fields',
+    'title' => __('通用配置', 'kratos'),
+    'icon' => 'fas fa-cog',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('评论验证码', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_captcha',
+            'type' => 'switcher',
+            'title' => __('功能开关', 'kratos'),
+            'subtitle' => __('在评论表单中加入"X + Y = ?"算术验证，简单挡机器人', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_comment_captcha_max',
+            'type' => 'number',
+            'title' => __('数字最大值', 'kratos'),
+            'subtitle' => __('运算用的随机数上限（1 到该值），默认 10', 'kratos'),
+            'min' => 5,
+            'max' => 99,
+            'default' => 10,
+            'dependency' => array('g_comment_captcha', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'comment_fields',
+    'title' => __('IP 归属地数据库', 'kratos'),
+    'icon' => 'fas fa-map-marker-alt',
+    'fields' => array(
+        array(
+            'type' => 'content',
+            'content' => function_exists('kratos_ip2region_render_status') ? kratos_ip2region_render_status() : '',
+        ),
+        array(
+            'id' => 'comment_ip2region_frequency',
+            'type' => 'select',
+            'title' => __('自动更新频率', 'kratos'),
+            'subtitle' => __('ip2region 数据更新较慢，通常「每月」就足够', 'kratos'),
+            'options' => array(
+                'hourly'   => __('每小时', 'kratos'),
+                'daily'    => __('每天', 'kratos'),
+                'weekly'   => __('每周', 'kratos'),
+                'monthly'  => __('每月（推荐）', 'kratos'),
+                'disabled' => __('禁用自动更新', 'kratos'),
+            ),
+            'default' => 'monthly',
+        ),
+        array(
+            'id' => 'comment_ip2region_ipv6',
+            'type' => 'switcher',
+            'title' => __('启用 IPv6 数据库', 'kratos'),
+            'subtitle' => __('额外下载 IPv6 数据库（约 36MB），适用于大量移动网络访问者', 'kratos'),
+            'default' => false,
         ),
     ),
 ));

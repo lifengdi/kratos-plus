@@ -18,6 +18,10 @@ if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
 // 而 theme-options.php 在字段定义里调用了本文件里的 kratos_codehl_*_options() 等函数）
 require get_template_directory() . '/inc/theme-codehighlight.php';
 
+// IP 归属地数据库（同样必须在 CSF 之前 require —— theme-options.php 的「评论配置」
+// content 字段会立即调用 kratos_ip2region_render_status()）
+require get_template_directory() . '/inc/ip2region/ip2region-updater.php';
+
 // 主题配置
 require get_template_directory() . '/inc/codestar-framework/autoload.php';
 
