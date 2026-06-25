@@ -362,15 +362,27 @@ function kratos_heart_shortcode($atts)
     $title    = (string) $atts['title'];
     $subtitle = (string) $atts['subtitle'];
 
+    // 暖色背景三色（后台可配置；默认暖黄系）
+    $bg_start = sanitize_hex_color((string) kratos_option('g_comment_heart_bg_start', '#fff8e7')) ?: '#fff8e7';
+    $bg_mid   = sanitize_hex_color((string) kratos_option('g_comment_heart_bg_mid',   '#fff1cc')) ?: '#fff1cc';
+    $bg_end   = sanitize_hex_color((string) kratos_option('g_comment_heart_bg_end',   '#ffe7b5')) ?: '#ffe7b5';
+
+    $bg_inline = sprintf(
+        'background:linear-gradient(135deg,%s 0%%,%s 50%%,%s 100%%);',
+        esc_attr($bg_start),
+        esc_attr($bg_mid),
+        esc_attr($bg_end)
+    );
+
     ob_start();
     ?>
-    <div class="kratos-heart-shortcode" id="kratos-heart-list">
+    <div class="kratos-heart-shortcode" id="kratos-heart-list" style="<?php echo $bg_inline; ?>">
         <?php if ($title !== '' || $subtitle !== '') { ?>
             <div class="khs-header">
                 <?php if ($title !== '') { ?>
                     <div class="khs-title-row">
                         <span class="khs-title-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#ff6b8b"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
                         </span>
                         <h3 class="khs-title"><?php echo esc_html($title); ?></h3>
                     </div>
@@ -439,7 +451,7 @@ function kratos_heart_shortcode($atts)
                                 <span class="khs-time" title="<?php echo esc_attr($time_full); ?>"><?php echo esc_html($time_human); ?></span>
                             </div>
                             <span class="khs-heart-icon" aria-hidden="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#ff6b8b"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
                             </span>
                         </div>
                         <div class="khs-text"><?php echo esc_html($excerpt); ?></div>
@@ -519,56 +531,55 @@ function kratos_heart_shortcode($atts)
     </div>
 
     <style>
-        .kratos-heart-shortcode{margin:24px 0;padding:28px 24px;background:linear-gradient(135deg,#fff7f3 0%,#ffe9e9 50%,#fff0f6 100%);border-radius:18px;box-shadow:0 8px 28px rgba(255,107,139,0.10);border:1px solid rgba(255,107,139,0.12);position:relative;overflow:hidden;}
-        .kratos-heart-shortcode::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,142,83,0.18) 0%,rgba(255,142,83,0) 70%);pointer-events:none;}
+        .kratos-heart-shortcode{margin:24px 0;padding:28px 24px;border-radius:18px;box-shadow:0 8px 28px rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.18);position:relative;overflow:hidden;}
+        .kratos-heart-shortcode::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,193,7,0.20) 0%,rgba(255,193,7,0) 70%);pointer-events:none;}
         .kratos-heart-shortcode .khs-header{text-align:center;margin-bottom:22px;position:relative;}
         .kratos-heart-shortcode .khs-title-row{display:flex;align-items:center;justify-content:center;gap:8px;}
-        .kratos-heart-shortcode .khs-title{margin:0;font-size:22px;font-weight:700;color:#3d2a26;letter-spacing:0.5px;}
+        .kratos-heart-shortcode .khs-title{margin:0;font-size:22px;font-weight:700;color:#5a3e0f;letter-spacing:0.5px;}
         .kratos-heart-shortcode .khs-title-icon{display:inline-flex;animation:khs-beat 1.6s infinite;}
-        .kratos-heart-shortcode .khs-subtitle{margin:8px 0 0;font-size:13px;color:#8a6a64;line-height:1.6;}
+        .kratos-heart-shortcode .khs-subtitle{margin:8px 0 0;font-size:13px;color:#8a6f3a;line-height:1.6;}
         .kratos-heart-shortcode .khs-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:0 auto 24px;max-width:760px;}
-        .kratos-heart-shortcode .khs-stat{flex:1 1 200px;min-width:180px;display:flex;align-items:center;gap:14px;padding:18px 22px;background:rgba(255,255,255,0.85);border-radius:16px;backdrop-filter:blur(4px);box-shadow:0 4px 14px rgba(255,107,139,0.10);border:1px solid rgba(255,107,139,0.10);transition:all .25s ease;}
-        .kratos-heart-shortcode .khs-stat:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(255,107,139,0.18);}
-        .kratos-heart-shortcode .khs-stat-icon{flex-shrink:0;width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;background:linear-gradient(135deg,#ff6b8b 0%,#ff8e53 100%);box-shadow:0 4px 10px rgba(255,107,139,0.30);}
-        .kratos-heart-shortcode .khs-stat-comment .khs-stat-icon{background:linear-gradient(135deg,#ff6b8b 0%,#ff4d6d 100%);}
-        .kratos-heart-shortcode .khs-stat-post .khs-stat-icon{background:linear-gradient(135deg,#ff8e53 0%,#ffb347 100%);box-shadow:0 4px 10px rgba(255,142,83,0.30);}
-        .kratos-heart-shortcode .khs-stat-user .khs-stat-icon{background:linear-gradient(135deg,#a78bfa 0%,#ec4899 100%);box-shadow:0 4px 10px rgba(167,139,250,0.30);}
+        .kratos-heart-shortcode .khs-stat{flex:1 1 200px;min-width:180px;display:flex;align-items:center;gap:14px;padding:18px 22px;background:rgba(255,255,255,0.85);border-radius:16px;backdrop-filter:blur(4px);box-shadow:0 4px 14px rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.14);transition:all .25s ease;}
+        .kratos-heart-shortcode .khs-stat:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(245,158,11,0.18);}
+        .kratos-heart-shortcode .khs-stat-icon{flex-shrink:0;width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;background:linear-gradient(135deg,#f59e0b 0%,#f97316 100%);box-shadow:0 4px 10px rgba(245,158,11,0.30);}
+        .kratos-heart-shortcode .khs-stat-comment .khs-stat-icon{background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);}
+        .kratos-heart-shortcode .khs-stat-post .khs-stat-icon{background:linear-gradient(135deg,#fbbf24 0%,#f97316 100%);box-shadow:0 4px 10px rgba(251,191,36,0.30);}
+        .kratos-heart-shortcode .khs-stat-user .khs-stat-icon{background:linear-gradient(135deg,#facc15 0%,#f59e0b 100%);box-shadow:0 4px 10px rgba(250,204,21,0.30);}
         .kratos-heart-shortcode .khs-stat-body{flex:1;min-width:0;text-align:left;}
-        .kratos-heart-shortcode .khs-stat-label{font-size:13px;color:#8a6a64;letter-spacing:1px;line-height:1.4;}
-        .kratos-heart-shortcode .khs-stat-num{margin-top:2px;font-size:26px;font-weight:700;background:linear-gradient(135deg,#ff6b8b 0%,#ff8e53 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.15;}
+        .kratos-heart-shortcode .khs-stat-label{font-size:13px;color:#8a6f3a;letter-spacing:1px;line-height:1.4;}
+        .kratos-heart-shortcode .khs-stat-num{margin-top:2px;font-size:26px;font-weight:700;background:linear-gradient(135deg,#f59e0b 0%,#f97316 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.15;}
         .kratos-heart-shortcode .khs-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
-        .kratos-heart-shortcode .khs-card{display:block;padding:14px 16px;background:#fff;border-radius:14px;border:1px solid rgba(255,107,139,0.10);text-decoration:none !important;color:inherit !important;box-shadow:0 2px 6px rgba(255,107,139,0.05);transition:all .25s ease;position:relative;}
-        .kratos-heart-shortcode .khs-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(255,107,139,0.18);border-color:rgba(255,107,139,0.30);}
+        .kratos-heart-shortcode .khs-card{display:block;padding:14px 16px;background:#fff;border-radius:14px;border:1px solid rgba(245,158,11,0.14);text-decoration:none !important;color:inherit !important;box-shadow:0 2px 6px rgba(245,158,11,0.06);transition:all .25s ease;position:relative;}
+        .kratos-heart-shortcode .khs-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(245,158,11,0.18);border-color:rgba(245,158,11,0.32);}
         .kratos-heart-shortcode .khs-card-head{display:flex;align-items:center;gap:10px;}
         .kratos-heart-shortcode .khs-avatar-img,.kratos-heart-shortcode .khs-avatar img{width:40px !important;height:40px !important;border-radius:50% !important;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
         .kratos-heart-shortcode .khs-meta{flex:1;min-width:0;display:flex;flex-direction:column;}
-        .kratos-heart-shortcode .khs-author{font-size:13px;font-weight:600;color:#3d2a26;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-        .kratos-heart-shortcode .khs-time{font-size:11px;color:#a78a83;margin-top:2px;}
-        .kratos-heart-shortcode .khs-heart-icon{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:rgba(255,107,139,0.10);}
-        .kratos-heart-shortcode .khs-text{margin:10px 0 8px;font-size:13px;line-height:1.6;color:#5c453f;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
-        .kratos-heart-shortcode .khs-from{display:flex;align-items:center;gap:4px;font-size:11px;color:#a78a83;border-top:1px dashed rgba(255,107,139,0.18);padding-top:8px;}
+        .kratos-heart-shortcode .khs-author{font-size:13px;font-weight:600;color:#5a3e0f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .kratos-heart-shortcode .khs-time{font-size:11px;color:#a8895a;margin-top:2px;}
+        .kratos-heart-shortcode .khs-heart-icon{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:rgba(245,158,11,0.14);}
+        .kratos-heart-shortcode .khs-text{margin:10px 0 8px;font-size:13px;line-height:1.6;color:#5a4a2a;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
+        .kratos-heart-shortcode .khs-from{display:flex;align-items:center;gap:4px;font-size:11px;color:#a8895a;border-top:1px dashed rgba(245,158,11,0.22);padding-top:8px;}
         .kratos-heart-shortcode .khs-from span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-        .kratos-heart-shortcode .khs-empty{padding:36px 16px;text-align:center;color:#a78a83;font-size:14px;background:rgba(255,255,255,0.7);border-radius:14px;}
+        .kratos-heart-shortcode .khs-empty{padding:36px 16px;text-align:center;color:#a8895a;font-size:14px;background:rgba(255,255,255,0.7);border-radius:14px;}
         .kratos-heart-shortcode .khs-pagination{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin-top:22px;}
-        .kratos-heart-shortcode .khs-page{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 12px;font-size:13px;color:#5c453f !important;background:#fff;border:1px solid rgba(255,107,139,0.18);border-radius:10px;text-decoration:none !important;transition:all .2s ease;}
-        .kratos-heart-shortcode .khs-page:hover{background:linear-gradient(135deg,#ff6b8b 0%,#ff8e53 100%);color:#fff !important;border-color:transparent;transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,107,139,0.30);}
-        .kratos-heart-shortcode .khs-current{background:linear-gradient(135deg,#ff6b8b 0%,#ff8e53 100%);color:#fff !important;border-color:transparent;cursor:default;font-weight:600;}
+        .kratos-heart-shortcode .khs-page{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 12px;font-size:13px;color:#5a4a2a !important;background:#fff;border:1px solid rgba(245,158,11,0.22);border-radius:10px;text-decoration:none !important;transition:all .2s ease;}
+        .kratos-heart-shortcode .khs-page:hover{background:linear-gradient(135deg,#f59e0b 0%,#f97316 100%);color:#fff !important;border-color:transparent;transform:translateY(-1px);box-shadow:0 4px 12px rgba(245,158,11,0.30);}
+        .kratos-heart-shortcode .khs-current{background:linear-gradient(135deg,#f59e0b 0%,#f97316 100%);color:#fff !important;border-color:transparent;cursor:default;font-weight:600;}
         .kratos-heart-shortcode .khs-current:hover{transform:none;}
         .kratos-heart-shortcode .khs-disabled{opacity:.45;cursor:not-allowed;}
-        .kratos-heart-shortcode .khs-disabled:hover{background:#fff;color:#5c453f !important;border-color:rgba(255,107,139,0.18);transform:none;box-shadow:none;}
-        .kratos-heart-shortcode .khs-ellipsis{border:none;background:transparent;cursor:default;color:#a78a83;}
-        .kratos-heart-shortcode .khs-ellipsis:hover{background:transparent;color:#a78a83 !important;transform:none;box-shadow:none;}
-        .kratos-heart-shortcode .khs-page-info{margin-top:10px;text-align:center;font-size:12px;color:#8a6a5d;}
-        .kratos-heart-shortcode .khs-page-info strong{color:#ff6b8b;font-weight:600;margin:0 2px;}
+        .kratos-heart-shortcode .khs-disabled:hover{background:#fff;color:#5a4a2a !important;border-color:rgba(245,158,11,0.22);transform:none;box-shadow:none;}
+        .kratos-heart-shortcode .khs-ellipsis{border:none;background:transparent;cursor:default;color:#a8895a;}
+        .kratos-heart-shortcode .khs-ellipsis:hover{background:transparent;color:#a8895a !important;transform:none;box-shadow:none;}
+        .kratos-heart-shortcode .khs-page-info{margin-top:10px;text-align:center;font-size:12px;color:#8a6f3a;}
+        .kratos-heart-shortcode .khs-page-info strong{color:#f59e0b;font-weight:600;margin:0 2px;}
         @keyframes khs-beat{0%,100%{transform:scale(1);}30%{transform:scale(1.18);}60%{transform:scale(0.95);}}
-        @media (prefers-color-scheme: dark){.kratos-heart-shortcode{background:linear-gradient(135deg,#2b1d1e 0%,#3a2326 50%,#321e26 100%);border-color:rgba(255,107,139,0.20);}.kratos-heart-shortcode .khs-title{color:#ffe9ea;}.kratos-heart-shortcode .khs-subtitle,.kratos-heart-shortcode .khs-stat-label,.kratos-heart-shortcode .khs-time,.kratos-heart-shortcode .khs-from{color:#bba2a0;}.kratos-heart-shortcode .khs-stat,.kratos-heart-shortcode .khs-card,.kratos-heart-shortcode .khs-empty{background:rgba(255,255,255,0.06);}.kratos-heart-shortcode .khs-author,.kratos-heart-shortcode .khs-text{color:#ffe9ea;}}
-        html[data-theme="dark"] .kratos-heart-shortcode,body.dark .kratos-heart-shortcode{background:linear-gradient(135deg,#2b1d1e 0%,#3a2326 50%,#321e26 100%);border-color:rgba(255,107,139,0.20);}
-        html[data-theme="dark"] .kratos-heart-shortcode .khs-title,body.dark .kratos-heart-shortcode .khs-title{color:#ffe9ea;}
-        html[data-theme="dark"] .kratos-heart-shortcode .khs-subtitle,html[data-theme="dark"] .kratos-heart-shortcode .khs-stat-label,html[data-theme="dark"] .kratos-heart-shortcode .khs-time,html[data-theme="dark"] .kratos-heart-shortcode .khs-from,body.dark .kratos-heart-shortcode .khs-subtitle,body.dark .kratos-heart-shortcode .khs-stat-label,body.dark .kratos-heart-shortcode .khs-time,body.dark .kratos-heart-shortcode .khs-from{color:#bba2a0;}
+        html[data-theme="dark"] .kratos-heart-shortcode,body.dark .kratos-heart-shortcode{background:linear-gradient(135deg,#2a2118 0%,#3a2e1f 50%,#322816 100%) !important;border-color:rgba(245,158,11,0.25);}
+        html[data-theme="dark"] .kratos-heart-shortcode .khs-title,body.dark .kratos-heart-shortcode .khs-title{color:#ffe9c8;}
+        html[data-theme="dark"] .kratos-heart-shortcode .khs-subtitle,html[data-theme="dark"] .kratos-heart-shortcode .khs-stat-label,html[data-theme="dark"] .kratos-heart-shortcode .khs-time,html[data-theme="dark"] .kratos-heart-shortcode .khs-from,body.dark .kratos-heart-shortcode .khs-subtitle,body.dark .kratos-heart-shortcode .khs-stat-label,body.dark .kratos-heart-shortcode .khs-time,body.dark .kratos-heart-shortcode .khs-from{color:#c8b29a;}
         html[data-theme="dark"] .kratos-heart-shortcode .khs-stat,html[data-theme="dark"] .kratos-heart-shortcode .khs-card,html[data-theme="dark"] .kratos-heart-shortcode .khs-empty,body.dark .kratos-heart-shortcode .khs-stat,body.dark .kratos-heart-shortcode .khs-card,body.dark .kratos-heart-shortcode .khs-empty{background:rgba(255,255,255,0.06);}
-        html[data-theme="dark"] .kratos-heart-shortcode .khs-author,html[data-theme="dark"] .kratos-heart-shortcode .khs-text,body.dark .kratos-heart-shortcode .khs-author,body.dark .kratos-heart-shortcode .khs-text{color:#ffe9ea;}
-        html[data-theme="dark"] .kratos-heart-shortcode .khs-page,body.dark .kratos-heart-shortcode .khs-page{background:rgba(255,255,255,0.06);border-color:rgba(255,107,139,0.30);color:#ffe9ea !important;}
-        html[data-theme="dark"] .kratos-heart-shortcode .khs-page-info,body.dark .kratos-heart-shortcode .khs-page-info{color:#bba2a0;}
+        html[data-theme="dark"] .kratos-heart-shortcode .khs-author,html[data-theme="dark"] .kratos-heart-shortcode .khs-text,body.dark .kratos-heart-shortcode .khs-author,body.dark .kratos-heart-shortcode .khs-text{color:#ffe9c8;}
+        html[data-theme="dark"] .kratos-heart-shortcode .khs-page,body.dark .kratos-heart-shortcode .khs-page{background:rgba(255,255,255,0.06);border-color:rgba(245,158,11,0.35);color:#ffe9c8 !important;}
+        html[data-theme="dark"] .kratos-heart-shortcode .khs-page-info,body.dark .kratos-heart-shortcode .khs-page-info{color:#c8b29a;}
     </style>
     <?php
     return ob_get_clean();

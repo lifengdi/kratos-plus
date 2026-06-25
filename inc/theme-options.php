@@ -1229,6 +1229,27 @@ CSF::createSection($prefix, array(
             'default' => 100,
         ),
         array(
+            'id' => 'g_comment_heart_bg_start',
+            'type' => 'color',
+            'title' => __('走心区域背景渐变起始色', 'kratos'),
+            'subtitle' => __('走心评论短码与走心模板内容区域的渐变左侧颜色（暖黄色系）', 'kratos'),
+            'default' => '#fff8e7',
+        ),
+        array(
+            'id' => 'g_comment_heart_bg_mid',
+            'type' => 'color',
+            'title' => __('走心区域背景渐变中间色', 'kratos'),
+            'subtitle' => __('内容区域渐变中间过渡颜色，可与起止颜色相同实现两色渐变', 'kratos'),
+            'default' => '#fff1cc',
+        ),
+        array(
+            'id' => 'g_comment_heart_bg_end',
+            'type' => 'color',
+            'title' => __('走心区域背景渐变结束色', 'kratos'),
+            'subtitle' => __('走心评论短码与走心模板内容区域的渐变右侧颜色（暖黄色系）', 'kratos'),
+            'default' => '#ffe7b5',
+        ),
+        array(
             'type' => 'content',
             'content' =>
                 '<div style="padding:16px 18px;background:linear-gradient(135deg,#fff7f3 0%,#ffeae0 100%);border:1px solid #ffd9c8;border-radius:12px;color:#5c3b30;line-height:1.8;font-size:13px;">'
