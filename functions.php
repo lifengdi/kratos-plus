@@ -65,6 +65,9 @@ require get_template_directory() . '/inc/theme-comment-extends.php';
 // 评论用户等级
 require get_template_directory() . '/inc/theme-comment-rank.php';
 
+// 走心评论
+require get_template_directory() . '/inc/theme-comment-heart.php';
+
 // 评论验证码
 require get_template_directory() . '/inc/theme-comment-captcha.php';
 

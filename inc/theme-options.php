@@ -1173,6 +1173,84 @@ CSF::createSection($prefix, array(
             'default' => 10,
             'dependency' => array('g_comment_captcha', '==', 'true'),
         ),
+        array(
+            'type' => 'subheading',
+            'content' => __('走心评论', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_heart_badge_text',
+            'type' => 'text',
+            'title' => __('徽章文字', 'kratos'),
+            'subtitle' => __('被标记的评论作者名后展示的徽章文字（建议 1~4 个汉字）', 'kratos'),
+            'default' => __('走心', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_heart_badge_color',
+            'type' => 'color',
+            'title' => __('徽章文字颜色', 'kratos'),
+            'subtitle' => __('徽章文字与图标颜色', 'kratos'),
+            'default' => '#ffffff',
+        ),
+        array(
+            'id' => 'g_comment_heart_badge_bg_start',
+            'type' => 'color',
+            'title' => __('徽章渐变起始色', 'kratos'),
+            'subtitle' => __('胶囊背景渐变左侧颜色', 'kratos'),
+            'default' => '#ff6b8b',
+        ),
+        array(
+            'id' => 'g_comment_heart_badge_bg_end',
+            'type' => 'color',
+            'title' => __('徽章渐变结束色', 'kratos'),
+            'subtitle' => __('胶囊背景渐变右侧颜色', 'kratos'),
+            'default' => '#ff8e53',
+        ),
+        array(
+            'id' => 'g_comment_heart_sc_title',
+            'type' => 'text',
+            'title' => __('短码默认标题', 'kratos'),
+            'subtitle' => __('[heart_comments] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('走心评论', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_heart_sc_subtitle',
+            'type' => 'text',
+            'title' => __('短码默认副标题', 'kratos'),
+            'subtitle' => __('[heart_comments] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('那些温暖过我的留言，每一条都值得被看见 ❤', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_heart_sc_per_page',
+            'type' => 'number',
+            'title' => __('短码每页条数', 'kratos'),
+            'subtitle' => __('短码列表分页大小，短码可通过 per_page 参数覆盖；填 0 表示不分页全部展示', 'kratos'),
+            'min' => 0,
+            'max' => 1000,
+            'default' => 100,
+        ),
+        array(
+            'type' => 'content',
+            'content' =>
+                '<div style="padding:16px 18px;background:linear-gradient(135deg,#fff7f3 0%,#ffeae0 100%);border:1px solid #ffd9c8;border-radius:12px;color:#5c3b30;line-height:1.8;font-size:13px;">'
+                . '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#ff6b8b;">' . __('💖 走心评论使用说明', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('1. 标记走心：', 'kratos') . '</strong>'
+                . sprintf(
+                    /* translators: %s 为后台评论列表链接 */
+                    __('进入 %s ，鼠标悬停在某条评论上，点击行操作中的「<span style="color:#ff6b8b;">标记走心</span>」即可；也可以勾选多条评论后，使用顶部「批量操作 → 标记为走心评论」一次处理多条。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('edit-comments.php')) . '" target="_blank">' . esc_html__('评论菜单', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('2. 取消走心：', 'kratos') . '</strong>' . __('在评论列表的「走心」筛选下拉中切换到「仅走心评论」，再点击行操作中的「取消走心」即可。', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('3. 前台展示：', 'kratos') . '</strong>' . __('被标记的评论，作者名后会自动追加一个粉橙色的「💗 走心」徽章（评论列表 / 文章详情 / 后台评论列表均生效）。', 'kratos') . '</p>'
+                . '<p style="margin:0 0 4px;"><strong>' . __('4. 短码使用：', 'kratos') . '</strong>' . __('在任意页面 / 文章中插入下方短码，即可展示走心评论统计与列表（评论数 / 来自文章数 / 参与用户数 + 走心评论卡片）。', 'kratos') . '</p>'
+                . '<ul style="margin:6px 0 8px 22px;padding:0;list-style:disc;">'
+                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#ff6b8b;">[heart_comments]</code>　' . __('使用上方后台默认值（标题 / 副标题 / 每页条数）', 'kratos') . '</li>'
+                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#ff6b8b;">[heart_comments title="走心留言" subtitle="温暖过我的瞬间" per_page="50"]</code></li>'
+                . '</ul>'
+                . '<p style="margin:0 0 4px;color:#8a6a5d;">' . __('参数说明：', 'kratos') . '<code>title</code> ' . __('标题（留空则隐藏）', 'kratos') . '；<code>subtitle</code> ' . __('副标题（留空则隐藏）', 'kratos') . '；<code>per_page</code> ' . __('每页条数，0 表示不分页全部展示。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 分页通过 URL 参数 ?khc_page=2 控制，短码已自动渲染上一页 / 下一页与页码按钮，默认每页 100 条。', 'kratos') . '</p>'
+                . '</div>',
+        ),
     ),
 ));
 
@@ -1607,6 +1685,23 @@ CSF::createSection($prefix, array(
                 . '<li>' . __('WordPress 版本：', 'kratos') . $wp_version . '</li>'
                 . '<li>' . __('User Agent 信息：', 'kratos') . '<span id="user-agent"></span></li>'
                 . '</ul><script>document.getElementById("user-agent").textContent = navigator.userAgent;</script>',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('微信赞赏', 'kratos'),
+        ),
+        array(
+            'type' => 'content',
+            'content' => '<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:20px 24px;background:linear-gradient(135deg,#fff7f3 0%,#ffeae0 100%);border-radius:14px;border:1px solid #ffd9c8;">'
+                . '<div style="flex:0 0 auto;">'
+                . '<img src="' . esc_url(get_template_directory_uri() . '/assets/img/reward.png') . '" alt="' . esc_attr__('微信赞赏', 'kratos') . '" style="width:160px;height:160px;display:block;border-radius:10px;background:#fff;padding:8px;box-shadow:0 4px 14px rgba(255,107,71,0.18);" />'
+                . '</div>'
+                . '<div style="flex:1 1 240px;min-width:240px;color:#5c3b30;line-height:1.7;">'
+                . '<p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#ff6b47;">' . __('如果这个主题让你的小站更温暖，欢迎请作者喝杯热咖啡 ☕', 'kratos') . '</p>'
+                . '<p style="margin:0 0 4px;font-size:13px;">' . __('开源不易，每一份赞赏都是继续打磨主题的动力。', 'kratos') . '</p>'
+                . '<p style="margin:0;font-size:13px;color:#8a6a5d;">' . __('打开微信扫一扫左侧二维码，即可向作者表达你的支持。感谢有你 ❤', 'kratos') . '</p>'
+                . '</div>'
+                . '</div>',
         ),
         array(
             'type' => 'subheading',
