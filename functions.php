@@ -79,3 +79,5 @@ require get_template_directory() . '/inc/theme-darkmode.php';
 
 // 每日皮肤（周一 ~ 周日）
 require get_template_directory() . '/inc/theme-weekday-skin.php';
+
+require get_template_directory() . '/inc/theme-archives-stats.php';
