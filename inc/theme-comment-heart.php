@@ -135,6 +135,20 @@ add_action('admin_post_kratos_heart_mark', 'kratos_heart_handle_toggle');
 add_action('admin_post_kratos_heart_unmark', 'kratos_heart_handle_toggle');
 
 /**
+ * 给应用了「走心评论」模板的页面加一个 body class，
+ * 让皮肤层的 §15「现代感形状层」可以精准跳过这个页面，
+ * 避免主题的边框/玻璃/阴影叠加破坏 shortcode 自带的 scheme 视觉。
+ */
+function kratos_heart_body_class($classes)
+{
+    if (is_page_template('page-heart-comments.php')) {
+        $classes[] = 'is-kratos-heart-page';
+    }
+    return $classes;
+}
+add_filter('body_class', 'kratos_heart_body_class');
+
+/**
  * 批量操作
  */
 function kratos_heart_bulk_actions($actions)

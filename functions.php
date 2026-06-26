@@ -68,8 +68,14 @@ require get_template_directory() . '/inc/theme-comment-rank.php';
 // 走心评论
 require get_template_directory() . '/inc/theme-comment-heart.php';
 
+// 说说（朋友圈式短动态）
+require get_template_directory() . '/inc/theme-shuoshuo.php';
+
 // 评论验证码
 require get_template_directory() . '/inc/theme-comment-captcha.php';
 
 // 暗夜模式
 require get_template_directory() . '/inc/theme-darkmode.php';
+
+// 每日皮肤（周一 ~ 周日）
+require get_template_directory() . '/inc/theme-weekday-skin.php';

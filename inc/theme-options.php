@@ -520,6 +520,43 @@ CSF::createSection($prefix, array(
 
 CSF::createSection($prefix, array(
     'parent' => 'global_fields',
+    'title' => __('每日皮肤', 'kratos'),
+    'icon' => 'fas fa-palette',
+    'fields' => array(
+        array(
+            'id' => 'g_weekday_skin_mode',
+            'type' => 'button_set',
+            'title' => __('皮肤模式', 'kratos'),
+            'subtitle' => __('off：使用默认外观；auto：按访客本地时区每天自动切换；locked：全站锁定为某一套皮肤。auto 模式与暗夜模式共存，暗夜模式优先级更高。', 'kratos'),
+            'options' => array(
+                'off'    => __('关闭', 'kratos'),
+                'auto'   => __('按星期自动切换', 'kratos'),
+                'locked' => __('锁定单一皮肤', 'kratos'),
+            ),
+            'default' => 'off',
+        ),
+        array(
+            'id' => 'g_weekday_skin_locked',
+            'type' => 'select',
+            'title' => __('锁定皮肤', 'kratos'),
+            'subtitle' => __('仅在「锁定单一皮肤」模式下生效', 'kratos'),
+            'options' => array(
+                'mon' => __('周一 · 玻璃拟态（冷调）', 'kratos'),
+                'tue' => __('周二 · 几何拼贴 Bauhaus', 'kratos'),
+                'wed' => __('周三 · 新拟态 Neumorphism', 'kratos'),
+                'thu' => __('周四 · 极简黑白 Minimal', 'kratos'),
+                'fri' => __('周五 · 玻璃拟态（暖调）', 'kratos'),
+                'sat' => __('周六 · 海滨度假（节日感）', 'kratos'),
+                'sun' => __('周日 · 金辉庆典（节日感）', 'kratos'),
+            ),
+            'default' => 'mon',
+            'dependency' => array('g_weekday_skin_mode', '==', 'locked'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'global_fields',
     'title' => __('颜色配置', 'kratos'),
     'icon' => 'fas fa-arrow-right',
     'fields' => array(
@@ -1404,6 +1441,56 @@ CSF::createSection($prefix, array(
             'type' => 'color',
             'default' => '#24292e',
             'title' =>  __('颜色导航', 'kratos'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'shuoshuo_fields',
+    'title' => __('说说配置', 'kratos'),
+    'icon' => 'far fa-comment-dots',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面顶部展示在「说说」模板（page-shuoshuo.php）页面顶部，可留空隐藏。', 'kratos'),
+        ),
+        array(
+            'id' => 'shuoshuo_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'default' => __('我的说说', 'kratos'),
+        ),
+        array(
+            'id' => 'shuoshuo_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'default' => __('记录碎碎念，分享小确幸', 'kratos'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('列表展示', 'kratos'),
+        ),
+        array(
+            'id' => 'shuoshuo_per_page',
+            'type' => 'number',
+            'title' => __('每页条数', 'kratos'),
+            'subtitle' => __('「说说」模板（page-shuoshuo.php）每页显示多少条说说。', 'kratos'),
+            'default' => 10,
+            'attributes' => array(
+                'min' => 1,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'shuoshuo_collapse_limit',
+            'type' => 'number',
+            'title' => __('折叠字数阈值', 'kratos'),
+            'subtitle' => __('列表中说说正文超过该字数时折叠，并显示「展开」。设为 0 关闭折叠功能。', 'kratos'),
+            'default' => 300,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 10,
+            ),
         ),
     ),
 ));

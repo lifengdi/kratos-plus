@@ -1,0 +1,1488 @@
+@charset "UTF-8";
+/*
+ * Kratos+ 每日皮肤（周一 ~ 周日）
+ * 作用域: html[data-weekday-skin="mon|tue|wed|thu|fri|sat|sun"]
+ *
+ * 工作日 (mon~fri) = 现代感，每天不同方向：
+ *   周一 · 玻璃拟态 Glass / Cool   —— 冷色系（青蓝/雾紫）半透明卡 + backdrop-filter
+ *   周二 · 几何拼贴 Bauhaus        —— 原色黄/红/蓝 + 黑色粗线条 + 几何装饰
+ *   周三 · 新拟态 Neumorphism       —— 单色柔和底 + 凸起卡片（双向阴影，无边框）
+ *   周四 · 极简黑白 Minimal         —— 黑/白/灰 + 一点墨蓝点缀，超大留白
+ *   周五 · 玻璃拟态 Glass / Warm   —— 暖色系（粉珊瑚/桃橘）半透明卡 + 周末预热感
+ *
+ * 周末 (sat / sun) = 节日感：
+ *   周六 · 海滨度假 (蓝白斜纹)
+ *   周日 · 金辉庆典 (浅金渐变 + 星花点缀)
+ *
+ * 结构对齐 assets/css/dark.css：
+ *   1. 全局              2. Banner overlay     3. 文章列表
+ *   4. 分页              5. 文章正文           6. 文章导航
+ *   7. 工具区            8. 评论 + 评论表单    9. 侧边栏小工具
+ *   10. 表单输入控件     11. 404               12. 页脚
+ *   13. 说说             14. 节日感装饰        14.5 浮动工具箱按钮染色
+ *   15. 现代感"形状"层（仅工作日的 box-shadow / backdrop-filter / 几何装饰）
+ *   16. 暗夜主色覆盖     17. 暗夜节日纹理关闭
+ *
+ * 浅模式规则用 :not([data-theme="dark"]) 限定；暗夜模式由 dark.css 提供骨架，
+ * §16 仅替换 dark.css 用 #4f86c6 写死的 accent，让链接/按钮/tab/装饰条
+ * 跟着当天皮肤主色变。
+ */
+
+/* ===============================================================
+ * 0. 共享色板变量 —— 每套皮肤覆盖其中 7 项
+ *
+ *   --kr-skin-bg              页面底色（body / .k-main）
+ *   --kr-skin-card-bg         卡片底（文章卡 / details / widget / kss-item / toolbar / comments / post-navigation）
+ *   --kr-skin-card-soft       次级底（评论输入框 / smile 面板 / 表单输入框）
+ *   --kr-skin-card-line       细分隔线（breadcrumb / comments title / 列表 li / nav-tabs / w-comments li）
+ *   --kr-skin-heading         主标题色（文章标题 / 侧边栏小工具标题 / 评论标题）
+ *   --kr-skin-text            正文色
+ *   --kr-skin-muted           辅助文字（meta / 时间 / footer / 副标题）
+ *   --kr-skin-link            链接默认色
+ *   --kr-skin-link-hover      链接悬停
+ *   --kr-skin-accent          强调色（按钮 / 标签 / tab 高亮 / TOC 圆点 / 翻页 current）
+ *   --kr-skin-accent-hover    强调色悬停
+ *   --kr-skin-gold            金色装饰（小工具下划线 / blockquote 边 / h2.title 双线 / 角标边）
+ *   --kr-skin-quote-bg        引用块底
+ *   --kr-skin-tag-bg          tag / footer tags 标签底
+ *   --kr-skin-banner-overlay  banner 蒙层
+ * =============================================================== */
+
+/* 周一 · 玻璃拟态 / 冷调（Glass · Cool）
+ *   冷色青蓝渐变 body，卡片半透明白 + backdrop-filter blur */
+html[data-weekday-skin="mon"] {
+    --kr-skin-bg:          #DDEBF3;
+    --kr-skin-card-bg:     rgba(255, 255, 255, 0.55);
+    --kr-skin-card-soft:   rgba(255, 255, 255, 0.40);
+    --kr-skin-card-line:   rgba(80, 130, 175, 0.18);
+    --kr-skin-heading:     #1A3D5F;
+    --kr-skin-text:        #20384B;
+    --kr-skin-muted:       #5E7A8D;
+    --kr-skin-link:        #2E6BA3;
+    --kr-skin-link-hover:  #1A4674;
+    --kr-skin-accent:      #4A90D9;
+    --kr-skin-accent-hover:#357ABD;
+    --kr-skin-gold:        #4A90D9;
+    --kr-skin-quote-bg:    rgba(255, 255, 255, 0.40);
+    --kr-skin-tag-bg:      rgba(74, 144, 217, 0.12);
+    --kr-skin-banner-overlay: rgba(26, 61, 95, 0.50);
+}
+
+/* 周二 · 几何拼贴 Bauhaus
+ *   米黄主背景，原色红/蓝点缀，黑色 1.5px 粗线条 */
+html[data-weekday-skin="tue"] {
+    --kr-skin-bg:          #F5EDD8;
+    --kr-skin-card-bg:     #FFFEF7;
+    --kr-skin-card-soft:   #F7EFD9;
+    --kr-skin-card-line:   #1A1A1A;
+    --kr-skin-heading:     #1A1A1A;
+    --kr-skin-text:        #2A2A2A;
+    --kr-skin-muted:       #6E6650;
+    --kr-skin-link:        #C03A2B;
+    --kr-skin-link-hover:  #8B2A1F;
+    --kr-skin-accent:      #C03A2B;       /* 原色红 */
+    --kr-skin-accent-hover:#8B2A1F;
+    --kr-skin-gold:        #E8B62D;       /* 原色黄 */
+    --kr-skin-quote-bg:    #F2E8D0;
+    --kr-skin-tag-bg:      #E8B62D;       /* 原色黄 tag */
+    --kr-skin-banner-overlay: rgba(26, 26, 26, 0.55);
+}
+
+/* 周三 · 新拟态 Neumorphism
+ *   柔和单色底 + 凸起卡片，双向阴影替代边框 */
+html[data-weekday-skin="wed"] {
+    --kr-skin-bg:          #E4E9F0;
+    --kr-skin-card-bg:     #E4E9F0;       /* 与 bg 同色 → 靠阴影显形 */
+    --kr-skin-card-soft:   #DCE3EB;
+    --kr-skin-card-line:   rgba(0, 0, 0, 0);
+    --kr-skin-heading:     #2F3947;
+    --kr-skin-text:        #3F4A5A;
+    --kr-skin-muted:       #7A8696;
+    --kr-skin-link:        #4F6A8C;
+    --kr-skin-link-hover:  #2F4A6C;
+    --kr-skin-accent:      #5E7CA6;
+    --kr-skin-accent-hover:#4A6792;
+    --kr-skin-gold:        #5E7CA6;
+    --kr-skin-quote-bg:    #DCE3EB;
+    --kr-skin-tag-bg:      #DCE3EB;
+    --kr-skin-banner-overlay: rgba(47, 57, 71, 0.45);
+}
+
+/* 周四 · 极简黑白 Minimal
+ *   纯白底 + 黑灰文字 + 一点墨蓝点缀，超大留白 */
+html[data-weekday-skin="thu"] {
+    --kr-skin-bg:          #F7F7F7;
+    --kr-skin-card-bg:     #FFFFFF;
+    --kr-skin-card-soft:   #F2F2F2;
+    --kr-skin-card-line:   #ECECEC;
+    --kr-skin-heading:     #0A0A0A;
+    --kr-skin-text:        #1A1A1A;
+    --kr-skin-muted:       #8A8A8A;
+    --kr-skin-link:        #1A1A1A;
+    --kr-skin-link-hover:  #1A2C42;       /* 墨蓝 */
+    --kr-skin-accent:      #1A2C42;       /* 唯一点缀色：极深墨蓝 */
+    --kr-skin-accent-hover:#0A1828;
+    --kr-skin-gold:        #1A2C42;
+    --kr-skin-quote-bg:    #F2F2F2;
+    --kr-skin-tag-bg:      #ECECEC;
+    --kr-skin-banner-overlay: rgba(10, 10, 10, 0.55);
+}
+
+/* 周五 · 玻璃拟态 / 暖调（Glass · Warm）
+ *   暖色珊瑚粉/桃橘渐变 body，卡片半透明白 + backdrop-filter blur */
+html[data-weekday-skin="fri"] {
+    --kr-skin-bg:          #FCE8DC;
+    --kr-skin-card-bg:     rgba(255, 255, 255, 0.55);
+    --kr-skin-card-soft:   rgba(255, 255, 255, 0.40);
+    --kr-skin-card-line:   rgba(220, 110, 90, 0.18);
+    --kr-skin-heading:     #6B2B1C;
+    --kr-skin-text:        #4A2820;
+    --kr-skin-muted:       #8A6A5A;
+    --kr-skin-link:        #C25540;
+    --kr-skin-link-hover:  #8B3A28;
+    --kr-skin-accent:      #E0735A;
+    --kr-skin-accent-hover:#C25540;
+    --kr-skin-gold:        #E0735A;
+    --kr-skin-quote-bg:    rgba(255, 255, 255, 0.40);
+    --kr-skin-tag-bg:      rgba(224, 115, 90, 0.14);
+    --kr-skin-banner-overlay: rgba(107, 43, 28, 0.48);
+}
+
+/* 周六 · 海滨度假（Seaside Festival） */
+html[data-weekday-skin="sat"] {
+    --kr-skin-bg:          #DBEEF6;
+    --kr-skin-card-bg:     #FFFFFF;
+    --kr-skin-card-soft:   #EAF4FA;
+    --kr-skin-card-line:   #C4DEEC;
+    --kr-skin-heading:     #0F344B;
+    --kr-skin-text:        #213340;
+    --kr-skin-muted:       #4F6B7C;
+    --kr-skin-link:        #1E4E6B;
+    --kr-skin-link-hover:  #0F344B;
+    --kr-skin-accent:      #2E84B5;
+    --kr-skin-accent-hover:#1F6790;
+    --kr-skin-gold:        #E8B860;
+    --kr-skin-quote-bg:    #E5F1F8;
+    --kr-skin-tag-bg:      #D4E8F2;
+    --kr-skin-banner-overlay: rgba(46, 132, 181, 0.42);
+}
+
+/* 周日 · 金辉庆典（Golden Sunday） */
+html[data-weekday-skin="sun"] {
+    --kr-skin-bg:          #F8E9C6;
+    --kr-skin-card-bg:     #FFFCF3;
+    --kr-skin-card-soft:   #FAF0D5;
+    --kr-skin-card-line:   #E9D4A1;
+    --kr-skin-heading:     #5F3E08;
+    --kr-skin-text:        #2C2620;
+    --kr-skin-muted:       #6F5C2D;
+    --kr-skin-link:        #8B5A0F;
+    --kr-skin-link-hover:  #5F3E08;
+    --kr-skin-accent:      #C28A2A;
+    --kr-skin-accent-hover:#9E6E1E;
+    --kr-skin-gold:        #D9A94A;
+    --kr-skin-quote-bg:    #FAEDC8;
+    --kr-skin-tag-bg:      #F1DFAA;
+    --kr-skin-banner-overlay: rgba(194, 138, 42, 0.40);
+}
+
+/* ===============================================================
+ * 1. 全局
+ *   .k-main.color / .banner 都用 inline style 写死背景，必须 !important。
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) body {
+    background-color: var(--kr-skin-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main {
+    background-color: var(--kr-skin-bg) !important;
+}
+
+/* 正文色：只作用在 .k-main 与说说容器内的段落/列表；避开页脚（深底浅字）、
+ * 导航（depending on banner mode）等已有自有配色的区域。 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main p,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main ol,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main ul,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo p,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo ul {
+    color: var(--kr-skin-text);
+}
+
+/* 链接默认色：同样收紧到内容区，避免污染导航/页脚/banner */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main a,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo a {
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main a:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo a:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+/* ===============================================================
+ * 2. Banner overlay
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-header .banner .overlay {
+    background-color: var(--kr-skin-banner-overlay);
+}
+
+/* ===============================================================
+ * 3. 文章列表
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a:hover {
+    color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content p {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta {
+    border-top-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label {
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label .label-arrow {
+    border-left-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .article-panel .search-title {
+    color: var(--kr-skin-heading);
+}
+
+/* ===============================================================
+ * 4. 分页（首页文章翻页）—— 复用说说分页的几何与对比关系
+ *   说说基线 (inc/theme-shuoshuo.php inline)：
+ *     .kss-pagination{display:flex;justify-content:center;gap:6px;}
+ *     .kss-page{min-width:34px;height:34px;padding:0 12px;border-radius:2px;
+ *               border:1px solid rgba(0,0,0,.08);background:#fff;color:link;}
+ *     :hover/.kss-current{background:accent;color:#fff;border-color:transparent;}
+ *     .kss-ellipsis{border:none;background:transparent;color:#999;}
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* 单个 page 按钮（数字/上一页/下一页）通用几何 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations a {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations a:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations .current {
+    background: var(--kr-skin-accent);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+}
+
+/* 省略号：透明底 + 灰字，不参与几何盒子 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-muted);
+    cursor: default;
+}
+
+/* ===============================================================
+ * 5. 文章正文
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .breadcrumb-box {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .header .meta {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .header .meta > span:not(:last-child):after {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content p {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+    background-color: transparent;
+    border-left: 3px solid var(--kr-skin-accent);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
+    background: var(--kr-skin-quote-bg);
+    border-left-color: var(--kr-skin-accent);
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content hr {
+    border-top-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content table th,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content table td {
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content table tr:nth-child(2n) {
+    background-color: var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main thead {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .copyright span {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .footer {
+    border-top-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .footer .tags span,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .footer .tool span {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .footer .tags a {
+    background-color: var(--kr-skin-tag-bg);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .downbtn {
+    border-color: var(--kr-skin-accent);
+    background: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .downbtn:hover {
+    background: var(--kr-skin-accent-hover);
+}
+
+/* 文章内分页（wp_link_pages 渲染的 .paginations）—— 同样对齐说说分页风格。
+ *  wp_link_pages 在 single.php/page.php 输出 <a><span>1</span></a> 与
+ *  <span class="current"><span>2</span></span> 的嵌套结构，故几何盒子放在内层 span 上。
+ */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .paginations span {
+    margin: 0 !important;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px !important;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1;
+    transition: all .2s ease;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    background: var(--kr-skin-accent);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+}
+
+/* ===============================================================
+ * 6. 文章导航上一篇 / 下一篇
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a {
+    color: var(--kr-skin-muted);
+}
+
+/* ===============================================================
+ * 7. 内容工具区（toolbar）
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar .motto {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar .meta .name a {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate {
+    border-color: var(--kr-skin-accent);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:focus,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:hover {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-accent);
+    color: #fff;
+}
+
+/* ===============================================================
+ * 8. 文章评论
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .title {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .list > li,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .children {
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name a {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p span {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta a {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment .avatar img {
+    border-color: var(--kr-skin-card-line);
+}
+
+/* 评论翻页 */
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage a {
+    background-color: var(--kr-skin-accent);
+    color: #fff;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage a:hover {
+    background-color: var(--kr-skin-accent-hover);
+}
+
+/* 评论表单 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .input-group-text,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .form-control {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .form-control::placeholder {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea {
+    border-color: var(--kr-skin-card-line);
+    background-color: var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea {
+    background-color: transparent;
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea::placeholder {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar {
+    background-color: var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn:hover {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .smile .smile-tabs {
+    background: var(--kr-skin-card-soft);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab {
+    border-right-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab.active {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile .smile-panel a {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .error {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary {
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary:hover {
+    background-color: var(--kr-skin-accent-hover);
+}
+
+/* ===============================================================
+ * 9. 侧边栏小工具
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .title {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .title::after {
+    background-color: var(--kr-skin-accent);
+}
+
+/* tags / 链接 / 分类 / 归档 / 目录 共用 a 颜色与边框 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_links ul li a,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li a,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li a,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a {
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background-color: var(--kr-skin-tag-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li {
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_links ul li:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+/* nav-tabs */
+html[data-weekday-skin]:not([data-theme="dark"]) .nav-tabs .nav-link {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .nav-tabs .nav-item.show .nav-link,
+html[data-weekday-skin]:not([data-theme="dark"]) .nav-tabs .nav-link.active {
+    background-color: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-accent);
+}
+
+/* 日历 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar tbody a {
+    background: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-accent);
+    color: var(--kr-skin-heading);
+}
+
+/* 评论 widget */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments a:not(:last-child) {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .message {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .author,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .date {
+    color: var(--kr-skin-muted);
+}
+
+/* 目录小工具 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc {
+    border-left-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::before,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::after {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li::before {
+    border-color: var(--kr-skin-card-bg);
+    background: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item li:hover::before {
+    background: var(--kr-skin-accent);
+}
+
+/* ===============================================================
+ * 10. 表单 / 输入控件兜底
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) input[type="text"],
+html[data-weekday-skin]:not([data-theme="dark"]) input[type="email"],
+html[data-weekday-skin]:not([data-theme="dark"]) input[type="url"],
+html[data-weekday-skin]:not([data-theme="dark"]) input[type="search"],
+html[data-weekday-skin]:not([data-theme="dark"]) input[type="password"],
+html[data-weekday-skin]:not([data-theme="dark"]) textarea,
+html[data-weekday-skin]:not([data-theme="dark"]) select {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line);
+}
+
+/* 评论验证码 input（.kratos-captcha-input）专门处理：
+ * 源样式（inc/theme-comment-captcha.php inline）用 #fff/#333/#ced4da/#336699。
+ * 上面的通用 input[type="text"] 已覆盖背景与文字色，但 placeholder 与 focus 边框
+ * 在玻璃拟态皮肤（mon/fri，card-soft 是 rgba(255,255,255,.40)）下浏览器默认
+ * placeholder 几乎不可见。这里强制用皮肤变量。 */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-captcha-input {
+    color: var(--kr-skin-text);
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-captcha-input::placeholder {
+    color: var(--kr-skin-muted);
+    opacity: 1;          /* Firefox 默认 0.54，覆盖让 muted 色更稳定可见 */
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-captcha-input:focus {
+    border-color: var(--kr-skin-accent);
+}
+
+/* 验证码题目文字 ".kratos-captcha-q"（如 "3 + 5 ="）也用皮肤 muted 色 */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-captcha-q {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .btn-search {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .dropdown-item.active,
+html[data-weekday-skin]:not([data-theme="dark"]) .dropdown-item:active {
+    background-color: var(--kr-skin-accent);
+}
+
+/* ===============================================================
+ * 11. 404
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .page404 .content .action .back-prevpage {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index {
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-link-hover);
+}
+
+/* ===============================================================
+ * 12. 页脚
+ *   .k-footer 用深灰 #23282d 背景 + #8e8e8e 浅灰字，本身已有足够对比度；
+ *   皮肤层不动页脚，避免把浅灰字染成深色导致看不见。
+ *   仅给 a:hover 一个皮肤色变化（hover 时短暂高亮即可，对比度问题不大）。
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer p a:hover {
+    color: var(--kr-skin-gold);
+}
+
+/* ===============================================================
+ * 13. 说说（page-shuoshuo / single-shuoshuo）
+ *   inc/theme-shuoshuo.php 用 inline CSS 写死了 #fff 卡片底 + #336699 引线，
+ *   皮肤层覆盖背景 + 强调色，不加边框。
+ * =============================================================== */
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item {
+    background: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author {
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author::before {
+    background: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-text {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-time {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle {
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle::after {
+    border-top-color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+/* 说说页面顶部标题卡 */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    background: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title::before {
+    background: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-subtitle {
+    color: var(--kr-skin-muted);
+}
+
+/* 说说单条页面的「返回」按钮
+ * 源样式（inc/theme-shuoshuo.php inline）：
+ *   .kratos-shuoshuo-back{background:#fff;border:1px solid rgba(0,0,0,.06);color:#666 !important;}
+ *   :hover{color:#336699 !important;border-color:rgba(51,102,153,.3);}
+ * inline 用了 !important，皮肤层必须同等强度才能覆盖。 */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo-back {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-muted) !important;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo-back:hover {
+    color: var(--kr-skin-link) !important;
+    border-color: var(--kr-skin-accent);
+    background: var(--kr-skin-card-soft);
+}
+
+/* 说说分页按钮（页面 .kss-pagination）
+ * 源样式 inline 用了 !important + 硬编码 #336699，需要同等强度。 */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-link) !important;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page:hover {
+    background: var(--kr-skin-accent);
+    border-color: var(--kr-skin-accent);
+    color: #fff !important;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current {
+    background: var(--kr-skin-accent);
+    border-color: var(--kr-skin-accent);
+    color: #fff !important;
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-shuoshuo .kss-ellipsis {
+    color: var(--kr-skin-muted) !important;
+    background: transparent;
+    border-color: transparent;
+}
+
+/* 工作日 mon~fri 的文章列表/详情标题统一用 heading 色 */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article h1,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h1,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h2,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h3,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h4,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h5,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h6 {
+    color: var(--kr-skin-heading);
+}
+
+/* ===============================================================
+ * 14. 节日感装饰（周六 / 周日）
+ *   只用 background-image 单属性叠纹理，不覆盖前面设置的 background-color。
+ * =============================================================== */
+
+/* 周六：极淡 135° 蓝色斜纹 */
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .k-main {
+    background-image: repeating-linear-gradient(
+        135deg,
+        transparent 0,
+        transparent 60px,
+        rgba(46, 132, 181, 0.05) 60px,
+        rgba(46, 132, 181, 0.05) 120px
+    ) !important;
+}
+
+/* 周日：浅金对角渐变 + 卡片右上角金色小星花 */
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main {
+    background-image: linear-gradient(
+        135deg,
+        rgba(217, 169, 74, 0.08) 0%,
+        rgba(217, 169, 74, 0) 50%,
+        rgba(217, 169, 74, 0.08) 100%
+    ) !important;
+}
+
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details {
+    position: relative;
+}
+
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .board .article-panel::after,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    width: 18px;
+    height: 18px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5Z' fill='%23D9A94A' fill-opacity='0.40'/></svg>") no-repeat center / contain;
+    pointer-events: none;
+}
+
+/* ===============================================================
+ * 14.5 浮动工具箱（搜索 / 置顶 / 微信 / 暗夜切换）按钮统一使用当天皮肤主色
+ *
+ * 原 style.css 给四个按钮设了同一灰底 rgba(132,132,132,.7)；
+ * dark.css 给 .darkmode 也是同款灰底。这里在皮肤激活时统一把它们改成
+ * --kr-skin-accent，让整个右下角工具栏与当天皮肤一致。
+ *
+ * .gotop 是只有 .active 时才显示灰底，未激活时透明 —— 这里也尊重原逻辑，
+ * 仅覆盖 .gotop.active 的背景色。
+ * =============================================================== */
+
+/* 浅色模式默认：用 color-mix 把强调色与白色按 55/45 调淡，得到柔和的"水洗"皮肤色。
+ * 周六/周日 节日感 + 暗夜模式回退到原灰底由后面的规则单独处理。 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
+    transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+
+/* -------- 周一 / 周五 · 玻璃拟态浮动按钮 --------
+ * 半透明白底 + backdrop-filter，与卡片同一视觉语言；
+ * 图标用皮肤 accent 描深以保证可读性 */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 16px rgba(31, 80, 130, 0.12);
+}
+
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span {
+    color: var(--kr-skin-heading);
+}
+
+/* darkmode-ico 用 SVG 背景，要重画一份带 stroke 的 SVG 替代原白色填充 */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231A3D5F'><path d='M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z'/></svg>");
+}
+
+/* search input 占位符的 placeholder 文字色（皮肤化） */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search input,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search input {
+    color: var(--kr-skin-heading);
+}
+
+/* -------- 周二 · Bauhaus 浮动按钮 --------
+ * 与卡片同款：原色背景 + 黑边 + 硬阴影方块 */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: #E8B62D;        /* 原色黄 */
+    border: 1.5px solid #1A1A1A;
+    border-radius: 0;
+    box-shadow: 3px 3px 0 #1A1A1A;
+}
+
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+    color: #1A1A1A;
+}
+
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231A1A1A'><path d='M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z'/></svg>");
+}
+
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search input {
+    color: #1A1A1A;
+}
+
+/* -------- 周三 · 新拟态浮动按钮 --------
+ * 凸起药丸：与背景同色 + 双向阴影 */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: #E4E9F0;
+    border: none;
+    border-radius: 14px;
+    box-shadow:
+        5px 5px 12px rgba(163, 177, 198, 0.55),
+        -5px -5px 12px rgba(255, 255, 255, 0.85);
+}
+
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+    color: #5E7CA6;
+}
+
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235E7CA6'><path d='M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z'/></svg>");
+}
+
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search input {
+    color: #2F3947;
+}
+
+/* -------- 周四 · 极简浮动按钮 --------
+ * 纯白底 + 1px 细灰边 + 无阴影，icon 用黑色 */
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: #FFFFFF;
+    border: 1px solid #ECECEC;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+    color: #0A0A0A;
+}
+
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230A0A0A'><path d='M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z'/></svg>");
+}
+
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search input {
+    color: #1A1A1A;
+}
+
+/* ===============================================================
+ * 走心评论页面（page-heart-comments）保护
+ *
+ *   走心评论 shortcode 自带 6 套完整的配色 scheme（parchment / sakura / mint /
+ *   sky / lavender / sunset），inc/theme-comment-heart.php 用 inline <style>
+ *   渲染。这套样式自洽美观，希望按用户选定的 scheme 完整呈现，不被皮肤层污染。
+ *
+ *   干扰来源：本表 §5 把 .k-main .details .article 染成 card-bg；
+ *   §15"形状层"把 .k-main .details 做玻璃/Bauhaus/新拟态/极简，外层就会多出
+ *   一圈不应该出现的边框/阴影/玻璃滤镜，盖在走心组件外面。
+ *
+ *   修复策略：走心页面模板加 body.is-kratos-heart-page 标记（PHP 端在
+ *   inc/theme-comment-heart.php 用 body_class filter 注入），CSS 端在此页面
+ *   撤销 §5 / §15 对外层 .details 的所有装饰，只保留布局间距，把"画布"
+ *   还给 shortcode 自己。
+ * =============================================================== */
+
+body.is-kratos-heart-page[class*=" "] .k-main .details,
+body.is-kratos-heart-page .k-main .details,
+body.is-kratos-heart-page .k-main .details .article {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* ===============================================================
+ * 15. 现代感"形状"层 —— 每个工作日独有的几何/阴影/模糊
+ *
+ *   §15 之前的所有规则都是"用变量改色"，结构沿用 dark.css 同款。
+ *   §15 在此基础上再叠"形状"——这才是让 5 套现代感真正不同的关键。
+ *
+ *   组织顺序：mon (Glass Cool) → tue (Bauhaus) → wed (Neumorphism)
+ *           → thu (Minimal) → fri (Glass Warm)
+ * =============================================================== */
+
+/* -------- 周一 · 玻璃拟态（冷调） -------- */
+
+/* body 加冷色径向渐变作为玻璃"背后的世界"，让 blur 有色可滤 */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) body {
+    background-image:
+        radial-gradient(at 20% 10%, rgba(120, 170, 220, 0.45) 0%, transparent 50%),
+        radial-gradient(at 85% 35%, rgba(170, 200, 230, 0.40) 0%, transparent 55%),
+        radial-gradient(at 50% 90%, rgba(140, 200, 220, 0.35) 0%, transparent 60%);
+}
+
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main {
+    background-color: transparent !important;
+}
+
+/* 半透明卡片 + backdrop-filter blur —— 玻璃拟态核心 */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 8px 32px rgba(31, 80, 130, 0.10);
+}
+
+/* -------- 周二 · 几何拼贴 Bauhaus -------- */
+
+/* body 加几何形状装饰：左上一个大圆，右下一个三角 */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) body {
+    background-image:
+        radial-gradient(circle at 8% 12%, #E8B62D 0, #E8B62D 60px, transparent 61px),
+        radial-gradient(circle at 92% 88%, #4A6FB5 0, #4A6FB5 40px, transparent 41px);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* 卡片黑色粗边框 + 硬阴影：Bauhaus 招牌 */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    border: 1.5px solid #1A1A1A;
+    border-radius: 0;
+    box-shadow: 4px 4px 0 #1A1A1A;
+}
+
+/* Bauhaus 标题用粗 sans-serif 大写 */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article h1,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .sidebar .title,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* tag 用黄底黑字（原色对比） */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background: #E8B62D !important;
+    color: #1A1A1A !important;
+    border: 1.5px solid #1A1A1A !important;
+    border-radius: 0;
+    font-weight: 600;
+}
+
+/* h2.title 改为黑色粗实心条 */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+    border-left: 6px solid #1A1A1A;
+    background: transparent;
+}
+
+/* 翻页方块去圆角 + 黑边 */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current {
+    border-radius: 0 !important;
+    border: 1.5px solid #1A1A1A !important;
+}
+
+/* -------- 周三 · 新拟态 Neumorphism -------- */
+
+/* Neumorphism 经典双向阴影：右下深 + 左上浅 */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    border-radius: 14px !important;
+    border: none !important;
+    box-shadow:
+        8px 8px 20px rgba(163, 177, 198, 0.55),
+        -8px -8px 20px rgba(255, 255, 255, 0.85);
+}
+
+/* 翻页按钮：凸起小药丸 */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
+    border: none !important;
+    border-radius: 12px !important;
+    background: #E4E9F0 !important;
+    box-shadow:
+        4px 4px 10px rgba(163, 177, 198, 0.55),
+        -4px -4px 10px rgba(255, 255, 255, 0.85) !important;
+}
+
+/* current/hover：凹陷效果（inset 阴影） */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .board .paginations a:hover,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page:hover {
+    background: #E4E9F0 !important;
+    color: var(--kr-skin-accent) !important;
+    box-shadow:
+        inset 4px 4px 10px rgba(163, 177, 198, 0.55),
+        inset -4px -4px 10px rgba(255, 255, 255, 0.85) !important;
+}
+
+/* -------- 周四 · 极简黑白 Minimal -------- */
+
+/* 卡片极简：1px 浅灰边，几乎无阴影 */
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    border: 1px solid #ECECEC;
+    box-shadow: none;
+}
+
+/* 极简文章标题：超粗 + 紧凑字距，向 Linear/Vercel 看齐 */
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .article h1,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* 极简 tag：去边框 + 浅灰底 */
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    border: none !important;
+    background: #F2F2F2 !important;
+}
+
+/* -------- 周五 · 玻璃拟态（暖调） -------- */
+
+/* body 加暖色径向渐变 */
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) body {
+    background-image:
+        radial-gradient(at 15% 15%, rgba(255, 180, 160, 0.45) 0%, transparent 50%),
+        radial-gradient(at 80% 30%, rgba(255, 200, 170, 0.40) 0%, transparent 55%),
+        radial-gradient(at 50% 85%, rgba(255, 170, 140, 0.35) 0%, transparent 60%);
+}
+
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main {
+    background-color: transparent !important;
+}
+
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 8px 32px rgba(180, 70, 50, 0.10);
+}
+
+/* ===============================================================
+ * 16. 暗夜模式 —— 复用 dark.css 骨架，仅替换主色
+ *
+ *   dark.css 把 --kr-link/--kr-accent 硬编码成蓝色 #6ea8ff / #4f86c6。
+ *   这里在暗夜模式下，把当天皮肤的 accent 注入这两个变量；
+ *   dark.css 内部的所有 var(--kr-link) / var(--kr-accent) 引用就跟着变了。
+ *
+ *   特殊处理：
+ *   - 周四（极简）暗夜下 accent 用冷白，与"极简"风格在暗夜下的合理形态对齐
+ *   - 周一 / 周五（玻璃拟态）暗夜下色相保留但变暗，避免高饱和破坏暗夜氛围
+ * =============================================================== */
+
+html[data-theme="dark"][data-weekday-skin="mon"] {
+    --kr-link: #88B8E0;
+    --kr-link-hover: #B0D0EE;
+    --kr-accent: #5A95C8;
+}
+
+html[data-theme="dark"][data-weekday-skin="tue"] {
+    --kr-link: #E07A6E;
+    --kr-link-hover: #F0A095;
+    --kr-accent: #D85E50;
+}
+
+html[data-theme="dark"][data-weekday-skin="wed"] {
+    --kr-link: #8AA0C4;
+    --kr-link-hover: #B0C0DC;
+    --kr-accent: #6E8AAF;
+}
+
+html[data-theme="dark"][data-weekday-skin="thu"] {
+    --kr-link: #E8E8E8;
+    --kr-link-hover: #FFFFFF;
+    --kr-accent: #C0C8D2;
+}
+
+html[data-theme="dark"][data-weekday-skin="fri"] {
+    --kr-link: #E89070;
+    --kr-link-hover: #F0AC92;
+    --kr-accent: #D87858;
+}
+
+html[data-theme="dark"][data-weekday-skin="sat"] {
+    --kr-link: #6BA8D0;
+    --kr-link-hover: #94C2E0;
+    --kr-accent: #4A92BC;
+}
+
+html[data-theme="dark"][data-weekday-skin="sun"] {
+    --kr-link: #E0B870;
+    --kr-link-hover: #F0CC8E;
+    --kr-accent: #C99E48;
+}
+
+/* ===============================================================
+ * 17. 暗夜模式下，关闭浅模式专属的"形状"层
+ *
+ *   §15 的玻璃 backdrop-filter、Bauhaus 粗边硬阴影、Neumorphism 双向阴影、
+ *   周六斜纹、周日金渐变与小星花 —— 在暗夜下都会破坏夜色氛围。
+ *   这里把它们全部还原为 dark.css 默认形态。
+ * =============================================================== */
+
+/* 工作日：还原 dark.css 的简洁卡片（深灰底 + 微弱阴影） */
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .details .post-navigation .nav-next,
+html[data-theme="dark"][data-weekday-skin="mon"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="mon"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="mon"] .kratos-shuoshuo-header,
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="tue"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="tue"] .kratos-shuoshuo-header,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .details .post-navigation .nav-next,
+html[data-theme="dark"][data-weekday-skin="wed"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="wed"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="wed"] .kratos-shuoshuo-header,
+html[data-theme="dark"][data-weekday-skin="thu"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="thu"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="thu"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="thu"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="thu"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="thu"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="thu"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="thu"] .kratos-shuoshuo-header,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .details .post-navigation .nav-next,
+html[data-theme="dark"][data-weekday-skin="fri"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="fri"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="fri"] .kratos-shuoshuo-header {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 暗夜下 body 不要 mon/tue/fri 的渐变与几何 */
+html[data-theme="dark"][data-weekday-skin="mon"] body,
+html[data-theme="dark"][data-weekday-skin="tue"] body,
+html[data-theme="dark"][data-weekday-skin="fri"] body {
+    background-image: none !important;
+}
+
+/* 暗夜下 sat/sun 的 .k-main 纹理关闭，回到 dark.css 纯深底 */
+html[data-theme="dark"][data-weekday-skin="sat"] .k-main,
+html[data-theme="dark"][data-weekday-skin="sun"] .k-main {
+    background-image: none !important;
+}
+
+/* 暗夜下周日卡片右上角小星花关闭 */
+html[data-theme="dark"][data-weekday-skin="sun"] .k-main .board .article-panel::after,
+html[data-theme="dark"][data-weekday-skin="sun"] .k-main .details::after {
+    display: none;
+}
+
+/* 暗夜下 Bauhaus 的 tag 黄底黑字 / h2.title 6px 粗条 不适合，关闭 */
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .details .article .footer .tags a,
+html[data-theme="dark"][data-weekday-skin="tue"] .k-main .sidebar .w-tags .item a {
+    background: #3a4150 !important;
+    color: #ececed !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-weight: normal;
+}
+
