@@ -437,9 +437,7 @@ function kratos_archives_stats_shortcode($atts = array())
             display: grid;
             gap: 12px;
         }
-        .kratos-archives-shortcode .kas-grid-cat {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
+        .kratos-archives-shortcode .kas-grid-cat,
         .kratos-archives-shortcode .kas-grid-tag {
             grid-template-columns: repeat(4, minmax(0, 1fr));
         }
@@ -528,9 +526,8 @@ function kratos_archives_stats_shortcode($atts = array())
             .kratos-archives-shortcode .kas-totals {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
-            .kratos-archives-shortcode .kas-grid-tag {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
+            .kratos-archives-shortcode .kas-grid-cat,
+            .kratos-archives-shortcode .kas-grid-tag,
             .kratos-archives-shortcode .kas-grid-time {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
