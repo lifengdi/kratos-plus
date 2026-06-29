@@ -8,7 +8,7 @@
  * @version 2025.02.08
  */
 
-define('THEME_VERSION', '1.0.0');
+define('THEME_VERSION', '1.0.2');
 
 if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;
