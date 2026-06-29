@@ -134,19 +134,6 @@ function kratos_heart_handle_toggle()
 add_action('admin_post_kratos_heart_mark', 'kratos_heart_handle_toggle');
 add_action('admin_post_kratos_heart_unmark', 'kratos_heart_handle_toggle');
 
-/**
- * 给应用了「走心评论」模板的页面加一个 body class，
- * 让皮肤层的 §15「现代感形状层」可以精准跳过这个页面，
- * 避免主题的边框/玻璃/阴影叠加破坏 shortcode 自带的 scheme 视觉。
- */
-function kratos_heart_body_class($classes)
-{
-    if (is_page_template('page-heart-comments.php')) {
-        $classes[] = 'is-kratos-heart-page';
-    }
-    return $classes;
-}
-add_filter('body_class', 'kratos_heart_body_class');
 
 /**
  * 批量操作
@@ -376,16 +363,9 @@ function kratos_heart_shortcode($atts)
     $title    = (string) $atts['title'];
     $subtitle = (string) $atts['subtitle'];
 
-    // 配色方案（后台可选择）
-    $valid_schemes = array('parchment', 'sakura', 'mint', 'sky', 'lavender', 'sunset');
-    $scheme = (string) kratos_option('g_comment_heart_scheme', 'parchment');
-    if (!in_array($scheme, $valid_schemes, true)) {
-        $scheme = 'parchment';
-    }
-
     ob_start();
     ?>
-    <div class="kratos-heart-shortcode khs-scheme-<?php echo esc_attr($scheme); ?>" id="kratos-heart-list">
+    <div class="kratos-heart-shortcode khs-scheme-parchment" id="kratos-heart-list">
         <?php if ($title !== '' || $subtitle !== '') { ?>
             <div class="khs-header">
                 <?php if ($title !== '') { ?>
@@ -566,7 +546,7 @@ function kratos_heart_shortcode($atts)
         .kratos-heart-shortcode .khs-title-icon{display:inline-flex;animation:khs-beat 1.6s infinite;}
         .kratos-heart-shortcode .khs-subtitle{margin:8px 0 0;font-size:13px;color:var(--khs-fg-dim);line-height:1.6;}
 
-        .kratos-heart-shortcode .khs-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:0 auto 24px;max-width:760px;}
+        .kratos-heart-shortcode .khs-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:0 0 24px;}
         .kratos-heart-shortcode .khs-stat{flex:1 1 200px;min-width:180px;display:flex;align-items:center;gap:14px;padding:18px 22px;background:var(--khs-card-bg);border-radius:14px;border:1px solid var(--khs-line);box-shadow:var(--khs-card-shadow);transition:all .25s ease;}
         .kratos-heart-shortcode .khs-stat:hover{transform:translateY(-2px);box-shadow:var(--khs-card-shadow-hv);border-color:var(--khs-line-strong);}
         .kratos-heart-shortcode .khs-stat-icon{flex-shrink:0;width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;background:linear-gradient(135deg,var(--khs-accent-2) 0%,var(--khs-accent) 100%);box-shadow:0 4px 10px rgba(0,0,0,.18);}

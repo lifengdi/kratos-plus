@@ -22,7 +22,7 @@ $kratos_cols = kratos_layout_cols(); ?>
 <div class="k-main <?php echo kratos_option('top_img_switch', true) ? 'banner' : 'color' ?>" style="background:<?php echo kratos_option('g_background', '#f5f5f5'); ?>">
     <div class="container">
         <div class="row">
-            <div class="<?php echo $kratos_cols['main']; ?>">
+            <div class="<?php echo $kratos_cols['main']; ?> details">
                 <?php if (have_posts()) : the_post();
                     update_post_caches($posts); ?>
                     <div class="content" id="lightgallery">

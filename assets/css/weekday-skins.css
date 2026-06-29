@@ -128,24 +128,25 @@ html[data-weekday-skin="thu"] {
     --kr-skin-banner-overlay: rgba(10, 10, 10, 0.55);
 }
 
-/* 周五 · 玻璃拟态 / 暖调（Glass · Warm）
- *   暖色珊瑚粉/桃橘渐变 body，卡片半透明白 + backdrop-filter blur */
+/* 周五 · 玻璃拟态 / 暖调（Glass · Warm）—— 焦糖琥珀
+ *   暖色琥珀/焦糖渐变 body，卡片半透明白 + backdrop-filter blur
+ *   与周日金辉（明黄日光）做出区分：周五更偏深焦糖、棕琥珀，沉稳的"周末傍晚" */
 html[data-weekday-skin="fri"] {
-    --kr-skin-bg:          #FCE8DC;
+    --kr-skin-bg:          #F5E6CC;
     --kr-skin-card-bg:     rgba(255, 255, 255, 0.55);
     --kr-skin-card-soft:   rgba(255, 255, 255, 0.40);
-    --kr-skin-card-line:   rgba(220, 110, 90, 0.18);
-    --kr-skin-heading:     #6B2B1C;
-    --kr-skin-text:        #4A2820;
-    --kr-skin-muted:       #8A6A5A;
-    --kr-skin-link:        #C25540;
-    --kr-skin-link-hover:  #8B3A28;
-    --kr-skin-accent:      #E0735A;
-    --kr-skin-accent-hover:#C25540;
-    --kr-skin-gold:        #E0735A;
+    --kr-skin-card-line:   rgba(160, 100, 40, 0.18);
+    --kr-skin-heading:     #5A3A12;
+    --kr-skin-text:        #4A3418;
+    --kr-skin-muted:       #8A6F4A;
+    --kr-skin-link:        #A86420;
+    --kr-skin-link-hover:  #7A4612;
+    --kr-skin-accent:      #C8862E;
+    --kr-skin-accent-hover:#A86420;
+    --kr-skin-gold:        #C8862E;
     --kr-skin-quote-bg:    rgba(255, 255, 255, 0.40);
-    --kr-skin-tag-bg:      rgba(224, 115, 90, 0.14);
-    --kr-skin-banner-overlay: rgba(107, 43, 28, 0.48);
+    --kr-skin-tag-bg:      rgba(200, 134, 46, 0.14);
+    --kr-skin-banner-overlay: rgba(90, 58, 18, 0.48);
 }
 
 /* 周六 · 海滨度假（Seaside Festival） */
@@ -184,6 +185,27 @@ html[data-weekday-skin="sun"] {
     --kr-skin-quote-bg:    #FAEDC8;
     --kr-skin-tag-bg:      #F1DFAA;
     --kr-skin-banner-overlay: rgba(194, 138, 42, 0.40);
+}
+
+/* Parchment · 羊皮纸（仅 locked 模式可选）
+ *   配色参照 demo.zhoutian.com 的 Riven 主题：偏冷米灰 + 棕褐/金/绛红三档点缀
+ *   字体用霞鹜文楷 / 汉仪尚巍手书等中式字体（fallback 系统衬线） */
+html[data-weekday-skin="parchment"] {
+    --kr-skin-bg:          #F7F4EE;
+    --kr-skin-card-bg:     #FBFAF7;
+    --kr-skin-card-soft:   #F2EEE8;
+    --kr-skin-card-line:   #DDD6CC;
+    --kr-skin-heading:     #3E3934;
+    --kr-skin-text:        #4B463F;
+    --kr-skin-muted:       #8C857D;
+    --kr-skin-link:        #6E4F2F;
+    --kr-skin-link-hover:  #3E3934;
+    --kr-skin-accent:      #6E4F2F;
+    --kr-skin-accent-hover:#3E3934;
+    --kr-skin-gold:        #A78C63;
+    --kr-skin-quote-bg:    #F2EEE8;
+    --kr-skin-tag-bg:      #F2EEE8;
+    --kr-skin-banner-overlay: rgba(62, 57, 52, 0.55);
 }
 
 /* ===============================================================
@@ -681,7 +703,7 @@ html[data-weekday-skin]:not([data-theme="dark"]) .nav-tabs .nav-link {
 
 html[data-weekday-skin]:not([data-theme="dark"]) .nav-tabs .nav-item.show .nav-link,
 html[data-weekday-skin]:not([data-theme="dark"]) .nav-tabs .nav-link.active {
-    background-color: var(--kr-skin-card-bg);
+    background-color: transparent !important;
     color: var(--kr-skin-heading);
     border-bottom-color: var(--kr-skin-accent);
 }
@@ -1111,34 +1133,6 @@ html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .sea
 }
 
 /* ===============================================================
- * 走心评论页面（page-heart-comments）保护
- *
- *   走心评论 shortcode 自带 6 套完整的配色 scheme（parchment / sakura / mint /
- *   sky / lavender / sunset），inc/theme-comment-heart.php 用 inline <style>
- *   渲染。这套样式自洽美观，希望按用户选定的 scheme 完整呈现，不被皮肤层污染。
- *
- *   干扰来源：本表 §5 把 .k-main .details .article 染成 card-bg；
- *   §15"形状层"把 .k-main .details 做玻璃/Bauhaus/新拟态/极简，外层就会多出
- *   一圈不应该出现的边框/阴影/玻璃滤镜，盖在走心组件外面。
- *
- *   修复策略：走心页面模板加 body.is-kratos-heart-page 标记（PHP 端在
- *   inc/theme-comment-heart.php 用 body_class filter 注入），CSS 端在此页面
- *   撤销 §5 / §15 对外层 .details 的所有装饰，只保留布局间距，把"画布"
- *   还给 shortcode 自己。
- * =============================================================== */
-
-body.is-kratos-heart-page[class*=" "] .k-main .details,
-body.is-kratos-heart-page .k-main .details,
-body.is-kratos-heart-page .k-main .details .article {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-}
-
-/* ===============================================================
  * 15. 现代感"形状"层 —— 每个工作日独有的几何/阴影/模糊
  *
  *   §15 之前的所有规则都是"用变量改色"，结构沿用 dark.css 同款。
@@ -1313,12 +1307,12 @@ html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .sidebar .w-tags 
 
 /* -------- 周五 · 玻璃拟态（暖调） -------- */
 
-/* body 加暖色径向渐变 */
+/* body 加焦糖琥珀径向渐变 */
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) body {
     background-image:
-        radial-gradient(at 15% 15%, rgba(255, 180, 160, 0.45) 0%, transparent 50%),
-        radial-gradient(at 80% 30%, rgba(255, 200, 170, 0.40) 0%, transparent 55%),
-        radial-gradient(at 50% 85%, rgba(255, 170, 140, 0.35) 0%, transparent 60%);
+        radial-gradient(at 15% 15%, rgba(220, 160, 80, 0.45) 0%, transparent 50%),
+        radial-gradient(at 80% 30%, rgba(232, 180, 110, 0.40) 0%, transparent 55%),
+        radial-gradient(at 50% 85%, rgba(210, 140, 60, 0.35) 0%, transparent 60%);
 }
 
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main {
@@ -1339,6 +1333,126 @@ html[data-weekday-skin="fri"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid rgba(255, 255, 255, 0.55);
     box-shadow: 0 8px 32px rgba(180, 70, 50, 0.10);
+}
+
+/* -------- Parchment · 羊皮纸（与归档页 parchment scheme 一致） --------
+ * body 加做旧米色径向渐变 + 噪点 SVG，让整站像写在一张羊皮纸上。
+ * 卡片用半透明米黄 + 浅金细描边，呈现"纸上贴卡"的层次。 */
+
+/* parchment body：纯米灰底 + 两侧水墨竹丛 SVG 装饰
+ *   - 左侧竹丛：3 根粗细高低不一的竹竿 + 散落竹叶，fixed 在视口左缘
+ *   - 右侧竹丛：另一组构图（更稀疏，与左侧呼应不重复）
+ *   - 角落两处极淡晕染补足氛围
+ *
+ *   SVG 全部用 rgba(62, 57, 52, 0.10~0.18) 浅墨色，opacity 控制在轻盈范围，
+ *   只在 ≥1280px 桌面显示，中小屏自动隐藏避免与主内容重叠。 */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) body {
+    background-color: #F7F4EE;
+    background-image:
+        /* 左侧竹丛：3 根高竹 + 9 片散叶
+         *   竹竿改用二次贝塞尔（单控制点），形成自然弓形 —— 整体几乎笔直，
+         *   仅中部~顶部有一个柔和的弧度（仿被风吹后的恒定单向弯）。
+         *   节横线按曲线 x 取值，与竹竿严丝合缝。 */
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 800' width='180' height='800'><g stroke='%233E3934' stroke-linecap='round' fill='none'><g stroke-opacity='0.18' stroke-width='3.5'><path d='M52 800 Q 50 400 58 0'/><path d='M50 670 L 54 670 M 50 540 L 54 540 M 51 410 L 55 410 M 52 290 L 56 290 M 53 180 L 57 180 M 55 80 L 59 80'/></g><g stroke-opacity='0.14' stroke-width='2.8'><path d='M110 800 Q 118 380 110 50'/><path d='M110 720 L 114 720 M 112 590 L 116 590 M 113 470 L 117 470 M 113 360 L 117 360 M 112 230 L 116 230 M 110 130 L 114 130'/></g><g stroke-opacity='0.10' stroke-width='2.2'><path d='M22 800 Q 14 380 18 140'/><path d='M17 620 L 21 620 M 16 500 L 20 500 M 15 390 L 19 390 M 15 290 L 19 290 M 15 200 L 19 200'/></g></g><g fill='%233E3934'><g fill-opacity='0.20'><path d='M58 60 Q 80 50 94 32 Q 80 60 62 66 Z'/><path d='M52 170 Q 30 158 18 140 Q 30 168 48 176 Z'/><path d='M56 300 Q 80 285 96 265 Q 80 300 60 310 Z'/></g><g fill-opacity='0.15'><path d='M114 130 Q 140 116 156 96 Q 138 130 118 138 Z'/><path d='M112 250 Q 88 238 74 218 Q 90 254 106 260 Z'/><path d='M118 370 Q 144 355 160 335 Q 144 372 122 380 Z'/><path d='M115 500 Q 91 488 77 468 Q 91 506 109 510 Z'/></g><g fill-opacity='0.12'><path d='M19 230 Q 40 215 52 196 Q 38 232 25 240 Z'/><path d='M15 360 Q -3 348 -11 328 Q -1 362 13 370 Z'/></g></g></svg>"),
+        /* 右侧竹丛：2 根细竹 + 6 片散叶（更疏朗） */
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 800' width='160' height='800'><g stroke='%233E3934' stroke-linecap='round' fill='none'><g stroke-opacity='0.15' stroke-width='3'><path d='M48 800 Q 56 400 50 30'/><path d='M48 720 L 52 720 M 49 600 L 53 600 M 50 470 L 54 470 M 50 340 L 54 340 M 50 210 L 54 210 M 49 100 L 53 100'/></g><g stroke-opacity='0.10' stroke-width='2.2'><path d='M120 800 Q 110 460 116 180'/><path d='M113 600 L 117 600 M 112 470 L 116 470 M 112 350 L 116 350 M 113 240 L 117 240'/></g></g><g fill='%233E3934'><g fill-opacity='0.17'><path d='M52 100 Q 28 88 12 70 Q 28 106 46 112 Z'/><path d='M56 230 Q 80 218 96 198 Q 82 234 62 240 Z'/><path d='M52 370 Q 28 358 12 338 Q 28 372 46 380 Z'/></g><g fill-opacity='0.12'><path d='M113 260 Q 90 248 78 230 Q 90 264 106 270 Z'/><path d='M115 400 Q 138 388 152 370 Q 138 406 120 412 Z'/><path d='M113 530 Q 90 518 78 498 Q 90 534 106 540 Z'/></g></g></svg>"),
+        /* 角落晕染 */
+        radial-gradient(ellipse 60% 40% at 0% 0%, rgba(62, 57, 52, 0.04), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(62, 57, 52, 0.04), transparent 70%);
+    background-position:
+        0 50%,                    /* 左竹丛：贴左缘垂直居中 */
+        100% 50%,                 /* 右竹丛：贴右缘垂直居中 */
+        0 0,
+        100% 100%;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-attachment: fixed, fixed, fixed, fixed;
+    background-size:
+        180px 800px,
+        160px 800px,
+        auto,
+        auto;
+    /* 中式字体栈 —— 与 Riven 同源：霞鹜文楷 / 思源宋体 / 系统楷宋 */
+    font-family: "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版",
+                 "Noto Serif SC", "Source Han Serif SC",
+                 "Songti SC", "STSong", "宋体", serif;
+}
+
+/* 中小屏隐藏竹丛，避免与正文卡片重叠 */
+@media (max-width: 1280px) {
+    html[data-weekday-skin="parchment"]:not([data-theme="dark"]) body {
+        background-image:
+            radial-gradient(ellipse 60% 40% at 0% 0%, rgba(62, 57, 52, 0.04), transparent 70%),
+            radial-gradient(ellipse 60% 40% at 100% 100%, rgba(62, 57, 52, 0.04), transparent 70%);
+        background-position: 0 0, 100% 100%;
+        background-size: auto, auto;
+    }
+}
+
+/* 标题用更具书法感的字体（fallback 楷体） */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article h1,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article h2,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article h3,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article h4,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .widget .title,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    font-family: "汉仪尚巍手书", "HYShangWeiShouShuW",
+                 "STKaiti", "Kaiti SC", "KaiTi", "楷体",
+                 "Songti SC", "STSong", "宋体", serif;
+    letter-spacing: 0.02em;
+}
+
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main {
+    background-color: transparent !important;
+}
+
+/* 卡片：米白 + 暖灰极淡边线 + 柔和投影（Riven --control-shadow 同款偏移）
+ * 注意：仅作用在内容卡片上；外层主列容器 .k-main .details 自身保持透明无装饰，
+ * 让竹丛背景能直接透过来，避免页面正中再画一圈大方框。 */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    background-color: #FBFAF7;
+    border: 1px solid #E7E1D8;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(62, 57, 52, 0.06);
+}
+
+/* 外层 .k-main .details 显式去掉边框/背景/阴影
+ * 之前来自 §5 的 background-color: var(--kr-skin-card-bg) 会被这条覆盖。 */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* tag 用次级米灰底 + 主边线 + 棕褐字（Riven --bg-soft + --line-primary 组合） */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background: #F2EEE8 !important;
+    border: 1px solid #DDD6CC !important;
+    color: #6E4F2F !important;
+    border-radius: 6px !important;
+}
+
+/* 引用块：左 3px 棕褐 + 次级底 */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
+    background: #F2EEE8;
+    border-left: 3px solid #6E4F2F;
+    color: #4B463F;
+}
+
+/* h2.title 装饰条改成竖向棕褐 3px */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+    border-left: 3px solid #6E4F2F;
+    background: transparent;
+    padding-left: 14px;
 }
 
 /* ===============================================================
@@ -1393,6 +1507,12 @@ html[data-theme="dark"][data-weekday-skin="sun"] {
     --kr-link: #E0B870;
     --kr-link-hover: #F0CC8E;
     --kr-accent: #C99E48;
+}
+
+html[data-theme="dark"][data-weekday-skin="parchment"] {
+    --kr-link: #D8A868;
+    --kr-link-hover: #F0C588;
+    --kr-accent: #C89048;
 }
 
 /* ===============================================================
@@ -1457,11 +1577,29 @@ html[data-theme="dark"][data-weekday-skin="fri"] .kratos-shuoshuo-header {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* 暗夜下 body 不要 mon/tue/fri 的渐变与几何 */
+/* 暗夜下 body 不要 mon/tue/fri/parchment 的渐变与几何 */
 html[data-theme="dark"][data-weekday-skin="mon"] body,
 html[data-theme="dark"][data-weekday-skin="tue"] body,
-html[data-theme="dark"][data-weekday-skin="fri"] body {
+html[data-theme="dark"][data-weekday-skin="fri"] body,
+html[data-theme="dark"][data-weekday-skin="parchment"] body {
     background-image: none !important;
+}
+
+/* 暗夜下 parchment 卡片还原为 dark.css 简洁深灰（去米色背景与边框） */
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .post-navigation .nav-next,
+html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-shuoshuo-header {
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* 暗夜下 sat/sun 的 .k-main 纹理关闭，回到 dark.css 纯深底 */
@@ -1484,5 +1622,100 @@ html[data-theme="dark"][data-weekday-skin="tue"] .k-main .sidebar .w-tags .item 
     border: none !important;
     border-radius: 4px !important;
     font-weight: normal;
+}
+
+/* ===============================================================
+ * 18. 自渲染 shortcode 跟随皮肤
+ *
+ *   走心评论 ([heart_comments]) 与 归档统计 ([archives_stats]) 都用 inline
+ *   <style> 自带完整配色，靠 --khs-* / --kas-* 变量驱动。
+ *
+ *   皮肤激活时把这两套变量改写到 --kr-skin-* 体系，让两个 shortcode 跟着
+ *   当天皮肤色走；同时关掉 parchment scheme 外层 .kratos-heart-shortcode
+ *   自带的羊皮纸大背景 / clip-path 锯齿 / 噪点伪元素 —— 让 shortcode 与
+ *   皮肤底色融合，而不是顶着一张做旧米色纸面。
+ *
+ *   暗夜模式下，--kr-skin-* 仍生效（变量定义在 html[data-weekday-skin]
+ *   而非 :not([data-theme="dark"]) 上），故无需为 dark 单独写一份。
+ * =============================================================== */
+
+/* ---- 走心评论：变量重映射 ---- */
+html[data-weekday-skin] .kratos-heart-shortcode {
+    --khs-bg-1: var(--kr-skin-bg) !important;
+    --khs-bg-2: var(--kr-skin-bg) !important;
+    --khs-bg-3: var(--kr-skin-bg) !important;
+    --khs-fg: var(--kr-skin-text) !important;
+    --khs-fg-soft: var(--kr-skin-text) !important;
+    --khs-fg-dim: var(--kr-skin-muted) !important;
+    --khs-fg-mute: var(--kr-skin-muted) !important;
+    --khs-accent: var(--kr-skin-accent) !important;
+    --khs-accent-2: var(--kr-skin-accent-hover) !important;
+    --khs-line: var(--kr-skin-card-line) !important;
+    --khs-line-strong: var(--kr-skin-accent) !important;
+    --khs-card-bg: var(--kr-skin-card-bg) !important;
+    --khs-page-on: #fff !important;
+    /* stat 三个图标渐变也用皮肤色，避免出现羊皮纸的橘色调 */
+    --khs-stat-comment-1: var(--kr-skin-accent) !important;
+    --khs-stat-comment-2: var(--kr-skin-accent-hover) !important;
+    --khs-stat-post-1: var(--kr-skin-accent) !important;
+    --khs-stat-post-2: var(--kr-skin-accent-hover) !important;
+    --khs-stat-user-1: var(--kr-skin-accent) !important;
+    --khs-stat-user-2: var(--kr-skin-accent-hover) !important;
+    --khs-heart-fill: var(--kr-skin-accent) !important;
+}
+
+/* parchment scheme 自带羊皮纸大背景 + clip-path 锯齿 + 噪点伪元素 ——
+ * 跟皮肤打架，必须强行关闭。其他 scheme（sakura/mint/sky/lavender/sunset）
+ * 没有这些装饰，无需特殊处理。 */
+html[data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+}
+html[data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment::after {
+    display: none !important;
+}
+
+/* 走心 stat / card 在皮肤激活时不要旧的橘色边框阴影，重定义为皮肤色边 */
+html[data-weekday-skin] .kratos-heart-shortcode .khs-stat,
+html[data-weekday-skin] .kratos-heart-shortcode .khs-card {
+    border-color: var(--kr-skin-card-line) !important;
+}
+
+/* ---- 归档统计：变量重映射 ---- */
+html[data-weekday-skin] .kratos-archives-shortcode {
+    --kas-bg-1: var(--kr-skin-bg) !important;
+    --kas-bg-2: var(--kr-skin-bg) !important;
+    --kas-bg-3: var(--kr-skin-bg) !important;
+    --kas-fg: var(--kr-skin-text) !important;
+    --kas-fg-soft: var(--kr-skin-text) !important;
+    --kas-fg-dim: var(--kr-skin-muted) !important;
+    --kas-fg-mute: var(--kr-skin-muted) !important;
+    --kas-accent: var(--kr-skin-accent) !important;
+    --kas-accent-2: var(--kr-skin-accent-hover) !important;
+    --kas-line: var(--kr-skin-card-line) !important;
+    --kas-line-strong: var(--kr-skin-accent) !important;
+    --kas-card-bg: var(--kr-skin-card-bg) !important;
+}
+
+/* parchment scheme 同样关掉自带的羊皮纸 outer 背景 + 噪点伪元素 */
+html[data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+html[data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+
+/* 归档 pill / total card / section 在皮肤激活时跟皮肤边色 */
+html[data-weekday-skin] .kratos-archives-shortcode .kas-pill,
+html[data-weekday-skin] .kratos-archives-shortcode .kas-pill-count,
+html[data-weekday-skin] .kratos-archives-shortcode .kas-total,
+html[data-weekday-skin] .kratos-archives-shortcode .kas-section,
+html[data-weekday-skin] .kratos-archives-shortcode .kas-header {
+    border-color: var(--kr-skin-card-line) !important;
 }
 

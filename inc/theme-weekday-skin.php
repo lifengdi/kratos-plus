@@ -34,17 +34,20 @@ function kratos_weekday_slugs()
     return array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
 }
 
-/** 后台「锁定皮肤」下拉的可选值，包含中英文 label。 */
+/** 后台「锁定皮肤」下拉的可选值，包含中英文 label。
+ *  注意：parchment 是仅供「锁定单一皮肤」使用的额外皮肤，不参与 auto 模式
+ *  按 slug 索引（kratos_weekday_slugs 仍是 sun~sat 7 天）。 */
 function kratos_weekday_options()
 {
     return array(
-        'mon' => __('周一 · 玻璃拟态（冷）', 'kratos'),
-        'tue' => __('周二 · 几何拼贴 Bauhaus', 'kratos'),
-        'wed' => __('周三 · 新拟态', 'kratos'),
-        'thu' => __('周四 · 极简黑白', 'kratos'),
-        'fri' => __('周五 · 玻璃拟态（暖）', 'kratos'),
-        'sat' => __('周六 · 海滨度假', 'kratos'),
-        'sun' => __('周日 · 金辉庆典', 'kratos'),
+        'mon' => __('周一 · 清玻', 'kratos'),
+        'tue' => __('周二 · 拼贴', 'kratos'),
+        'wed' => __('周三 · 凝脂', 'kratos'),
+        'thu' => __('周四 · 素白', 'kratos'),
+        'fri' => __('周五 · 琥珀', 'kratos'),
+        'sat' => __('周六 · 海滨', 'kratos'),
+        'sun' => __('周日 · 金辉', 'kratos'),
+        'parchment' => __('羊皮', 'kratos'),
     );
 }
 
