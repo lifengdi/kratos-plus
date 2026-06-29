@@ -208,6 +208,30 @@ html[data-weekday-skin="parchment"] {
     --kr-skin-banner-overlay: rgba(62, 57, 52, 0.55);
 }
 
+/* Silk · 黄绢（仅 locked 模式可选）
+ *   配色完全复刻 archives shortcode 默认 parchment scheme：暖米黄做旧 + 噪点纸纹。
+ *   主色严格对齐 --kas-* 变量：
+ *     bg #F5E7C4/#EFD9A9/#E9CC91, fg #3A2A10, soft #5A3A14, dim #7A5A26
+ *     accent #7A3F12 → accent-2 #A86028
+ *     line rgba(120, 80, 30, 0.22) / strong .40 */
+html[data-weekday-skin="silk"] {
+    --kr-skin-bg:          #EFD9A9;
+    --kr-skin-card-bg:     rgba(255, 250, 232, 0.78);
+    --kr-skin-card-soft:   rgba(255, 250, 232, 0.55);
+    --kr-skin-card-line:   rgba(120, 80, 30, 0.22);
+    --kr-skin-heading:     #3A2A10;
+    --kr-skin-text:        #3A2A10;
+    --kr-skin-muted:       #7A5A26;
+    --kr-skin-link:        #7A3F12;
+    --kr-skin-link-hover:  #5A2D0A;
+    --kr-skin-accent:      #7A3F12;
+    --kr-skin-accent-hover:#A86028;
+    --kr-skin-gold:        #A86028;
+    --kr-skin-quote-bg:    rgba(255, 250, 232, 0.78);
+    --kr-skin-tag-bg:      rgba(255, 250, 232, 0.78);
+    --kr-skin-banner-overlay: rgba(58, 42, 16, 0.55);
+}
+
 /* ===============================================================
  * 1. 全局
  *   .k-main.color / .banner 都用 inline style 写死背景，必须 !important。
@@ -1455,6 +1479,110 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .a
     padding-left: 14px;
 }
 
+/* -------- Silk · 黄绢（完整复刻 archives shortcode parchment scheme） --------
+ * 装饰完全照搬归档页默认 scheme：
+ *   - body：4 层径向渐变（左上/右下暖褐 + 中心暖白 + 整体米黄 linear）
+ *   - body::before：feTurbulence 噪点纸纹（opacity .35, multiply）
+ *   - .k-main：inset 60px 暖褐内阴影（仿做旧焦边）
+ *   - 卡片：半透明米白 .78 + 浅褐细边 + 暖褐阴影
+ *   - 卡片 hover：上浮 + 暖褐阴影加深 + 边色加深到 .40
+ *   - tag/h2.title 棕褐点缀 */
+
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) body {
+    background-color: #EFD9A9;
+    background-image:
+        radial-gradient(ellipse at top left, rgba(120, 80, 30, 0.18), transparent 55%),
+        radial-gradient(ellipse at bottom right, rgba(120, 80, 30, 0.20), transparent 60%),
+        radial-gradient(ellipse at center, rgba(255, 243, 206, 0.45), transparent 70%),
+        linear-gradient(135deg, #F5E7C4 0%, #EFD9A9 50%, #E9CC91 100%);
+    background-attachment: fixed;
+    position: relative;
+}
+
+/* body 噪点纸纹：用 ::before fixed 覆盖全屏，feTurbulence 滤镜 + multiply 混合 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.40  0 0 0 0 0.20  0 0 0 0.6 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+    background-size: 240px 240px;
+}
+
+/* 让真实内容在噪点之上 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* .k-main：透明背景 + inset 60px 暖褐内阴影（仿做旧焦边） */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main {
+    background-color: transparent !important;
+    box-shadow: inset 0 0 80px rgba(120, 80, 30, 0.12);
+}
+
+/* 卡片：照搬 archives 的 --kas-card-bg / --kas-line / --kas-card-shadow */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    background-color: rgba(255, 250, 232, 0.78);
+    border: 1px solid rgba(120, 80, 30, 0.22);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(120, 80, 30, 0.10);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+/* hover：照搬 archives 的 --kas-card-shadow-hv */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .board .article-panel:hover,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .widget:hover,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(120, 80, 30, 0.22);
+    border-color: rgba(120, 80, 30, 0.40);
+}
+
+/* .k-main .details 外层透明（让 body 做旧效果穿透） */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* tag 沿用 archives pill 同款：半透明米白 + 浅褐边 + 棕褐字 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background: rgba(255, 250, 232, 0.78) !important;
+    border: 1px solid rgba(120, 80, 30, 0.22) !important;
+    color: #7A3F12 !important;
+    border-radius: 10px !important;
+}
+
+/* h2.title 装饰条 + 内边距与 archives section-head 同步 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+    border-left: 3px solid #A86028;
+    background: transparent;
+    padding-left: 14px;
+}
+
+/* blockquote 仿 archives pill 卡片质感 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
+    background: rgba(255, 250, 232, 0.78);
+    border-left: 3px solid #A86028;
+    color: #5A3A14;
+    border-radius: 10px;
+}
+
 /* ===============================================================
  * 16. 暗夜模式 —— 复用 dark.css 骨架，仅替换主色
  *
@@ -1512,6 +1640,12 @@ html[data-theme="dark"][data-weekday-skin="sun"] {
 html[data-theme="dark"][data-weekday-skin="parchment"] {
     --kr-link: #D8A868;
     --kr-link-hover: #F0C588;
+    --kr-accent: #C89048;
+}
+
+html[data-theme="dark"][data-weekday-skin="silk"] {
+    --kr-link: #E0B070;
+    --kr-link-hover: #F5CC8C;
     --kr-accent: #C89048;
 }
 
@@ -1577,15 +1711,16 @@ html[data-theme="dark"][data-weekday-skin="fri"] .kratos-shuoshuo-header {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* 暗夜下 body 不要 mon/tue/fri/parchment 的渐变与几何 */
+/* 暗夜下 body 不要 mon/tue/fri/parchment/silk 的渐变与几何 */
 html[data-theme="dark"][data-weekday-skin="mon"] body,
 html[data-theme="dark"][data-weekday-skin="tue"] body,
 html[data-theme="dark"][data-weekday-skin="fri"] body,
-html[data-theme="dark"][data-weekday-skin="parchment"] body {
+html[data-theme="dark"][data-weekday-skin="parchment"] body,
+html[data-theme="dark"][data-weekday-skin="silk"] body {
     background-image: none !important;
 }
 
-/* 暗夜下 parchment 卡片还原为 dark.css 简洁深灰（去米色背景与边框） */
+/* 暗夜下 parchment / silk 卡片还原为 dark.css 简洁深灰（去米色背景与边框） */
 html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .board .article-panel,
 html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details,
 html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .article,
@@ -1595,7 +1730,17 @@ html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .post-na
 html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .details .post-navigation .nav-next,
 html[data-theme="dark"][data-weekday-skin="parchment"] .k-main .sidebar .widget,
 html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-shuoshuo .kss-item,
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-shuoshuo-header {
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-shuoshuo-header,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .details .post-navigation .nav-next,
+html[data-theme="dark"][data-weekday-skin="silk"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="silk"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="silk"] .kratos-shuoshuo-header {
     background-color: transparent !important;
     border: none !important;
     border-radius: 0 !important;
@@ -1718,4 +1863,10 @@ html[data-weekday-skin] .kratos-archives-shortcode .kas-section,
 html[data-weekday-skin] .kratos-archives-shortcode .kas-header {
     border-color: var(--kr-skin-card-line) !important;
 }
+
+/* ---- 「黄绢」皮肤下，归档页 outer container 关掉自带装饰（避免双重装饰）----
+ * silk 全站已经在 body + .k-main 复刻了相同的做旧效果，归档 shortcode 再
+ * 单独画一遍渐变 + 噪点会出现"盒子套盒子"，所以保持 §18 早先的 outer
+ * 关闭即可。但变量重写要部分还原，让 pill/total/卡片仍走 archives 自家
+ * 配色（其实色值与 silk 一致，所以行为完全一样）。 */
 

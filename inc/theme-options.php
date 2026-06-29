@@ -549,6 +549,7 @@ CSF::createSection($prefix, array(
                 'sat'       => __('周六 · 海滨', 'kratos'),
                 'sun'       => __('周日 · 金辉', 'kratos'),
                 'parchment' => __('羊皮', 'kratos'),
+                'silk'      => __('黄绢', 'kratos'),
             ),
             'default' => 'mon',
             'dependency' => array('g_weekday_skin_mode', '==', 'locked'),
