@@ -581,3 +581,18 @@ function kratos_shuoshuo_assets()
  *     只要把容器套在 id="lightgallery" 内、链接是图片后缀即可。
  *   - 点赞：套用 .btn-thumbs / data-id / data-action="love"，由 kratos.js 的 postLikeConfig() 接管。
  */
+
+/**
+ * 给说说列表页 / 单条说说详情页注入 body class `is-kratos-shuoshuo-page`，
+ * 让皮肤层精准豁免 §15 / §18 对外层 .details 的装饰，避免说说卡片外面再套一层皮肤卡。
+ */
+function kratos_shuoshuo_body_class($classes)
+{
+    if (is_singular('shuoshuo')) {
+        $classes[] = 'is-kratos-shuoshuo-page';
+    } elseif (is_page() && function_exists('is_page_template') && is_page_template('page-shuoshuo.php')) {
+        $classes[] = 'is-kratos-shuoshuo-page';
+    }
+    return $classes;
+}
+add_filter('body_class', 'kratos_shuoshuo_body_class');

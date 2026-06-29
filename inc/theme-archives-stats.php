@@ -320,13 +320,15 @@ function kratos_archives_stats_shortcode($atts = array())
     <style>
         /* === 归档统计短码：通用骨架（CSS 变量驱动） === */
         .kratos-archives-shortcode {
-            --kas-bg-1: #f5e7c4; --kas-bg-2: #efd9a9; --kas-bg-3: #e9cc91;
-            --kas-fg: #3a2a10; --kas-fg-soft: #5a3a14; --kas-fg-dim: #7a5a26; --kas-fg-mute: #a08658;
-            --kas-accent: #7a3f12; --kas-accent-2: #a86028;
-            --kas-line: rgba(120, 80, 30, .22); --kas-line-strong: rgba(120, 80, 30, .40);
-            --kas-card-bg: rgba(255, 250, 232, .78);
-            --kas-card-shadow: 0 1px 3px rgba(120, 80, 30, .10);
-            --kas-card-shadow-hv: 0 8px 18px rgba(120, 80, 30, .22);
+            /* 默认配色 = 主题 style.css 同源（白卡 + 浅灰底 + 蓝链接），
+             * 跟首页 .article-panel 一致；皮肤激活时 §18 会重写所有变量。 */
+            --kas-bg-1: #f5f5f5; --kas-bg-2: #f0f0f0; --kas-bg-3: #ebebeb;
+            --kas-fg: #333; --kas-fg-soft: #555; --kas-fg-dim: #777; --kas-fg-mute: #999;
+            --kas-accent: #336699; --kas-accent-2: #2B5278;
+            --kas-line: rgba(0, 0, 0, .08); --kas-line-strong: rgba(0, 0, 0, .16);
+            --kas-card-bg: #ffffff;
+            --kas-card-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+            --kas-card-shadow-hv: 0 8px 18px rgba(0, 0, 0, .10);
             padding: 0;
             position: relative;
             color: var(--kas-fg);
@@ -550,61 +552,39 @@ function kratos_archives_stats_shortcode($atts = array())
             }
         }
 
-        /* === parchment 方案：羊皮纸做旧 + 噪点纸纹（与走心评论一致） === */
-        .kratos-archives-shortcode.kas-scheme-parchment {
-            padding: 28px 24px;
-            border-radius: 8px;
-            background:
-                radial-gradient(ellipse at top left, rgba(120, 80, 30, .18), transparent 55%),
-                radial-gradient(ellipse at bottom right, rgba(120, 80, 30, .20), transparent 60%),
-                radial-gradient(ellipse at center, rgba(255, 243, 206, .45), transparent 70%),
-                linear-gradient(135deg, #f5e7c4 0%, #efd9a9 50%, #e9cc91 100%);
-            box-shadow: inset 0 0 60px rgba(120, 80, 30, .18), 0 6px 24px rgba(120, 80, 30, .14);
-            position: relative;
-            overflow: hidden;
-        }
-        .kratos-archives-shortcode.kas-scheme-parchment::before {
-            content: ""; position: absolute; inset: 0; pointer-events: none;
-            opacity: .35; mix-blend-mode: multiply; border-radius: inherit;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.40  0 0 0 0 0.20  0 0 0 0.6 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
-            background-size: 240px 240px;
-        }
+        /* === parchment 方案：保留 class 锚点但不再画装饰，与主题默认一致 ===
+         * 真正的羊皮纸/做旧效果由「黄绢」皮肤在 weekday-skins.css 中处理。 */
 
-        /* === 暗夜模式 === */
+        /* === 暗夜模式：对齐 dark.css 中性灰白调（去米黄色调） === */
         html[data-theme="dark"] .kratos-archives-shortcode {
-            --kas-fg: #e8d8b8;
-            --kas-fg-soft: #d0b88a;
-            --kas-fg-dim: #a89070;
-            --kas-fg-mute: #806848;
-            --kas-accent: #d8a868;
-            --kas-accent-2: #c89048;
-            --kas-line: rgba(216, 168, 104, .22);
-            --kas-line-strong: rgba(216, 168, 104, .40);
-            --kas-card-bg: rgba(40, 32, 22, .72);
-            --kas-card-shadow: 0 2px 6px rgba(0, 0, 0, .3);
-            --kas-card-shadow-hv: 0 8px 18px rgba(0, 0, 0, .45);
-        }
-        html[data-theme="dark"] .kratos-archives-shortcode .kas-pill {
-            background: rgba(40, 32, 22, .55);
-        }
-        html[data-theme="dark"] .kratos-archives-shortcode .kas-pill:hover {
-            background: rgba(40, 32, 22, .85);
-        }
-        html[data-theme="dark"] .kratos-archives-shortcode .kas-pill-count {
-            background: rgba(40, 32, 22, .85);
-        }
-        html[data-theme="dark"] .kratos-archives-shortcode.kas-scheme-parchment {
-            background:
-                radial-gradient(ellipse at top left, rgba(216, 168, 104, .12), transparent 55%),
-                radial-gradient(ellipse at bottom right, rgba(216, 168, 104, .10), transparent 60%),
-                linear-gradient(135deg, #2a2218 0%, #1f1a12 50%, #18130c 100%);
-            box-shadow: inset 0 0 60px rgba(0, 0, 0, .35), 0 6px 24px rgba(0, 0, 0, .35);
-        }
-        html[data-theme="dark"] .kratos-archives-shortcode.kas-scheme-parchment::before {
-            opacity: .25; mix-blend-mode: overlay;
+            --kas-fg: #d6d8db;
+            --kas-fg-soft: #b8bbc0;
+            --kas-fg-dim: #8b919a;
+            --kas-fg-mute: #6f747e;
+            --kas-accent: #6ea8ff;
+            --kas-accent-2: #91bdff;
+            --kas-line: rgba(255, 255, 255, .08);
+            --kas-line-strong: rgba(255, 255, 255, .16);
+            --kas-card-bg: #1c1f24;
+            --kas-card-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+            --kas-card-shadow-hv: 0 8px 18px rgba(0, 0, 0, .55);
         }
     </style>
     <?php
     return ob_get_clean();
 }
 add_shortcode('archives_stats', 'kratos_archives_stats_shortcode');
+
+/**
+ * 给应用了 page-archives.php 模板的页面注入 body class `is-kratos-archives-page`，
+ * 让皮肤层精准豁免 §15 / §18 对外层 .details 的装饰，避免 shortcode 自己的卡片
+ * 套在另一张卡片里的"盒子套盒子"。
+ */
+function kratos_archives_body_class($classes)
+{
+    if (is_page() && function_exists('is_page_template') && is_page_template('page-archives.php')) {
+        $classes[] = 'is-kratos-archives-page';
+    }
+    return $classes;
+}
+add_filter('body_class', 'kratos_archives_body_class');

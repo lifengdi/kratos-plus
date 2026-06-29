@@ -1775,17 +1775,14 @@ html[data-theme="dark"][data-weekday-skin="tue"] .k-main .sidebar .w-tags .item 
  *   走心评论 ([heart_comments]) 与 归档统计 ([archives_stats]) 都用 inline
  *   <style> 自带完整配色，靠 --khs-* / --kas-* 变量驱动。
  *
- *   皮肤激活时把这两套变量改写到 --kr-skin-* 体系，让两个 shortcode 跟着
- *   当天皮肤色走；同时关掉 parchment scheme 外层 .kratos-heart-shortcode
- *   自带的羊皮纸大背景 / clip-path 锯齿 / 噪点伪元素 —— 让 shortcode 与
- *   皮肤底色融合，而不是顶着一张做旧米色纸面。
- *
- *   暗夜模式下，--kr-skin-* 仍生效（变量定义在 html[data-weekday-skin]
- *   而非 :not([data-theme="dark"]) 上），故无需为 dark 单独写一份。
+ *   作用域必须用 :not([data-theme="dark"]) 限定——否则在 暗夜+皮肤 组合下
+ *   会把"皮肤浅模式色板（rgba 白卡 + 浅色字）"硬塞给 shortcode，使夜里
+ *   看到一张高亮浅色卡，文字与背景对比度反转、不可读。
+ *   暗夜下交由后面的 dark+skin 段落单独重映射。
  * =============================================================== */
 
-/* ---- 走心评论：变量重映射 ---- */
-html[data-weekday-skin] .kratos-heart-shortcode {
+/* ---- 走心评论：变量重映射（仅浅色） ---- */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -1812,24 +1809,24 @@ html[data-weekday-skin] .kratos-heart-shortcode {
 /* parchment scheme 自带羊皮纸大背景 + clip-path 锯齿 + 噪点伪元素 ——
  * 跟皮肤打架，必须强行关闭。其他 scheme（sakura/mint/sky/lavender/sunset）
  * 没有这些装饰，无需特殊处理。 */
-html[data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment {
     background: transparent !important;
     box-shadow: none !important;
     clip-path: none !important;
 }
-html[data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment::before,
-html[data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment::after {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::after {
     display: none !important;
 }
 
 /* 走心 stat / card 在皮肤激活时不要旧的橘色边框阴影，重定义为皮肤色边 */
-html[data-weekday-skin] .kratos-heart-shortcode .khs-stat,
-html[data-weekday-skin] .kratos-heart-shortcode .khs-card {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card {
     border-color: var(--kr-skin-card-line) !important;
 }
 
-/* ---- 归档统计：变量重映射 ---- */
-html[data-weekday-skin] .kratos-archives-shortcode {
+/* ---- 归档统计：变量重映射（仅浅色） ---- */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode {
     --kas-bg-1: var(--kr-skin-bg) !important;
     --kas-bg-2: var(--kr-skin-bg) !important;
     --kas-bg-3: var(--kr-skin-bg) !important;
@@ -1845,23 +1842,103 @@ html[data-weekday-skin] .kratos-archives-shortcode {
 }
 
 /* parchment scheme 同样关掉自带的羊皮纸 outer 背景 + 噪点伪元素 */
-html[data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment {
     background: transparent !important;
     box-shadow: none !important;
     padding: 0 !important;
 }
-html[data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment::before,
-html[data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment::after {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::after {
     display: none !important;
 }
 
 /* 归档 pill / total card / section 在皮肤激活时跟皮肤边色 */
-html[data-weekday-skin] .kratos-archives-shortcode .kas-pill,
-html[data-weekday-skin] .kratos-archives-shortcode .kas-pill-count,
-html[data-weekday-skin] .kratos-archives-shortcode .kas-total,
-html[data-weekday-skin] .kratos-archives-shortcode .kas-section,
-html[data-weekday-skin] .kratos-archives-shortcode .kas-header {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header {
     border-color: var(--kr-skin-card-line) !important;
+}
+
+/* ---- 暗夜 + 皮肤组合下，shortcode 走 dark.css 中性灰白调，仅 accent 跟皮肤 ----
+ * dark.css 已经给 --kr-link / --kr-accent 注入了"皮肤暗夜版"主色（§16），
+ * 这里把 --khs-* / --kas-* 的 accent 锚到 --kr-accent，让走心/归档的
+ * 主色随皮肤切换；底色 / 边线 / 卡片 / 阴影则保持 dark.css 同款深灰，
+ * 避免出现"夜里突然一张高亮浅卡"的反向对比度。 */
+html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode {
+    --khs-accent: var(--kr-accent) !important;
+    --khs-accent-2: var(--kr-link-hover) !important;
+    --khs-line-strong: var(--kr-accent) !important;
+    --khs-stat-comment-1: var(--kr-accent) !important;
+    --khs-stat-comment-2: var(--kr-link-hover) !important;
+    --khs-stat-post-1: var(--kr-accent) !important;
+    --khs-stat-post-2: var(--kr-link-hover) !important;
+    --khs-stat-user-1: var(--kr-accent) !important;
+    --khs-stat-user-2: var(--kr-link-hover) !important;
+    --khs-heart-fill: var(--kr-accent) !important;
+}
+
+html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode {
+    --kas-accent: var(--kr-accent) !important;
+    --kas-accent-2: var(--kr-link-hover) !important;
+    --kas-line-strong: var(--kr-accent) !important;
+}
+
+/* 暗夜 + 玻璃皮肤（mon/fri）/ 节日皮肤（sat/sun）/ silk 下，body 自带渐变 / 纹理 /
+ * 内阴影都已被 §17 关闭，shortcode 的 parchment scheme 外层装饰也必须关掉，
+ * 否则会出现一张暗夜版的"做旧米色卡"在深底之上，违和。 */
+html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+}
+html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode.khs-scheme-parchment::after {
+    display: none !important;
+}
+html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+
+/* ===============================================================
+ * 19. 新增模板页（归档 / 走心评论 / 说说）外层 .details 装饰豁免
+ *
+ *   page-archives / page-heart-comments / page-shuoshuo / single-shuoshuo 这几
+ *   个模板的 `.details` 容器里直接放的是 shortcode 自渲染卡片，不是主题原生
+ *   的 `.article` 内容卡。皮肤层 §15 给所有 `.details` 加了背景 / 阴影 /
+ *   边框（玻璃模糊、Bauhaus 黑边、Neumorphism 凸起、parchment 米白卡），
+ *   会让"shortcode 卡片"再套一层皮肤大方框，产生"盒子套盒子"。
+ *
+ *   这里用 PHP 注入的 body class 锁定这几个模板页，把外层 .details 还原成
+ *   透明无装饰；shortcode 自家的卡片层 (.khs-stat / .kas-section / .kss-item)
+ *   继续保留各皮肤的视觉。
+ * =============================================================== */
+
+body.is-kratos-archives-page .k-main .details,
+body.is-kratos-heart-page .k-main .details,
+body.is-kratos-shuoshuo-page .k-main .details {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+}
+
+/* 周日小星花角标也关掉（避免在 shortcode 内容上方挂金星） */
+body.is-kratos-archives-page .k-main .details::after,
+body.is-kratos-heart-page .k-main .details::after,
+body.is-kratos-shuoshuo-page .k-main .details::after {
+    display: none !important;
 }
 
 /* ---- 「黄绢」皮肤下，归档页 outer container 关掉自带装饰（避免双重装饰）----

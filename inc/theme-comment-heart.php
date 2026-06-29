@@ -522,21 +522,22 @@ function kratos_heart_shortcode($atts)
     <style>
         /* === 走心评论短码：通用骨架（用 CSS 变量驱动各方案配色） === */
         .kratos-heart-shortcode{
-            --khs-bg-1:#f5e7c4;--khs-bg-2:#efd9a9;--khs-bg-3:#e9cc91;
-            --khs-fg:#3a2a10;--khs-fg-soft:#5a3a14;--khs-fg-dim:#7a5a26;--khs-fg-mute:#a08658;
-            --khs-accent:#7a3f12;--khs-accent-2:#a86028;
-            --khs-line:rgba(120,80,30,.22);--khs-line-strong:rgba(120,80,30,.40);
-            --khs-card-bg:rgba(255,250,232,.78);
-            --khs-card-shadow:0 1px 3px rgba(120,80,30,.10);
-            --khs-card-shadow-hv:0 8px 18px rgba(120,80,30,.22);
-            --khs-page-on:#fdf3d9;
-            --khs-stat-comment-1:#b8501c;--khs-stat-comment-2:#7a2912;
-            --khs-stat-post-1:#c08038;--khs-stat-post-2:#7a4a18;
-            --khs-stat-user-1:#a87838;--khs-stat-user-2:#6a4818;
-            --khs-heart-fill:#a04018;
-            padding:32px 28px;border-radius:14px;position:relative;overflow:hidden;
-            background:linear-gradient(135deg,var(--khs-bg-1) 0%,var(--khs-bg-2) 50%,var(--khs-bg-3) 100%);
-            box-shadow:0 6px 24px rgba(0,0,0,.08);
+            /* 默认配色 = 主题 style.css 同源：白卡 + 浅灰底 + 蓝链接；
+             * 皮肤激活时 §18 会重写所有 --khs-* 变量。 */
+            --khs-bg-1:#f5f5f5;--khs-bg-2:#f0f0f0;--khs-bg-3:#ebebeb;
+            --khs-fg:#333;--khs-fg-soft:#444;--khs-fg-dim:#777;--khs-fg-mute:#999;
+            --khs-accent:#336699;--khs-accent-2:#2B5278;
+            --khs-line:rgba(0,0,0,.08);--khs-line-strong:rgba(0,0,0,.16);
+            --khs-card-bg:#ffffff;
+            --khs-card-shadow:0 1px 3px rgba(0,0,0,.06);
+            --khs-card-shadow-hv:0 8px 18px rgba(0,0,0,.10);
+            --khs-page-on:#ffffff;
+            --khs-stat-comment-1:#4a8ad8;--khs-stat-comment-2:#336699;
+            --khs-stat-post-1:#5fa8b2;--khs-stat-post-2:#3d7f8a;
+            --khs-stat-user-1:#7a9bcc;--khs-stat-user-2:#557aaa;
+            --khs-heart-fill:#e8516e;
+            padding:0;position:relative;
+            background:transparent;
         }
         .kratos-heart-shortcode > *{position:relative;z-index:1;}
 
@@ -587,27 +588,9 @@ function kratos_heart_shortcode($atts)
 
         @keyframes khs-beat{0%,100%{transform:scale(1);}30%{transform:scale(1.18);}60%{transform:scale(0.95);}}
 
-        /* === 方案：羊皮纸（默认，含做旧 + 噪点 + 焦痕 + 锯齿纸边） === */
-        .kratos-heart-shortcode.khs-scheme-parchment{
-            border-radius:8px;
-            background:
-                radial-gradient(ellipse at top left, rgba(120,80,30,.18), transparent 55%),
-                radial-gradient(ellipse at bottom right, rgba(120,80,30,.20), transparent 60%),
-                radial-gradient(ellipse at center, rgba(255,243,206,.45), transparent 70%),
-                linear-gradient(135deg,#f5e7c4 0%,#efd9a9 50%,#e9cc91 100%);
-            box-shadow:inset 0 0 60px rgba(120,80,30,.28),inset 0 0 120px rgba(120,80,30,.16),0 6px 24px rgba(120,80,30,.18),0 2px 6px rgba(120,80,30,.12);
-            clip-path:polygon(0% 6px,6px 3px,12px 0%,92% 4px,96% 0%,100% 8px,99% 50%,100% 92%,96% 100%,8% 99%,4% 100%,0% 94%);
-            font-family:Georgia,"PingFang SC","Songti SC","SimSun",serif;
-        }
-        .kratos-heart-shortcode.khs-scheme-parchment::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.40;mix-blend-mode:multiply;border-radius:inherit;
-            background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.40  0 0 0 0 0.20  0 0 0 0.6 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
-            background-size:240px 240px;}
-        .kratos-heart-shortcode.khs-scheme-parchment::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-            background:
-                radial-gradient(circle at 0 0, rgba(86,52,18,.32), transparent 90px),
-                radial-gradient(circle at 100% 0, rgba(86,52,18,.28), transparent 100px),
-                radial-gradient(circle at 0 100%, rgba(86,52,18,.30), transparent 110px),
-                radial-gradient(circle at 100% 100%, rgba(86,52,18,.34), transparent 95px);}
+        /* === parchment 方案：保留 class 锚点但不再画装饰 ===
+         * 真正的做旧/锯齿/焦边由「黄绢」皮肤在 weekday-skins.css 处理。
+         * 默认状态下走心区域是干净的白卡 + 浅灰底，与主题首页一致。 */
         .kratos-heart-shortcode.khs-scheme-parchment .khs-subtitle,
         .kratos-heart-shortcode.khs-scheme-parchment .khs-time,
         .kratos-heart-shortcode.khs-scheme-parchment .khs-from,
@@ -692,37 +675,35 @@ function kratos_heart_shortcode($atts)
             .kratos-heart-shortcode.khs-scheme-parchment{clip-path:none;border-radius:6px;}
         }
 
-        /* === 暗夜模式：所有方案统一深色覆盖 === */
+        /* === 暗夜模式：对齐 dark.css 中性灰白调（与归档统计 shortcode 同步） ===
+         * 默认 parchment scheme 在浅模式下已无米黄装饰；暗夜模式同样不画暖褐，
+         * 而是走 dark.css 同款 #1c1f24 卡片 + #6ea8ff 链接，避免在夜里出现
+         * 一块"暗黄色羊皮纸"与主题其他区块（文章卡/侧边栏 widget/评论区）撞色。 */
         html[data-theme="dark"] .kratos-heart-shortcode,body.dark .kratos-heart-shortcode{
-            --khs-bg-1:#1f1d22;--khs-bg-2:#26242a;--khs-bg-3:#1a1820;
-            --khs-fg:#e8e4ec;--khs-fg-soft:#f3eef5;--khs-fg-dim:#b4adb9;--khs-fg-mute:#8a8390;
-            --khs-line:rgba(255,255,255,.10);--khs-line-strong:rgba(255,255,255,.22);
-            --khs-card-bg:rgba(255,255,255,.06);
-            box-shadow:0 8px 24px rgba(0,0,0,.45) !important;
-        }
-        /* 暗夜模式下羊皮纸保留暖褐 */
-        html[data-theme="dark"] .kratos-heart-shortcode.khs-scheme-parchment,body.dark .kratos-heart-shortcode.khs-scheme-parchment{
-            --khs-fg:#f3e1bd;--khs-fg-soft:#ffe7b8;--khs-fg-dim:#d8b878;--khs-fg-mute:#a8946a;
-            --khs-accent:#c08838;--khs-accent-2:#e0a85c;
-            --khs-line:rgba(255,200,120,.22);--khs-line-strong:rgba(255,200,120,.40);
-            --khs-card-bg:rgba(255,225,180,.06);
-            background:
-                radial-gradient(ellipse at top left, rgba(255,200,120,.10), transparent 55%),
-                radial-gradient(ellipse at bottom right, rgba(255,180,90,.12), transparent 60%),
-                radial-gradient(ellipse at center, rgba(80,55,25,.55), transparent 70%),
-                linear-gradient(135deg,#3a2c14 0%,#2e2210 50%,#251a0c 100%) !important;
-            box-shadow:inset 0 0 80px rgba(0,0,0,.55),0 6px 24px rgba(0,0,0,.45) !important;
-        }
-        html[data-theme="dark"] .kratos-heart-shortcode.khs-scheme-parchment::before,body.dark .kratos-heart-shortcode.khs-scheme-parchment::before{opacity:.30;mix-blend-mode:overlay;}
-        html[data-theme="dark"] .kratos-heart-shortcode.khs-scheme-parchment::after,body.dark .kratos-heart-shortcode.khs-scheme-parchment::after{
-            background:
-                radial-gradient(circle at 0 0, rgba(0,0,0,.45), transparent 90px),
-                radial-gradient(circle at 100% 0, rgba(0,0,0,.40), transparent 100px),
-                radial-gradient(circle at 0 100%, rgba(0,0,0,.45), transparent 110px),
-                radial-gradient(circle at 100% 100%, rgba(0,0,0,.50), transparent 95px);
+            --khs-fg:#d6d8db;--khs-fg-soft:#b8bbc0;--khs-fg-dim:#8b919a;--khs-fg-mute:#6f747e;
+            --khs-accent:#6ea8ff;--khs-accent-2:#91bdff;
+            --khs-line:rgba(255,255,255,.08);--khs-line-strong:rgba(255,255,255,.16);
+            --khs-card-bg:#1c1f24;
+            --khs-stat-comment-1:#6ea8ff;--khs-stat-comment-2:#4f86c6;
+            --khs-stat-post-1:#6ea8ff;--khs-stat-post-2:#4f86c6;
+            --khs-stat-user-1:#6ea8ff;--khs-stat-user-2:#4f86c6;
+            --khs-heart-fill:#e8516e;
         }
     </style>
     <?php
     return ob_get_clean();
 }
 add_shortcode('heart_comments', 'kratos_heart_shortcode');
+
+/**
+ * 给应用了 page-heart-comments.php 模板的页面注入 body class
+ * `is-kratos-heart-page`，让皮肤层精准豁免 §15 / §18 对外层 .details 的装饰。
+ */
+function kratos_heart_body_class($classes)
+{
+    if (is_page() && function_exists('is_page_template') && is_page_template('page-heart-comments.php')) {
+        $classes[] = 'is-kratos-heart-page';
+    }
+    return $classes;
+}
+add_filter('body_class', 'kratos_heart_body_class');
