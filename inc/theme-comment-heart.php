@@ -367,19 +367,18 @@ function kratos_heart_shortcode($atts)
     ?>
     <div class="kratos-heart-shortcode khs-scheme-parchment" id="kratos-heart-list">
         <?php if ($title !== '' || $subtitle !== '') { ?>
-            <div class="khs-header">
+            <header class="khs-header">
                 <?php if ($title !== '') { ?>
-                    <div class="khs-title-row">
-                        <span class="khs-title-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
-                        </span>
-                        <h3 class="khs-title"><?php echo esc_html($title); ?></h3>
-                    </div>
+                    <span class="khs-title-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
+                    </span>
+                    <span class="khs-title"><?php echo esc_html($title); ?></span>
                 <?php } ?>
                 <?php if ($subtitle !== '') { ?>
+                    <?php if ($title !== '') { ?><span class="khs-header-divider" aria-hidden="true"></span><?php } ?>
                     <p class="khs-subtitle"><?php echo esc_html($subtitle); ?></p>
                 <?php } ?>
-            </div>
+            </header>
         <?php } ?>
 
         <div class="khs-stats">
@@ -541,57 +540,218 @@ function kratos_heart_shortcode($atts)
         }
         .kratos-heart-shortcode > *{position:relative;z-index:1;}
 
-        .kratos-heart-shortcode .khs-header{text-align:center;margin-bottom:22px;}
-        .kratos-heart-shortcode .khs-title-row{display:flex;align-items:center;justify-content:center;gap:8px;}
-        .kratos-heart-shortcode .khs-title{margin:0;font-size:24px;font-weight:700;color:var(--khs-fg-soft);letter-spacing:1px;}
-        .kratos-heart-shortcode .khs-title-icon{display:inline-flex;animation:khs-beat 1.6s infinite;}
-        .kratos-heart-shortcode .khs-subtitle{margin:8px 0 0;font-size:13px;color:var(--khs-fg-dim);line-height:1.6;}
+        /* 页头卡片：对齐归档 shortcode 的 .kas-header
+         * 横向布局（图标 + 标题 + 分隔线 + 副标题），白卡 + 细边 + 微阴影 */
+        .kratos-heart-shortcode .khs-header{
+            display:flex;align-items:center;flex-wrap:wrap;gap:14px;
+            padding:24px 28px;margin-bottom:18px;
+            background:var(--khs-card-bg);
+            border:1px solid var(--khs-line);
+            border-radius:14px;
+            box-shadow:var(--khs-card-shadow);
+            text-align:left;
+        }
+        .kratos-heart-shortcode .khs-title-icon{
+            display:inline-flex;align-items:center;justify-content:center;
+            width:38px;height:38px;
+            border-radius:10px;
+            background:linear-gradient(135deg,var(--khs-bg-2) 0%,var(--khs-bg-3) 100%);
+            color:var(--khs-accent);
+        }
+        .kratos-heart-shortcode .khs-title{
+            margin:0;padding:0;
+            font-size:22px;font-weight:700;line-height:1.3;
+            color:var(--khs-fg);
+            letter-spacing:0;
+        }
+        .kratos-heart-shortcode .khs-header-divider{
+            display:inline-block;width:1px;height:22px;
+            background:var(--khs-line-strong);
+        }
+        .kratos-heart-shortcode .khs-subtitle{
+            margin:0;padding:0;
+            font-size:14px;line-height:1.5;
+            color:var(--khs-fg-soft);
+        }
 
-        .kratos-heart-shortcode .khs-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:0 0 24px;}
-        .kratos-heart-shortcode .khs-stat{flex:1 1 200px;min-width:180px;display:flex;align-items:center;gap:14px;padding:18px 22px;background:var(--khs-card-bg);border-radius:14px;border:1px solid var(--khs-line);box-shadow:var(--khs-card-shadow);transition:all .25s ease;}
-        .kratos-heart-shortcode .khs-stat:hover{transform:translateY(-2px);box-shadow:var(--khs-card-shadow-hv);border-color:var(--khs-line-strong);}
-        .kratos-heart-shortcode .khs-stat-icon{flex-shrink:0;width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;background:linear-gradient(135deg,var(--khs-accent-2) 0%,var(--khs-accent) 100%);box-shadow:0 4px 10px rgba(0,0,0,.18);}
-        .kratos-heart-shortcode .khs-stat-comment .khs-stat-icon{background:linear-gradient(135deg,var(--khs-stat-comment-1) 0%,var(--khs-stat-comment-2) 100%);}
-        .kratos-heart-shortcode .khs-stat-post .khs-stat-icon{background:linear-gradient(135deg,var(--khs-stat-post-1) 0%,var(--khs-stat-post-2) 100%);}
-        .kratos-heart-shortcode .khs-stat-user .khs-stat-icon{background:linear-gradient(135deg,var(--khs-stat-user-1) 0%,var(--khs-stat-user-2) 100%);}
-        .kratos-heart-shortcode .khs-stat-body{flex:1;min-width:0;text-align:left;}
-        .kratos-heart-shortcode .khs-stat-label{font-size:13px;color:var(--khs-fg-dim);letter-spacing:1px;line-height:1.4;}
-        .kratos-heart-shortcode .khs-stat-num{margin-top:2px;font-size:28px;font-weight:700;color:var(--khs-accent);line-height:1.15;}
+        /* 三张总览卡：对齐归档 .kas-totals / .kas-total */
+        .kratos-heart-shortcode .khs-stats{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:16px;
+            margin:0 0 22px;
+        }
+        .kratos-heart-shortcode .khs-stat{
+            display:flex;align-items:center;gap:14px;
+            padding:22px;
+            background:var(--khs-card-bg);
+            border:1px solid var(--khs-line);
+            border-radius:14px;
+            box-shadow:var(--khs-card-shadow);
+            transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+        .kratos-heart-shortcode .khs-stat:hover{
+            transform:translateY(-2px);
+            box-shadow:var(--khs-card-shadow-hv);
+            border-color:var(--khs-line-strong);
+        }
+        /* 中性灰圆图标 + 强调色描边，与 .kas-total-icon 视觉一致 */
+        .kratos-heart-shortcode .khs-stat-icon{
+            flex-shrink:0;
+            display:inline-flex;align-items:center;justify-content:center;
+            width:46px;height:46px;
+            border-radius:50%;
+            background:linear-gradient(135deg,var(--khs-bg-2) 0%,var(--khs-bg-3) 100%);
+            color:var(--khs-accent);
+        }
+        .kratos-heart-shortcode .khs-stat-body{
+            display:flex;flex-direction:column;gap:2px;
+            min-width:0;
+        }
+        .kratos-heart-shortcode .khs-stat-label{
+            font-size:13px;line-height:1.2;
+            color:var(--khs-fg-dim);
+        }
+        .kratos-heart-shortcode .khs-stat-num{
+            font-size:30px;font-weight:700;line-height:1.1;
+            color:var(--khs-fg);
+            letter-spacing:-0.01em;
+        }
 
-        .kratos-heart-shortcode .khs-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
-        .kratos-heart-shortcode .khs-card{display:block;padding:14px 16px;background:var(--khs-card-bg);border-radius:12px;border:1px solid var(--khs-line);text-decoration:none !important;color:inherit !important;box-shadow:var(--khs-card-shadow);transition:all .25s ease;position:relative;}
-        .kratos-heart-shortcode .khs-card:hover{transform:translateY(-3px);box-shadow:var(--khs-card-shadow-hv);border-color:var(--khs-line-strong);}
+        /* 走心评论卡列表 */
+        .kratos-heart-shortcode .khs-list{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+            gap:14px;
+        }
+        .kratos-heart-shortcode .khs-card{
+            display:block;
+            padding:16px 18px;
+            background:var(--khs-card-bg);
+            border:1px solid var(--khs-line);
+            border-radius:12px;
+            text-decoration:none !important;
+            color:inherit !important;
+            box-shadow:var(--khs-card-shadow);
+            transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .kratos-heart-shortcode .khs-card:hover{
+            transform:translateY(-2px);
+            box-shadow:var(--khs-card-shadow-hv);
+            border-color:var(--khs-line-strong);
+        }
         .kratos-heart-shortcode .khs-card-head{display:flex;align-items:center;gap:10px;}
-        .kratos-heart-shortcode .khs-avatar-img,.kratos-heart-shortcode .khs-avatar img{width:40px !important;height:40px !important;border-radius:50% !important;flex-shrink:0;border:2px solid rgba(255,255,255,.85);box-shadow:0 2px 6px rgba(0,0,0,.10);}
+        /* 头像：去掉硬编码白边（在暗夜下会形成高亮光晕），改用卡片底色描边 */
+        .kratos-heart-shortcode .khs-avatar-img,
+        .kratos-heart-shortcode .khs-avatar img{
+            width:40px !important;height:40px !important;
+            border-radius:50% !important;
+            flex-shrink:0;
+            border:1px solid var(--khs-line);
+            box-shadow:none;
+        }
         .kratos-heart-shortcode .khs-meta{flex:1;min-width:0;display:flex;flex-direction:column;}
         .kratos-heart-shortcode .khs-author{font-size:13px;font-weight:600;color:var(--khs-fg-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
         .kratos-heart-shortcode .khs-time{font-size:11px;color:var(--khs-fg-mute);margin-top:2px;}
-        .kratos-heart-shortcode .khs-heart-icon{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.06);}
+        /* 心形角标：用主题变量做底，避免暗夜下 rgba(0,0,0,.06) 几乎不可见 */
+        .kratos-heart-shortcode .khs-heart-icon{
+            flex-shrink:0;
+            display:inline-flex;align-items:center;justify-content:center;
+            width:24px;height:24px;
+            border-radius:50%;
+            background:var(--khs-line);
+        }
         .kratos-heart-shortcode .khs-heart-icon svg{fill:var(--khs-heart-fill);}
-        .kratos-heart-shortcode .khs-text{margin:10px 0 8px;font-size:13px;line-height:1.7;color:var(--khs-fg);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
-        .kratos-heart-shortcode .khs-from{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--khs-fg-mute);border-top:1px dashed var(--khs-line-strong);padding-top:8px;}
+        .kratos-heart-shortcode .khs-text{
+            margin:10px 0 8px;
+            font-size:13px;line-height:1.7;
+            color:var(--khs-fg);
+            display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+            overflow:hidden;
+        }
+        /* 来源文章：实线细分隔（不要 dashed strong，过抢） */
+        .kratos-heart-shortcode .khs-from{
+            display:flex;align-items:center;gap:4px;
+            margin-top:8px;padding-top:8px;
+            border-top:1px solid var(--khs-line);
+            font-size:11px;color:var(--khs-fg-mute);
+        }
         .kratos-heart-shortcode .khs-from span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-        .kratos-heart-shortcode .khs-empty{padding:36px 16px;text-align:center;color:var(--khs-fg-dim);font-size:14px;background:var(--khs-card-bg);border-radius:12px;border:1px dashed var(--khs-line-strong);}
+        .kratos-heart-shortcode .khs-empty{
+            padding:36px 16px;
+            text-align:center;
+            color:var(--khs-fg-dim);font-size:14px;
+            background:var(--khs-card-bg);
+            border:1px dashed var(--khs-line-strong);
+            border-radius:12px;
+        }
 
-        .kratos-heart-shortcode .khs-pagination{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin-top:22px;}
-        .kratos-heart-shortcode .khs-page{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 12px;font-size:13px;color:var(--khs-fg-soft) !important;background:var(--khs-card-bg);border:1px solid var(--khs-line);border-radius:10px;text-decoration:none !important;transition:all .2s ease;}
-        .kratos-heart-shortcode .khs-page:hover{background:linear-gradient(135deg,var(--khs-accent-2) 0%,var(--khs-accent) 100%);color:var(--khs-page-on) !important;border-color:transparent;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.18);}
-        .kratos-heart-shortcode .khs-current{background:linear-gradient(135deg,var(--khs-accent-2) 0%,var(--khs-accent) 100%);color:var(--khs-page-on) !important;border-color:transparent;cursor:default;font-weight:600;}
-        .kratos-heart-shortcode .khs-current:hover{transform:none;}
+        /* 分页：简化为纯色 accent hover，去渐变 + 阴影 + translateY，
+         * 与 .kas-tab 同款克制风格，避免与卡片 hover 抢视觉。 */
+        .kratos-heart-shortcode .khs-pagination{
+            display:flex;justify-content:center;align-items:center;
+            gap:6px;flex-wrap:wrap;
+            margin-top:22px;
+        }
+        .kratos-heart-shortcode .khs-page{
+            display:inline-flex;align-items:center;justify-content:center;
+            min-width:34px;height:34px;padding:0 12px;
+            font-size:13px;
+            color:var(--khs-fg-soft) !important;
+            background:var(--khs-card-bg);
+            border:1px solid var(--khs-line);
+            border-radius:8px;
+            text-decoration:none !important;
+            transition:background .2s ease, color .2s ease, border-color .2s ease;
+        }
+        .kratos-heart-shortcode .khs-page:hover{
+            background:var(--khs-accent);
+            color:var(--khs-page-on) !important;
+            border-color:var(--khs-accent);
+        }
+        .kratos-heart-shortcode .khs-current{
+            background:var(--khs-accent);
+            color:var(--khs-page-on) !important;
+            border-color:var(--khs-accent);
+            cursor:default;font-weight:600;
+        }
         .kratos-heart-shortcode .khs-disabled{opacity:.40;cursor:not-allowed;}
-        .kratos-heart-shortcode .khs-disabled:hover{background:var(--khs-card-bg);color:var(--khs-fg-soft) !important;border-color:var(--khs-line);transform:none;box-shadow:none;}
-        .kratos-heart-shortcode .khs-ellipsis{border:none;background:transparent;cursor:default;color:var(--khs-fg-mute);}
-        .kratos-heart-shortcode .khs-ellipsis:hover{background:transparent;color:var(--khs-fg-mute) !important;transform:none;box-shadow:none;}
+        .kratos-heart-shortcode .khs-disabled:hover{
+            background:var(--khs-card-bg);
+            color:var(--khs-fg-soft) !important;
+            border-color:var(--khs-line);
+        }
+        .kratos-heart-shortcode .khs-ellipsis{
+            border-color:transparent;background:transparent;
+            cursor:default;color:var(--khs-fg-mute);
+        }
+        .kratos-heart-shortcode .khs-ellipsis:hover{
+            background:transparent;
+            color:var(--khs-fg-mute) !important;
+            border-color:transparent;
+        }
         .kratos-heart-shortcode .khs-page-info{margin-top:10px;text-align:center;font-size:12px;color:var(--khs-fg-dim);}
         .kratos-heart-shortcode .khs-page-info strong{color:var(--khs-accent);font-weight:700;margin:0 2px;}
 
-        @keyframes khs-beat{0%,100%{transform:scale(1);}30%{transform:scale(1.18);}60%{transform:scale(0.95);}}
+        /* 响应式：与归档 shortcode 同断点 */
+        @media (max-width:900px){
+            .kratos-heart-shortcode .khs-stats{grid-template-columns:repeat(3,minmax(0,1fr));}
+        }
+        @media (max-width:560px){
+            .kratos-heart-shortcode .khs-header{padding:18px 20px;gap:10px;}
+            .kratos-heart-shortcode .khs-title{font-size:19px;}
+            .kratos-heart-shortcode .khs-header-divider{display:none;}
+            .kratos-heart-shortcode .khs-subtitle{flex-basis:100%;font-size:13px;}
+            .kratos-heart-shortcode .khs-stats{grid-template-columns:1fr;gap:12px;}
+            .kratos-heart-shortcode .khs-stat{padding:16px 18px;}
+            .kratos-heart-shortcode .khs-stat-num{font-size:24px;}
+            .kratos-heart-shortcode .khs-list{grid-template-columns:1fr;}
+        }
 
         /* === parchment 方案：保留 class 锚点但不再画装饰 ===
          * 真正的做旧/锯齿/焦边由「黄绢」皮肤在 weekday-skins.css 处理。
          * 默认状态下走心区域是干净的白卡 + 浅灰底，与主题首页一致。 */
-        .kratos-heart-shortcode.khs-scheme-parchment .khs-subtitle,
         .kratos-heart-shortcode.khs-scheme-parchment .khs-time,
         .kratos-heart-shortcode.khs-scheme-parchment .khs-from,
         .kratos-heart-shortcode.khs-scheme-parchment .khs-page-info{font-style:italic;}
