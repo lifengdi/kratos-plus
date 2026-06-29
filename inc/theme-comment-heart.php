@@ -470,8 +470,6 @@ function kratos_heart_shortcode($atts)
                         <a class="khs-page khs-page-nav" href="<?php echo $build($current_page - 1); ?>" rel="prev">
                             &laquo; <?php esc_html_e('上一页', 'kratos'); ?>
                         </a>
-                    <?php } else { ?>
-                        <span class="khs-page khs-page-nav khs-disabled">&laquo; <?php esc_html_e('上一页', 'kratos'); ?></span>
                     <?php } ?>
 
                     <?php if ($start > 1) { ?>
@@ -500,20 +498,8 @@ function kratos_heart_shortcode($atts)
                         <a class="khs-page khs-page-nav" href="<?php echo $build($current_page + 1); ?>" rel="next">
                             <?php esc_html_e('下一页', 'kratos'); ?> &raquo;
                         </a>
-                    <?php } else { ?>
-                        <span class="khs-page khs-page-nav khs-disabled"><?php esc_html_e('下一页', 'kratos'); ?> &raquo;</span>
                     <?php } ?>
                 </nav>
-                <div class="khs-page-info">
-                    <?php
-                    printf(
-                        esc_html__('第 %1$s / %2$s 页 · 共 %3$s 条', 'kratos'),
-                        '<strong>' . (int) $current_page . '</strong>',
-                        '<strong>' . (int) $total_pages . '</strong>',
-                        '<strong>' . (int) $total . '</strong>'
-                    );
-                    ?>
-                </div>
             <?php } ?>
         <?php } ?>
     </div>
@@ -701,7 +687,7 @@ function kratos_heart_shortcode($atts)
             color:var(--khs-fg-soft) !important;
             background:var(--khs-card-bg);
             border:1px solid var(--khs-line);
-            border-radius:8px;
+            border-radius:2px;
             text-decoration:none !important;
             transition:background .2s ease, color .2s ease, border-color .2s ease;
         }

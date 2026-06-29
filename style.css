@@ -787,25 +787,15 @@ p {
 
 .k-main
 .board
-.paginations
-> * {
-    display: inline-block;
-}
-
-.k-main
-.board
-.paginations
-.kicon {
-    line-height: 25px;
-}
-
-.k-main
-.board
 .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
     margin: 10px auto;
     width: 100%;
-    text-align: center;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .k-main.color
@@ -817,30 +807,65 @@ p {
 .k-main
 .board
 .paginations
-a {
-    margin-top: 5px;
-    padding: 5px 12px;
-    background: #fff;
-    color: #444;
+a,
+.k-main
+.board
+.paginations
+.current,
+.k-main
+.board
+.paginations
+.dots {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
 }
 
 .k-main
 .board
 .paginations
+a {
+    background: #fff;
+    color: #336699;
+}
+
+.k-main
+.board
+.paginations
+a:hover,
+.k-main
+.board
+.paginations
 .current {
-    padding: 5px 12px;
     background: #336699;
+    border-color: transparent;
     color: #fff;
-    font-weight: 400;
+    font-weight: 600;
 }
 
 .k-main
 .board
 .paginations
 .dots {
-    padding: 5px 12px;
-    background: #fff;
-    color: #444;
+    background: transparent;
+    border-color: transparent;
+    color: #999;
+    cursor: default;
+}
+
+.k-main
+.board
+.paginations
+.kicon {
+    line-height: 1;
 }
 
 .k-main
@@ -856,7 +881,12 @@ ol {
 .article
 .content
 .paginations {
-    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 13px;
 }
 
 .k-main
@@ -865,8 +895,7 @@ ol {
 .content
 .paginations
 span {
-    display: inline-block;
-    margin: 3px;
+    margin: 0;
     cursor: pointer;
 }
 
@@ -885,13 +914,28 @@ a {
 .content
 .paginations
 a
+span,
+.k-main
+.details
+.article
+.content
+.paginations
+.current
 span {
-    padding: 5px 12px;
-    border: solid 1px #336699;
-    background-color: #f0f8ff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fff;
     color: #336699;
-    text-decoration: none;
     font-weight: normal;
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
 }
 
 .k-main
@@ -899,20 +943,19 @@ span {
 .article
 .content
 .paginations
-.current
-span,
+a
+span:hover,
 .k-main
 .details
 .article
 .content
 .paginations
-a
-span:hover {
-    padding: 5px 12px;
-    border: solid 1px #336699;
+.current
+span {
     background: #336699;
+    border-color: transparent;
     color: #fff;
-    font-weight: 400;
+    font-weight: 600;
 }
 
 /*--------------------------------------------------------------
