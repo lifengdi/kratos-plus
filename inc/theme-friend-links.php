@@ -118,6 +118,126 @@ function kratos_friend_pending_count()
     return (int) $wpdb->get_var($sql);
 }
 
+/**
+ * 拉取最近有评论的访客（按用户去重，每人只取最新一条）
+ *
+ * 归并规则：
+ *   - 已登录用户按 user_id 归并
+ *   - 游客按 comment_author_email 归并
+ *   - 匿名（无 user_id 且无邮箱）跳过
+ *
+ * @param int $limit 最多返回条数
+ * @return array<int, array{
+ *   key: string,
+ *   user_id: int,
+ *   name: string,
+ *   url: string,
+ *   avatar_html: string,
+ *   comment_id: int,
+ *   excerpt: string,
+ *   time: int,
+ *   post_id: int,
+ *   post_title: string,
+ *   post_url: string,
+ *   comment_link: string
+ * }>
+ */
+function kratos_friend_recent_visitors($limit = 20)
+{
+    $limit = max(1, (int) $limit);
+
+    $cache_key = 'kratos_friend_recent_' . $limit;
+    $cached = get_transient($cache_key);
+    if (is_array($cached)) {
+        return $cached;
+    }
+
+    global $wpdb;
+    // 取最近 200 条已审核评论作为候选池，够 20~50 个去重后的用户用了。
+    // 直接靠 SQL 做 GROUP BY 归并不了「按最新时间去重」逻辑，PHP 端二次处理更简单。
+    $rows = $wpdb->get_results(
+        "SELECT comment_ID, user_id, comment_author, comment_author_email,
+                comment_author_url, comment_content, comment_date, comment_post_ID
+         FROM {$wpdb->comments}
+         WHERE comment_approved = '1'
+           AND (comment_type = '' OR comment_type = 'comment')
+         ORDER BY comment_date DESC
+         LIMIT 200"
+    );
+
+    $seen = array();
+    $items = array();
+    foreach ((array) $rows as $r) {
+        $uid   = (int) $r->user_id;
+        $email = (string) $r->comment_author_email;
+        if ($uid > 0) {
+            $key = 'u_' . $uid;
+        } elseif ($email !== '') {
+            $key = 'e_' . md5(strtolower($email));
+        } else {
+            continue; // 匿名跳过
+        }
+        if (isset($seen[$key])) continue;
+        $seen[$key] = true;
+
+        $post_id    = (int) $r->comment_post_ID;
+        $post_title = get_the_title($post_id);
+        if ($post_title === '') $post_title = __('（无标题）', 'kratos');
+        $post_url = get_permalink($post_id);
+
+        $author = $r->comment_author !== '' ? $r->comment_author : ($uid > 0 ? (get_userdata($uid) ? get_userdata($uid)->display_name : __('用户', 'kratos')) : __('匿名', 'kratos'));
+
+        $avatar_seed = $email !== '' ? $email : $uid;
+        $avatar = get_avatar($avatar_seed, 44, '', $author, array('class' => 'kfl-visitor-avatar-img'));
+
+        $excerpt = wp_strip_all_tags((string) $r->comment_content);
+        // 截断到 120 字以内，超出加省略号
+        if (function_exists('mb_strimwidth')) {
+            $excerpt = mb_strimwidth($excerpt, 0, 160, '…', 'UTF-8');
+        } elseif (mb_strlen($excerpt) > 80) {
+            $excerpt = mb_substr($excerpt, 0, 80) . '…';
+        }
+
+        $items[] = array(
+            'key'          => $key,
+            'user_id'      => $uid,
+            'name'         => $author,
+            'url'          => (string) $r->comment_author_url,
+            'avatar_html'  => $avatar,
+            'comment_id'   => (int) $r->comment_ID,
+            'excerpt'      => $excerpt,
+            'time'         => strtotime((string) $r->comment_date),
+            'post_id'      => $post_id,
+            'post_title'   => $post_title,
+            'post_url'     => $post_url,
+            'comment_link' => get_comment_link((int) $r->comment_ID),
+        );
+
+        if (count($items) >= $limit) break;
+    }
+
+    set_transient($cache_key, $items, 10 * MINUTE_IN_SECONDS);
+    return $items;
+}
+
+/**
+ * 评论审核状态变化时清除最近访客缓存。
+ */
+function kratos_friend_recent_flush_cache()
+{
+    global $wpdb;
+    $like = $wpdb->esc_like('_transient_kratos_friend_recent_') . '%';
+    $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like));
+    $like2 = $wpdb->esc_like('_transient_timeout_kratos_friend_recent_') . '%';
+    $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like2));
+}
+add_action('wp_insert_comment',     'kratos_friend_recent_flush_cache');
+add_action('wp_set_comment_status', 'kratos_friend_recent_flush_cache');
+add_action('edit_comment',          'kratos_friend_recent_flush_cache');
+add_action('deleted_comment',       'kratos_friend_recent_flush_cache');
+add_action('trashed_comment',       'kratos_friend_recent_flush_cache');
+add_action('untrashed_comment',     'kratos_friend_recent_flush_cache');
+
 /* ============================================================
  *  短码 [friend_links]
  * ============================================================ */
@@ -230,6 +350,57 @@ function kratos_friend_shortcode($atts)
             <?php } ?>
         <?php } ?>
 
+        <?php if (kratos_option('g_friend_recent_enabled', true)) {
+            $recent_limit = (int) kratos_option('g_friend_recent_limit', 20);
+            if ($recent_limit <= 0) $recent_limit = 20;
+            $recent_title = (string) kratos_option('g_friend_recent_title', __('最近访客', 'kratos'));
+            $visitors = kratos_friend_recent_visitors($recent_limit);
+            if (!empty($visitors)) {
+                $date_fmt = get_option('date_format') . ' ' . get_option('time_format');
+        ?>
+            <section class="kfl-section kfl-visitors-section">
+                <?php if ($recent_title !== '') { ?>
+                    <header class="kfl-section-head">
+                        <h3 class="kfl-section-title"><?php echo esc_html($recent_title); ?></h3>
+                        <span class="kfl-section-count"><?php echo (int) count($visitors); ?></span>
+                    </header>
+                <?php } ?>
+                <ul class="kfl-visitors">
+                    <?php foreach ($visitors as $v) {
+                        $has_url = $v['url'] !== '' && preg_match('#^https?://#i', $v['url']);
+                        $time_full = $v['time'] > 0 ? wp_date($date_fmt, $v['time']) : '';
+                        $time_rel  = $v['time'] > 0 ? human_time_diff($v['time'], current_time('timestamp')) . __('前', 'kratos') : '';
+                        // 用户名可点击外链，头像整体点击到评论锚点
+                        $tag = $has_url ? 'a' : 'span';
+                    ?>
+                        <li class="kfl-visitor" tabindex="0">
+                            <a class="kfl-visitor-link" href="<?php echo esc_url($v['comment_link']); ?>" title="<?php echo esc_attr(sprintf(__('查看 %s 的评论', 'kratos'), $v['name'])); ?>">
+                                <span class="kfl-visitor-avatar"><?php echo $v['avatar_html']; ?></span>
+                                <span class="kfl-visitor-name"><?php echo esc_html($v['name']); ?></span>
+                            </a>
+                            <div class="kfl-visitor-tip" role="tooltip">
+                                <div class="kfl-visitor-tip-head">
+                                    <?php if ($has_url) { ?>
+                                        <a class="kfl-visitor-tip-name" href="<?php echo esc_url($v['url']); ?>" target="_blank" rel="nofollow noopener external"><?php echo esc_html($v['name']); ?></a>
+                                    <?php } else { ?>
+                                        <span class="kfl-visitor-tip-name"><?php echo esc_html($v['name']); ?></span>
+                                    <?php } ?>
+                                    <?php if ($time_rel !== '') { ?>
+                                        <span class="kfl-visitor-tip-time" title="<?php echo esc_attr($time_full); ?>"><?php echo esc_html($time_rel); ?></span>
+                                    <?php } ?>
+                                </div>
+                                <div class="kfl-visitor-tip-body"><?php echo esc_html($v['excerpt']); ?></div>
+                                <a class="kfl-visitor-tip-post" href="<?php echo esc_url($v['comment_link']); ?>" title="<?php echo esc_attr($v['post_title']); ?>">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    <span><?php echo esc_html($v['post_title']); ?></span>
+                                </a>
+                            </div>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </section>
+        <?php } } ?>
+
         <?php if ($atts['form'] === '1') {
             $form_intro = (string) kratos_option('g_friend_form_intro', __('填写下方表单提交友链申请，站长审核通过后会自动上线。', 'kratos'));
         ?>
@@ -290,6 +461,24 @@ function kratos_friend_shortcode($atts)
                             <input class="kfl-input" type="text" id="kfl-desc" name="link_description" maxlength="200" placeholder="<?php esc_attr_e('一句话简介（可选）', 'kratos'); ?>" />
                         </div>
                     </div>
+
+                    <?php if (function_exists('kratos_captcha_enabled') && kratos_captcha_enabled()) {
+                        list($cap_token, $cap_x, $cap_y, $cap_op) = kratos_captcha_new_question();
+                    ?>
+                        <div class="kfl-form-row">
+                            <div class="kfl-field kfl-field-full">
+                                <label class="kfl-label" for="kfl-captcha"><?php esc_html_e('验证码', 'kratos'); ?> <span class="kfl-required">*</span></label>
+                                <div class="kfl-captcha-row">
+                                    <span class="kfl-captcha-q" aria-hidden="true"><?php echo esc_html($cap_x . ' ' . $cap_op . ' ' . $cap_y . ' ='); ?></span>
+                                    <input class="kfl-input kfl-captcha-input" type="text" id="kfl-captcha" name="kratos_captcha" inputmode="numeric" pattern="-?\d+" required maxlength="4" autocomplete="off" placeholder="<?php esc_attr_e('答案', 'kratos'); ?>" />
+                                    <button type="button" class="kfl-captcha-refresh" aria-label="<?php esc_attr_e('换一题', 'kratos'); ?>" title="<?php esc_attr_e('换一题', 'kratos'); ?>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                    </button>
+                                    <input type="hidden" name="kratos_captcha_token" value="<?php echo esc_attr($cap_token); ?>" />
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
 
                     <div class="kfl-form-actions">
                         <button type="submit" class="kfl-submit"><?php esc_html_e('提交申请', 'kratos'); ?></button>
@@ -471,6 +660,135 @@ function kratos_friend_shortcode($atts)
             border-radius:12px;margin-bottom:16px;
         }
 
+        /* === 最近访客 ===
+         * 用 flex-wrap 排列头像 + 名字胶囊；hover / focus 弹出富文本 tooltip
+         * 展示评论摘要 + 相对时间 + 来源文章链接。tooltip 用 CSS，不依赖 JS */
+        .kratos-friend-links .kfl-visitors{
+            list-style:none;margin:0;padding:0;
+            display:flex;flex-wrap:wrap;gap:8px;
+        }
+        .kratos-friend-links .kfl-visitor{
+            position:relative;
+            outline:none;
+        }
+        .kratos-friend-links .kfl-visitor-link{
+            display:inline-flex;align-items:center;gap:8px;
+            padding:6px 12px 6px 6px;
+            background:var(--khs-bg-2);
+            border:1px solid var(--khs-line);
+            border-radius:999px;
+            text-decoration:none !important;
+            color:var(--khs-fg-soft) !important;
+            transition:transform .18s ease,border-color .18s ease,background .18s ease,color .18s ease;
+        }
+        .kratos-friend-links .kfl-visitor-link:hover,
+        .kratos-friend-links .kfl-visitor:focus .kfl-visitor-link,
+        .kratos-friend-links .kfl-visitor:focus-within .kfl-visitor-link{
+            transform:translateY(-1px);
+            border-color:var(--khs-accent);
+            color:var(--khs-accent) !important;
+        }
+        .kratos-friend-links .kfl-visitor-avatar-img,
+        .kratos-friend-links .kfl-visitor-avatar img{
+            width:26px !important;height:26px !important;
+            border-radius:50% !important;
+            border:1px solid var(--khs-line);
+            display:block;
+            box-shadow:none;
+        }
+        .kratos-friend-links .kfl-visitor-name{
+            font-size:13px;font-weight:600;line-height:1;
+            max-width:120px;
+            overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+        }
+
+        /* Tooltip 卡片：position:fixed + JS 定位。fixed 相对视口，不受 .kfl-section
+         * 的 overflow / 兄弟 section 的 stacking order 影响；JS 会把 left 夹在
+         * 视口 [8, w-w-8] 之间，避免边缘超出。 */
+        .kratos-friend-links .kfl-visitor-tip{
+            position:fixed;left:0;top:0;
+            width:260px;max-width:calc(100vw - 16px);
+            padding:12px 14px;
+            background:var(--khs-card-bg);
+            border:1px solid var(--khs-line-strong);
+            border-radius:10px;
+            box-shadow:0 8px 24px rgba(0,0,0,.16);
+            font-size:12.5px;line-height:1.55;color:var(--khs-fg-soft);
+            opacity:0;visibility:hidden;pointer-events:none;
+            transform:translateY(4px);
+            transition:opacity .18s ease,transform .18s ease,visibility 0s linear .18s;
+            z-index:9999;text-align:left;
+        }
+        /* 用 ::after 造一条透明的"鼠标桥"，覆盖 host↔tip 之间的 8px 间隙，
+         * 让鼠标沿直线移入 tooltip 不会踩空到底层元素上；.is-flipped 时挪到底部 */
+        .kratos-friend-links .kfl-visitor-tip::after{
+            content:"";position:absolute;
+            left:0;right:0;top:-10px;height:10px;
+            background:transparent;
+        }
+        .kratos-friend-links .kfl-visitor-tip.is-flipped::after{
+            top:auto;bottom:-10px;
+        }
+        .kratos-friend-links .kfl-visitor-tip.is-open{
+            opacity:1;visibility:visible;pointer-events:auto;
+            transform:translateY(0);
+            transition:opacity .18s ease,transform .18s ease,visibility 0s;
+        }
+        /* 三角箭头：默认在顶部指向触发元素；--arrow-x 由 JS 写入
+         * .is-flipped 时（tooltip 位于触发元素上方）箭头翻到底部指向下方 */
+        .kratos-friend-links .kfl-visitor-tip::before{
+            content:"";position:absolute;top:-6px;
+            left:var(--arrow-x,50%);
+            width:10px;height:10px;
+            background:var(--khs-card-bg);
+            border:1px solid var(--khs-line-strong);
+            border-right:none;border-bottom:none;
+            transform:translateX(-50%) rotate(45deg);
+        }
+        .kratos-friend-links .kfl-visitor-tip.is-flipped::before{
+            top:auto;bottom:-6px;
+            border:1px solid var(--khs-line-strong);
+            border-left:none;border-top:none;
+        }
+
+        .kratos-friend-links .kfl-visitor-tip-head{
+            display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+            margin-bottom:6px;padding-bottom:6px;
+            border-bottom:1px solid var(--khs-line);
+        }
+        .kratos-friend-links .kfl-visitor-tip-name{
+            font-size:13px;font-weight:700;color:var(--khs-fg) !important;
+            text-decoration:none !important;
+            overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+            min-width:0;
+        }
+        a.kfl-visitor-tip-name:hover{color:var(--khs-accent) !important;}
+        .kratos-friend-links .kfl-visitor-tip-time{
+            flex-shrink:0;
+            font-size:11px;color:var(--khs-fg-mute);
+        }
+        .kratos-friend-links .kfl-visitor-tip-body{
+            margin-bottom:8px;
+            color:var(--khs-fg-soft);
+            word-break:break-word;
+            display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;
+            overflow:hidden;
+        }
+        .kratos-friend-links .kfl-visitor-tip-post{
+            display:inline-flex;align-items:center;gap:4px;
+            padding-top:4px;
+            font-size:11.5px;color:var(--khs-fg-mute) !important;
+            text-decoration:none !important;
+            border-top:1px dashed var(--khs-line);
+            width:100%;
+            transition:color .18s ease;
+        }
+        .kratos-friend-links .kfl-visitor-tip-post:hover{color:var(--khs-accent) !important;}
+        .kratos-friend-links .kfl-visitor-tip-post span{
+            overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+            min-width:0;
+        }
+
         /* 申请表单 */
         .kratos-friend-links .kfl-form-section{margin-top:20px;}
         .kratos-friend-links .kfl-form-row{
@@ -505,6 +823,46 @@ function kratos_friend_shortcode($atts)
             box-shadow:0 0 0 3px rgba(51,102,153,.14);
         }
         .kratos-friend-links .kfl-help{font-size:11.5px;color:var(--khs-fg-mute);}
+        /* 验证码：题目胶囊 + 答案输入框 + 刷新按钮，一行横向排布 */
+        .kratos-friend-links .kfl-captcha-row{
+            display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+        }
+        .kratos-friend-links .kfl-captcha-q{
+            display:inline-flex;align-items:center;
+            padding:9px 14px;
+            font-size:15px;font-weight:600;line-height:1;
+            color:var(--khs-fg);
+            background:var(--khs-bg-2);
+            border:1px solid var(--khs-line);
+            border-radius:8px;
+            font-variant-numeric:tabular-nums;
+            user-select:none;
+        }
+        .kratos-friend-links .kfl-captcha-input{
+            width:110px;flex:0 0 110px;
+        }
+        .kratos-friend-links .kfl-captcha-refresh{
+            appearance:none;cursor:pointer;
+            width:36px;height:36px;flex-shrink:0;
+            display:inline-flex;align-items:center;justify-content:center;
+            padding:0;
+            color:var(--khs-fg-dim);
+            background:var(--khs-card-bg);
+            border:1px solid var(--khs-line);
+            border-radius:8px;
+            transition:color .2s ease,border-color .2s ease,background .2s ease,transform .3s ease;
+        }
+        .kratos-friend-links .kfl-captcha-refresh:hover{
+            color:var(--khs-accent);
+            border-color:var(--khs-accent);
+        }
+        .kratos-friend-links .kfl-captcha-refresh.is-spinning svg{
+            animation:kflSpin .6s linear;
+        }
+        @keyframes kflSpin{
+            from{transform:rotate(0deg);}
+            to{transform:rotate(360deg);}
+        }
         .kratos-friend-links .kfl-form-actions{margin-top:6px;}
         .kratos-friend-links .kfl-submit{
             appearance:none;border:none;cursor:pointer;
@@ -531,10 +889,14 @@ function kratos_friend_shortcode($atts)
             .kratos-friend-links .kfl-section{padding:18px 18px;}
             .kratos-friend-links .kfl-grid{grid-template-columns:1fr;}
             .kratos-friend-links .kfl-form-row{grid-template-columns:1fr;}
+            .kratos-friend-links .kfl-visitor-tip{width:220px;}
         }
 
-        /* 暗夜：对齐 dark.css，与走心 / 归档同步 */
+        /* 暗夜：对齐 dark.css，与走心 / 归档同步；同时把 --khs-bg-* 从浅灰
+         * (#f0f0f0) 改成深卡色，否则验证码题目胶囊 / 分类计数徽标这些吃 bg-2
+         * 的元素在暗夜下仍然是一片高亮浅灰，与深卡对比刺眼。 */
         html[data-theme="dark"] .kratos-friend-links,body.dark .kratos-friend-links{
+            --khs-bg-1:#2a2e35;--khs-bg-2:#2a2e35;--khs-bg-3:#333842;
             --khs-fg:#d6d8db;--khs-fg-soft:#b8bbc0;--khs-fg-dim:#8b919a;--khs-fg-mute:#6f747e;
             --khs-accent:#6ea8ff;--khs-accent-2:#91bdff;
             --khs-line:rgba(255,255,255,.08);--khs-line-strong:rgba(255,255,255,.16);
@@ -547,6 +909,164 @@ function kratos_friend_shortcode($atts)
             background:rgba(207,34,46,.10);color:#ff8b95;border-color:rgba(207,34,46,.35);
         }
     </style>
+    <?php if (function_exists('kratos_captcha_enabled') && kratos_captcha_enabled()) { ?>
+    <script>
+    (function(){
+        var root = document.getElementById('kratos-friend-links');
+        if (!root) return;
+        var btn = root.querySelector('.kfl-captcha-refresh');
+        var qEl = root.querySelector('.kfl-captcha-q');
+        var tokEl = root.querySelector('input[name="kratos_captcha_token"]');
+        var ansEl = root.querySelector('input[name="kratos_captcha"]');
+        if (!btn || !qEl || !tokEl || !ansEl) return;
+        var ajaxUrl = <?php echo wp_json_encode(admin_url('admin-ajax.php')); ?>;
+        btn.addEventListener('click', function(){
+            btn.classList.remove('is-spinning');
+            // 强制回流触发动画重放
+            void btn.offsetWidth;
+            btn.classList.add('is-spinning');
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', ajaxUrl, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function(){
+                if (xhr.status < 200 || xhr.status >= 300) return;
+                try{
+                    var r = JSON.parse(xhr.responseText);
+                    if (!r || !r.success || !r.data) return;
+                    qEl.textContent = r.data.question;
+                    tokEl.value = r.data.token;
+                    ansEl.value = '';
+                    ansEl.focus();
+                } catch(e){}
+            };
+            xhr.send('action=kratos_captcha_refresh');
+        });
+    })();
+    </script>
+    <?php } ?>
+    <script>
+    (function(){
+        var root = document.getElementById('kratos-friend-links');
+        if (!root) return;
+        var visitors = root.querySelectorAll('.kfl-visitor');
+        if (!visitors.length) return;
+
+        var MARGIN = 8;         // 距离视口边缘的最小间距
+        var GAP    = 8;         // tooltip 与触发元素之间的间距
+        var openTip = null;
+        var openHost = null;
+
+        // 关键：把每个 tooltip 从原 DOM 位置搬到 <body>，避免祖先节点的 transform /
+        // filter / will-change 把 position:fixed 变成"相对该祖先的绝对定位"。
+        // 类名保留一层 root 名字空间，样式仍然生效；因为 body 直挂，不会被任何
+        // section 的 stacking context 遮挡。
+        // 复用 root 的 data-theme / body.dark 变量：tooltip 移出后依然继承 :root。
+        var portal = document.createElement('div');
+        portal.className = 'kratos-friend-links kfl-tip-portal';
+        portal.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;';
+        document.body.appendChild(portal);
+
+        function portalTip(host){
+            var tip = host.querySelector(':scope > .kfl-visitor-tip');
+            if (tip) {
+                portal.appendChild(tip);
+                host._tip = tip;
+            }
+            return host._tip || null;
+        }
+
+        function place(host, tip){
+            tip.style.left = '0px';
+            tip.style.top  = '0px';
+            tip.style.setProperty('--arrow-x', '50%');
+
+            var hrect = host.getBoundingClientRect();
+            var tw = tip.offsetWidth;
+            var th = tip.offsetHeight;
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+
+            var anchorX = hrect.left + hrect.width / 2;
+            var left = anchorX - tw / 2;
+            if (left < MARGIN) left = MARGIN;
+            if (left + tw > vw - MARGIN) left = vw - MARGIN - tw;
+
+            var below = hrect.bottom + GAP;
+            var above = hrect.top - GAP - th;
+            var top, flip = false;
+            if (below + th <= vh - MARGIN) {
+                top = below;
+            } else if (above >= MARGIN) {
+                top = above;
+                flip = true;
+            } else {
+                top = Math.max(MARGIN, vh - MARGIN - th);
+            }
+
+            var arrow = anchorX - left;
+            arrow = Math.max(12, Math.min(tw - 12, arrow));
+
+            tip.style.left = left + 'px';
+            tip.style.top  = top + 'px';
+            tip.style.setProperty('--arrow-x', arrow + 'px');
+            tip.classList.toggle('is-flipped', flip);
+        }
+
+        // 关闭延迟做小一点（120ms）—— 够跨越 host↔tip 之间的 8px 空隙，
+        // 又不至于快速划过一排头像时把好几个 tooltip 同时挂着。
+        // 打开新 host 时立即把其他 host 的 tooltip 收起（不走延迟），保证
+        // 同一时刻只有一个 tooltip 可见。
+        var CLOSE_DELAY = 120;
+
+        function closeNow(host){
+            clearTimeout(host._closeTimer);
+            var tip = host._tip;
+            if (!tip) return;
+            tip.classList.remove('is-open');
+            if (openTip === tip) { openTip = null; openHost = null; }
+        }
+        function scheduleClose(host){
+            clearTimeout(host._closeTimer);
+            host._closeTimer = setTimeout(function(){ closeNow(host); }, CLOSE_DELAY);
+        }
+        function cancelClose(host){
+            clearTimeout(host._closeTimer);
+        }
+        function open(host){
+            // 有别的 tooltip 开着（可能正处在 scheduleClose 的 120ms 灰度期）→ 立即关
+            if (openHost && openHost !== host) closeNow(openHost);
+            cancelClose(host);
+            var tip = portalTip(host);
+            if (!tip) return;
+            tip.classList.add('is-open');
+            place(host, tip);
+            openTip = tip; openHost = host;
+        }
+
+        visitors.forEach(function(host){
+            host.addEventListener('mouseenter', function(){ open(host); });
+            host.addEventListener('mouseleave', function(){ scheduleClose(host); });
+            host.addEventListener('focusin',    function(){ open(host); });
+            host.addEventListener('focusout',   function(e){
+                if (host.contains(e.relatedTarget) || (host._tip && host._tip.contains(e.relatedTarget))) return;
+                scheduleClose(host);
+            });
+            var tip = portalTip(host);
+            if (tip) {
+                tip.addEventListener('mouseenter', function(){ cancelClose(host); });
+                tip.addEventListener('mouseleave', function(){ scheduleClose(host); });
+                tip.addEventListener('focusin',    function(){ cancelClose(host); });
+                tip.addEventListener('focusout',   function(e){
+                    if (host.contains(e.relatedTarget) || tip.contains(e.relatedTarget)) return;
+                    scheduleClose(host);
+                });
+            }
+        });
+
+        window.addEventListener('scroll',  function(){ if (openHost && openTip) place(openHost, openTip); }, { passive: true });
+        window.addEventListener('resize',  function(){ if (openHost && openTip) place(openHost, openTip); });
+    })();
+    </script>
     <?php
     return ob_get_clean();
 }
@@ -562,16 +1082,19 @@ add_shortcode('friend_links', 'kratos_friend_shortcode');
 function kratos_friend_reason_msg($key)
 {
     $map = array(
-        'nonce'    => __('会话已过期，请刷新后重试。', 'kratos'),
-        'required' => __('请把带 * 的字段填完。', 'kratos'),
-        'url'      => __('网站地址不合法，请填写完整的 http(s):// 链接。', 'kratos'),
-        'rss'      => __('RSS 地址不合法，请填写完整的 http(s):// 链接或留空。', 'kratos'),
-        'image'    => __('Logo 地址不合法，请填写完整的 http(s):// 图片链接或留空。', 'kratos'),
-        'hp'       => __('提交被拦截，请稍后再试。', 'kratos'),
-        'cooldown' => __('提交过于频繁，请 1 分钟后再试。', 'kratos'),
-        'exists'   => __('该网址已经在友链里啦，感谢关注。', 'kratos'),
-        'name_len' => __('网站名称最长 120 字符。', 'kratos'),
-        'db'       => __('保存失败，请稍后再试或联系站长。', 'kratos'),
+        'nonce'           => __('会话已过期，请刷新后重试。', 'kratos'),
+        'required'        => __('请把带 * 的字段填完。', 'kratos'),
+        'url'             => __('网站地址不合法，请填写完整的 http(s):// 链接。', 'kratos'),
+        'rss'             => __('RSS 地址不合法，请填写完整的 http(s):// 链接或留空。', 'kratos'),
+        'image'           => __('Logo 地址不合法，请填写完整的 http(s):// 图片链接或留空。', 'kratos'),
+        'hp'              => __('提交被拦截，请稍后再试。', 'kratos'),
+        'cooldown'        => __('提交过于频繁，请 1 分钟后再试。', 'kratos'),
+        'exists'          => __('该网址已经在友链里啦，感谢关注。', 'kratos'),
+        'name_len'        => __('网站名称最长 120 字符。', 'kratos'),
+        'db'              => __('保存失败，请稍后再试或联系站长。', 'kratos'),
+        'captcha_empty'   => __('请填写验证码后再提交。', 'kratos'),
+        'captcha_expired' => __('验证码已过期，请点击「换一题」后重新填写。', 'kratos'),
+        'captcha_wrong'   => __('验证码答案错误，请点击「换一题」后重新填写。', 'kratos'),
     );
     return isset($map[$key]) ? $map[$key] : __('提交失败，请检查填写内容后重试。', 'kratos');
 }
@@ -600,6 +1123,23 @@ function kratos_friend_handle_apply()
     // Honeypot
     if (!empty($_POST['kfl_hp_website'])) {
         $back('err', 'hp');
+    }
+
+    // 算术验证码（复用 [评论验证码] 模块，同一套 transient 存活 10 分钟）
+    if (function_exists('kratos_captcha_enabled') && kratos_captcha_enabled()) {
+        $cap_token  = isset($_POST['kratos_captcha_token']) ? sanitize_text_field(wp_unslash($_POST['kratos_captcha_token'])) : '';
+        $cap_answer = isset($_POST['kratos_captcha']) ? trim(wp_unslash($_POST['kratos_captcha'])) : '';
+        if ($cap_token === '' || $cap_answer === '') {
+            $back('err', 'captcha_empty');
+        }
+        $expected = get_transient('kratos_captcha_' . $cap_token);
+        delete_transient('kratos_captcha_' . $cap_token); // 一次性使用
+        if ($expected === false) {
+            $back('err', 'captcha_expired');
+        }
+        if ((string) intval($cap_answer) !== (string) $expected) {
+            $back('err', 'captcha_wrong');
+        }
     }
 
     // IP 冷却

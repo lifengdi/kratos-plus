@@ -1444,6 +1444,35 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'subheading',
+            'content' => __('最近访客', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_recent_enabled',
+            'type' => 'switcher',
+            'title' => __('展示最近访客', 'kratos'),
+            'subtitle' => __('在友链页面展示最近有评论的访客（按用户去重，仅取最新一条）', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_friend_recent_title',
+            'type' => 'text',
+            'title' => __('区块标题', 'kratos'),
+            'subtitle' => __('展示在最近访客区块顶部；留空则不展示标题', 'kratos'),
+            'default' => __('最近访客', 'kratos'),
+            'dependency' => array('g_friend_recent_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_recent_limit',
+            'type' => 'number',
+            'title' => __('展示数量', 'kratos'),
+            'subtitle' => __('最多展示的访客数量，去重后不足会自动少展示', 'kratos'),
+            'min' => 1,
+            'max' => 100,
+            'default' => 20,
+            'dependency' => array('g_friend_recent_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
             'content' => __('申请表单', 'kratos'),
         ),
         array(
