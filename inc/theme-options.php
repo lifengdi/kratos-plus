@@ -1313,6 +1313,48 @@ CSF::createSection($prefix, array(
             'default' => 100,
         ),
         array(
+            'type' => 'subheading',
+            'content' => __('评论排行榜', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_top_sc_title',
+            'type' => 'text',
+            'title' => __('短码默认标题', 'kratos'),
+            'subtitle' => __('[top_commenters] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('评论排行榜', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_top_sc_subtitle',
+            'type' => 'text',
+            'title' => __('短码默认副标题', 'kratos'),
+            'subtitle' => __('[top_commenters] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('感谢每一位活跃的朋友，你们的留言让这里更热闹 🎉', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_top_sc_limit',
+            'type' => 'number',
+            'title' => __('展示数量', 'kratos'),
+            'subtitle' => __('排行榜显示的用户数量，短码可通过 limit 参数覆盖', 'kratos'),
+            'min' => 1,
+            'max' => 200,
+            'default' => 20,
+        ),
+        array(
+            'type' => 'content',
+            'content' =>
+                '<div style="padding:16px 18px;background:linear-gradient(135deg,#f4f8ff 0%,#e6efff 100%);border:1px solid #cad9f5;border-radius:12px;color:#243a5e;line-height:1.8;font-size:13px;">'
+                . '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#336699;">' . __('🏆 评论排行榜使用说明', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('1. 数据来源：', 'kratos') . '</strong>' . __('统计每位评论者的已审核评论数（已登录用户按账号归并、游客按邮箱归并；无邮箱的匿名评论不参与排行）。', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('2. 展示字段：', 'kratos') . '</strong>' . __('头像 / 用户名 / 评论数 / 最后一次评论时间；若网站命中「链接（Blogroll）」列表则追加友链徽章（需在上方"友链标识"开启），用户名可点击跳转到对方站点。', 'kratos') . '</p>'
+                . '<p style="margin:0 0 4px;"><strong>' . __('3. 短码使用：', 'kratos') . '</strong>' . __('在任意页面 / 文章插入下方短码即可展示；也可使用「评论排行榜」页面模板直接创建一个专属页面。', 'kratos') . '</p>'
+                . '<ul style="margin:6px 0 8px 22px;padding:0;list-style:disc;">'
+                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#336699;">[top_commenters]</code>　' . __('使用上方后台默认值', 'kratos') . '</li>'
+                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#336699;">[top_commenters title="活跃榜" subtitle="话痨挑战" limit="10"]</code></li>'
+                . '</ul>'
+                . '<p style="margin:0;color:#5b6d8a;">' . __('💡 结果缓存 30 分钟，评论审核 / 删除时会自动清除。', 'kratos') . '</p>'
+                . '</div>',
+        ),
+        array(
             'type' => 'content',
             'content' =>
                 '<div style="padding:16px 18px;background:linear-gradient(135deg,#fff7f3 0%,#ffeae0 100%);border:1px solid #ffd9c8;border-radius:12px;color:#5c3b30;line-height:1.8;font-size:13px;">'

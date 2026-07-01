@@ -1781,8 +1781,10 @@ html[data-theme="dark"][data-weekday-skin="tue"] .k-main .sidebar .w-tags .item 
  *   暗夜下交由后面的 dark+skin 段落单独重映射。
  * =============================================================== */
 
-/* ---- 走心评论：变量重映射（仅浅色） ---- */
-html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode {
+/* ---- 走心评论 + 评论排行榜：变量重映射（仅浅色） ----
+ * 两个 shortcode 共享同一套 --khs-* 变量命名，跟随同一套皮肤规则。 */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -1819,10 +1821,27 @@ html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-sch
     display: none !important;
 }
 
-/* 走心 stat / card 在皮肤激活时不要旧的橘色边框阴影，重定义为皮肤色边 */
+/* 走心 stat / card / 排行榜 stat / row 在皮肤激活时不要旧的橘色边框阴影，重定义为皮肤色边 */
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
-html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-stat,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-row,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header {
     border-color: var(--kr-skin-card-line) !important;
+}
+
+/* 排行榜前三名奖牌：金/银/铜 hardcoded，但奖牌上的文字统一白色 —— 与
+ * 皮肤色板独立（奖牌是绝对语义，不该被皮肤改色）。仅把非奖牌名次徽标
+ * 和评论数强调色对齐皮肤色。 */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: var(--kr-skin-bg) !important;
+    color: var(--kr-skin-text) !important;
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count {
+    border-left-color: var(--kr-skin-card-line) !important;
 }
 
 /* ---- 归档统计：变量重映射（仅浅色） ---- */
@@ -1866,7 +1885,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas
  * 这里把 --khs-* / --kas-* 的 accent 锚到 --kr-accent，让走心/归档的
  * 主色随皮肤切换；底色 / 边线 / 卡片 / 阴影则保持 dark.css 同款深灰，
  * 避免出现"夜里突然一张高亮浅卡"的反向对比度。 */
-html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode {
+html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode,
+html[data-theme="dark"][data-weekday-skin] .kratos-topcommenters {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;
@@ -1877,6 +1897,15 @@ html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode {
     --khs-stat-user-1: var(--kr-accent) !important;
     --khs-stat-user-2: var(--kr-link-hover) !important;
     --khs-heart-fill: var(--kr-accent) !important;
+}
+
+/* 暗夜 + 皮肤下，排行榜非奖牌名次徽标 / 评论数强调色跟随 dark 皮肤 accent */
+html[data-theme="dark"][data-weekday-skin] .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: rgba(255, 255, 255, .06) !important;
+    color: var(--kr-fg, #d6d8db) !important;
+}
+html[data-theme="dark"][data-weekday-skin] .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-accent) !important;
 }
 
 html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode {
@@ -1923,7 +1952,8 @@ html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode.kas-scheme
 
 body.is-kratos-archives-page .k-main .details,
 body.is-kratos-heart-page .k-main .details,
-body.is-kratos-shuoshuo-page .k-main .details {
+body.is-kratos-shuoshuo-page .k-main .details,
+body.is-kratos-topcommenters-page .k-main .details {
     background-color: transparent !important;
     background-image: none !important;
     border: none !important;
@@ -1937,7 +1967,8 @@ body.is-kratos-shuoshuo-page .k-main .details {
 /* 周日小星花角标也关掉（避免在 shortcode 内容上方挂金星） */
 body.is-kratos-archives-page .k-main .details::after,
 body.is-kratos-heart-page .k-main .details::after,
-body.is-kratos-shuoshuo-page .k-main .details::after {
+body.is-kratos-shuoshuo-page .k-main .details::after,
+body.is-kratos-topcommenters-page .k-main .details::after {
     display: none !important;
 }
 
