@@ -1781,10 +1781,11 @@ html[data-theme="dark"][data-weekday-skin="tue"] .k-main .sidebar .w-tags .item 
  *   暗夜下交由后面的 dark+skin 段落单独重映射。
  * =============================================================== */
 
-/* ---- 走心评论 + 评论排行榜：变量重映射（仅浅色） ----
- * 两个 shortcode 共享同一套 --khs-* 变量命名，跟随同一套皮肤规则。 */
+/* ---- 走心评论 + 评论排行榜 + 友链页面：变量重映射（仅浅色） ----
+ * 三个 shortcode 共享同一套 --khs-* 变量命名，跟随同一套皮肤规则。 */
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode,
-html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -1821,13 +1822,31 @@ html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-sch
     display: none !important;
 }
 
-/* 走心 stat / card / 排行榜 stat / row 在皮肤激活时不要旧的橘色边框阴影，重定义为皮肤色边 */
+/* 走心 stat / card / 排行榜 stat / row / 友链 section / item 在皮肤激活时不要旧的橘色边框阴影，重定义为皮肤色边 */
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-stat,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-row,
-html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links .kfl-header,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links .kfl-section,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links .kfl-item {
     border-color: var(--kr-skin-card-line) !important;
+}
+
+/* 友链页面：分类计数徽标 / 输入框焦点色 / 提交按钮跟随皮肤 accent */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
+    background: var(--kr-skin-bg) !important;
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links .kfl-input:focus {
+    border-color: var(--kr-skin-accent) !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .06) !important;
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit {
+    background: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit:hover {
+    background: var(--kr-skin-accent-hover) !important;
 }
 
 /* 排行榜前三名奖牌：金/银/铜 hardcoded，但奖牌上的文字统一白色 —— 与
@@ -1886,7 +1905,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas
  * 主色随皮肤切换；底色 / 边线 / 卡片 / 阴影则保持 dark.css 同款深灰，
  * 避免出现"夜里突然一张高亮浅卡"的反向对比度。 */
 html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode,
-html[data-theme="dark"][data-weekday-skin] .kratos-topcommenters {
+html[data-theme="dark"][data-weekday-skin] .kratos-topcommenters,
+html[data-theme="dark"][data-weekday-skin] .kratos-friend-links {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;
@@ -1953,7 +1973,8 @@ html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode.kas-scheme
 body.is-kratos-archives-page .k-main .details,
 body.is-kratos-heart-page .k-main .details,
 body.is-kratos-shuoshuo-page .k-main .details,
-body.is-kratos-topcommenters-page .k-main .details {
+body.is-kratos-topcommenters-page .k-main .details,
+body.is-kratos-friend-links-page .k-main .details {
     background-color: transparent !important;
     background-image: none !important;
     border: none !important;
@@ -1968,7 +1989,8 @@ body.is-kratos-topcommenters-page .k-main .details {
 body.is-kratos-archives-page .k-main .details::after,
 body.is-kratos-heart-page .k-main .details::after,
 body.is-kratos-shuoshuo-page .k-main .details::after,
-body.is-kratos-topcommenters-page .k-main .details::after {
+body.is-kratos-topcommenters-page .k-main .details::after,
+body.is-kratos-friend-links-page .k-main .details::after {
     display: none !important;
 }
 

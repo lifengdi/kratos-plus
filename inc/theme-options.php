@@ -1414,6 +1414,108 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'title' => __('友链配置', 'kratos'),
+    'icon' => 'fas fa-link',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('展示', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[friend_links] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('友情链接', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[friend_links] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('感谢各位朋友的关注与支持，欢迎申请交换友链 🤝', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_hide_empty',
+            'type' => 'switcher',
+            'title' => __('隐藏空分类', 'kratos'),
+            'subtitle' => __('开启后，没有已通过友链的分类不会显示在页面上', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('申请表单', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_form_enabled',
+            'type' => 'switcher',
+            'title' => __('开启申请表单', 'kratos'),
+            'subtitle' => __('关闭后，友链页面末尾的申请表单会隐藏', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_friend_form_intro',
+            'type' => 'text',
+            'title' => __('表单引导文案', 'kratos'),
+            'subtitle' => __('展示在表单标题下方；留空则不展示', 'kratos'),
+            'default' => __('填写下方表单提交友链申请，站长审核通过后会自动上线。', 'kratos'),
+            'dependency' => array('g_friend_form_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_default_category',
+            'type' => 'select',
+            'title' => __('默认分类', 'kratos'),
+            'subtitle' => __('新申请归入此分类；未选择时归入 link_category 中最早创建的一项（通常是 Blogroll）。分类在「链接 → 链接分类目录」中管理', 'kratos'),
+            'options' => (function () {
+                $out = array(0 => __('— 自动选择 —', 'kratos'));
+                $terms = function_exists('get_terms') ? get_terms(array('taxonomy' => 'link_category', 'hide_empty' => false)) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) $out[(int) $t->term_id] = $t->name;
+                }
+                return $out;
+            })(),
+            'default' => 0,
+            'dependency' => array('g_friend_form_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_notify_admin',
+            'type' => 'switcher',
+            'title' => __('邮件通知管理员', 'kratos'),
+            'subtitle' => __('收到新申请时，发送邮件到「设置 → 常规」里的管理员邮箱', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_friend_form_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'content',
+            'content' =>
+                '<div style="padding:16px 18px;background:linear-gradient(135deg,#f4f9ff 0%,#e6f1fe 100%);border:1px solid #c9dcf4;border-radius:12px;color:#243a5e;line-height:1.8;font-size:13px;">'
+                . '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#336699;">' . __('🔗 友链管理说明', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('1. 数据存储：', 'kratos') . '</strong>'
+                . sprintf(
+                    __('复用 WordPress 原生「链接」（wp_links）表，与「%s」共享数据。已通过的友链自动出现在「评论友链标识」的匹配列表中。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('link-manager.php')) . '" target="_blank">' . esc_html__('链接管理', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('2. 分类管理：', 'kratos') . '</strong>'
+                . sprintf(
+                    __('前台按 link_category 分组展示，请到 %s 里创建分类，然后手动新增或编辑链接时选择分类。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('edit-tags.php?taxonomy=link_category')) . '" target="_blank">' . esc_html__('链接分类目录', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('3. 审核流程：', 'kratos') . '</strong>'
+                . sprintf(
+                    __('新申请以 link_visible = "N" 保存；到 %s 页面顶部会显示「待审核」筛选，行内操作可以「通过」或「拒绝」（拒绝会直接删除该记录）。审核通过后自动清除评论友链缓存。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('link-manager.php?kfl_filter=pending')) . '" target="_blank">' . esc_html__('链接管理', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 4px;"><strong>' . __('4. 页面使用：', 'kratos') . '</strong>' . __('新建页面时模板选「友情链接」；或在任意页面 / 文章插入 <code style="background:#fff;padding:2px 8px;border-radius:4px;color:#336699;">[friend_links]</code>。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#5b6d8a;">' . __('💡 短码参数：', 'kratos') . '<code>title</code> ' . __('标题；', 'kratos') . '<code>subtitle</code> ' . __('副标题；', 'kratos') . '<code>hide_empty="0"</code> ' . __('展示空分类；', 'kratos') . '<code>form="0"</code> ' . __('隐藏表单。', 'kratos') . '</p>'
+                . '</div>',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'title' =>  __('邮件配置', 'kratos'),
     'icon' => 'fas fa-envelope',
     'fields' => array(

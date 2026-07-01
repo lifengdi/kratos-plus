@@ -220,13 +220,13 @@ function kratos_top_commenters_shortcode($atts)
     // 头三名用皇冠色
     $medal_colors = array('#f5b942', '#c0c0c0', '#cd7f32');
 
-    // 汇总统计（用于三张总览卡）：参与用户 / 总评论数 / 暖心评论数
+    // 汇总统计（用于三张总览卡）：参与用户 / 总评论数 / 走心评论数
     $total_users    = count($items);
     $total_comments = 0;
     foreach ($items as $it) {
         $total_comments += (int) $it['count'];
     }
-    // 暖心评论：优先复用 [heart_comments] 短码的统计接口
+    // 走心评论：优先复用 [heart_comments] 短码的统计接口
     $heart_count = 0;
     if (function_exists('kratos_heart_get_stats')) {
         $heart_stats = kratos_heart_get_stats();
@@ -277,7 +277,7 @@ function kratos_top_commenters_shortcode($atts)
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
                 </span>
                 <div class="ktc-stat-body">
-                    <div class="ktc-stat-label"><?php esc_html_e('暖心评论', 'kratos'); ?></div>
+                    <div class="ktc-stat-label"><?php esc_html_e('走心评论', 'kratos'); ?></div>
                     <div class="ktc-stat-num"><?php echo (int) $heart_count; ?></div>
                 </div>
             </div>

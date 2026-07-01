@@ -74,6 +74,9 @@ require get_template_directory() . '/inc/theme-comment-link.php';
 // 评论排行榜
 require get_template_directory() . '/inc/theme-comment-topcommenters.php';
 
+// 友链页面 + 友链申请
+require get_template_directory() . '/inc/theme-friend-links.php';
+
 // 说说（朋友圈式短动态）
 require get_template_directory() . '/inc/theme-shuoshuo.php';
 
