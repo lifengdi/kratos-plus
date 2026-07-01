@@ -68,6 +68,9 @@ require get_template_directory() . '/inc/theme-comment-rank.php';
 // 走心评论
 require get_template_directory() . '/inc/theme-comment-heart.php';
 
+// 评论友链标识
+require get_template_directory() . '/inc/theme-comment-link.php';
+
 // 说说（朋友圈式短动态）
 require get_template_directory() . '/inc/theme-shuoshuo.php';
 

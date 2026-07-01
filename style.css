@@ -2851,13 +2851,24 @@ img {
 .comment
 .info
 .author_name {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 4px;
     margin-top: 3px;
     color: #252525;
     font-weight: 600;
     font-style: normal;
     font-size: 14px;
     line-height: 1.375;
+}
+
+.author_name .kratos-heart-badge,
+.author_name .kratos-rank-badge,
+.author_name .kratos-blogroll-badge {
+    vertical-align: baseline;
+    position: relative;
+    top: 0;
 }
 
 .k-main
