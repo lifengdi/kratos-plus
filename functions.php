@@ -90,3 +90,6 @@ require get_template_directory() . '/inc/theme-darkmode.php';
 require get_template_directory() . '/inc/theme-weekday-skin.php';
 
 require get_template_directory() . '/inc/theme-archives-stats.php';
+
+// 时间轴（含 [timeline] 短码 + page-timeline.php 模板 body class）
+require get_template_directory() . '/inc/theme-timeline.php';

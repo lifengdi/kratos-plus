@@ -1785,7 +1785,8 @@ html[data-theme="dark"][data-weekday-skin="tue"] .k-main .sidebar .w-tags .item 
  * 三个 shortcode 共享同一套 --khs-* 变量命名，跟随同一套皮肤规则。 */
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters,
-html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links {
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-timeline {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -1906,7 +1907,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode .kas
  * 避免出现"夜里突然一张高亮浅卡"的反向对比度。 */
 html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode,
 html[data-theme="dark"][data-weekday-skin] .kratos-topcommenters,
-html[data-theme="dark"][data-weekday-skin] .kratos-friend-links {
+html[data-theme="dark"][data-weekday-skin] .kratos-friend-links,
+html[data-theme="dark"][data-weekday-skin] .kratos-timeline {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;
@@ -1974,7 +1976,8 @@ body.is-kratos-archives-page .k-main .details,
 body.is-kratos-heart-page .k-main .details,
 body.is-kratos-shuoshuo-page .k-main .details,
 body.is-kratos-topcommenters-page .k-main .details,
-body.is-kratos-friend-links-page .k-main .details {
+body.is-kratos-friend-links-page .k-main .details,
+body.is-kratos-timeline-page .k-main .details {
     background-color: transparent !important;
     background-image: none !important;
     border: none !important;
@@ -1990,7 +1993,8 @@ body.is-kratos-archives-page .k-main .details::after,
 body.is-kratos-heart-page .k-main .details::after,
 body.is-kratos-shuoshuo-page .k-main .details::after,
 body.is-kratos-topcommenters-page .k-main .details::after,
-body.is-kratos-friend-links-page .k-main .details::after {
+body.is-kratos-friend-links-page .k-main .details::after,
+body.is-kratos-timeline-page .k-main .details::after {
     display: none !important;
 }
 

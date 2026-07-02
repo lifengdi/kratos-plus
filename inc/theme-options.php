@@ -1856,6 +1856,68 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'id' => 'timeline_fields',
+    'title' => __('时间轴配置', 'kratos'),
+    'icon' => 'fas fa-stream',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面顶部展示在「时间轴」模板（page-timeline.php）以及 [timeline] 短码的头部，可留空隐藏。短码同名参数会覆盖后台默认值。', 'kratos'),
+        ),
+        array(
+            'id' => 'timeline_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[timeline] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('时间轴', 'kratos'),
+        ),
+        array(
+            'id' => 'timeline_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[timeline] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('把每一次写作，钉在属于它的那一天', 'kratos'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('列表展示', 'kratos'),
+        ),
+        array(
+            'id' => 'timeline_sc_per_page',
+            'type' => 'number',
+            'title' => __('每页条数', 'kratos'),
+            'subtitle' => __('时间轴每页显示多少篇文章，短码可通过 per_page 参数覆盖；填 0 表示不分页全部展示', 'kratos'),
+            'default' => 20,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'timeline_sc_exclude_cats',
+            'type' => 'checkbox',
+            'title' => __('排除分类', 'kratos'),
+            'subtitle' => __('勾选的分类下的文章不会出现在时间轴中；短码可通过 exclude_cats="1,2,3" 覆盖', 'kratos'),
+            'options' => (function () {
+                $out = array();
+                $terms = function_exists('get_terms') ? get_terms(array(
+                    'taxonomy'   => 'category',
+                    'hide_empty' => false,
+                )) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) {
+                        $out[(int) $t->term_id] = $t->name;
+                    }
+                }
+                return $out;
+            })(),
+            'inline' => true,
+            'default' => array(),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'footer_fields',
     'title' => __('页脚配置', 'kratos'),
     'icon' => 'far fa-window-maximize',
