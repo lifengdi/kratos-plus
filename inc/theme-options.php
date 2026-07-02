@@ -1918,6 +1918,160 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'title' => __('博友动态', 'kratos'),
+    'icon' => 'fas fa-rss',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('总开关', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_feed_enabled',
+            'type' => 'switcher',
+            'title' => __('启用 RSS 抓取', 'kratos'),
+            'subtitle' => __('关闭后，Cron 排期会被清空，「立即刷新」按钮不生效，前台短码显示为空态提示；已入库的数据不会删除，重新开启后仍可继续展示。', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('页面展示', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_feed_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[friend_feed] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('博友动态', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_feed_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[friend_feed] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('订阅友链的 RSS，把大家的更新汇聚在一起 🌐', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_feed_sc_per_page',
+            'type' => 'number',
+            'title' => __('每页条数', 'kratos'),
+            'subtitle' => __('每页展示多少篇文章，短码可通过 per_page 参数覆盖；填 0 表示不分页全部展示', 'kratos'),
+            'default' => 20,
+            'attributes' => array(
+                'min'  => 0,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'g_friend_feed_summary_len',
+            'type' => 'number',
+            'title' => __('摘要长度', 'kratos'),
+            'subtitle' => __('每篇文章卡片显示的摘要字符数上限；0 表示不截断', 'kratos'),
+            'default' => 160,
+            'attributes' => array(
+                'min'  => 0,
+                'step' => 10,
+            ),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('抓取任务', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_feed_cron_interval',
+            'type' => 'select',
+            'title' => __('自动更新间隔', 'kratos'),
+            'subtitle' => __('依赖 WordPress Cron。改动保存后，下一次 Cron 触发时会按新间隔重排；总开关关闭时此设置不生效。', 'kratos'),
+            'options' => array(
+                'hourly'                 => __('每小时', 'kratos'),
+                'kratos_friend_feed_6h'  => __('每 6 小时', 'kratos'),
+                'kratos_friend_feed_12h' => __('每 12 小时', 'kratos'),
+                'twicedaily'             => __('每 12 小时（WP 内置 twicedaily）', 'kratos'),
+                'daily'                  => __('每天', 'kratos'),
+            ),
+            'default' => 'kratos_friend_feed_6h',
+            'dependency' => array('g_friend_feed_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'content',
+            'content' => (function () {
+                $enabled = function_exists('kratos_friend_feed_is_enabled') ? kratos_friend_feed_is_enabled() : true;
+                $last  = get_option('kratos_friend_feed_last_run');
+                $next  = wp_next_scheduled('kratos_friend_feed_cron_fetch');
+                $fmt   = get_option('date_format') . ' ' . get_option('time_format');
+
+                $refresh_url = wp_nonce_url(
+                    add_query_arg('action', 'kratos_friend_feed_refresh', admin_url('admin-post.php')),
+                    'kratos_friend_feed_refresh'
+                );
+
+                $html  = '<div style="padding:16px 18px;background:linear-gradient(135deg,#f4f9ff 0%,#e6f1fe 100%);border:1px solid #c9dcf4;border-radius:12px;color:#243a5e;line-height:1.9;font-size:13px;">';
+                if (!$enabled) {
+                    $html .= '<p style="margin:0 0 10px;padding:8px 12px;background:#fff3f2;border:1px solid #f0c4c0;border-radius:8px;color:#8b2a2a;font-weight:600;">⚠ ' . esc_html__('RSS 抓取当前已关闭：Cron 已停排，「立即刷新」按钮不会生效。', 'kratos') . '</p>';
+                }
+                $html .= '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#336699;">' . esc_html__('📡 博友动态使用说明', 'kratos') . '</p>';
+                $html .= '<p style="margin:0 0 6px;"><strong>' . esc_html__('1. 数据来源：', 'kratos') . '</strong>' .
+                    sprintf(
+                        /* translators: %s admin link-manager URL */
+                        wp_kses(__('抓取「%s」中已通过（link_visible=Y）且填写了「RSS 地址」的友链，通过 SimplePie 拉取 Feed 后落库到自建表 <code>{prefix}kratos_friend_feed</code>。', 'kratos'), array('code' => array(), 'a' => array('href' => array(), 'target' => array()))),
+                        '<a href="' . esc_url(admin_url('link-manager.php')) . '" target="_blank">' . esc_html__('链接管理', 'kratos') . '</a>'
+                    ) . '</p>';
+                $html .= '<p style="margin:0 0 6px;"><strong>' . esc_html__('2. 前台使用：', 'kratos') . '</strong>' . esc_html__('新建页面时模板选「博友动态」；或在任意页面插入短码 ', 'kratos') . '<code style="background:#fff;padding:2px 8px;border-radius:4px;color:#336699;">[friend_feed]</code>。</p>';
+                $html .= '<p style="margin:0 0 6px;"><strong>' . esc_html__('3. 页面结构：', 'kratos') . '</strong>' . esc_html__('顶部 4 张统计卡（文章总数 / 订阅站点 / 本月文章 / 最近更新时间），下方按发布时间倒序展示卡片列表并分页。', 'kratos') . '</p>';
+                $html .= '<p style="margin:0 0 6px;"><strong>' . esc_html__('4. 分页参数：', 'kratos') . '</strong>' . esc_html__('通过 URL 参数 ?ffd_page=2 控制，短码已自动渲染上一页/下一页与页码按钮。', 'kratos') . '</p>';
+
+                $html .= '<hr style="border:none;border-top:1px dashed #c9dcf4;margin:10px 0;">';
+                $html .= '<p style="margin:0 0 6px;"><strong>' . esc_html__('上次抓取：', 'kratos') . '</strong>';
+                if (is_array($last) && !empty($last['time'])) {
+                    $html .= esc_html(date_i18n($fmt, (int) $last['time'])) . '　';
+                    $html .= sprintf(
+                        /* translators: %1$d ok, %2$d total, %3$d fetched, %4$d inserted */
+                        esc_html__('成功 %1$d / %2$d 站点，读取 %3$d 篇，新入库 %4$d 篇。', 'kratos'),
+                        (int) $last['ok'],
+                        (int) $last['sites'],
+                        (int) $last['fetched'],
+                        (int) $last['inserted']
+                    );
+                    if (!empty($last['errors'])) {
+                        $html .= '<br><span style="color:#a04040;">' . esc_html__('失败站点：', 'kratos');
+                        $err_names = array();
+                        foreach ((array) $last['errors'] as $e) {
+                            $err_names[] = (string) ($e['name'] ?? '');
+                        }
+                        $html .= esc_html(implode('、', array_filter($err_names)));
+                        $html .= '</span>';
+                    }
+                } else {
+                    $html .= '<em style="color:#8a99b5;">' . esc_html__('（尚未抓取过）', 'kratos') . '</em>';
+                }
+                $html .= '</p>';
+
+                $html .= '<p style="margin:0 0 10px;"><strong>' . esc_html__('下次自动抓取：', 'kratos') . '</strong>';
+                if (!$enabled) {
+                    $html .= '<em style="color:#8a99b5;">' . esc_html__('（已停用，未排期）', 'kratos') . '</em>';
+                } else {
+                    $html .= $next ? esc_html(date_i18n($fmt, (int) $next)) : '<em style="color:#8a99b5;">' . esc_html__('（未排期，保存本页后会自动注册）', 'kratos') . '</em>';
+                }
+                $html .= '</p>';
+
+                $html .= '<p style="margin:0;">';
+                if ($enabled) {
+                    $html .= '<a href="' . esc_url($refresh_url) . '" class="button button-primary" style="background:#336699;border-color:#2b5278;">' . esc_html__('立即刷新', 'kratos') . '</a>';
+                    $html .= '<span style="margin-left:12px;color:#5b6d8a;">' . esc_html__('手动触发一次抓取，无需等待下次 Cron；抓取过程同步执行，可能耗时数秒。', 'kratos') . '</span>';
+                } else {
+                    $html .= '<button type="button" class="button" disabled>' . esc_html__('立即刷新（已停用）', 'kratos') . '</button>';
+                    $html .= '<span style="margin-left:12px;color:#8b6a70;">' . esc_html__('开启上方「启用 RSS 抓取」后此按钮才会生效。', 'kratos') . '</span>';
+                }
+                $html .= '</p>';
+                $html .= '</div>';
+                return $html;
+            })(),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'footer_fields',
     'title' => __('页脚配置', 'kratos'),
     'icon' => 'far fa-window-maximize',
