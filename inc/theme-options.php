@@ -1257,10 +1257,14 @@ CSF::createSection($prefix, array(
             'default' => '#6366f1',
             'dependency' => array('g_comment_blogroll_enabled', '==', 'true'),
         ),
-        array(
-            'type' => 'subheading',
-            'content' => __('走心评论', 'kratos'),
-        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'comment_fields',
+    'title' => __('走心评论', 'kratos'),
+    'icon' => 'fas fa-heart',
+    'fields' => array(
         array(
             'id' => 'g_comment_heart_badge_text',
             'type' => 'text',
@@ -1313,9 +1317,36 @@ CSF::createSection($prefix, array(
             'default' => 100,
         ),
         array(
-            'type' => 'subheading',
-            'content' => __('评论排行榜', 'kratos'),
+            'type' => 'content',
+            'content' =>
+                '<div style="padding:16px 18px;background:linear-gradient(135deg,#fff7f3 0%,#ffeae0 100%);border:1px solid #ffd9c8;border-radius:12px;color:#5c3b30;line-height:1.8;font-size:13px;">'
+                . '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#ff6b8b;">' . __('💖 走心评论使用说明', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('1. 标记走心：', 'kratos') . '</strong>'
+                . sprintf(
+                    /* translators: %s 为后台评论列表链接 */
+                    __('进入 %s ，鼠标悬停在某条评论上，点击行操作中的「<span style="color:#ff6b8b;">标记走心</span>」即可；也可以勾选多条评论后，使用顶部「批量操作 → 标记为走心评论」一次处理多条。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('edit-comments.php')) . '" target="_blank">' . esc_html__('评论菜单', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('2. 取消走心：', 'kratos') . '</strong>' . __('在评论列表的「走心」筛选下拉中切换到「仅走心评论」，再点击行操作中的「取消走心」即可。', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('3. 前台展示：', 'kratos') . '</strong>' . __('被标记的评论，作者名后会自动追加一个粉橙色的「💗 走心」徽章（评论列表 / 文章详情 / 后台评论列表均生效）。', 'kratos') . '</p>'
+                . '<p style="margin:0 0 4px;"><strong>' . __('4. 短码使用：', 'kratos') . '</strong>' . __('在任意页面 / 文章中插入下方短码，即可展示走心评论统计与列表（评论数 / 来自文章数 / 参与用户数 + 走心评论卡片）。', 'kratos') . '</p>'
+                . '<ul style="margin:6px 0 8px 22px;padding:0;list-style:disc;">'
+                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#ff6b8b;">[heart_comments]</code>　' . __('使用上方后台默认值（标题 / 副标题 / 每页条数）', 'kratos') . '</li>'
+                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#ff6b8b;">[heart_comments title="走心留言" subtitle="温暖过我的瞬间" per_page="50"]</code></li>'
+                . '</ul>'
+                . '<p style="margin:0 0 4px;color:#8a6a5d;">' . __('参数说明：', 'kratos') . '<code>title</code> ' . __('标题（留空则隐藏）', 'kratos') . '；<code>subtitle</code> ' . __('副标题（留空则隐藏）', 'kratos') . '；<code>per_page</code> ' . __('每页条数，0 表示不分页全部展示。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 分页通过 URL 参数 ?khc_page=2 控制，短码已自动渲染上一页 / 下一页与页码按钮，默认每页 100 条。', 'kratos') . '</p>'
+                . '</div>',
         ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'comment_fields',
+    'title' => __('评论排行榜', 'kratos'),
+    'icon' => 'fas fa-trophy',
+    'fields' => array(
         array(
             'id' => 'g_comment_top_sc_title',
             'type' => 'text',
@@ -1352,29 +1383,6 @@ CSF::createSection($prefix, array(
                 . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#336699;">[top_commenters title="活跃榜" subtitle="话痨挑战" limit="10"]</code></li>'
                 . '</ul>'
                 . '<p style="margin:0;color:#5b6d8a;">' . __('💡 结果缓存 30 分钟，评论审核 / 删除时会自动清除。', 'kratos') . '</p>'
-                . '</div>',
-        ),
-        array(
-            'type' => 'content',
-            'content' =>
-                '<div style="padding:16px 18px;background:linear-gradient(135deg,#fff7f3 0%,#ffeae0 100%);border:1px solid #ffd9c8;border-radius:12px;color:#5c3b30;line-height:1.8;font-size:13px;">'
-                . '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#ff6b8b;">' . __('💖 走心评论使用说明', 'kratos') . '</p>'
-                . '<p style="margin:0 0 6px;"><strong>' . __('1. 标记走心：', 'kratos') . '</strong>'
-                . sprintf(
-                    /* translators: %s 为后台评论列表链接 */
-                    __('进入 %s ，鼠标悬停在某条评论上，点击行操作中的「<span style="color:#ff6b8b;">标记走心</span>」即可；也可以勾选多条评论后，使用顶部「批量操作 → 标记为走心评论」一次处理多条。', 'kratos'),
-                    '<a href="' . esc_url(admin_url('edit-comments.php')) . '" target="_blank">' . esc_html__('评论菜单', 'kratos') . '</a>'
-                )
-                . '</p>'
-                . '<p style="margin:0 0 6px;"><strong>' . __('2. 取消走心：', 'kratos') . '</strong>' . __('在评论列表的「走心」筛选下拉中切换到「仅走心评论」，再点击行操作中的「取消走心」即可。', 'kratos') . '</p>'
-                . '<p style="margin:0 0 6px;"><strong>' . __('3. 前台展示：', 'kratos') . '</strong>' . __('被标记的评论，作者名后会自动追加一个粉橙色的「💗 走心」徽章（评论列表 / 文章详情 / 后台评论列表均生效）。', 'kratos') . '</p>'
-                . '<p style="margin:0 0 4px;"><strong>' . __('4. 短码使用：', 'kratos') . '</strong>' . __('在任意页面 / 文章中插入下方短码，即可展示走心评论统计与列表（评论数 / 来自文章数 / 参与用户数 + 走心评论卡片）。', 'kratos') . '</p>'
-                . '<ul style="margin:6px 0 8px 22px;padding:0;list-style:disc;">'
-                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#ff6b8b;">[heart_comments]</code>　' . __('使用上方后台默认值（标题 / 副标题 / 每页条数）', 'kratos') . '</li>'
-                . '<li><code style="background:#fff;padding:2px 8px;border-radius:4px;color:#ff6b8b;">[heart_comments title="走心留言" subtitle="温暖过我的瞬间" per_page="50"]</code></li>'
-                . '</ul>'
-                . '<p style="margin:0 0 4px;color:#8a6a5d;">' . __('参数说明：', 'kratos') . '<code>title</code> ' . __('标题（留空则隐藏）', 'kratos') . '；<code>subtitle</code> ' . __('副标题（留空则隐藏）', 'kratos') . '；<code>per_page</code> ' . __('每页条数，0 表示不分页全部展示。', 'kratos') . '</p>'
-                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 分页通过 URL 参数 ?khc_page=2 控制，短码已自动渲染上一页 / 下一页与页码按钮，默认每页 100 条。', 'kratos') . '</p>'
                 . '</div>',
         ),
     ),
@@ -1695,6 +1703,69 @@ CSF::createSection($prefix, array(
             'attributes' => array(
                 'min' => 0,
                 'step' => 10,
+            ),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'archives_fields',
+    'title' => __('归档配置', 'kratos'),
+    'icon' => 'fas fa-archive',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面顶部展示在「文章归档」模板（page-archives.php）以及 [archives_stats] 短码的头部，可留空隐藏。短码同名参数会覆盖后台默认值。', 'kratos'),
+        ),
+        array(
+            'id' => 'archives_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[archives_stats] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('文章归档', 'kratos'),
+        ),
+        array(
+            'id' => 'archives_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[archives_stats] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('把写过的时间，安静收拢起来', 'kratos'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('列表展示', 'kratos'),
+        ),
+        array(
+            'id' => 'archives_sc_years_max',
+            'type' => 'number',
+            'title' => __('年份最多条数', 'kratos'),
+            'subtitle' => __('「时间归档 → 按年份」最多展示多少年；0 表示不限（全部展示）。短码可通过 years_max 覆盖', 'kratos'),
+            'default' => 0,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'archives_sc_months_max',
+            'type' => 'number',
+            'title' => __('月份最多条数', 'kratos'),
+            'subtitle' => __('「时间归档 → 按月份」最多展示多少个月；0 表示不展示月份 Tab。短码可通过 months_max 覆盖', 'kratos'),
+            'default' => 24,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'archives_sc_tags_max',
+            'type' => 'number',
+            'title' => __('标签最多条数', 'kratos'),
+            'subtitle' => __('「标签统计」区块最多展示多少个标签；0 表示不展示标签区块。短码可通过 tags_max 覆盖', 'kratos'),
+            'default' => 20,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
             ),
         ),
     ),

@@ -117,22 +117,32 @@ function kratos_archives_stats_render_total($label, $value, $svg)
 
 /**
  * [archives_stats] 短码主入口。
- *   支持参数：
- *     title       页头标题（默认"文章归档"）
- *     subtitle    页头副标题
- *     years_max   年份列表最多展示几条（默认 0 = 全部，0 也可设置为 -1）
- *     months_max  月份列表最多展示几条（默认 24，0 表示不展示）
- *     tags_max    标签列表最多展示几条（默认 20，0 表示不展示）
+ *   所有数量/文案默认值取自后台「归档配置」，短码同名参数可覆盖：
+ *     title       页头标题（后台 archives_sc_title）
+ *     subtitle    页头副标题（后台 archives_sc_subtitle）
+ *     years_max   年份列表最多展示几条（后台 archives_sc_years_max；0 = 全部）
+ *     months_max  月份列表最多展示几条（后台 archives_sc_months_max；0 = 不展示）
+ *     tags_max    标签列表最多展示几条（后台 archives_sc_tags_max；0 = 不展示）
  *     scheme      视觉方案：parchment（默认）；目前仅 parchment 一套
  */
 function kratos_archives_stats_shortcode($atts = array())
 {
+    // 后台默认值（「归档配置」区），短码同名参数可覆盖
+    $default_title      = (string) kratos_option('archives_sc_title', __('文章归档', 'kratos'));
+    $default_subtitle   = (string) kratos_option('archives_sc_subtitle', __('把写过的时间，安静收拢起来', 'kratos'));
+    $default_years_max  = (int) kratos_option('archives_sc_years_max', 0);
+    $default_months_max = (int) kratos_option('archives_sc_months_max', 24);
+    $default_tags_max   = (int) kratos_option('archives_sc_tags_max', 20);
+    if ($default_years_max < 0)  $default_years_max = 0;
+    if ($default_months_max < 0) $default_months_max = 0;
+    if ($default_tags_max < 0)   $default_tags_max = 0;
+
     $atts = shortcode_atts(array(
-        'title'      => __('文章归档', 'kratos'),
-        'subtitle'   => __('把写过的时间，安静收拢起来', 'kratos'),
-        'years_max'  => 0,
-        'months_max' => 24,
-        'tags_max'   => 20,
+        'title'      => $default_title,
+        'subtitle'   => $default_subtitle,
+        'years_max'  => $default_years_max,
+        'months_max' => $default_months_max,
+        'tags_max'   => $default_tags_max,
         'scheme'     => 'parchment',
     ), $atts, 'archives_stats');
 
