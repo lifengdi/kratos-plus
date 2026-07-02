@@ -999,9 +999,11 @@ function kratos_friend_feed_shortcode($atts)
             .kratos-friend-feed .kff-list{grid-template-columns:1fr;}
         }
 
-        /* 暗夜模式 */
+        /* 暗夜模式；同步重写 --khs-bg-* 深卡色，避免 kff-title-icon / kff-stat-icon /
+         * kfl-logo 占位字母底这些吃 --khs-bg-2/-bg-3 渐变的元素在暗夜下依旧浅灰。 */
         html[data-theme="dark"] .kratos-friend-feed,
         body.dark .kratos-friend-feed{
+            --khs-bg-1:#2a2e35; --khs-bg-2:#2a2e35; --khs-bg-3:#333842;
             --khs-fg:#d6d8db; --khs-fg-soft:#b8bbc0; --khs-fg-dim:#8b919a; --khs-fg-mute:#6f747e;
             --khs-accent:#6ea8ff; --khs-accent-2:#91bdff;
             --khs-line:rgba(255,255,255,.08); --khs-line-strong:rgba(255,255,255,.16);

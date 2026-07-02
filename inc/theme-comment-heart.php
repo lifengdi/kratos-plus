@@ -826,6 +826,7 @@ function kratos_heart_shortcode($atts)
          * 而是走 dark.css 同款 #1c1f24 卡片 + #6ea8ff 链接，避免在夜里出现
          * 一块"暗黄色羊皮纸"与主题其他区块（文章卡/侧边栏 widget/评论区）撞色。 */
         html[data-theme="dark"] .kratos-heart-shortcode,body.dark .kratos-heart-shortcode{
+            --khs-bg-1:#2a2e35;--khs-bg-2:#2a2e35;--khs-bg-3:#333842;
             --khs-fg:#d6d8db;--khs-fg-soft:#b8bbc0;--khs-fg-dim:#8b919a;--khs-fg-mute:#6f747e;
             --khs-accent:#6ea8ff;--khs-accent-2:#91bdff;
             --khs-line:rgba(255,255,255,.08);--khs-line-strong:rgba(255,255,255,.16);

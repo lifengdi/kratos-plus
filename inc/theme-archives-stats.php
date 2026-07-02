@@ -562,8 +562,13 @@ function kratos_archives_stats_shortcode($atts = array())
         /* === parchment 方案：保留 class 锚点但不再画装饰，与主题默认一致 ===
          * 真正的羊皮纸/做旧效果由「黄绢」皮肤在 weekday-skins.css 中处理。 */
 
-        /* === 暗夜模式：对齐 dark.css 中性灰白调（去米黄色调） === */
+        /* === 暗夜模式：对齐 dark.css 中性灰白调（去米黄色调）；同步重写
+         * --kas-bg-* 深卡色，避免 kas-header-icon / kas-total-icon / kas-section-icon
+         * 这些吃 --kas-bg-2/-bg-3 渐变的元素在暗夜下依旧是一坨高亮浅灰。 */
         html[data-theme="dark"] .kratos-archives-shortcode {
+            --kas-bg-1: #2a2e35;
+            --kas-bg-2: #2a2e35;
+            --kas-bg-3: #333842;
             --kas-fg: #d6d8db;
             --kas-fg-soft: #b8bbc0;
             --kas-fg-dim: #8b919a;

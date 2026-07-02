@@ -549,8 +549,11 @@ function kratos_top_commenters_shortcode($atts)
             .kratos-topcommenters .ktc-list{grid-template-columns:1fr;}
         }
 
-        /* 暗夜模式：与走心评论/归档保持同一中性灰白调 */
+        /* 暗夜模式：与走心评论/归档保持同一中性灰白调；同步重写 --khs-bg-* 深卡色，
+         * 避免 ktc-title-icon / ktc-avatar-fallback 底这些吃 --khs-bg-2/-bg-3 渐变的
+         * 元素在暗夜下依旧一坨高亮浅灰。 */
         html[data-theme="dark"] .kratos-topcommenters,body.dark .kratos-topcommenters{
+            --khs-bg-1:#2a2e35;--khs-bg-2:#2a2e35;--khs-bg-3:#333842;
             --khs-fg:#d6d8db;--khs-fg-soft:#b8bbc0;--khs-fg-dim:#8b919a;--khs-fg-mute:#6f747e;
             --khs-accent:#6ea8ff;--khs-accent-2:#91bdff;
             --khs-line:rgba(255,255,255,.08);--khs-line-strong:rgba(255,255,255,.16);

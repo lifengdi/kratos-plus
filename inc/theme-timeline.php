@@ -529,9 +529,14 @@ function kratos_timeline_shortcode($atts = array())
             .kratos-timeline .ktl-subtitle { flex-basis: 100%; font-size: 13px; }
         }
 
-        /* 暗夜模式：对齐 dark.css 中性灰白调 */
+        /* 暗夜模式：对齐 dark.css 中性灰白调；同步把 --khs-bg-* 从浅灰改成深卡色，
+         * 否则 ktl-title-icon / ktl-year-badge 这类吃 --khs-bg-2/-bg-3 渐变的元素
+         * 在暗夜下仍是一坨高亮浅灰，与深卡对比刺眼。 */
         html[data-theme="dark"] .kratos-timeline,
         body.dark .kratos-timeline {
+            --khs-bg-1: #2a2e35;
+            --khs-bg-2: #2a2e35;
+            --khs-bg-3: #333842;
             --khs-fg: #d6d8db;
             --khs-fg-soft: #b8bbc0;
             --khs-fg-dim: #8b919a;
