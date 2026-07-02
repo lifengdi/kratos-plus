@@ -58,6 +58,90 @@ function getrobots()
     return $robots;
 }
 
+if (!function_exists('kratos_single_ad_fields')) {
+    function kratos_single_ad_fields()
+    {
+        return array(
+            array(
+                'id' => 'ad_id',
+                'type' => 'text',
+                'title' => __('唯一标识', 'kratos'),
+                'subtitle' => __('仅用于识别广告内容，可以作为备注使用', 'kratos'),
+            ),
+            array(
+                'id' => 'ad_type',
+                'type' => 'button_set',
+                'title' => __('广告类型', 'kratos'),
+                'subtitle' => __('选择「图片广告」使用自定义图片跳转链接；选择「谷歌广告」使用 Google AdSense 广告代码', 'kratos'),
+                'options' => array(
+                    'image'   => __('图片广告', 'kratos'),
+                    'adsense' => __('谷歌广告', 'kratos'),
+                ),
+                'default' => 'image',
+            ),
+            array(
+                'id' => 'ad_img',
+                'type' => 'upload',
+                'title' => __('轮播图片', 'kratos'),
+                'subtitle' => __('可以直接填写图片链接，也可以上传图片', 'kratos'),
+                'library' => 'image',
+                'preview' => true,
+                'dependency' => array('ad_type', '==', 'image'),
+            ),
+            array(
+                'id' => 'ad_url',
+                'type' => 'text',
+                'title' => __('网址链接', 'kratos'),
+                'subtitle' => __('需要填写完整的链接地址，包含协议头', 'kratos'),
+                'dependency' => array('ad_type', '==', 'image'),
+            ),
+            array(
+                'id' => 'ad_adsense_client',
+                'type' => 'text',
+                'title' => __('AdSense 客户端 ID', 'kratos'),
+                'subtitle' => __('形如 ca-pub-1234567890123456，来自 &lt;ins class="adsbygoogle"&gt; 的 data-ad-client', 'kratos'),
+                'placeholder' => 'ca-pub-XXXXXXXXXXXXXXXX',
+                'dependency' => array('ad_type', '==', 'adsense'),
+            ),
+            array(
+                'id' => 'ad_adsense_slot',
+                'type' => 'text',
+                'title' => __('AdSense 广告位 ID', 'kratos'),
+                'subtitle' => __('形如 1234567890，来自 &lt;ins class="adsbygoogle"&gt; 的 data-ad-slot', 'kratos'),
+                'placeholder' => 'XXXXXXXXXX',
+                'dependency' => array('ad_type', '==', 'adsense'),
+            ),
+            array(
+                'id' => 'ad_adsense_format',
+                'type' => 'text',
+                'title' => __('广告格式 (data-ad-format)', 'kratos'),
+                'subtitle' => __('常用值：auto / fluid / rectangle / horizontal / vertical，留空默认为 auto', 'kratos'),
+                'default' => 'auto',
+                'dependency' => array('ad_type', '==', 'adsense'),
+            ),
+            array(
+                'id' => 'ad_adsense_responsive',
+                'type' => 'switcher',
+                'title' => __('自适应宽度', 'kratos'),
+                'subtitle' => __('对应 data-full-width-responsive="true"，一般保持开启即可', 'kratos'),
+                'text_on' => __('开启', 'kratos'),
+                'text_off' => __('关闭', 'kratos'),
+                'default' => true,
+                'dependency' => array('ad_type', '==', 'adsense'),
+            ),
+            array(
+                'id' => 'ad_switcher',
+                'type' => 'switcher',
+                'title' => __('功能开关', 'kratos'),
+                'subtitle' => __('开启/关闭此条广告', 'kratos'),
+                'text_on' => __('开启', 'kratos'),
+                'text_off' => __('关闭', 'kratos'),
+                'default' => true,
+            ),
+        );
+    }
+}
+
 CSF::createOptions($prefix, array(
     'menu_title' => __('主题设置', 'kratos'),
     'menu_slug' => 'kratos-options',
@@ -1959,79 +2043,19 @@ CSF::createSection($prefix, array(
             'id' => 'single_ad_top_group',
             'type' => 'group',
             'title' => '文章顶部广告',
-            'subtitle' => '点击添加广告，最多添加 3 个顶部广告',
-            'min' => 1,
+            'subtitle' => '点击添加广告，最多添加 3 个顶部广告；无需展示时可全部删除',
+            'min' => 0,
             'max' => 3,
-            'fields' => array(
-                array(
-                    'id' => 'ad_id',
-                    'type' => 'text',
-                    'title' =>  __('唯一标识', 'kratos'),
-                    'subtitle' =>  __('仅用于识别广告内容，可以作为备注使用', 'kratos'),
-                ),
-                array(
-                    'id' => 'ad_img',
-                    'type' => 'upload',
-                    'title' => __('轮播图片', 'kratos'),
-                    'subtitle' =>  __('可以直接填写图片链接，也可以上传图片', 'kratos'),
-                    'library' => 'image',
-                    'preview' => true,
-                ),
-                array(
-                    'id' => 'ad_url',
-                    'type' => 'text',
-                    'title' =>  __('网址链接', 'kratos'),
-                    'subtitle' =>  __('需要填写完整的链接地址，包含协议头', 'kratos'),
-                ),
-                array(
-                    'id' => 'ad_switcher',
-                    'type' => 'switcher',
-                    'title' => __('功能开关', 'kratos'),
-                    'subtitle' => __('开启/关闭此条广告', 'kratos'),
-                    'text_on' => __('开启', 'kratos'),
-                    'text_off' => __('关闭', 'kratos'),
-                    'default' => true
-                ),
-            ),
+            'fields' => kratos_single_ad_fields(),
         ),
         array(
             'id' => 'single_ad_bottom_group',
             'type' => 'group',
             'title' => '文章底部广告',
-            'subtitle' => '点击添加广告，最多添加 3 个底部广告',
-            'min' => 1,
+            'subtitle' => '点击添加广告，最多添加 3 个底部广告；无需展示时可全部删除',
+            'min' => 0,
             'max' => 3,
-            'fields' => array(
-                array(
-                    'id' => 'ad_id',
-                    'type' => 'text',
-                    'title' =>  __('唯一标识', 'kratos'),
-                    'subtitle' =>  __('仅用于识别广告内容，可以作为备注使用', 'kratos'),
-                ),
-                array(
-                    'id' => 'ad_img',
-                    'type' => 'upload',
-                    'title' => __('轮播图片', 'kratos'),
-                    'subtitle' =>  __('可以直接填写图片链接，也可以上传图片', 'kratos'),
-                    'library' => 'image',
-                    'preview' => true,
-                ),
-                array(
-                    'id' => 'ad_url',
-                    'type' => 'text',
-                    'title' =>  __('网址链接', 'kratos'),
-                    'subtitle' =>  __('需要填写完整的链接地址，包含协议头', 'kratos'),
-                ),
-                array(
-                    'id' => 'ad_switcher',
-                    'type' => 'switcher',
-                    'title' => __('功能开关', 'kratos'),
-                    'subtitle' => __('开启/关闭此条广告', 'kratos'),
-                    'text_on' => __('开启', 'kratos'),
-                    'text_off' => __('关闭', 'kratos'),
-                    'default' => true
-                ),
-            ),
+            'fields' => kratos_single_ad_fields(),
         ),
     ),
 ));

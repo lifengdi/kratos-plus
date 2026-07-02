@@ -696,3 +696,51 @@ function toc_replace_heading($content)
 
     return "<h{$content[1]} {$content[2]}><a name=\"toc-{$toc_count}\"></a>{$content[3]}</h{$content[1]}>";
 }
+
+// 文章广告渲染：支持「图片广告」与「谷歌广告 (AdSense)」两种类型
+if (!function_exists('kratos_render_single_ad')) {
+    function kratos_render_single_ad($item)
+    {
+        $type = isset($item['ad_type']) && $item['ad_type'] ? $item['ad_type'] : 'image';
+
+        if ($type === 'adsense') {
+            $client = isset($item['ad_adsense_client']) ? trim($item['ad_adsense_client']) : '';
+            $slot   = isset($item['ad_adsense_slot']) ? trim($item['ad_adsense_slot']) : '';
+            if ($client === '' || $slot === '') {
+                return '';
+            }
+
+            $format     = isset($item['ad_adsense_format']) && $item['ad_adsense_format'] !== '' ? trim($item['ad_adsense_format']) : 'auto';
+            $responsive = !empty($item['ad_adsense_responsive']);
+
+            // 每次页面只注入一次 AdSense loader；PHP 静态变量保证同一请求内的幂等
+            static $loader_printed = false;
+            $loader = '';
+            if (!$loader_printed) {
+                $loader_printed = true;
+                $loader = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' . esc_attr($client) . '" crossorigin="anonymous"></script>';
+            }
+
+            $ins  = '<ins class="adsbygoogle" style="display:block"';
+            $ins .= ' data-ad-client="' . esc_attr($client) . '"';
+            $ins .= ' data-ad-slot="' . esc_attr($slot) . '"';
+            $ins .= ' data-ad-format="' . esc_attr($format) . '"';
+            $ins .= ' data-full-width-responsive="' . ($responsive ? 'true' : 'false') . '"';
+            $ins .= '></ins>';
+
+            return '<div style="margin-bottom:5px">' . $loader . $ins . '<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>';
+        }
+
+        // 默认：图片广告
+        $img = isset($item['ad_img']) ? trim($item['ad_img']) : '';
+        if ($img === '') {
+            return '';
+        }
+        $url = isset($item['ad_url']) ? trim($item['ad_url']) : '';
+        $img_html = '<img src="' . esc_url($img) . '" alt="">';
+        $inner = $url !== ''
+            ? '<a href="' . esc_url($url) . '" target="_blank" rel="noreferrer">' . $img_html . '</a>'
+            : $img_html;
+        return '<div style="margin-bottom:5px">' . $inner . '</div>';
+    }
+}

@@ -78,8 +78,8 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                             <?php
                             if (!empty(kratos_option('single_ad_top_group'))) {
                                 foreach (kratos_option('single_ad_top_group') as $group_item) {
-                                    if ($group_item['ad_switcher']) {
-                                        echo '<div style="margin-bottom:5px"><a href="' . $group_item['ad_url'] . '" target="_blank" rel="noreferrer"><img src="' . $group_item['ad_img'] . '"></a></div>';
+                                    if (!empty($group_item['ad_switcher'])) {
+                                        echo kratos_render_single_ad($group_item);
                                     }
                                 }
                             }
@@ -113,8 +113,8 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                             );
                             if (!empty(kratos_option('single_ad_bottom_group'))) {
                                 foreach (kratos_option('single_ad_bottom_group') as $group_item) {
-                                    if ($group_item['ad_switcher']) {
-                                        echo '<div style="margin-bottom:5px"><a href="' . $group_item['ad_url'] . '" target="_blank" rel="noreferrer"><img src="' . $group_item['ad_img'] . '"></a></div>';
+                                    if (!empty($group_item['ad_switcher'])) {
+                                        echo kratos_render_single_ad($group_item);
                                     }
                                 }
                             }
