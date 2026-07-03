@@ -269,18 +269,19 @@ add_action('admin_post_kratos_ip2region_update_now', function () {
     }
     check_admin_referer('kratos_ip2region_update_now');
 
-    $result = kratos_ip2region_run_update();
+    kratos_ip2region_update_runtime(['last_status' => sprintf('[%s] 后台下载已调度，请稍后刷新查看结果…', wp_date('Y-m-d H:i:s'))]);
+    kratos_dispatch_bg_task('kratos_ip2region_run_update');
 
-    // 通过 transient 把结果传回设置页（CSF 没有原生通知通道）
     set_transient('kratos_ip2region_flash_' . get_current_user_id(), [
-        'ok'      => $result['ok'],
-        'message' => $result['message'],
+        'ok'      => true,
+        'message' => '后台下载已调度，数据库将在后台更新，请稍后刷新页面查看结果。',
     ], MINUTE_IN_SECONDS);
 
     $redirect = wp_get_referer() ?: admin_url('admin.php?page=kratos-options');
     wp_safe_redirect($redirect);
     exit;
 });
+
 
 // 在主题设置页顶部展示「立即更新」结果（如果有）
 add_action('admin_notices', function () {

@@ -685,7 +685,6 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .title::after 
 
 /* tags / 链接 / 分类 / 归档 / 目录 共用 a 颜色与边框 */
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a,
-html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_links ul li a,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li a,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li a,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a {
@@ -703,12 +702,25 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_archiv
 }
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover,
-html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_links ul li:hover,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li:hover,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li:hover,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a:hover {
     background-color: var(--kr-skin-card-soft);
     color: var(--kr-skin-link-hover);
+}
+
+/* 链接小工具皮肤配色 */
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-desc {
+    color: var(--kr-skin-muted);
 }
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item {

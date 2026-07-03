@@ -3554,31 +3554,165 @@ a {
     overflow: hidden;
 }
 
+/* 链接小工具：双列网格，图标沿用友链页面的 Logo / 首字母占位逻辑 */
 .k-main
 .sidebar
 .widget_links
-ul
-li {
-    display: inline-block;
-    margin: 0 1px 10px 0;
-    padding: 2px 0;
-    width: 40%;
-    color: #333;
+ul.wfl-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
     list-style: none;
-    font-size: 15px;
-    line-height: inherit;
 }
 
 .k-main
 .sidebar
 .widget_links
-ul
-li
+.wfl-li {
+    display: block;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-item:hover {
+    background: #f5f5f5;
+    color: #336699;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-logo {
+    position: relative;
+    flex-shrink: 0;
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-logo
 img {
-    margin-top: -3px;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
+    display: block;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    border-radius: 6px;
+    object-fit: cover;
+    border: none;
+    background: #f0f0f0;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-logo-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-logo
+.wfl-logo-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-logo.is-fallback
+.wfl-logo-fallback {
+    display: inline-flex;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-name {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: inherit;
+    /* 网站名称超长自动换行：最多两行，超出省略，长英文串强制断行 */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.k-main
+.sidebar
+.widget_links
+.wfl-desc {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #999;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.k-main
+.sidebar
+.widget_links
+.w-links-empty {
+    padding: 12px 0;
+    color: #999;
+    font-size: 13px;
 }
 
 .k-main
@@ -3586,11 +3720,6 @@ img {
 .w-tags
 .item
 a:hover,
-.k-main
-.sidebar
-.widget_links
-ul
-li:hover,
 .k-main
 .sidebar
 .widget_categories
@@ -3636,15 +3765,6 @@ li:hover {
 ul {
     margin-bottom: 0;
     padding-left: 0;
-}
-
-.k-main
-.sidebar
-.widget_links
-ul
-li
-a {
-    color: #333;
 }
 
 .k-main
@@ -4086,12 +4206,7 @@ li:hover::before {
     .sidebar
     .w-tags
     .item
-    a,
-    .k-main
-    .sidebar
-    .widget_links
-    ul
-    li {
+    a {
         width: 110px;
     }
 

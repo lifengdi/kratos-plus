@@ -352,7 +352,6 @@ html[data-theme="dark"] .k-main .sidebar .title::after {
 }
 
 html[data-theme="dark"] .k-main .sidebar .w-tags .item a,
-html[data-theme="dark"] .k-main .sidebar .widget_links ul li a,
 html[data-theme="dark"] .k-main .sidebar .widget_categories ul li a,
 html[data-theme="dark"] .k-main .sidebar .widget_archive ul li a,
 html[data-theme="dark"] .k-main .sidebar .w-toc .item ul li a {
@@ -370,11 +369,28 @@ html[data-theme="dark"] .k-main .sidebar .widget_archive ul li {
 }
 
 html[data-theme="dark"] .k-main .sidebar .w-tags .item a:hover,
-html[data-theme="dark"] .k-main .sidebar .widget_links ul li:hover,
 html[data-theme="dark"] .k-main .sidebar .widget_categories ul li:hover,
 html[data-theme="dark"] .k-main .sidebar .widget_archive ul li:hover,
 html[data-theme="dark"] .k-main .sidebar .w-toc .item ul li a:hover {
     background-color: var(--kr-bg-soft);
+}
+
+/* 链接小工具暗夜配色 */
+html[data-theme="dark"] .k-main .sidebar .widget_links .wfl-item {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .k-main .sidebar .widget_links .wfl-item:hover {
+    background: var(--kr-bg-soft);
+    color: var(--kr-link-hover);
+}
+
+html[data-theme="dark"] .k-main .sidebar .widget_links .wfl-desc {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .widget_links .wfl-logo img {
+    background: var(--kr-bg-soft);
 }
 
 html[data-theme="dark"] .k-main .sidebar .w-recommended .bookmark-item {

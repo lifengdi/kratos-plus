@@ -204,9 +204,6 @@ function kratos_codehl_asset_url($pkg_path)
     if (file_exists($local_file) && filesize($local_file) > 0) {
         return $local_url;
     }
-    if (kratos_codehl_fetch_to_local($cdn_url, $local_file)) {
-        return $local_url;
-    }
     return $cdn_url;
 }
 
@@ -317,12 +314,13 @@ function kratos_codehl_admin_post_warmup()
     if (!current_user_can('manage_options') || !check_admin_referer('kratos_codehl_warmup')) {
         wp_die('Unauthorized', 'Forbidden', array('response' => 403));
     }
-    $stats = kratos_codehl_warmup_all();
-    set_transient('kratos_codehl_warmup_notice', $stats, 60);
+    kratos_dispatch_bg_task('kratos_codehl_warmup_all');
+    set_transient('kratos_codehl_warmup_notice', array('ok' => 0, 'fail' => 0, 'skip' => 0, 'pending' => true), 60);
     wp_safe_redirect(wp_get_referer() ?: admin_url('admin.php?page=kratos-options'));
     exit;
 }
 add_action('admin_post_kratos_codehl_warmup', 'kratos_codehl_admin_post_warmup');
+
 
 /**
  * 切到"本地缓存"模式时自动触发一次预下载（在 update_option 钩子里）
@@ -332,8 +330,7 @@ function kratos_codehl_on_options_save($old, $new)
     $old_src = is_array($old) && isset($old['g_codehl_source']) ? $old['g_codehl_source'] : 'cdn';
     $new_src = is_array($new) && isset($new['g_codehl_source']) ? $new['g_codehl_source'] : 'cdn';
     if ($new_src === 'local' && $old_src !== 'local') {
-        // 后台保存触发；可能阻塞 1-30s（取决于 CDN 速度），但比读者首次访问更早发现问题
-        kratos_codehl_warmup_all();
+        kratos_dispatch_bg_task('kratos_codehl_warmup_all');
     }
 }
 add_action('update_option_kratos_options', 'kratos_codehl_on_options_save', 10, 2);
@@ -378,6 +375,10 @@ function kratos_codehl_warmup_notice()
 {
     $stats = get_transient('kratos_codehl_warmup_notice');
     if (!$stats || !is_array($stats)) {
+        return;
+    }
+    if (!empty($stats['pending'])) {
+        printf('<div class="notice notice-info is-dismissible"><p>%s</p></div>', esc_html('代码高亮资源正在后台下载中，请稍后刷新页面查看结果。'));
         return;
     }
     delete_transient('kratos_codehl_warmup_notice');

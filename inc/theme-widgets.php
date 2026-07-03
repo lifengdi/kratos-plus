@@ -53,6 +53,8 @@ function widget_unregister()
     unregister_widget('WP_Widget_Search');
     unregister_widget('WP_Widget_Tag_Cloud');
     unregister_widget('WP_Nav_Menu_Widget');
+    // 用自定义 widget_links 接管，复用友链页面的 Logo / 首字母占位展示逻辑
+    unregister_widget('WP_Widget_Links');
 }
 add_action('widgets_init', 'widget_unregister');
 
@@ -620,6 +622,161 @@ class widget_toc extends WP_Widget
     }
 }
 
+/**
+ * 链接（友情链接）小工具
+ *
+ * 接管 WordPress 原生「链接」小工具（WP_Widget_Links，id_base=links，
+ * option_name=widget_links），沿用原生实例数据（category / orderby / limit /
+ * description），因此已配置的链接小工具无需重设即可套用新样式。
+ *
+ * 图标展示逻辑与友链页面（[friend_links] 短码）保持一致：
+ *   - 有 Logo → 展示图片，加载失败时 onerror 回退到首字母占位
+ *   - 无 Logo → 直接展示首字母占位（渐变底色由站点名 hash 稳定生成）
+ * 复用 inc/theme-friend-links.php 里的 kratos_friend_first_letter /
+ * kratos_friend_placeholder_color（渲染时两文件均已加载）。
+ */
+class widget_links extends WP_Widget
+{
+    public function __construct()
+    {
+        $widget_ops = array(
+            'name'                        => __('Kratos+ - 链接', 'kratos'),
+            'description'                 => __('展示友情链接，图标复用友链页面的 Logo / 首字母占位逻辑', 'kratos'),
+            'classname'                   => 'widget_links',
+            'customize_selective_refresh' => true,
+        );
+        parent::__construct('links', __('Kratos+ - 链接', 'kratos'), $widget_ops);
+    }
+
+    public function widget($args, $instance)
+    {
+        if (!function_exists('get_bookmarks')) {
+            return;
+        }
+
+        $title    = isset($instance['title']) ? $instance['title'] : __('友情链接', 'kratos');
+        $category = isset($instance['category']) ? (int) $instance['category'] : 0;
+        $orderby  = isset($instance['orderby']) ? $instance['orderby'] : 'name';
+        if (!in_array($orderby, array('name', 'rating', 'id', 'url', 'rand'), true)) {
+            $orderby = 'name';
+        }
+        $limit     = (isset($instance['limit']) && $instance['limit'] !== '' && (int) $instance['limit'] > 0) ? (int) $instance['limit'] : -1;
+        $show_desc = !empty($instance['description']);
+        $order     = ($orderby === 'rating') ? 'DESC' : 'ASC';
+
+        $bookmarks = get_bookmarks(array(
+            'category'       => $category ? $category : '',
+            'orderby'        => $orderby,
+            'order'          => $order,
+            'limit'          => $limit,
+            'hide_invisible' => 1,
+        ));
+
+        echo $args['before_widget'];
+        if ($title !== '') {
+            echo $args['before_title'] . esc_html($title) . $args['after_title'];
+        }
+
+        if (empty($bookmarks)) {
+            echo '<div class="w-links-empty">' . esc_html__('暂无链接', 'kratos') . '</div>';
+            echo $args['after_widget'];
+            return;
+        }
+
+        echo '<ul class="wfl-list">';
+        foreach ($bookmarks as $bm) {
+            $name   = $bm->link_name !== '' ? $bm->link_name : __('（未命名）', 'kratos');
+            $url    = $bm->link_url;
+            $desc   = $bm->link_description;
+            $img    = $bm->link_image;
+            $target = $bm->link_target ? $bm->link_target : '_blank';
+            $seed   = $name !== '' ? $name : $url;
+            $letter = function_exists('kratos_friend_first_letter') ? kratos_friend_first_letter($seed) : mb_strtoupper(mb_substr($name, 0, 1, 'UTF-8'), 'UTF-8');
+            $bg     = function_exists('kratos_friend_placeholder_color') ? kratos_friend_placeholder_color($seed) : '#336699';
+            $tip    = $name . ($desc !== '' ? ' — ' . $desc : '');
+
+            echo '<li class="wfl-li">';
+            echo '<a class="wfl-item" href="' . esc_url($url) . '" target="' . esc_attr($target) . '" rel="nofollow noopener external" title="' . esc_attr($tip) . '">';
+            echo '<span class="wfl-logo">';
+            if ($img !== '') {
+                echo '<img src="' . esc_url($img) . '" alt="' . esc_attr($name) . '" loading="lazy" onerror="this.parentNode.classList.add(\'is-fallback\');this.remove();" />';
+                echo '<span class="wfl-logo-letter wfl-logo-fallback" style="background:' . esc_attr($bg) . ';">' . esc_html($letter) . '</span>';
+            } else {
+                echo '<span class="wfl-logo-letter" style="background:' . esc_attr($bg) . ';">' . esc_html($letter) . '</span>';
+            }
+            echo '</span>';
+            echo '<span class="wfl-meta"><span class="wfl-name">' . esc_html($name) . '</span>';
+            if ($show_desc && $desc !== '') {
+                echo '<span class="wfl-desc">' . esc_html($desc) . '</span>';
+            }
+            echo '</span>';
+            echo '</a>';
+            echo '</li>';
+        }
+        echo '</ul>';
+
+        echo $args['after_widget'];
+    }
+
+    public function update($new_instance, $old_instance)
+    {
+        $instance             = array();
+        $instance['title']    = isset($new_instance['title']) ? sanitize_text_field($new_instance['title']) : '';
+        $instance['category'] = isset($new_instance['category']) ? (int) $new_instance['category'] : 0;
+        $orderby              = isset($new_instance['orderby']) ? $new_instance['orderby'] : 'name';
+        $instance['orderby']  = in_array($orderby, array('name', 'rating', 'id', 'url', 'rand'), true) ? $orderby : 'name';
+        $instance['limit']    = (isset($new_instance['limit']) && (int) $new_instance['limit'] > 0) ? (int) $new_instance['limit'] : -1;
+        $instance['description'] = !empty($new_instance['description']) ? 1 : 0;
+        return $instance;
+    }
+
+    public function form($instance)
+    {
+        $instance = wp_parse_args((array) $instance, array(
+            'title'       => '',
+            'category'    => 0,
+            'orderby'     => 'name',
+            'limit'       => -1,
+            'description' => 0,
+        ));
+        $link_cats = get_terms(array('taxonomy' => 'link_category', 'hide_empty' => false));
+        $limit     = ((int) $instance['limit'] > 0) ? (int) $instance['limit'] : '';
+    ?>
+        <p>
+            <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('栏目标题：', 'kratos'); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($instance['title']); ?>" />
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('category'); ?>"><?php _e('链接分类：', 'kratos'); ?></label>
+            <select class="widefat" id="<?php echo $this->get_field_id('category'); ?>" name="<?php echo $this->get_field_name('category'); ?>">
+                <option value="0" <?php selected(0, (int) $instance['category']); ?>><?php _e('全部分类', 'kratos'); ?></option>
+                <?php if (!is_wp_error($link_cats)) foreach ($link_cats as $cat) { ?>
+                    <option value="<?php echo (int) $cat->term_id; ?>" <?php selected((int) $cat->term_id, (int) $instance['category']); ?>><?php echo esc_html($cat->name); ?></option>
+                <?php } ?>
+            </select>
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('orderby'); ?>"><?php _e('排序方式：', 'kratos'); ?></label>
+            <select class="widefat" id="<?php echo $this->get_field_id('orderby'); ?>" name="<?php echo $this->get_field_name('orderby'); ?>">
+                <option value="name" <?php selected('name', $instance['orderby']); ?>><?php _e('名称', 'kratos'); ?></option>
+                <option value="rating" <?php selected('rating', $instance['orderby']); ?>><?php _e('评级', 'kratos'); ?></option>
+                <option value="id" <?php selected('id', $instance['orderby']); ?>><?php _e('添加顺序', 'kratos'); ?></option>
+                <option value="url" <?php selected('url', $instance['orderby']); ?>><?php _e('地址', 'kratos'); ?></option>
+                <option value="rand" <?php selected('rand', $instance['orderby']); ?>><?php _e('随机', 'kratos'); ?></option>
+            </select>
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('limit'); ?>"><?php _e('显示数量（留空为全部）：', 'kratos'); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id('limit'); ?>" name="<?php echo $this->get_field_name('limit'); ?>" type="number" min="1" step="1" value="<?php echo esc_attr($limit); ?>" />
+        </p>
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked(!empty($instance['description'])); ?> id="<?php echo $this->get_field_id('description'); ?>" name="<?php echo $this->get_field_name('description'); ?>" value="1" />
+            <label for="<?php echo $this->get_field_id('description'); ?>"><?php _e('显示链接描述', 'kratos'); ?></label>
+        </p>
+    <?php
+    }
+}
+
 function register_widgets()
 {
     register_widget('widget_ad');
@@ -629,5 +786,6 @@ function register_widgets()
     register_widget('widget_posts');
     register_widget('widget_comments');
     register_widget('widget_toc');
+    register_widget('widget_links');
 }
 add_action('widgets_init', 'register_widgets');

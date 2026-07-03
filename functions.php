@@ -14,6 +14,35 @@ if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;
 }
 
+function kratos_dispatch_bg_task($callback) {
+    if (function_exists('fastcgi_finish_request')) {
+        register_shutdown_function(function () use ($callback) {
+            fastcgi_finish_request();
+            ignore_user_abort(true);
+            set_time_limit(300);
+            error_log('[kratos_bg] shutdown callback starting: ' . $callback);
+            call_user_func($callback);
+            error_log('[kratos_bg] shutdown callback done: ' . $callback);
+        });
+    } else {
+        register_shutdown_function(function () use ($callback) {
+            ignore_user_abort(true);
+            set_time_limit(300);
+            if (!headers_sent()) {
+                header('Connection: close');
+                header('Content-Length: 0');
+            }
+            if (ob_get_level()) {
+                ob_end_flush();
+            }
+            flush();
+            error_log('[kratos_bg] shutdown callback starting: ' . $callback);
+            call_user_func($callback);
+            error_log('[kratos_bg] shutdown callback done: ' . $callback);
+        });
+    }
+}
+
 // 代码高亮（必须在 CSF 之前 require —— CSF autoload 会立即加载 theme-options.php，
 // 而 theme-options.php 在字段定义里调用了本文件里的 kratos_codehl_*_options() 等函数）
 require get_template_directory() . '/inc/theme-codehighlight.php';
