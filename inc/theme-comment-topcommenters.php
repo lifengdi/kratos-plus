@@ -57,7 +57,13 @@ function kratos_top_commenters_get($limit = 20)
     global $wpdb;
 
     // 分两条 SQL：登录用户按 user_id 归并 + 游客按邮箱归并；再合并排序取前 N。
-    // 只统计已审核的普通评论（不含 trackback/pingback）。
+    // 只统计已审核的普通评论（不含 trackback/pingback），排除管理员。
+    $admin_ids = get_users(array('role' => 'Administrator', 'fields' => 'ID'));
+    $exclude_sql = '';
+    if (!empty($admin_ids)) {
+        $exclude_sql = ' AND user_id NOT IN (' . implode(',', array_map('intval', $admin_ids)) . ')';
+    }
+
     $rows_user = $wpdb->get_results(
         "SELECT
             user_id,
@@ -68,13 +74,30 @@ function kratos_top_commenters_get($limit = 20)
          WHERE comment_approved = '1'
            AND (comment_type = '' OR comment_type = 'comment')
            AND user_id > 0
+           {$exclude_sql}
          GROUP BY user_id
          ORDER BY cnt DESC
          LIMIT " . ($limit * 2),
         ARRAY_A
     );
 
-    // 游客：只统计未登录（user_id = 0）且填写了邮箱的评论
+    // 游客：只统计未登录（user_id = 0）且填写了邮箱的评论，排除管理员邮箱
+    $admin_emails = array();
+    if (!empty($admin_ids)) {
+        foreach ($admin_ids as $aid) {
+            $u = get_userdata((int) $aid);
+            if ($u) $admin_emails[] = strtolower($u->user_email);
+        }
+    }
+    $exclude_email_sql = '';
+    if (!empty($admin_emails)) {
+        $placeholders = implode(',', array_fill(0, count($admin_emails), '%s'));
+        $exclude_email_sql = $wpdb->prepare(
+            " AND LOWER(comment_author_email) NOT IN ({$placeholders})",
+            $admin_emails
+        );
+    }
+
     $rows_guest = $wpdb->get_results($wpdb->prepare(
         "SELECT
             comment_author_email              AS email,
@@ -86,6 +109,7 @@ function kratos_top_commenters_get($limit = 20)
            AND (comment_type = '' OR comment_type = 'comment')
            AND user_id = 0
            AND comment_author_email <> ''
+           {$exclude_email_sql}
          GROUP BY comment_author_email
          ORDER BY cnt DESC
          LIMIT %d",
