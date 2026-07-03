@@ -85,3 +85,5 @@ Temporary Items
 #################### Custom.gitignore ####################
 
 !.gitkeep
+.claude/*
+CLAUDE.md
