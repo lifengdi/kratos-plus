@@ -260,6 +260,9 @@ function kratos_friend_shortcode($atts)
         'hide_empty' => $atts['hide_empty'] === '1',
     ));
 
+    $probe_enabled = (bool) kratos_option('g_friend_probe_enabled', false);
+    $probe_data    = $probe_enabled ? kratos_friend_probe_get_all() : array();
+
     $title    = (string) $atts['title'];
     $subtitle = (string) $atts['subtitle'];
 
@@ -327,6 +330,16 @@ function kratos_friend_shortcode($atts)
                             $bg     = kratos_friend_placeholder_color($name !== '' ? $name : $url);
                             ?>
                             <a class="kfl-item" href="<?php echo esc_url($url); ?>" target="<?php echo esc_attr($target); ?>" rel="nofollow noopener external" title="<?php echo esc_attr($name . ($desc !== '' ? ' — ' . $desc : '')); ?>">
+                                <?php if ($probe_enabled && isset($probe_data[(int) $link->link_id])) {
+                                    $p = $probe_data[(int) $link->link_id];
+                                    $p_cls = $p['status'] === 'reachable' ? 'is-up' : 'is-down';
+                                    $p_tip = $p['status'] === 'reachable' ? __('站点可达', 'kratos') : __('站点不可达', 'kratos');
+                                    if (!empty($p['checked_at'])) {
+                                        $p_tip .= ' · ' . human_time_diff((int) $p['checked_at'], time()) . __('前检测', 'kratos');
+                                    }
+                                ?>
+                                    <span class="kfl-probe-dot <?php echo esc_attr($p_cls); ?>" title="<?php echo esc_attr($p_tip); ?>"></span>
+                                <?php } ?>
                                 <span class="kfl-logo">
                                     <?php if ($img !== '') { ?>
                                         <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($name); ?>" loading="lazy" onerror="this.parentNode.classList.add('is-fallback');this.remove();" />
@@ -596,6 +609,7 @@ function kratos_friend_shortcode($atts)
             gap:12px;
         }
         .kratos-friend-links .kfl-item{
+            position:relative;
             display:flex;align-items:center;gap:12px;
             padding:12px;
             background:var(--khs-card-bg);
@@ -650,6 +664,20 @@ function kratos_friend_shortcode($atts)
             overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
         }
         .kratos-friend-links .kfl-item:hover .kfl-desc{color:var(--khs-fg-dim);}
+
+        /* 探活状态点 */
+        .kratos-friend-links .kfl-probe-dot{
+            position:absolute;top:6px;right:6px;z-index:2;
+            width:8px;height:8px;border-radius:50%;
+        }
+        .kratos-friend-links .kfl-probe-dot.is-up{
+            background:#34a853;
+            box-shadow:0 0 4px rgba(52,168,83,.5);
+        }
+        .kratos-friend-links .kfl-probe-dot.is-down{
+            background:#ea4335;
+            box-shadow:0 0 4px rgba(234,67,53,.5);
+        }
 
         /* 空状态 */
         .kratos-friend-links .kfl-empty{
@@ -1482,3 +1510,228 @@ function kratos_friend_body_class($classes)
     return $classes;
 }
 add_filter('body_class', 'kratos_friend_body_class');
+
+/* ============================================================
+ *  友链探活：定时检测 + 缓存 + 后台展示
+ * ============================================================ */
+
+const KRATOS_FRIEND_PROBE_OPTION   = 'kratos_friend_probe';
+const KRATOS_FRIEND_PROBE_HOOK     = 'kratos_friend_probe_event';
+const KRATOS_FRIEND_PROBE_TIMEOUT  = 5;
+const KRATOS_FRIEND_PROBE_BATCH    = 5;
+
+/**
+ * 读取探活缓存（全量）
+ */
+function kratos_friend_probe_get_all()
+{
+    $data = get_option(KRATOS_FRIEND_PROBE_OPTION, array());
+    return is_array($data) ? $data : array();
+}
+
+/**
+ * 探测单条 URL 可达性（HEAD 请求）
+ */
+function kratos_friend_probe_check_url($url)
+{
+    $resp = wp_remote_head($url, array(
+        'timeout'     => KRATOS_FRIEND_PROBE_TIMEOUT,
+        'redirection' => 3,
+        'sslverify'   => false,
+        'user-agent'  => 'Mozilla/5.0 (compatible; KratosPlusProbe/1.0)',
+    ));
+    if (is_wp_error($resp)) {
+        return 'unreachable';
+    }
+    $code = wp_remote_retrieve_response_code($resp);
+    return ($code >= 200 && $code < 400) ? 'reachable' : 'unreachable';
+}
+
+/**
+ * 批量探测所有已通过友链并写入缓存
+ */
+function kratos_friend_probe_run()
+{
+    if (!kratos_option('g_friend_probe_enabled', false)) {
+        return;
+    }
+
+    global $wpdb;
+    $links = $wpdb->get_results(
+        "SELECT link_id, link_url FROM {$wpdb->links} WHERE link_visible = 'Y' AND link_url != ''"
+    );
+    if (empty($links)) {
+        update_option(KRATOS_FRIEND_PROBE_OPTION, array(), false);
+        return;
+    }
+
+    $data = kratos_friend_probe_get_all();
+    $now  = time();
+    $i    = 0;
+
+    foreach ($links as $link) {
+        $status = kratos_friend_probe_check_url($link->link_url);
+        $data[(int) $link->link_id] = array(
+            'status'     => $status,
+            'checked_at' => $now,
+        );
+        $i++;
+        if ($i % KRATOS_FRIEND_PROBE_BATCH === 0) {
+            sleep(1);
+        }
+    }
+
+    // 清理已删除的 link_id
+    $valid_ids = array_map(function ($l) { return (int) $l->link_id; }, $links);
+    $data = array_intersect_key($data, array_flip($valid_ids));
+
+    update_option(KRATOS_FRIEND_PROBE_OPTION, $data, false);
+}
+add_action(KRATOS_FRIEND_PROBE_HOOK, 'kratos_friend_probe_run');
+
+/**
+ * 探测单条友链并更新缓存（后台手动触发用）
+ */
+function kratos_friend_probe_single($link_id)
+{
+    $link = get_bookmark((int) $link_id);
+    if (!$link || $link->link_url === '') {
+        return null;
+    }
+
+    $status = kratos_friend_probe_check_url($link->link_url);
+    $data = kratos_friend_probe_get_all();
+    $data[(int) $link_id] = array(
+        'status'     => $status,
+        'checked_at' => time(),
+    );
+    update_option(KRATOS_FRIEND_PROBE_OPTION, $data, false);
+    return $status;
+}
+
+/**
+ * Cron 调度管理：开关/频率变更时重新注册
+ */
+function kratos_friend_probe_schedule()
+{
+    $enabled  = (bool) kratos_option('g_friend_probe_enabled', false);
+    $interval = (string) kratos_option('g_friend_probe_interval', 'daily');
+    if (!in_array($interval, array('hourly', 'twicedaily', 'daily'), true)) {
+        $interval = 'daily';
+    }
+
+    $next = wp_next_scheduled(KRATOS_FRIEND_PROBE_HOOK);
+
+    if (!$enabled) {
+        if ($next) {
+            wp_clear_scheduled_hook(KRATOS_FRIEND_PROBE_HOOK);
+        }
+        return;
+    }
+
+    // 已调度但频率变了 → 先清再重建
+    if ($next) {
+        $current = wp_get_schedule(KRATOS_FRIEND_PROBE_HOOK);
+        if ($current !== $interval) {
+            wp_clear_scheduled_hook(KRATOS_FRIEND_PROBE_HOOK);
+            $next = false;
+        }
+    }
+
+    if (!$next) {
+        wp_schedule_event(time() + 60, $interval, KRATOS_FRIEND_PROBE_HOOK);
+    }
+}
+add_action('init', 'kratos_friend_probe_schedule');
+
+/**
+ * 主题选项保存后立即重新调度（不等下次 init）
+ */
+function kratos_friend_probe_on_options_save()
+{
+    kratos_friend_probe_schedule();
+}
+add_action('csf_kratos_options_saved', 'kratos_friend_probe_on_options_save');
+
+/**
+ * 主题切换时清理 cron
+ */
+function kratos_friend_probe_deactivate()
+{
+    wp_clear_scheduled_hook(KRATOS_FRIEND_PROBE_HOOK);
+}
+add_action('switch_theme', 'kratos_friend_probe_deactivate');
+
+/* --- 后台 link-manager：探活状态列 --- */
+
+function kratos_friend_probe_admin_column($columns)
+{
+    if (!kratos_option('g_friend_probe_enabled', false)) {
+        return $columns;
+    }
+    $new = array();
+    foreach ($columns as $k => $v) {
+        $new[$k] = $v;
+        if ($k === 'kfl_status') {
+            $new['kfl_probe'] = __('探活', 'kratos');
+        }
+    }
+    if (!isset($new['kfl_probe'])) {
+        $new['kfl_probe'] = __('探活', 'kratos');
+    }
+    return $new;
+}
+add_filter('manage_link-manager_columns', 'kratos_friend_probe_admin_column', 11);
+
+function kratos_friend_probe_admin_column_render($column, $link_id)
+{
+    if ($column !== 'kfl_probe') return;
+
+    $data = kratos_friend_probe_get_all();
+    $link_id = (int) $link_id;
+
+    if (!isset($data[$link_id])) {
+        echo '<span style="color:#8b919a;">' . esc_html__('未检测', 'kratos') . '</span>';
+    } else {
+        $entry = $data[$link_id];
+        $is_ok = $entry['status'] === 'reachable';
+        $color = $is_ok ? '#1a7f37' : '#a4111e';
+        $label = $is_ok ? __('可达', 'kratos') : __('不可达', 'kratos');
+        $dot   = $is_ok ? '🟢' : '🔴';
+        echo '<span style="color:' . esc_attr($color) . ';font-weight:600;">' . $dot . ' ' . esc_html($label) . '</span>';
+
+        if (!empty($entry['checked_at'])) {
+            $time_str = human_time_diff((int) $entry['checked_at'], time()) . __('前', 'kratos');
+            $full_time = wp_date(get_option('date_format') . ' ' . get_option('time_format'), (int) $entry['checked_at']);
+            echo '<br><span style="color:#8b919a;font-size:12px;" title="' . esc_attr($full_time) . '">' . esc_html($time_str) . '</span>';
+        }
+    }
+
+    // 「立即检测」行操作
+    $probe_url = wp_nonce_url(
+        add_query_arg(array('action' => 'kratos_friend_probe_single', 'link_id' => $link_id), admin_url('admin-post.php')),
+        'kratos_friend_probe_' . $link_id
+    );
+    echo '<div class="row-actions" style="visibility:visible;position:static;padding-top:2px;">';
+    echo '<span><a href="' . esc_url($probe_url) . '">' . esc_html__('立即检测', 'kratos') . '</a></span>';
+    echo '</div>';
+}
+add_action('manage_link_custom_column', 'kratos_friend_probe_admin_column_render', 11, 2);
+
+/**
+ * 处理后台单条探测请求
+ */
+function kratos_friend_probe_admin_handle()
+{
+    $link_id = isset($_GET['link_id']) ? (int) $_GET['link_id'] : 0;
+    if (!$link_id || !current_user_can('manage_links')) {
+        wp_die(__('权限不足', 'kratos'));
+    }
+    check_admin_referer('kratos_friend_probe_' . $link_id);
+
+    kratos_friend_probe_single($link_id);
+
+    wp_safe_redirect(wp_get_referer() ?: admin_url('link-manager.php'));
+    exit;
+}
+add_action('admin_post_kratos_friend_probe_single', 'kratos_friend_probe_admin_handle');

@@ -1536,6 +1536,30 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'subheading',
+            'content' => __('探活检测', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_probe_enabled',
+            'type' => 'switcher',
+            'title' => __('启用探活检测', 'kratos'),
+            'subtitle' => __('定时检测友链 URL 是否可达，结果在前端卡片和后台列表中展示', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_friend_probe_interval',
+            'type' => 'select',
+            'title' => __('探测频率', 'kratos'),
+            'subtitle' => __('每隔多久对所有已通过的友链进行一次可达性检测', 'kratos'),
+            'options' => array(
+                'daily'      => __('每天一次', 'kratos'),
+                'twicedaily' => __('每天两次', 'kratos'),
+                'hourly'     => __('每小时', 'kratos'),
+            ),
+            'default' => 'daily',
+            'dependency' => array('g_friend_probe_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
             'content' => __('最近访客', 'kratos'),
         ),
         array(
