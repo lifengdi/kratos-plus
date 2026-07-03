@@ -383,8 +383,8 @@ function kratos_timeline_shortcode($atts = array())
             width: 18px; height: 18px;
             margin-top: -9px;
             border-radius: 50%;
-            background: var(--khs-line-strong);
-            opacity: .65;
+            background: var(--khs-accent, var(--khs-line-strong));
+            z-index: 2;
             box-sizing: border-box;
         }
 
@@ -415,7 +415,7 @@ function kratos_timeline_shortcode($atts = array())
             margin-top: -7px;
             border-radius: 50%;
             background: var(--khs-line-strong);
-            opacity: .45;
+            z-index: 2;
             box-sizing: border-box;
         }
 
