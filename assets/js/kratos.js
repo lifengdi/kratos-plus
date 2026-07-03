@@ -8,7 +8,7 @@
   "use strict";
 
   var KRATOS_VERSION =
-    "4.3.2";
+    "1.0.2";
 
   var navbarConfig =
     function () {
@@ -429,9 +429,9 @@
   var consoleConfig =
     function () {
       console.log(
-        "\n Kratos v" +
+        "\n Kratos+ v" +
           KRATOS_VERSION +
-          "\n\n https://github.com/seatonjiang/kratos \n\n"
+          "\n\n https://www.lifengdi.com \n\n"
       );
     };
 
