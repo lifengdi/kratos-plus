@@ -3259,29 +3259,49 @@ img {
 }
 
 #commentpage {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 13px;
 }
 
-#commentpage
-a {
-    display: inline-block;
-    width: 100px;
-    height: 32px;
-    border-radius: 3px;
-    background-color: #336699;
+#commentpage a,
+#commentpage .current,
+#commentpage .dots {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+#commentpage a {
+    background: #fff;
+    color: #336699;
+}
+
+#commentpage a:hover,
+#commentpage .current {
+    background: #336699;
+    border-color: transparent;
     color: #fff;
-    font-size: 14px;
-    transition: all 0.15s ease-in-out;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    font-weight: 600;
 }
 
-#commentpage
-a
-span {
-    vertical-align: middle;
+#commentpage .dots {
+    background: transparent;
+    border-color: transparent;
+    color: #999;
+    cursor: default;
 }
 
 @media screen and (max-width: 768px) {

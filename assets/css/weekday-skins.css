@@ -584,13 +584,25 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .com
 }
 
 /* 评论翻页 */
-html[data-weekday-skin]:not([data-theme="dark"]) #commentpage a {
-    background-color: var(--kr-skin-accent);
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage .current,
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage .dots {
+    background: var(--kr-skin-card-bg, #fff);
+    color: var(--kr-skin-accent);
+    border-color: var(--kr-skin-border, rgba(0,0,0,0.08));
+}
+
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage a:hover,
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage .current {
+    background: var(--kr-skin-accent);
+    border-color: transparent;
     color: #fff;
 }
 
-html[data-weekday-skin]:not([data-theme="dark"]) #commentpage a:hover {
-    background-color: var(--kr-skin-accent-hover);
+html[data-weekday-skin]:not([data-theme="dark"]) #commentpage .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-fg-muted, #999);
 }
 
 /* 评论表单 */

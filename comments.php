@@ -14,19 +14,8 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && 'comments.php' == basename($_SERVER['S
 require get_template_directory() . '/pages/page-smilies.php';
 if (comments_open()) { ?>
 	<div class="comments" id="comments">
-		<h3 class="title"><?php if (is_single()) {
-								_e('文章评论', 'kratos');
-							} else {
-								_e('评论内容', 'kratos');
-							} ?></h3>
-		<div class="list">
-			<?php wp_list_comments('type=comment&callback=comment_callbacks'); ?>
-		</div>
-		<div id="commentpage" class="nav text-center my-2">
-			<?php previous_comments_link(__('<span>上一页</span>', 'kratos'));?>
-			<?php next_comments_link(__('<span>下一页</span>', 'kratos'));?>
-		</div>
-		<div id="respond" class="comment-respond mt-2">
+		<div id="respond" class="comment-respond mt-3">
+
 			<?php if (get_option('comment_registration') && !is_user_logged_in()) : ?>
 				<div class="error text-center">
 					<?php printf(__('您需要 <a href="%s">登录</a> 之后才可以评论', 'kratos'), wp_login_url(get_permalink())); ?>
@@ -63,7 +52,7 @@ if (comments_open()) { ?>
 							</div>
 						<?php endif; ?>
 						<div class="comment-textarea">
-							<textarea class="form-control" id="comment" name="comment" rows="7" required="required"></textarea>
+							<textarea class="form-control" id="comment" name="comment" rows="7" required="required" placeholder="<?php echo esc_attr((string) kratos_option('g_comment_placeholder', __('说点什么吧…', 'kratos'))); ?>"></textarea>
 							<div class="text-bar clearfix">
 								<div class="tool float-left">
 									<a class="addbtn" href="#" id="addsmile"><i class="kicon i-face"></i></a>
@@ -86,6 +75,21 @@ if (comments_open()) { ?>
 					<?php do_action('comment_form', $post->ID); ?>
 				</form>
 			<?php endif; ?>
+		</div>
+		<h3 class="title"><?php if (is_single()) {
+								_e('文章评论', 'kratos');
+							} else {
+								_e('评论内容', 'kratos');
+							} ?></h3>
+		<div class="list">
+			<?php wp_list_comments('type=comment&callback=comment_callbacks'); ?>
+		</div>
+		<div id="commentpage" class="paginations my-2">
+			<?php paginate_comments_links(array(
+				'prev_text' => '<i class="kicon i-larrows"></i>',
+				'next_text' => '<i class="kicon i-rarrows"></i>',
+				'type'      => 'plain',
+			)); ?>
 		</div>
 	</div>
 <?php } ?>

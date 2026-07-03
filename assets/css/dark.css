@@ -121,6 +121,27 @@ html[data-theme="dark"] .k-main .board .paginations .dots {
     color: var(--kr-fg);
 }
 
+/* 4b. 评论分页 */
+html[data-theme="dark"] #commentpage a,
+html[data-theme="dark"] #commentpage .dots {
+    background: var(--kr-bg-elev);
+    color: var(--kr-fg);
+    border-color: var(--kr-border);
+}
+
+html[data-theme="dark"] #commentpage .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-fg-muted, #888);
+}
+
+html[data-theme="dark"] #commentpage a:hover,
+html[data-theme="dark"] #commentpage .current {
+    background: #336699;
+    color: #fff;
+    border-color: transparent;
+}
+
 /* 5. 文章正文 */
 html[data-theme="dark"] .k-main .details .article {
     background-color: var(--kr-bg-elev);

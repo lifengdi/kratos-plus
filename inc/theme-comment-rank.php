@@ -191,8 +191,42 @@ function kratos_rank_match($count)
     return $matched;
 }
 
+function kratos_rank_is_admin_comment($comment)
+{
+    $user_id = (int) $comment->user_id;
+    if ($user_id <= 0) {
+        return false;
+    }
+    $user = get_userdata($user_id);
+    return $user && user_can($user, 'manage_options');
+}
+
+function kratos_rank_admin_badge_html()
+{
+    $text  = (string) kratos_option('g_comment_admin_badge_text', __('管理', 'kratos'));
+    $color = sanitize_hex_color((string) kratos_option('g_comment_admin_badge_color', '#ffffff')) ?: '#ffffff';
+    $bg    = sanitize_hex_color((string) kratos_option('g_comment_admin_badge_bg', '#e74c3c')) ?: '#e74c3c';
+
+    $style = sprintf(
+        'display:inline-block;margin-left:6px;padding:1px 7px;font-size:11px;line-height:1.5;border-radius:3px;color:%s;background:%s;vertical-align:middle;font-weight:500;',
+        esc_attr($color),
+        esc_attr($bg)
+    );
+
+    return sprintf(
+        '<span class="kratos-rank-badge kratos-admin-badge" title="%s" style="%s">%s</span>',
+        esc_attr($text),
+        $style,
+        esc_html($text)
+    );
+}
+
 function kratos_rank_badge_html($comment)
 {
+    if ((bool) kratos_option('g_comment_admin_badge_enabled', true) && kratos_rank_is_admin_comment($comment)) {
+        return kratos_rank_admin_badge_html();
+    }
+
     $count = kratos_rank_count_for_comment($comment);
     $level = kratos_rank_match($count);
     if (!$level) {
