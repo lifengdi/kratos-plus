@@ -654,15 +654,28 @@ class widget_links extends WP_Widget
             return;
         }
 
-        $title    = isset($instance['title']) ? $instance['title'] : __('友情链接', 'kratos');
+        $title    = isset($instance['title']) ? $instance['title'] : '';
         $category = isset($instance['category']) ? (int) $instance['category'] : 0;
+        $title    = apply_filters('widget_title', $title, $instance, $this->id_base);
+        if ($title === '' || $title === null) {
+            if ($category > 0) {
+                $term = get_term($category, 'link_category');
+                if ($term && !is_wp_error($term)) {
+                    $title = $term->name;
+                }
+            }
+            if ($title === '' || $title === null) {
+                $title = __('友情链接', 'kratos');
+            }
+        }
         $orderby  = isset($instance['orderby']) ? $instance['orderby'] : 'name';
         if (!in_array($orderby, array('name', 'rating', 'id', 'url', 'rand'), true)) {
             $orderby = 'name';
         }
         $limit     = (isset($instance['limit']) && $instance['limit'] !== '' && (int) $instance['limit'] > 0) ? (int) $instance['limit'] : -1;
-        $show_desc = !empty($instance['description']);
-        $order     = ($orderby === 'rating') ? 'DESC' : 'ASC';
+        $show_desc  = !empty($instance['description']);
+        $show_image = !isset($instance['show_image']) || !empty($instance['show_image']);
+        $order      = ($orderby === 'rating') ? 'DESC' : 'ASC';
 
         $bookmarks = get_bookmarks(array(
             'category'       => $category ? $category : '',
@@ -697,14 +710,16 @@ class widget_links extends WP_Widget
 
             echo '<li class="wfl-li">';
             echo '<a class="wfl-item" href="' . esc_url($url) . '" target="' . esc_attr($target) . '" rel="nofollow noopener external" title="' . esc_attr($tip) . '">';
-            echo '<span class="wfl-logo">';
-            if ($img !== '') {
-                echo '<img src="' . esc_url($img) . '" alt="' . esc_attr($name) . '" loading="lazy" onerror="this.parentNode.classList.add(\'is-fallback\');this.remove();" />';
-                echo '<span class="wfl-logo-letter wfl-logo-fallback" style="background:' . esc_attr($bg) . ';">' . esc_html($letter) . '</span>';
-            } else {
-                echo '<span class="wfl-logo-letter" style="background:' . esc_attr($bg) . ';">' . esc_html($letter) . '</span>';
+            if ($show_image) {
+                echo '<span class="wfl-logo">';
+                if ($img !== '') {
+                    echo '<img src="' . esc_url($img) . '" alt="' . esc_attr($name) . '" loading="lazy" onerror="this.parentNode.classList.add(\'is-fallback\');this.remove();" />';
+                    echo '<span class="wfl-logo-letter wfl-logo-fallback" style="background:' . esc_attr($bg) . ';">' . esc_html($letter) . '</span>';
+                } else {
+                    echo '<span class="wfl-logo-letter" style="background:' . esc_attr($bg) . ';">' . esc_html($letter) . '</span>';
+                }
+                echo '</span>';
             }
-            echo '</span>';
             echo '<span class="wfl-meta"><span class="wfl-name">' . esc_html($name) . '</span>';
             if ($show_desc && $desc !== '') {
                 echo '<span class="wfl-desc">' . esc_html($desc) . '</span>';
@@ -727,6 +742,7 @@ class widget_links extends WP_Widget
         $instance['orderby']  = in_array($orderby, array('name', 'rating', 'id', 'url', 'rand'), true) ? $orderby : 'name';
         $instance['limit']    = (isset($new_instance['limit']) && (int) $new_instance['limit'] > 0) ? (int) $new_instance['limit'] : -1;
         $instance['description'] = !empty($new_instance['description']) ? 1 : 0;
+        $instance['show_image'] = !empty($new_instance['show_image']) ? 1 : 0;
         return $instance;
     }
 
@@ -738,6 +754,7 @@ class widget_links extends WP_Widget
             'orderby'     => 'name',
             'limit'       => -1,
             'description' => 0,
+            'show_image'  => 1,
         ));
         $link_cats = get_terms(array('taxonomy' => 'link_category', 'hide_empty' => false));
         $limit     = ((int) $instance['limit'] > 0) ? (int) $instance['limit'] : '';
@@ -772,6 +789,10 @@ class widget_links extends WP_Widget
         <p>
             <input class="checkbox" type="checkbox" <?php checked(!empty($instance['description'])); ?> id="<?php echo $this->get_field_id('description'); ?>" name="<?php echo $this->get_field_name('description'); ?>" value="1" />
             <label for="<?php echo $this->get_field_id('description'); ?>"><?php _e('显示链接描述', 'kratos'); ?></label>
+        </p>
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked(!empty($instance['show_image'])); ?> id="<?php echo $this->get_field_id('show_image'); ?>" name="<?php echo $this->get_field_name('show_image'); ?>" value="1" />
+            <label for="<?php echo $this->get_field_id('show_image'); ?>"><?php _e('显示图标', 'kratos'); ?></label>
         </p>
     <?php
     }

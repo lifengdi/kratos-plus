@@ -3686,8 +3686,10 @@ img {
     /* 网站名称超长自动换行：最多两行，超出省略，长英文串强制断行 */
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     word-break: break-word;
     overflow-wrap: anywhere;
 }

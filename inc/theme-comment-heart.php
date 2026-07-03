@@ -305,10 +305,19 @@ function kratos_heart_get_stats()
         }
     }
 
+    $month_start = date('Y-m-01 00:00:00');
+    $monthly = 0;
+    foreach ($comments as $c) {
+        if ($c->comment_date >= $month_start) {
+            $monthly++;
+        }
+    }
+
     $stats = array(
         'comments' => count($comments),
         'posts'    => count($post_ids),
         'users'    => count($user_keys),
+        'monthly'  => $monthly,
     );
 
     set_transient($cache_key, $stats, 5 * MINUTE_IN_SECONDS);
@@ -407,6 +416,15 @@ function kratos_heart_shortcode($atts)
                 <div class="khs-stat-body">
                     <div class="khs-stat-label"><?php esc_html_e('参与用户', 'kratos'); ?></div>
                     <div class="khs-stat-num"><?php echo (int) $stats['users']; ?></div>
+                </div>
+            </div>
+            <div class="khs-stat khs-stat-monthly">
+                <span class="khs-stat-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>
+                </span>
+                <div class="khs-stat-body">
+                    <div class="khs-stat-label"><?php esc_html_e('本月新增', 'kratos'); ?></div>
+                    <div class="khs-stat-num"><?php echo (int) $stats['monthly']; ?></div>
                 </div>
             </div>
         </div>
@@ -563,7 +581,7 @@ function kratos_heart_shortcode($atts)
         /* 三张总览卡：对齐归档 .kas-totals / .kas-total */
         .kratos-heart-shortcode .khs-stats{
             display:grid;
-            grid-template-columns:repeat(3,minmax(0,1fr));
+            grid-template-columns:repeat(4,minmax(0,1fr));
             gap:16px;
             margin:0 0 22px;
         }
@@ -611,7 +629,7 @@ function kratos_heart_shortcode($atts)
             gap:14px;
         }
         .kratos-heart-shortcode .khs-card{
-            display:block;
+            display:flex;flex-direction:column;
             padding:16px 18px;
             background:var(--khs-card-bg);
             border:1px solid var(--khs-line);
@@ -658,7 +676,7 @@ function kratos_heart_shortcode($atts)
         /* 来源文章：实线细分隔（不要 dashed strong，过抢） */
         .kratos-heart-shortcode .khs-from{
             display:flex;align-items:center;gap:4px;
-            margin-top:8px;padding-top:8px;
+            margin-top:auto;padding-top:8px;
             border-top:1px solid var(--khs-line);
             font-size:11px;color:var(--khs-fg-mute);
         }
@@ -722,7 +740,7 @@ function kratos_heart_shortcode($atts)
 
         /* 响应式：与归档 shortcode 同断点 */
         @media (max-width:900px){
-            .kratos-heart-shortcode .khs-stats{grid-template-columns:repeat(3,minmax(0,1fr));}
+            .kratos-heart-shortcode .khs-stats{grid-template-columns:repeat(2,minmax(0,1fr));}
         }
         @media (max-width:560px){
             .kratos-heart-shortcode .khs-header{padding:18px 20px;gap:10px;}
