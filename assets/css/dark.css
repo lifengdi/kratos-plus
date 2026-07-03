@@ -164,7 +164,7 @@ html[data-theme="dark"] .k-main .details .article .content p {
     color: var(--kr-fg);
 }
 
-html[data-theme="dark"] .k-main .details .article .content h2.title {
+html[data-theme="dark"] .k-main .content h2.title {
     background-color: rgba(255, 255, 255, 0.04);
     border-left-color: var(--kr-accent);
     color: var(--kr-fg-strong);

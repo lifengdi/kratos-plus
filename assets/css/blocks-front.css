@@ -5,7 +5,7 @@
  * 现成 HTML 结构。本表只在主题选择器下叠加：浅色背景、左侧色带、SVG 图标，
  * 让前台显示效果与编辑器里看到的一致。
  *
- * 选择器作用域限定在文章正文 .k-main .details .article .content 内，避免影响
+ * 选择器作用域限定在文章正文 .k-main .content 内，避免影响
  * 评论区/侧栏等其它使用同名 Bootstrap 类的地方。
  */
 
@@ -13,7 +13,7 @@
 /* 背景栏：[success] / [info] / [warning] / [danger]                   */
 /* 输出结构：<div class="alert alert-{type}">...</div>                  */
 /* ------------------------------------------------------------------ */
-.k-main .details .article .content .alert {
+.k-main .content .alert {
     position: relative;
     padding: 12px 16px 12px 42px;
     border: 1px solid transparent;
@@ -25,7 +25,7 @@
 }
 
 /* 图标高度 = 首行行高，配合 top: padding-top 让中线对齐首行 */
-.k-main .details .article .content .alert::before {
+.k-main .content .alert::before {
     content: "";
     position: absolute;
     left: 10px;
@@ -37,39 +37,39 @@
     background-size: 22px 22px;
 }
 
-.k-main .details .article .content .alert-success {
+.k-main .content .alert-success {
     background: #eaf6ec;
     border-color: #28a745;
     color: #155724;
 }
-.k-main .details .article .content .alert-success::before {
+.k-main .content .alert-success::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23155724'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z'/%3E%3C/svg%3E");
 }
 
-.k-main .details .article .content .alert-info {
+.k-main .content .alert-info {
     background: #e6f3f5;
     border-color: #17a2b8;
     color: #0c5460;
 }
-.k-main .details .article .content .alert-info::before {
+.k-main .content .alert-info::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230c5460'%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z'/%3E%3C/svg%3E");
 }
 
-.k-main .details .article .content .alert-warning {
+.k-main .content .alert-warning {
     background: #fff8e1;
     border-color: #ffc107;
     color: #856404;
 }
-.k-main .details .article .content .alert-warning::before {
+.k-main .content .alert-warning::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23856404'%3E%3Cpath d='M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z'/%3E%3C/svg%3E");
 }
 
-.k-main .details .article .content .alert-danger {
+.k-main .content .alert-danger {
     background: #fbeaec;
     border-color: #dc3545;
     color: #721c24;
 }
-.k-main .details .article .content .alert-danger::before {
+.k-main .content .alert-danger::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23721c24'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z'/%3E%3C/svg%3E");
 }
 
@@ -82,20 +82,20 @@
 /*   </div>                                                            */
 /* style.css 已让 .card / .card-header 圆角=0，本表覆盖回 4px 并加图标   */
 /* ------------------------------------------------------------------ */
-.k-main .details .article .content .card.border-success,
-.k-main .details .article .content .card.border-info,
-.k-main .details .article .content .card.border-warning,
-.k-main .details .article .content .card.border-danger {
+.k-main .content .card.border-success,
+.k-main .content .card.border-info,
+.k-main .content .card.border-warning,
+.k-main .content .card.border-danger {
     border-left-width: 5px;
     border-radius: 4px;
     overflow: hidden;
     color: inherit;
 }
 
-.k-main .details .article .content .card.border-success > .card-header,
-.k-main .details .article .content .card.border-info > .card-header,
-.k-main .details .article .content .card.border-warning > .card-header,
-.k-main .details .article .content .card.border-danger > .card-header {
+.k-main .content .card.border-success > .card-header,
+.k-main .content .card.border-info > .card-header,
+.k-main .content .card.border-warning > .card-header,
+.k-main .content .card.border-danger > .card-header {
     position: relative;
     padding: 10px 14px 10px 34px;
     border-radius: 0;
@@ -103,10 +103,10 @@
     font-weight: 600;
 }
 
-.k-main .details .article .content .card.border-success > .card-header::before,
-.k-main .details .article .content .card.border-info > .card-header::before,
-.k-main .details .article .content .card.border-warning > .card-header::before,
-.k-main .details .article .content .card.border-danger > .card-header::before {
+.k-main .content .card.border-success > .card-header::before,
+.k-main .content .card.border-info > .card-header::before,
+.k-main .content .card.border-warning > .card-header::before,
+.k-main .content .card.border-danger > .card-header::before {
     content: "";
     position: absolute;
     left: 10px;
@@ -119,30 +119,30 @@
     background-size: contain;
 }
 
-.k-main .details .article .content .card.border-success > .card-header::before {
+.k-main .content .card.border-success > .card-header::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z'/%3E%3C/svg%3E");
 }
-.k-main .details .article .content .card.border-info > .card-header::before {
+.k-main .content .card.border-info > .card-header::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z'/%3E%3C/svg%3E");
 }
-.k-main .details .article .content .card.border-warning > .card-header::before {
+.k-main .content .card.border-warning > .card-header::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3E%3Cpath d='M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z'/%3E%3C/svg%3E");
 }
-.k-main .details .article .content .card.border-danger > .card-header::before {
+.k-main .content .card.border-danger > .card-header::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z'/%3E%3C/svg%3E");
 }
 
 /* card-body 使用浅底深字（覆盖 shortcode 输出的 text-white） */
-.k-main .details .article .content .card.border-success > .card-body,
-.k-main .details .article .content .card.border-info > .card-body,
-.k-main .details .article .content .card.border-warning > .card-body,
-.k-main .details .article .content .card.border-danger > .card-body {
+.k-main .content .card.border-success > .card-body,
+.k-main .content .card.border-info > .card-body,
+.k-main .content .card.border-warning > .card-body,
+.k-main .content .card.border-danger > .card-body {
     background: #fff;
     color: #333;
 }
-.k-main .details .article .content .card.border-success > .card-body .card-text,
-.k-main .details .article .content .card.border-info > .card-body .card-text,
-.k-main .details .article .content .card.border-warning > .card-body .card-text,
-.k-main .details .article .content .card.border-danger > .card-body .card-text {
+.k-main .content .card.border-success > .card-body .card-text,
+.k-main .content .card.border-info > .card-body .card-text,
+.k-main .content .card.border-warning > .card-body .card-text,
+.k-main .content .card.border-danger > .card-body .card-text {
     color: #333;
 }

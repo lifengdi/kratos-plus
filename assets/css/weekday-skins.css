@@ -402,7 +402,7 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .cont
     color: var(--kr-skin-text);
 }
 
-html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .content h2.title {
     background-color: transparent;
     border-left: 3px solid var(--kr-skin-accent);
     color: var(--kr-skin-heading);
@@ -1266,7 +1266,7 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .sidebar .w-tags 
 }
 
 /* h2.title 改为黑色粗实心条 */
-html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .content h2.title {
     border-left: 6px solid #1A1A1A;
     background: transparent;
 }
@@ -1497,7 +1497,7 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .a
 }
 
 /* h2.title 装饰条改成竖向棕褐 3px */
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .content h2.title {
     border-left: 3px solid #6E4F2F;
     background: transparent;
     padding-left: 14px;
@@ -1593,7 +1593,7 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .w-tags
 }
 
 /* h2.title 装饰条 + 内边距与 archives section-head 同步 */
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content h2.title {
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .content h2.title {
     border-left: 3px solid #A86028;
     background: transparent;
     padding-left: 14px;

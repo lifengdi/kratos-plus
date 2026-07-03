@@ -198,7 +198,7 @@
 /* ------------------------------------------------------------------ */
 /* 其它块                                                              */
 /* ------------------------------------------------------------------ */
-/* h2title：与前台 .k-main .details .article .content h2.title 视觉对齐
+/* h2title：与前台 .k-main .content h2.title 视觉对齐
  * 前台原样：padding:10px; border-left:5px solid #336699; bg:rgba(243,243,243,0.7) */
 .kratos-block.kratos-block--h2title {
     padding: 10px;
