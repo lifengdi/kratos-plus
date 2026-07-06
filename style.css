@@ -3101,6 +3101,13 @@ img {
     );
 }
 
+
+.comment-empty {
+    padding: 40px 20px;
+    color: #999;
+    font-size: 14px;
+}
+
 .k-main
 .details
 .comments

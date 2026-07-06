@@ -82,7 +82,11 @@ if (comments_open()) { ?>
 								_e('评论内容', 'kratos');
 							} ?></h3>
 		<div class="list">
-			<?php wp_list_comments('type=comment&callback=comment_callbacks'); ?>
+			<?php if (get_comments_number() > 0) : ?>
+				<?php wp_list_comments('type=comment&callback=comment_callbacks'); ?>
+			<?php else : ?>
+				<div class="comment-empty text-center"><?php _e('还没有评论，快来抢沙发吧~', 'kratos'); ?></div>
+			<?php endif; ?>
 		</div>
 		<div id="commentpage" class="paginations my-2">
 			<?php paginate_comments_links(array(
