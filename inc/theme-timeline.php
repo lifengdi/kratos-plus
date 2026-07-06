@@ -345,7 +345,7 @@ function kratos_timeline_shortcode($atts = array())
         }
         .kratos-timeline .ktl-spine {
             position: absolute;
-            top: 22px; bottom: 22px;
+            top: 22px; bottom: 40px;
             left: 144px;
             width: 2px;
             background: var(--khs-line-strong);
@@ -431,14 +431,15 @@ function kratos_timeline_shortcode($atts = array())
              *   dot 中心 = 父 padding-left + left + width/2
              *   桌面：152 + (-12) + 5 = 145 ✓
              *   移动：106 + (-12) + 5 = 99  ✓ */
-            left: -12px;
+            left: -11px;
             top: 50%;
-            width: 10px; height: 10px;
-            margin-top: -5px;
+            width: 8px; height: 8px;
+            margin-top: -4px;
             border-radius: 50%;
-            background: var(--khs-card-bg);
-            border: 2px solid var(--khs-line-strong);
+            background: var(--khs-line-strong);
+            box-shadow: 0 0 0 3px var(--khs-card-bg);
             box-sizing: border-box;
+            z-index: 2;
             transition: border-color .2s ease, background .2s ease, transform .2s ease;
         }
         .kratos-timeline .ktl-item:hover .ktl-item-dot {

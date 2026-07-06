@@ -1601,14 +1601,27 @@ h2:not(
 .k-main
 .content
 h2.title {
-    padding: 10px;
-    border-left: 5px solid #336699;
-    background-color: rgba(
-            243,
-            243,
-            243,
-            0.7
-    );
+    position: relative;
+    display: inline-block;
+    padding: 6px 4px 10px;
+    border-left: 0;
+    background-color: transparent;
+}
+
+.k-main .content h2.title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #336699;
+    transition: width .3s ease;
+}
+
+.k-main .content h2.title:hover::after {
+    width: 64px;
 }
 
 .k-main

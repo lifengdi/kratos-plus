@@ -404,8 +404,11 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .cont
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .content h2.title {
     background-color: transparent;
-    border-left: 3px solid var(--kr-skin-accent);
+    border-left: 0;
     color: var(--kr-skin-heading);
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .k-main .content h2.title::after {
+    background-color: var(--kr-skin-accent);
 }
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
@@ -1265,10 +1268,14 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .sidebar .w-tags 
     font-weight: 600;
 }
 
-/* h2.title 改为黑色粗实心条 */
+/* h2.title 改为黑色粗色块 */
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .content h2.title {
-    border-left: 6px solid #1A1A1A;
+    border-left: 0;
     background: transparent;
+}
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .content h2.title::after {
+    background-color: #1A1A1A;
+    height: 6px;
 }
 
 /* 翻页方块去圆角 + 黑边 */
@@ -1496,11 +1503,13 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .a
     color: #4B463F;
 }
 
-/* h2.title 装饰条改成竖向棕褐 3px */
+/* h2.title 装饰改成文字下方棕褐色块 */
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .content h2.title {
-    border-left: 3px solid #6E4F2F;
+    border-left: 0;
     background: transparent;
-    padding-left: 14px;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .content h2.title::after {
+    background-color: #6E4F2F;
 }
 
 /* -------- Silk · 黄绢（完整复刻 archives shortcode parchment scheme） --------
@@ -1592,11 +1601,13 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .w-tags
     border-radius: 10px !important;
 }
 
-/* h2.title 装饰条 + 内边距与 archives section-head 同步 */
+/* h2.title 文字下方棕褐色块 */
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .content h2.title {
-    border-left: 3px solid #A86028;
+    border-left: 0;
     background: transparent;
-    padding-left: 14px;
+}
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .content h2.title::after {
+    background-color: #A86028;
 }
 
 /* blockquote 仿 archives pill 卡片质感 */

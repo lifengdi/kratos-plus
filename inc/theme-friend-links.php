@@ -324,50 +324,41 @@ function kratos_friend_shortcode($atts)
                     <?php if ($si_logo !== '') { ?>
                         <img class="kfl-siteinfo-logo" src="<?php echo esc_url($si_logo); ?>" alt="<?php echo esc_attr($si_name); ?>" loading="lazy" />
                     <?php } ?>
+                    <?php
+                    $copy_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+                    $copy_label   = esc_attr__('复制', 'kratos');
+                    $copied_label = esc_attr__('已复制', 'kratos');
+                    $render_copy_btn = function() use ($copy_svg, $copy_label, $copied_label) {
+                        return '<button type="button" class="kfl-copy-btn" title="' . $copy_label . '" aria-label="' . $copy_label . '" data-copied-label="' . $copied_label . '">' . $copy_svg . '</button>';
+                    };
+                    ?>
                     <div class="kfl-siteinfo-fields">
                         <div class="kfl-siteinfo-row">
                             <span class="kfl-siteinfo-label"><?php esc_html_e('名称', 'kratos'); ?></span>
-                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_name); ?>"><?php echo esc_html($si_name); ?><button type="button" class="kfl-copy-btn" title="<?php esc_attr_e('复制', 'kratos'); ?>" aria-label="<?php esc_attr_e('复制', 'kratos'); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_name); ?>"><span class="kfl-siteinfo-text"><?php echo esc_html($si_name); ?></span><?php echo $render_copy_btn(); ?></span>
                         </div>
                         <div class="kfl-siteinfo-row">
                             <span class="kfl-siteinfo-label"><?php esc_html_e('地址', 'kratos'); ?></span>
-                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_url); ?>"><a href="<?php echo esc_url($si_url); ?>"><?php echo esc_html($si_url); ?></a><button type="button" class="kfl-copy-btn" title="<?php esc_attr_e('复制', 'kratos'); ?>" aria-label="<?php esc_attr_e('复制', 'kratos'); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_url); ?>"><a href="<?php echo esc_url($si_url); ?>"><?php echo esc_html($si_url); ?></a><?php echo $render_copy_btn(); ?></span>
                         </div>
                         <?php if ($si_logo !== '') { ?>
-                        <div class="kfl-siteinfo-row">
+                        <div class="kfl-siteinfo-row is-wide">
                             <span class="kfl-siteinfo-label">Logo</span>
-                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_logo); ?>"><a href="<?php echo esc_url($si_logo); ?>" target="_blank"><?php echo esc_html($si_logo); ?></a><button type="button" class="kfl-copy-btn" title="<?php esc_attr_e('复制', 'kratos'); ?>" aria-label="<?php esc_attr_e('复制', 'kratos'); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_logo); ?>"><a href="<?php echo esc_url($si_logo); ?>" target="_blank"><?php echo esc_html($si_logo); ?></a><?php echo $render_copy_btn(); ?></span>
                         </div>
                         <?php } ?>
-                        <div class="kfl-siteinfo-row">
+                        <div class="kfl-siteinfo-row is-wide">
                             <span class="kfl-siteinfo-label"><?php esc_html_e('描述', 'kratos'); ?></span>
-                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_desc); ?>"><?php echo esc_html($si_desc); ?><button type="button" class="kfl-copy-btn" title="<?php esc_attr_e('复制', 'kratos'); ?>" aria-label="<?php esc_attr_e('复制', 'kratos'); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_desc); ?>"><span class="kfl-siteinfo-text"><?php echo esc_html($si_desc); ?></span><?php echo $render_copy_btn(); ?></span>
                         </div>
-                        <div class="kfl-siteinfo-row">
+                        <div class="kfl-siteinfo-row is-wide">
                             <span class="kfl-siteinfo-label">RSS</span>
-                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_rss); ?>"><a href="<?php echo esc_url($si_rss); ?>" target="_blank"><?php echo esc_html($si_rss); ?></a><button type="button" class="kfl-copy-btn" title="<?php esc_attr_e('复制', 'kratos'); ?>" aria-label="<?php esc_attr_e('复制', 'kratos'); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                            <span class="kfl-siteinfo-value" data-copy="<?php echo esc_attr($si_rss); ?>"><a href="<?php echo esc_url($si_rss); ?>" target="_blank"><?php echo esc_html($si_rss); ?></a><?php echo $render_copy_btn(); ?></span>
                         </div>
                     </div>
                 </div>
             </section>
         <?php } ?>
-
-        <?php
-        // 友链申请要求
-        if (kratos_option('g_friend_requirements_enabled', false)) {
-            $req_title   = (string) kratos_option('g_friend_requirements_title', __('友链申请要求', 'kratos'));
-            $req_content = (string) kratos_option('g_friend_requirements_content', '');
-            if ($req_content !== '') {
-        ?>
-            <section class="kfl-section kfl-requirements-section">
-                <?php if ($req_title !== '') { ?>
-                    <header class="kfl-section-head">
-                        <h3 class="kfl-section-title"><?php echo esc_html($req_title); ?></h3>
-                    </header>
-                <?php } ?>
-                <div class="kfl-requirements-body"><?php echo wp_kses_post($req_content); ?></div>
-            </section>
-        <?php } } ?>
 
         <?php if (empty($groups) || $total_links === 0) { ?>
             <div class="kfl-empty">
@@ -479,6 +470,23 @@ function kratos_friend_shortcode($atts)
                         </li>
                     <?php } ?>
                 </ul>
+            </section>
+        <?php } } ?>
+
+        <?php
+        // 友链申请要求（放在申请表单之前）
+        if (kratos_option('g_friend_requirements_enabled', false)) {
+            $req_title   = (string) kratos_option('g_friend_requirements_title', __('友链申请要求', 'kratos'));
+            $req_content = (string) kratos_option('g_friend_requirements_content', '');
+            if ($req_content !== '') {
+        ?>
+            <section class="kfl-section kfl-requirements-section">
+                <?php if ($req_title !== '') { ?>
+                    <header class="kfl-section-head">
+                        <h3 class="kfl-section-title"><?php echo esc_html($req_title); ?></h3>
+                    </header>
+                <?php } ?>
+                <div class="kfl-requirements-body"><?php echo do_shortcode(wp_kses_post($req_content)); ?></div>
             </section>
         <?php } } ?>
 
@@ -978,42 +986,66 @@ function kratos_friend_shortcode($atts)
 
         /* === 本站信息卡片 === */
         .kratos-friend-links .kfl-siteinfo-card{
-            display:flex;align-items:flex-start;gap:20px;
+            display:flex;align-items:center;gap:22px;
+            padding:20px 22px;border:1px solid var(--khs-line);
+            border-radius:14px;background:var(--khs-bg-1);
+            position:relative;
+        }
+        .kratos-friend-links .kfl-siteinfo-card::before{
+            content:"";position:absolute;inset:0;pointer-events:none;
+            border-radius:inherit;overflow:hidden;
+            background:linear-gradient(135deg, color-mix(in srgb, var(--khs-accent) 8%, transparent) 0%, transparent 60%);
         }
         .kratos-friend-links .kfl-siteinfo-logo{
-            flex-shrink:0;width:64px;height:64px;border-radius:12px;
+            position:relative;flex-shrink:0;width:84px;height:84px;border-radius:16px;
             object-fit:cover;border:1px solid var(--khs-line);
             background:var(--khs-bg-2);
+            box-shadow:0 4px 14px rgba(0,0,0,.06);
         }
         .kratos-friend-links .kfl-siteinfo-fields{
-            flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;
+            position:relative;flex:1;min-width:0;
+            display:flex;flex-direction:column;gap:10px;
         }
         .kratos-friend-links .kfl-siteinfo-row{
-            display:flex;align-items:baseline;gap:10px;font-size:14px;line-height:1.5;
+            display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.5;
+            min-width:0;
         }
+        .kratos-friend-links .kfl-siteinfo-label{margin-top:2px;}
+        .kratos-friend-links .kfl-siteinfo-row.is-wide{grid-column:1 / -1;}
         .kratos-friend-links .kfl-siteinfo-label{
-            flex-shrink:0;width:48px;text-align:right;
-            color:var(--khs-fg-dim);font-size:13px;font-weight:600;
+            flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
+            min-width:44px;padding:2px 10px;height:22px;
+            border-radius:999px;background:var(--khs-bg-2);
+            color:var(--khs-fg-dim);font-size:12px;font-weight:600;letter-spacing:.02em;
         }
         .kratos-friend-links .kfl-siteinfo-value{
-            flex:1;min-width:0;display:flex;align-items:center;gap:6px;
-            color:var(--khs-fg-soft);word-break:break-all;
+            flex:1;min-width:0;display:block;
+            color:var(--khs-fg);
+            word-break:break-all;overflow-wrap:anywhere;
+        }
+        .kratos-friend-links .kfl-siteinfo-value > a,
+        .kratos-friend-links .kfl-siteinfo-value > span.kfl-siteinfo-text{
+            white-space:normal;word-break:break-all;overflow-wrap:anywhere;
+        }
+        .kratos-friend-links .kfl-siteinfo-value > .kfl-copy-btn{
+            display:inline-flex;vertical-align:middle;margin-left:4px;
         }
         .kratos-friend-links .kfl-siteinfo-value a{
             color:var(--khs-accent);text-decoration:none;
         }
         .kratos-friend-links .kfl-siteinfo-value a:hover{text-decoration:underline;}
         .kratos-friend-links .kfl-copy-btn{
-            flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
-            width:24px;height:24px;padding:0;margin:0;border:none;
-            background:var(--khs-bg-2);color:var(--khs-fg-dim);
-            border-radius:6px;cursor:pointer;transition:background .2s,color .2s;
+            position:relative;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
+            width:26px;height:26px;padding:0;margin:0;border:1px solid transparent;
+            background:transparent;color:var(--khs-fg-dim);
+            border-radius:8px;cursor:pointer;transition:background .18s,color .18s,border-color .18s,transform .18s;
         }
         .kratos-friend-links .kfl-copy-btn:hover{
-            background:var(--khs-bg-3);color:var(--khs-accent);
+            background:var(--khs-bg-2);color:var(--khs-accent);border-color:var(--khs-line);
         }
+        .kratos-friend-links .kfl-copy-btn:active{transform:scale(.94);}
         .kratos-friend-links .kfl-copy-btn.is-copied{
-            color:#28a745;
+            color:#28a745;background:color-mix(in srgb, #28a745 12%, transparent);border-color:color-mix(in srgb, #28a745 30%, transparent);
         }
 
         /* === 申请要求 === */
@@ -1042,8 +1074,9 @@ function kratos_friend_shortcode($atts)
             .kratos-friend-links .kfl-grid{grid-template-columns:1fr;}
             .kratos-friend-links .kfl-form-row{grid-template-columns:1fr;}
             .kratos-friend-links .kfl-visitor-tip{width:220px;}
-            .kratos-friend-links .kfl-siteinfo-card{flex-direction:column;gap:14px;}
-            .kratos-friend-links .kfl-siteinfo-label{width:auto;text-align:left;}
+            .kratos-friend-links .kfl-siteinfo-card{flex-direction:column;align-items:center;gap:14px;padding:18px;}
+            .kratos-friend-links .kfl-siteinfo-fields{grid-template-columns:1fr;gap:8px;width:100%;}
+            .kratos-friend-links .kfl-siteinfo-logo{width:72px;height:72px;}
         }
 
         /* 暗夜：对齐 dark.css，与走心 / 归档同步；同时把 --khs-bg-* 从浅灰
@@ -1233,7 +1266,7 @@ function kratos_friend_shortcode($atts)
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(val).then(function(){
                     btn.classList.add('is-copied');
-                    setTimeout(function(){ btn.classList.remove('is-copied'); }, 1200);
+                    setTimeout(function(){ btn.classList.remove('is-copied'); }, 1000);
                 });
             } else {
                 var ta = document.createElement('textarea');
@@ -1244,7 +1277,7 @@ function kratos_friend_shortcode($atts)
                 document.execCommand('copy');
                 document.body.removeChild(ta);
                 btn.classList.add('is-copied');
-                setTimeout(function(){ btn.classList.remove('is-copied'); }, 1200);
+                setTimeout(function(){ btn.classList.remove('is-copied'); }, 1000);
             }
         });
     })();

@@ -198,14 +198,28 @@
 /* ------------------------------------------------------------------ */
 /* 其它块                                                              */
 /* ------------------------------------------------------------------ */
-/* h2title：与前台 .k-main .content h2.title 视觉对齐
- * 前台原样：padding:10px; border-left:5px solid #336699; bg:rgba(243,243,243,0.7) */
+/* h2title：与前台 .k-main .content h2.title 视觉对齐（文字下方色块 + hover 伸缩） */
 .kratos-block.kratos-block--h2title {
-    padding: 10px;
+    position: relative;
+    display: inline-block;
+    padding: 6px 4px 10px;
     border: 0;
-    border-left: 5px solid #336699;
     border-radius: 0;
-    background-color: rgba(243, 243, 243, 0.7);
+    background-color: transparent;
+}
+.kratos-block.kratos-block--h2title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #336699;
+    transition: width .3s ease;
+}
+.kratos-block.kratos-block--h2title:hover::after {
+    width: 64px;
 }
 .kratos-block.kratos-block--h2title .kratos-block__content {
     margin: 0;

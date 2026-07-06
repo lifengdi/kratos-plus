@@ -165,9 +165,12 @@ html[data-theme="dark"] .k-main .details .article .content p {
 }
 
 html[data-theme="dark"] .k-main .content h2.title {
-    background-color: rgba(255, 255, 255, 0.04);
-    border-left-color: var(--kr-accent);
+    background-color: transparent;
+    border-left: 0;
     color: var(--kr-fg-strong);
+}
+html[data-theme="dark"] .k-main .content h2.title::after {
+    background-color: var(--kr-accent);
 }
 
 html[data-theme="dark"] .k-main .details .article .content blockquote {
