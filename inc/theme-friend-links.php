@@ -171,6 +171,8 @@ function kratos_friend_recent_visitors($limit = 20)
         $uid   = (int) $r->user_id;
         $email = (string) $r->comment_author_email;
         if ($uid > 0) {
+            $u = get_userdata($uid);
+            if ($u && in_array('administrator', (array) $u->roles, true)) continue;
             $key = 'u_' . $uid;
         } elseif ($email !== '') {
             $key = 'e_' . md5(strtolower($email));
@@ -579,6 +581,7 @@ function kratos_friend_shortcode($atts)
             --khs-card-shadow:0 1px 3px rgba(0,0,0,.06);
             --khs-card-shadow-hv:0 8px 18px rgba(0,0,0,.10);
             padding:0;position:relative;background:transparent;
+            max-width:100%;overflow-x:hidden;
         }
         .kratos-friend-links > *{position:relative;z-index:1;}
 
@@ -673,16 +676,18 @@ function kratos_friend_shortcode($atts)
             display:grid;
             grid-template-columns:repeat(4,minmax(0,1fr));
             gap:12px;
+            min-width:0;
         }
         .kratos-friend-links .kfl-item{
             position:relative;
             display:flex;align-items:center;gap:12px;
-            padding:12px;
+            padding:12px;min-width:0;
             background:var(--khs-card-bg);
             border:1px solid var(--khs-line);
             border-radius:10px;
             color:var(--khs-fg-soft) !important;
             text-decoration:none !important;
+            overflow:hidden;
             transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease;
         }
         .kratos-friend-links .kfl-item:hover{
@@ -720,7 +725,7 @@ function kratos_friend_shortcode($atts)
         .kratos-friend-links .kfl-logo .kfl-logo-fallback{position:absolute;inset:0;display:none;}
         .kratos-friend-links .kfl-logo.is-fallback .kfl-logo-fallback{display:inline-flex;}
 
-        .kratos-friend-links .kfl-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+        .kratos-friend-links .kfl-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;overflow:hidden;}
         .kratos-friend-links .kfl-name{
             font-size:14px;font-weight:600;color:inherit;
             overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -1014,6 +1019,7 @@ function kratos_friend_shortcode($atts)
         /* === 申请要求 === */
         .kratos-friend-links .kfl-requirements-body{
             font-size:14px;line-height:1.8;color:var(--khs-fg-soft);
+            overflow-wrap:break-word;word-break:break-word;
         }
         .kratos-friend-links .kfl-requirements-body ul,
         .kratos-friend-links .kfl-requirements-body ol{
