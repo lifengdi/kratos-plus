@@ -8,7 +8,7 @@
   "use strict";
 
   var KRATOS_VERSION =
-    "1.1.0";
+    "1.1.1";
 
   var navbarConfig =
     function () {
