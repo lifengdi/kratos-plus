@@ -142,6 +142,159 @@ if (!function_exists('kratos_single_ad_fields')) {
     }
 }
 
+/**
+ * 友链"要求内容"富文本编辑器渲染回调。
+ *
+ * CSF 自带的 wp_editor 字段在当前 WP 版本上不会输出 tinyMCEPreInit.mceInit.csf_wp_editor，
+ * 导致前端 JS 静默 return，只剩裸 textarea。改用 callback 字段直接调 wp_editor()，
+ * 走 WP 标准路径，稳定可用。表单字段名保持 kratos_options[g_friend_requirements_content]，
+ * 兼容旧存储。
+ */
+/**
+ * 在主题设置页临时禁用 githuber-md 的编辑器接管。
+ *
+ * githuber-md 通过 the_editor / wp_editor_settings 等 filter 把原生 TinyMCE
+ * 换成自己的 Markdown 编辑器，主题设置里我们只想要原生富文本，所以在渲染
+ * 我们这个字段时把它的所有 hook 摘掉；渲染完再让它自然恢复（进程结束）。
+ */
+function kratos_is_theme_options_page()
+{
+    if (!is_admin()) return false;
+    if (isset($_GET['page']) && $_GET['page'] === 'kratos-options') return true;
+    if (function_exists('get_current_screen')) {
+        $s = get_current_screen();
+        if ($s && strpos($s->id, 'kratos-options') !== false) return true;
+    }
+    return false;
+}
+
+/**
+ * 在主题设置页遍历所有已注册 hook，把回调所属类/文件名含 "githuber" 的 callback 摘掉。
+ * 必须尽早执行 —— githuber-md 会在 admin_init/admin_enqueue_scripts 时期就把编辑器
+ * 相关 filter 挂上、把它自己的 assets 入队。在 CSF 渲染回调里再摘就晚了。
+ */
+function kratos_friend_requirements_disable_githuber_md()
+{
+    if (!kratos_is_theme_options_page()) {
+        return;
+    }
+    global $wp_filter;
+    if (empty($wp_filter) || !is_array($wp_filter)) {
+        return;
+    }
+    foreach ($wp_filter as $tag => $hook) {
+        if (!is_object($hook) || empty($hook->callbacks)) continue;
+        foreach ($hook->callbacks as $priority => $cbs) {
+            foreach ($cbs as $id => $cb) {
+                $fn = $cb['function'];
+                $owner = '';
+                if (is_array($fn) && isset($fn[0])) {
+                    $owner = is_object($fn[0]) ? get_class($fn[0]) : (string) $fn[0];
+                } elseif (is_string($fn)) {
+                    $owner = $fn;
+                } elseif ($fn instanceof Closure) {
+                    try {
+                        $r = new ReflectionFunction($fn);
+                        $owner = (string) $r->getFileName() . '|' . (string) $r->getName();
+                        if ($scope = $r->getClosureScopeClass()) {
+                            $owner .= '|' . $scope->getName();
+                        }
+                    } catch (Exception $e) { $owner = ''; }
+                }
+                if ($owner !== '' && stripos($owner, 'githuber') !== false) {
+                    unset($wp_filter[$tag]->callbacks[$priority][$id]);
+                }
+            }
+        }
+    }
+}
+// 尽早跑：plugins_loaded 之后、admin_init/admin_enqueue_scripts 之前
+add_action('admin_init', 'kratos_friend_requirements_disable_githuber_md', 1);
+add_action('admin_enqueue_scripts', 'kratos_friend_requirements_disable_githuber_md', 1);
+// 兜底：githuber 有些 hook 是 muplugins_loaded / init 期注册的，多打几次也无害
+add_action('init', 'kratos_friend_requirements_disable_githuber_md', 1);
+
+/**
+ * CSF 保存时只会遍历它自己声明的字段，callback 字段没有 id，
+ * 所以 wp_editor 提交的 kratos_options[g_friend_requirements_content] 会被丢弃。
+ * 这里在写库前把 $_POST 里的值补回去。
+ */
+add_filter('csf_kratos_options_save', function ($data) {
+    // 兼容 AJAX 保存（CSF 会把 data 作为 JSON 字符串放到 $_POST['data']）与常规表单提交。
+    $raw = null;
+    if (isset($_POST['data']) && is_string($_POST['data'])) {
+        $decoded = json_decode(wp_unslash($_POST['data']), true);
+        if (is_array($decoded) && isset($decoded['kratos_options']['g_friend_requirements_content'])) {
+            $raw = $decoded['kratos_options']['g_friend_requirements_content'];
+        }
+    }
+    if ($raw === null && isset($_POST['kratos_options']['g_friend_requirements_content'])) {
+        $raw = wp_unslash($_POST['kratos_options']['g_friend_requirements_content']);
+    }
+    if ($raw !== null) {
+        if (!is_array($data)) $data = array();
+        $data['g_friend_requirements_content'] = wp_kses_post((string) $raw);
+    }
+    return $data;
+}, 10, 1);
+
+function kratos_friend_requirements_editor_render()
+{
+    // 兜底再摘一次（万一 admin_init 之后还有插件在渲染前挂了回来）
+    kratos_friend_requirements_disable_githuber_md();
+
+    $opts  = get_option('kratos_options', array());
+    $value = isset($opts['g_friend_requirements_content']) ? (string) $opts['g_friend_requirements_content'] : '';
+    /*
+     * CSF 已经在外层包了一层 <div class="csf-fieldset">（title 20% + fieldset 80% 布局），
+     * 这里不要再嵌套。用 kratos-wpeditor-wrap 兜住宽度，避免 wp_editor 内部固定宽度撑出 fieldset。
+     */
+    echo '<div class="kratos-wpeditor-wrap" style="max-width:100%;">';
+    wp_editor($value, 'g_friend_requirements_content_editor', array(
+        'textarea_name' => 'kratos_options[g_friend_requirements_content]',
+        'textarea_rows' => 10,
+        'media_buttons' => true,
+        'tinymce'       => true,
+        'quicktags'     => true,
+        'wpautop'       => false,
+        'editor_class'  => 'kratos-wpeditor',
+    ));
+    echo '</div>';
+    ?>
+    <script>
+    /*
+     * CSF 通过 AJAX 保存表单（serializeArray），并不会触发原生 form.submit 事件，
+     * 而 TinyMCE 只在 submit 时才把 iframe 里的内容同步回底层 <textarea>。
+     * 这里在"保存/发布"按钮被点时，先调 tinymce.triggerSave() 把内容写回 textarea，
+     * 再让 CSF 继续处理。
+     */
+    (function () {
+        function sync() {
+            if (window.tinymce && typeof window.tinymce.triggerSave === 'function') {
+                try { window.tinymce.triggerSave(); } catch (e) {}
+            }
+        }
+        document.addEventListener('mousedown', function (e) {
+            var t = e.target;
+            if (!t) return;
+            if (t.matches && (t.matches('.csf-save, .csf-save *'))) sync();
+        }, true);
+        document.addEventListener('submit', function () { sync(); }, true);
+    })();
+    </script>
+    <style>
+        .csf-field-callback .kratos-wpeditor-wrap { display:block; width:100%; }
+        .csf-field-callback .kratos-wpeditor-wrap .wp-editor-wrap,
+        .csf-field-callback .kratos-wpeditor-wrap .wp-editor-container,
+        .csf-field-callback .kratos-wpeditor-wrap .wp-editor-tools { width:100% !important; box-sizing:border-box; }
+        .csf-field-callback .kratos-wpeditor-wrap textarea.wp-editor-area { width:100% !important; }
+        .csf-field-callback .kratos-wpeditor-wrap .mce-tinymce,
+        .csf-field-callback .kratos-wpeditor-wrap .mce-container,
+        .csf-field-callback .kratos-wpeditor-wrap .mce-container-body { max-width:100% !important; }
+    </style>
+    <?php
+}
+
 CSF::createOptions($prefix, array(
     'menu_title' => __('主题设置', 'kratos'),
     'menu_slug' => 'kratos-options',
@@ -1643,11 +1796,10 @@ CSF::createSection($prefix, array(
             'dependency' => array('g_friend_requirements_enabled', '==', 'true'),
         ),
         array(
-            'id' => 'g_friend_requirements_content',
-            'type' => 'wp_editor',
+            'type' => 'callback',
             'title' => __('要求内容', 'kratos'),
             'subtitle' => __('支持 HTML，可使用列表、加粗等格式；是否展示由上方"展示申请要求"开关控制', 'kratos'),
-            'default' => '',
+            'function' => 'kratos_friend_requirements_editor_render',
         ),
         array(
             'type' => 'subheading',
