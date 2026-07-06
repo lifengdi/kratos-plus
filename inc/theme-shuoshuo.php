@@ -16,6 +16,29 @@ defined('ABSPATH') || exit;
 
 const KRATOS_SHUOSHUO_CPT = 'shuoshuo';
 
+/**
+ * 保证说说列表页 / 详情页一定加载 lightGallery 资源。
+ *
+ * 主题原生在 theme-core.php 里只在 is_single()/is_page() 且对应开关打开时才入队，
+ * 说说详情页是自定义文章类型（is_singular('shuoshuo')），列表页也可能被用户在
+ * 主题选项里关掉 g_page_lightgallery，两种情况都会导致灯箱脚本缺失。这里兜底。
+ */
+function kratos_shuoshuo_enqueue_lightgallery()
+{
+    $need = is_singular(KRATOS_SHUOSHUO_CPT)
+        || (is_page() && function_exists('is_page_template') && is_page_template('page-shuoshuo.php'));
+    if (!$need) {
+        return;
+    }
+    if (!wp_script_is('lightgallery', 'enqueued')) {
+        wp_enqueue_script('lightgallery', ASSET_PATH . '/assets/js/lightgallery.min.js', array(), '1.4.0', true);
+    }
+    if (!wp_style_is('lightgallery', 'enqueued')) {
+        wp_enqueue_style('lightgallery', ASSET_PATH . '/assets/css/lightgallery.min.css', array(), '1.4.0');
+    }
+}
+add_action('wp_enqueue_scripts', 'kratos_shuoshuo_enqueue_lightgallery', 20);
+
 /* ============================================================
  *  注册自定义文章类型
  * ============================================================ */
@@ -532,6 +555,21 @@ function kratos_shuoshuo_assets()
             if (window.kratosShuoshuoLikeBound) return;
             window.kratosShuoshuoLikeBound = true;
             $(function () {
+                /*
+                 * lightGallery 绑定：主题原生只对 id="lightgallery" 且 href 后缀命中
+                 * .jpg/.png/... 的锚点生效。说说列表容器 id 是 kratos-shuoshuo-feed，
+                 * 且 CDN 图片经常带 ?x-tos-process=... 之类查询串，两条都会漏掉。
+                 * 这里对每个 [data-lightbox-host] 主动初始化，用 .kss-img-cell 类作为
+                 * 选择器，绕开 href 后缀限制。
+                 */
+                if (typeof lightGallery === 'function') {
+                    document.querySelectorAll('[data-lightbox-host]').forEach(function (host) {
+                        if (host.__kssLg) return;
+                        host.__kssLg = true;
+                        try { lightGallery(host, { selector: '.kss-img-cell' }); } catch (e) {}
+                    });
+                }
+
                 $(document).on('click', '.kratos-shuoshuo .kss-collapse-toggle', function (e) {
                     e.preventDefault();
                     var $box = $(this).closest('.kss-collapsible');

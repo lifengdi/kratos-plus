@@ -77,7 +77,7 @@ if (!empty($kratos_ss_back_pages)) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <?php esc_html_e('返回说说', 'kratos'); ?>
                     </a>
-                    <div class="kratos-shuoshuo kratos-shuoshuo-single" id="lightgallery">
+                    <div class="kratos-shuoshuo kratos-shuoshuo-single" id="lightgallery" data-lightbox-host="1">
                         <ul class="kss-list">
                             <li class="kss-item">
                                 <div class="kss-avatar"><?php echo $avatar; ?></div>

@@ -816,10 +816,14 @@ function kratos_friend_shortcode($atts)
             position:fixed;left:0;top:0;
             width:260px;max-width:calc(100vw - 16px);
             padding:12px 14px;
-            background:var(--khs-card-bg);
+            /* 部分皮肤的 --khs-card-bg 是半透明色，会让 tooltip 透出底层内容。
+             * 这里用不透明底色（浅色皮肤 #fff / 深色皮肤 #1f2229），并叠加毛玻璃兜底。 */
+            background:#ffffff;
+            backdrop-filter:blur(6px);
+            -webkit-backdrop-filter:blur(6px);
             border:1px solid var(--khs-line-strong);
             border-radius:10px;
-            box-shadow:0 8px 24px rgba(0,0,0,.16);
+            box-shadow:0 12px 32px rgba(0,0,0,.22);
             font-size:12.5px;line-height:1.55;color:var(--khs-fg-soft);
             opacity:0;visibility:hidden;pointer-events:none;
             transform:translateY(4px);
@@ -856,6 +860,10 @@ function kratos_friend_shortcode($atts)
             top:auto;bottom:-6px;
             border:1px solid var(--khs-line-strong);
             border-left:none;border-top:none;
+        }
+        html[data-theme="dark"] .kratos-friend-links .kfl-visitor-tip,
+        html[data-theme="dark"] .kratos-friend-links .kfl-visitor-tip::before{
+            background:#25282f;
         }
 
         .kratos-friend-links .kfl-visitor-tip-head{

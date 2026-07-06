@@ -1646,9 +1646,8 @@ CSF::createSection($prefix, array(
             'id' => 'g_friend_requirements_content',
             'type' => 'wp_editor',
             'title' => __('要求内容', 'kratos'),
-            'subtitle' => __('支持 HTML，可使用列表、加粗等格式', 'kratos'),
+            'subtitle' => __('支持 HTML，可使用列表、加粗等格式；是否展示由上方"展示申请要求"开关控制', 'kratos'),
             'default' => '',
-            'dependency' => array('g_friend_requirements_enabled', '==', 'true'),
         ),
         array(
             'type' => 'subheading',
