@@ -13,11 +13,8 @@
 get_header();
 $kratos_cols = kratos_layout_cols();
 
-/*
- * 详情页强制走单色背景（不取 top_img_switch 的 banner 模式），
- * 让"页面底色 + 卡片白"两层颜色构图，避免顶图大色块和说说卡片打架。
- */
 $kratos_ss_bg = kratos_option('g_background', '#f5f5f5');
+$kratos_ss_has_banner = kratos_option('top_img_switch', true);
 
 /*
  * 找一个可点回的"说说列表页"链接：
@@ -37,7 +34,7 @@ if (!empty($kratos_ss_back_pages)) {
     $kratos_ss_back_url = get_permalink($kratos_ss_back_pages[0]);
 }
 ?>
-<div class="k-main color" style="background:<?php echo esc_attr($kratos_ss_bg); ?>">
+<div class="k-main <?php echo $kratos_ss_has_banner ? 'banner' : 'color'; ?>" style="background:<?php echo esc_attr($kratos_ss_bg); ?>">
     <div class="container">
         <div class="row">
             <div class="<?php echo $kratos_cols['main']; ?> details">
