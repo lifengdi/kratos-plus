@@ -2965,6 +2965,7 @@ a {
 .comments
 .comment-respond
 .comment-textarea {
+    position: relative;
     border: 1px solid #eee;
     border-radius: 3px;
     background-color: hsla(
@@ -2993,7 +2994,6 @@ textarea {
 .comment-respond
 .comment-textarea
 .text-bar {
-    overflow: hidden;
     padding: 6.4px 8px;
     background-color: #f8f8f8;
 }
@@ -3085,11 +3085,12 @@ img {
 .text-bar
 .smile {
     position: absolute;
-    z-index: 9;
-
+    z-index: 100;
+    top: 100%;
+    left: 0;
+    right: 0;
     display: none;
     padding: 2px;
-    max-width: 302px;
     max-height: 200px;
     overflow: auto;
     background-color: #fff;
