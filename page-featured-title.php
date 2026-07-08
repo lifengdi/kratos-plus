@@ -87,12 +87,22 @@ $kratos_cols = kratos_layout_cols(); ?>
                             margin:0;padding:0;font-size:14px;line-height:1.5;color:var(--khs-fg-soft);
                         }
                         .kratos-featured-title .kft-content{
-                            padding:0 4px;
+                            padding:24px 28px;
+                            background:var(--khs-card-bg);
+                            border:1px solid var(--khs-line);
+                            border-radius:14px;
+                            box-shadow:var(--khs-card-shadow);
+                            color:var(--khs-fg);
+                            word-wrap:break-word;
+                            word-break:break-word;
                         }
+                        .kratos-featured-title .kft-content > *:first-child{margin-top:0;}
+                        .kratos-featured-title .kft-content > *:last-child{margin-bottom:0;}
                         @media (max-width:640px){
                             .kratos-featured-title .kfl-header{padding:18px 18px;gap:10px;}
                             .kratos-featured-title .kfl-title{font-size:19px;}
                             .kratos-featured-title .kfl-subtitle{flex-basis:100%;font-size:13px;}
+                            .kratos-featured-title .kft-content{padding:18px;}
                         }
                         html[data-theme="dark"] .kratos-featured-title,
                         body.dark .kratos-featured-title{

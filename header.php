@@ -128,6 +128,17 @@
     })();
     </script>
     <?php endif; ?>
+    <?php if (!kratos_option('top_img_switch', true)) : ?>
+    <style id="k-nav-noimg-style">
+        /* 图片导航关闭时，导航跟随皮肤 / 暗夜模式 */
+        html[data-weekday-skin]:not([data-theme="dark"]) .k-nav:not(.nav-sticky) {
+            background: var(--kr-skin-heading, <?php echo esc_attr(kratos_option('top_color', '#24292e')); ?>) !important;
+        }
+        html[data-theme="dark"] .k-nav:not(.nav-sticky) {
+            background: var(--kr-bg-elev, #1a1d22) !important;
+        }
+    </style>
+    <?php endif; ?>
     <div class="k-header">
         <nav class="k-nav navbar navbar-expand-lg navbar-light fixed-top" <?php echo kratos_option('top_img_switch', true) ? '' : 'style="background:' . kratos_option('top_color', '#24292e') . '"'; ?>>
             <div class="container">
