@@ -9,7 +9,7 @@
  */
 ?>
 <div class="article-panel">
-    <span class="a-card d-none d-md-block d-lg-block">
+    <span class="a-card">
         <?php $article_comment = kratos_option('g_article_fieldset')['g_article_comment'] ?? '20';
         $article_love = kratos_option('g_article_fieldset')['g_article_love'] ?? '200';
         if (is_sticky()) { ?>
