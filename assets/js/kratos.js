@@ -35,40 +35,31 @@
 
   var gotopConfig =
     function () {
-      $(
-        window
-      ).on(
-        "load",
-        function () {
-          var $win =
-            $(
-              window
-            );
-          var setShowOrHide =
-            function () {
-              if (
-                $win.scrollTop() >
-                200
-              ) {
-                $(
-                  ".gotop"
-                ).addClass(
-                  "active"
-                );
-              } else {
-                $(
-                  ".gotop"
-                ).removeClass(
-                  "active"
-                );
-              }
-            };
-          setShowOrHide();
-          $win.scroll(
-            setShowOrHide
-          );
+      // 绑定在 DOM Ready 而不是 window.load —— 后者会被慢加载的广告 iframe /
+      // 图片阻塞，导致按钮迟迟不出现。scroll 使用 passive 监听 + rAF 节流，
+      // 减少滚动主线程压力。
+      var $win = $(window);
+      var ticking = false;
+      var setShowOrHide = function () {
+        if ($win.scrollTop() > 200) {
+          $(".gotop").addClass("active");
+        } else {
+          $(".gotop").removeClass("active");
         }
-      );
+        ticking = false;
+      };
+      var onScroll = function () {
+        if (!ticking) {
+          ticking = true;
+          window.requestAnimationFrame(setShowOrHide);
+        }
+      };
+      setShowOrHide();
+      if (window.addEventListener) {
+        window.addEventListener("scroll", onScroll, { passive: true });
+      } else {
+        $win.on("scroll", onScroll);
+      }
       $(
         ".gotop"
       ).on(
