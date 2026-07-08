@@ -2048,6 +2048,46 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'top_fields',
+    'title' => __('导航吸顶', 'kratos'),
+    'icon' => 'fas fa-arrow-right',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面向下滚动时，导航自动固定在浏览器顶部。可分别设置 PC、平板、手机端是否启用。', 'kratos'),
+        ),
+        array(
+            'id' => 'nav_sticky_pc',
+            'type' => 'switcher',
+            'title' => __('PC 端吸顶', 'kratos'),
+            'subtitle' => __('屏幕宽度 ≥ 992px', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'nav_sticky_pad',
+            'type' => 'switcher',
+            'title' => __('平板端吸顶', 'kratos'),
+            'subtitle' => __('屏幕宽度 768px ~ 991px', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'nav_sticky_mobile',
+            'type' => 'switcher',
+            'title' => __('手机端吸顶', 'kratos'),
+            'subtitle' => __('屏幕宽度 < 768px', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'nav_sticky_bg',
+            'type' => 'color',
+            'title' => __('吸顶背景色（默认主题）', 'kratos'),
+            'subtitle' => __('仅对未启用每日皮肤 / 非暗夜模式的默认主题生效。其他皮肤下背景色跟随皮肤自动配色。', 'kratos'),
+            'default' => '#24292e',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'shuoshuo_fields',
     'title' => __('说说配置', 'kratos'),
     'icon' => 'far fa-comment-dots',

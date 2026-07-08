@@ -56,6 +56,78 @@
 <?php flush(); ?>
 
 <body>
+    <?php
+    $nav_sticky_pc = kratos_option('nav_sticky_pc', false);
+    $nav_sticky_pad = kratos_option('nav_sticky_pad', false);
+    $nav_sticky_mobile = kratos_option('nav_sticky_mobile', false);
+    $nav_sticky_bg = kratos_option('nav_sticky_bg', '#24292e');
+    if ($nav_sticky_pc || $nav_sticky_pad || $nav_sticky_mobile) :
+        $sticky_mq = array();
+        if ($nav_sticky_mobile) { $sticky_mq[] = '(max-width: 767.98px)'; }
+        if ($nav_sticky_pad)    { $sticky_mq[] = '(min-width: 768px) and (max-width: 991.98px)'; }
+        if ($nav_sticky_pc)     { $sticky_mq[] = '(min-width: 992px)'; }
+    ?>
+    <style id="k-nav-sticky-style">
+        /* 抬高 .k-header 层级，避免某些皮肤（如 silk）给 .k-header/.k-main
+           都设 z-index:1 造成的堆叠上下文天花板把 fixed 导航压在下面。
+           用 !important 覆盖 weekday-skins.css 里高特异性的皮肤规则。 */
+        .k-header {
+            position: relative !important;
+            z-index: 1030 !important;
+        }
+        @media <?php echo implode(',', $sticky_mq); ?> {
+            .k-nav.nav-sticky {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: <?php echo esc_attr($nav_sticky_bg); ?> !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                animation: kNavSlideDown 0.3s ease-out;
+                z-index: 1030;
+            }
+            /* 每日皮肤（浅色模式）：跟随皮肤主标题色 */
+            html[data-weekday-skin]:not([data-theme="dark"]) .k-nav.nav-sticky {
+                background: var(--kr-skin-heading, <?php echo esc_attr($nav_sticky_bg); ?>) !important;
+            }
+            /* 暗夜模式：跟随暗夜次级底色 */
+            html[data-theme="dark"] .k-nav.nav-sticky {
+                background: var(--kr-bg-elev, #1a1d22) !important;
+            }
+        }
+        @keyframes kNavSlideDown {
+            from { transform: translateY(-100%); }
+            to   { transform: translateY(0); }
+        }
+    </style>
+    <script id="k-nav-sticky-script">
+    (function () {
+        var enabled = {
+            mobile: <?php echo $nav_sticky_mobile ? 'true' : 'false'; ?>,
+            pad:    <?php echo $nav_sticky_pad ? 'true' : 'false'; ?>,
+            pc:     <?php echo $nav_sticky_pc ? 'true' : 'false'; ?>
+        };
+        function activeForViewport() {
+            var w = window.innerWidth;
+            if (w < 768)  return enabled.mobile;
+            if (w < 992)  return enabled.pad;
+            return enabled.pc;
+        }
+        function onScroll() {
+            var nav = document.querySelector('.k-nav');
+            if (!nav) return;
+            if (activeForViewport() && window.pageYOffset > 100) {
+                nav.classList.add('nav-sticky');
+            } else {
+                nav.classList.remove('nav-sticky');
+            }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+        document.addEventListener('DOMContentLoaded', onScroll);
+    })();
+    </script>
+    <?php endif; ?>
     <div class="k-header">
         <nav class="k-nav navbar navbar-expand-lg navbar-light fixed-top" <?php echo kratos_option('top_img_switch', true) ? '' : 'style="background:' . kratos_option('top_color', '#24292e') . '"'; ?>>
             <div class="container">
