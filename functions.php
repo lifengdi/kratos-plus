@@ -125,3 +125,6 @@ require get_template_directory() . '/inc/theme-archives-stats.php';
 
 // 时间轴（含 [timeline] 短码 + page-timeline.php 模板 body class）
 require get_template_directory() . '/inc/theme-timeline.php';
+
+// 「Kratos+ 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
+require get_template_directory() . '/inc/theme-featured-title.php';
