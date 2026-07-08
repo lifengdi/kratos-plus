@@ -2632,6 +2632,17 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'title' => __('版本更新', 'kratos'),
+    'icon' => 'fas fa-cloud-download-alt',
+    'fields' => array(
+        array(
+            'type' => 'content',
+            'content' => function_exists('kratos_render_update_section') ? kratos_render_update_section() : '',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'title' => __('关于主题', 'kratos'),
     'icon' => 'fas fa-question-circle',
     'fields' => array(
@@ -2680,3 +2691,4 @@ CSF::createSection($prefix, array(
         ),
     ),
 ));
+

@@ -51,6 +51,12 @@ require get_template_directory() . '/inc/theme-codehighlight.php';
 // content 字段会立即调用 kratos_ip2region_render_status()）
 require get_template_directory() . '/inc/ip2region/ip2region-updater.php';
 
+// 后台版本更新提示与 Release Note 展示（同上，theme-options.php「版本更新」section
+// 会在字段定义时调用 kratos_render_update_section()，必须在 CSF 之前 require）
+if (is_admin()) {
+    require get_template_directory() . '/inc/theme-update-notice.php';
+}
+
 // 主题配置
 require get_template_directory() . '/inc/codestar-framework/autoload.php';
 
@@ -128,3 +134,4 @@ require get_template_directory() . '/inc/theme-timeline.php';
 
 // 「Kratos+ 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
 require get_template_directory() . '/inc/theme-featured-title.php';
+
