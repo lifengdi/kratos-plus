@@ -325,7 +325,7 @@ function kratos_ip2region_render_status() {
     $update_url = wp_nonce_url(
         admin_url('admin-post.php?action=kratos_ip2region_update_now'),
         'kratos_ip2region_update_now'
-    );
+    ) . '#tab=' . sanitize_title(__('评论配置', 'kratos')) . '/' . sanitize_title(__('IP 归属地数据库', 'kratos'));
 
     $dot_ok   = '<span style="color:#46b450;font-weight:bold">●</span>';
     $dot_off  = '<span style="color:#a0a5aa;font-weight:bold">○</span>';

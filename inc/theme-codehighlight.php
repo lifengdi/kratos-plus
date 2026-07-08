@@ -351,7 +351,8 @@ function kratos_codehl_render_warmup_panel()
     }
     $when = (int) get_option('kratos_codehl_warmup_at', 0);
     $stats = get_option('kratos_codehl_warmup_stats', array());
-    $url = wp_nonce_url(admin_url('admin-post.php?action=kratos_codehl_warmup'), 'kratos_codehl_warmup');
+    $url = wp_nonce_url(admin_url('admin-post.php?action=kratos_codehl_warmup'), 'kratos_codehl_warmup')
+        . '#tab=' . sanitize_title(__('全站配置', 'kratos')) . '/' . sanitize_title(__('代码高亮', 'kratos'));
     $human = size_format($bytes);
     ?>
     <div class="kratos-codehl-warmup">

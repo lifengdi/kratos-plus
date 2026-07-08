@@ -2349,7 +2349,7 @@ CSF::createSection($prefix, array(
                 $refresh_url = wp_nonce_url(
                     add_query_arg('action', 'kratos_friend_feed_refresh', admin_url('admin-post.php')),
                     'kratos_friend_feed_refresh'
-                );
+                ) . '#tab=' . sanitize_title(__('博友动态', 'kratos'));
 
                 $html  = '<div style="padding:16px 18px;background:linear-gradient(135deg,#f4f9ff 0%,#e6f1fe 100%);border:1px solid #c9dcf4;border-radius:12px;color:#243a5e;line-height:1.9;font-size:13px;">';
                 if (!$enabled) {

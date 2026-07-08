@@ -145,6 +145,13 @@ add_action('admin_init', function () {
         $current_key = 'kratos_plus_release_' . md5('v' . THEME_VERSION);
         delete_transient($current_key);
         kratos_fetch_latest_release(true);
+
+        // 处理完后重定向去掉 kratos_check_update 参数，避免它污染当前页面上其它
+        // 以 REQUEST_URI 为基准生成的后台链接（菜单、add_query_arg 等）。
+        // 302 无 fragment 时浏览器会继承请求 URL 的 fragment，tab hash 会保留。
+        $redirect = remove_query_arg('kratos_check_update');
+        wp_safe_redirect($redirect);
+        exit;
     }
 });
 
@@ -229,7 +236,7 @@ function kratos_render_update_section()
         add_thickbox();
     }
 
-    $refresh_url = esc_url(add_query_arg('kratos_check_update', '1'));
+    $refresh_url = esc_url(add_query_arg('kratos_check_update', '1')) . '#tab=' . sanitize_title(__('版本更新', 'kratos'));
 
     ob_start(); ?>
     <div class="kratos-vu-wrap" style="margin-top:4px;">
