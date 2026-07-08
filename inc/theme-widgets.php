@@ -586,39 +586,76 @@ class widget_toc extends WP_Widget
         $index = wp_cache_get(get_the_ID(), 'toc');
 
         if ($index === false && $toc) {
-            $index = '<ul class="ul-toc">' . "\n";
-            $prev_depth = '';
-            $to_depth = 0;
-            foreach ($toc as $toc_item) {
-                $toc_depth = $toc_item['depth'];
-                if ($prev_depth) {
-                    if ($toc_depth == $prev_depth) {
-                        $index .= '</li>' . "\n";
-                    } elseif ($toc_depth > $prev_depth) {
-                        $to_depth++;
-                        $index .= '<ul class="ul-' . $toc_depth . '">' . "\n";
-                    } else {
-                        $to_depth2 = $to_depth > $prev_depth - $toc_depth ? $prev_depth - $toc_depth : $to_depth;
-                        if ($to_depth2) {
-                            for ($i = 0; $i < $to_depth2; $i++) {
-                                $index .= '</li>' . "\n" . '</ul>' . "\n";
-                                $to_depth--;
-                            }
-                        }
-                        $index .= '</li>';
-                    }
-                }
-                $index .= '<li class="li-' . $toc_depth . '"><a href="#toc-' . $toc_item['count'] . '">' . str_replace(array('[h2title]', '[/h2title]'), array('', ''), $toc_item['text']) . '</a>';
-                $prev_depth = $toc_item['depth'];
+            $items = array();
+            foreach ($toc as $t) {
+                $items[] = array(
+                    'text'  => str_replace(array('[h2title]', '[/h2title]'), '', $t['text']),
+                    'depth' => (int) $t['depth'],
+                    'count' => (int) $t['count'],
+                );
             }
-            for ($i = 0; $i <= $to_depth; $i++) {
-                $index .= '</li>' . "\n" . '</ul>' . "\n";
-            }
-            $index = '<div class="widget w-toc">' . "\n" . '<div class="title">文章目录</div>' . "\n" . '<div class="item">' . $index . '</div>' . "\n" . '</div>';
+            $html = self::render_tree($items);
+            $index = '<div class="widget w-toc">'
+                . '<div class="title" role="button" tabindex="0">' . __('文章目录', 'kratos') . '</div>'
+                . '<div class="item">' . $html . '</div>'
+                . '</div>';
             wp_cache_set(get_the_ID(), $index, 'toc', 360000);
         }
 
         echo $index;
+    }
+
+    /**
+     * 将扁平 $toc 数组转为嵌套 <ul>。
+     * 每个 li 是否有子级由 JS 决定（更简单可靠）；此处只负责结构。
+     */
+    private static function render_tree($items)
+    {
+        if (empty($items)) return '';
+
+        $min = PHP_INT_MAX;
+        foreach ($items as $it) $min = min($min, (int) $it['depth']);
+
+        $out = '';
+        $depth = $min - 1;      // 当前已打开的层级（相对最小深度）
+        $liOpen = false;
+
+        foreach ($items as $it) {
+            $d = (int) $it['depth'];
+
+            if ($d > $depth) {
+                // 进入更深层：为每一级新增一个 <ul>
+                for ($i = $depth; $i < $d; $i++) {
+                    $out .= '<ul class="toc-list">';
+                }
+            } else {
+                // 同级或回退：先关掉当前 li
+                if ($liOpen) {
+                    $out .= '</li>';
+                    $liOpen = false;
+                }
+                // 回退层级
+                for ($i = $depth; $i > $d; $i--) {
+                    $out .= '</ul></li>';
+                }
+            }
+
+            $out .= '<li class="toc-item toc-h' . $d . '">'
+                 . '<a href="#toc-' . (int) $it['count'] . '">'
+                 . esc_html($it['text'])
+                 . '</a>';
+            $liOpen = true;
+            $depth = $d;
+        }
+
+        // 收尾：闭合所有未关闭的 li / ul
+        if ($liOpen) $out .= '</li>';
+        for ($i = $depth; $i > $min - 1; $i--) {
+            if ($i > $min) $out .= '</ul></li>';
+            else           $out .= '</ul>';
+        }
+
+        return $out;
     }
 }
 

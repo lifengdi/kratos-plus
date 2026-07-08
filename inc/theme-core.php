@@ -161,6 +161,9 @@ function theme_autoload()
         wp_enqueue_script('layer', ASSET_PATH . '/assets/js/layer.min.js', array('jquery'), '3.1.1', true);
         wp_enqueue_script('dplayer', ASSET_PATH . '/assets/js/DPlayer.min.js', array(), THEME_VERSION, true);
         wp_enqueue_script('kratos', ASSET_PATH . '/assets/js/kratos.js', array('jquery'), THEME_VERSION, true);
+        if (is_single()) {
+            wp_enqueue_script('kratos-toc', ASSET_PATH . '/assets/js/toc.js', array(), THEME_VERSION, true);
+        }
 
         $data = array(
             'site' => home_url(),
