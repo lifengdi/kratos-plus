@@ -354,6 +354,20 @@ CSF::createSection($prefix, array(
             'default' => true,
         ),
         array(
+            'id' => 'g_list_layout',
+            'type' => 'radio',
+            'title' => __('文章列表布局', 'kratos'),
+            'subtitle' => __('首页 / 分类 / 归档 / 搜索等列表的展示样式', 'kratos'),
+            'options' => array(
+                'classic'  => __('经典图文左右式（默认）', 'kratos'),
+                'enhanced' => __('图文左右式增强版（左右交替 + 阴影浮起）', 'kratos'),
+                'magazine' => __('经典大图卡片（大图在上 / 标题摘要在下）', 'kratos'),
+                'grid'     => __('网格卡片（双列图上文下）', 'kratos'),
+                'minimal'  => __('极简列表（无图 / 突出标题）', 'kratos'),
+            ),
+            'default' => 'classic',
+        ),
+        array(
             'id' => 'g_rip',
             'type' => 'switcher',
             'title' => __('哀悼功能', 'kratos'),

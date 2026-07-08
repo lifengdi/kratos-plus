@@ -2,7 +2,7 @@
 /*
 Theme Name: Kratos+
 Text Domain: kratos
-Version: 1.1.1
+Version: 1.1.2
 Requires PHP: 8.0
 Requires at least: 5.3.0
 Description: Kratos+ 在 Seaton Jiang 的 Kratos 主题（GPL-3.0）基础上二次开发，新增可视化代码高亮、布局自定义、评论数学验证码等功能。本主题继承 GPL-3.0 协议。
@@ -4686,4 +4686,277 @@ a
 
 .k-main thead {
     border-bottom: 3px #e9ebec solid;
+}
+
+/*--------------------------------------------------------------
+文章列表布局切换（g_list_layout）
+--------------------------------------------------------------*/
+
+/* 说明：所有规则需以 .k-main .board 为前缀，特异性至少与原规则（4 类）持平，才能覆盖默认的图文左右式样式 */
+
+/* 图文左右式增强版 —— 保留经典左右结构，加圆角、阴影、hover 抬升、左右交替 */
+.k-main .board .post-list.layout-enhanced .article-panel {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.k-main .board .post-list.layout-enhanced .article-panel:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+.k-main .board .post-list.layout-enhanced .article-panel .a-thumb {
+    border-radius: 6px;
+}
+.k-main .board .post-list.layout-enhanced .article-panel .a-thumb img {
+    transition: transform 0.4s ease;
+}
+.k-main .board .post-list.layout-enhanced .article-panel:hover .a-thumb img {
+    transform: scale(1.05);
+}
+.k-main .board .post-list.layout-enhanced .article-panel:nth-child(even) .a-thumb {
+    float: right;
+}
+.k-main .board .post-list.layout-enhanced .article-panel:nth-child(even) .a-post {
+    margin-left: 0;
+    margin-right: 255px;
+    padding: 21px 3px 0 20px;
+}
+
+/* 经典大图卡片 —— 图在上、文字在下 */
+.k-main .board .post-list.layout-magazine .article-panel {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.k-main .board .post-list.layout-magazine .article-panel:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-thumb {
+    float: none;
+    margin: 0;
+    width: 100%;
+    height: 360px;
+    border-radius: 8px 8px 0 0;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-thumb img {
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.k-main .board .post-list.layout-magazine .article-panel:hover .a-thumb img {
+    transform: scale(1.03);
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-post {
+    margin-left: 0;
+    padding: 24px 24px 8px;
+    height: auto;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-post .header {
+    display: -webkit-box;
+    overflow: hidden;
+    max-height: 66px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-post .header .label,
+.k-main .board .post-list.layout-magazine .article-panel .a-post .header .title {
+    vertical-align: middle;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-post .header .title {
+    font-size: 24px;
+    line-height: 1.35;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-meta {
+    padding: 12px 24px;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-post .content {
+    max-height: 108px;
+    line-height: 27px;
+    -webkit-line-clamp: 4;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-post .content p {
+    line-height: 27px;
+}
+.k-main .board .post-list.layout-magazine .article-panel .a-card,
+.k-main .board .post-list.layout-grid .article-panel .a-card {
+    top: -16px;
+    right: -1px;
+    z-index: 2;
+}
+
+/* 网格卡片 —— 双列图上文下（.post-list.layout-grid 同时带 .row，gutter 由 bootstrap 提供） */
+.k-main .board .post-list.layout-grid .grid-col {
+    margin-bottom: 20px;
+}
+.k-main .board .post-list.layout-grid .grid-col > .article-panel {
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.k-main .board .post-list.layout-grid .grid-col > .article-panel:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+.k-main .board .post-list.layout-grid .article-panel .a-thumb {
+    float: none;
+    margin: 0;
+    width: 100%;
+    height: 200px;
+    border-radius: 8px 8px 0 0;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-thumb img {
+    object-fit: cover;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-post {
+    margin-left: 0;
+    padding: 18px 18px 4px;
+    height: auto;
+    flex: 1 1 auto;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-post .header {
+    display: -webkit-box;
+    overflow: hidden;
+    max-height: 51px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-post .header .label,
+.k-main .board .post-list.layout-grid .article-panel .a-post .header .title {
+    vertical-align: middle;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-post .header .title {
+    font-size: 18px;
+    line-height: 1.4;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-post .content {
+    max-height: 66px;
+    line-height: 22px;
+    -webkit-line-clamp: 3;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-post .content p {
+    font-size: 14px;
+    line-height: 22px;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-meta {
+    padding: 6px 18px;
+    font-size: 12px;
+    line-height: 24px;
+}
+.k-main .board .post-list.layout-grid .article-panel .a-meta span {
+    font-size: 12px;
+    line-height: 22px;
+}
+
+/* 极简列表 —— 无图 / 突出标题，杂志目录风格 */
+.k-main .board .post-list.layout-minimal .article-panel {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    margin: 0 0 14px;
+    padding: 14px 22px 14px 24px;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+.k-main .board .post-list.layout-minimal .article-panel:hover {
+    border-left-color: #336699;
+    background-color: rgba(51, 102, 153, 0.03);
+    transform: translateX(2px);
+}
+.k-main .board .post-list.layout-minimal .article-panel:first-of-type {
+    padding-top: 14px;
+}
+.k-main .board .post-list.layout-minimal .article-panel:last-of-type {
+    margin-bottom: 0;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-thumb,
+.k-main .board .post-list.layout-minimal .article-panel .a-post .content,
+.k-main .board .post-list.layout-minimal .article-panel .a-meta {
+    display: none;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-card {
+    top: 0 !important;
+    width: 32px;
+    height: 32px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    z-index: 2;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-card .kicon {
+    font-size: 28px;
+    line-height: 1;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-post {
+    margin-left: 0;
+    padding: 0 44px 0 0;
+    height: auto;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-post .header {
+    display: -webkit-box;
+    overflow: hidden;
+    max-height: 72px;
+    line-height: 1.5;
+    margin: 0;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-post .header .label,
+.k-main .board .post-list.layout-minimal .article-panel .a-post .header .title {
+    vertical-align: middle;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-post .header .title {
+    font-size: 26px;
+    line-height: 1.4;
+    font-weight: 600;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-post .content {
+    max-height: 56px;
+    line-height: 28px;
+    -webkit-line-clamp: 2;
+    color: #666;
+    margin-bottom: 4px;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-post .content p {
+    line-height: 28px;
+}
+.k-main .board .post-list.layout-minimal .article-panel .a-meta {
+    padding: 12px 0 0;
+    border-top: none;
+    opacity: 0.75;
+}
+
+/* 响应式：网格在小屏改单列；增强版取消偶数行交替与左右浮动溢出 */
+@media (max-width: 991px) {
+    .k-main .board .post-list.layout-grid .grid-col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+@media (max-width: 767px) {
+    .k-main .board .post-list.layout-enhanced .article-panel:nth-child(even) .a-thumb {
+        float: left;
+    }
+    .k-main .board .post-list.layout-enhanced .article-panel:nth-child(even) .a-post {
+        margin-right: 0;
+    }
+    .k-main .board .post-list.layout-magazine .article-panel .a-thumb {
+        height: 200px;
+    }
+    .k-main .board .post-list.layout-magazine .article-panel .a-post .header .title {
+        font-size: 20px;
+    }
 }

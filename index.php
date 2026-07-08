@@ -22,11 +22,20 @@ $kratos_cols = kratos_layout_cols(); ?>
                                                     the_search_query(); ?></div>
                     </div>
                 <?php }
+                $kratos_list_layout = kratos_option('g_list_layout', 'classic');
                 if (have_posts()) {
+                    echo '<div class="post-list layout-' . esc_attr($kratos_list_layout) . ($kratos_list_layout === 'grid' ? ' row' : '') . '">';
                     while (have_posts()) {
                         the_post();
-                        get_template_part('/pages/page-content', get_post_format());
+                        if ($kratos_list_layout === 'grid') {
+                            echo '<div class="col-md-6 col-sm-12 grid-col">';
+                            get_template_part('/pages/page-content', get_post_format());
+                            echo '</div>';
+                        } else {
+                            get_template_part('/pages/page-content', get_post_format());
+                        }
                     }
+                    echo '</div>';
                 } else { ?>
                     <div class="article-panel">
                         <div class="nothing">
