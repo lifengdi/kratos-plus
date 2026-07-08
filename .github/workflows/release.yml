@@ -62,10 +62,27 @@ jobs:
           echo "zip_path=$RUNNER_TEMP/$ZIP_NAME" >> "$GITHUB_OUTPUT"
           echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
 
+      - name: Resolve release notes source
+        id: notes
+        run: |
+          # 优先使用仓库内手写的 note：.github/release-notes/<tag>.md
+          # 找不到时留空，交给 action 的 generate_release_notes 自动生成
+          NOTES_FILE=".github/release-notes/${{ steps.ver.outputs.tag }}.md"
+          if [ -f "$NOTES_FILE" ]; then
+            echo "using handwritten notes: $NOTES_FILE"
+            echo "body_path=$NOTES_FILE" >> "$GITHUB_OUTPUT"
+            echo "generate=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "no handwritten notes at $NOTES_FILE — falling back to auto-generated"
+            echo "body_path=" >> "$GITHUB_OUTPUT"
+            echo "generate=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create / update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.ver.outputs.tag }}
           name: Kratos+ ${{ steps.ver.outputs.tag }}
-          generate_release_notes: true
+          body_path: ${{ steps.notes.outputs.body_path }}
+          generate_release_notes: ${{ steps.notes.outputs.generate }}
           files: ${{ steps.zip.outputs.zip_path }}
