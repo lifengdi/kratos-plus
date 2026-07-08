@@ -47,6 +47,28 @@
                             }
                         }
                     }
+                    $s_social_custom = kratos_option('s_social_custom', array());
+                    if (!empty($s_social_custom) && is_array($s_social_custom)) {
+                        foreach ($s_social_custom as $item) {
+                            $url = isset($item['url']) ? trim((string) $item['url']) : '';
+                            if ($url === '') continue;
+                            $title = isset($item['title']) ? (string) $item['title'] : '';
+                            $type  = isset($item['icon_type']) ? $item['icon_type'] : 'fontawesome';
+                            $inner = '';
+                            if ($type === 'image') {
+                                $img = isset($item['icon_image']) ? trim((string) $item['icon_image']) : '';
+                                if ($img === '') continue;
+                                $inner = '<img src="' . esc_url($img) . '" alt="' . esc_attr($title) . '" class="social-custom-img">';
+                            } else {
+                                $cls = isset($item['icon']) ? trim((string) $item['icon']) : '';
+                                if ($cls === '') continue;
+                                $inner = '<i class="' . esc_attr($cls) . '"></i>';
+                            }
+                            echo '<a target="_blank" rel="nofollow" href="' . esc_url($url) . '"'
+                                . ($title !== '' ? ' title="' . esc_attr($title) . '" aria-label="' . esc_attr($title) . '"' : '')
+                                . '>' . $inner . '</a>';
+                        }
+                    }
                     ?>
                 </p>
                 <?php

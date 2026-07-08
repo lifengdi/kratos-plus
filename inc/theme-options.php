@@ -2543,6 +2543,59 @@ CSF::createSection($prefix, array(
                 "s_email_url" => ""
             ),
         ),
+        array(
+            'type' => 'subheading',
+            'content' => __('自定义图标', 'kratos'),
+        ),
+        array(
+            'id' => 's_social_custom',
+            'type' => 'group',
+            'title' => __('自定义社交图标', 'kratos'),
+            'subtitle' => __('在上方预置平台之外，追加任意条目。渲染顺序：预置图标在前，自定义在后。', 'kratos'),
+            'button_title' => __('添加图标', 'kratos'),
+            'accordion_title_prefix' => __('图标', 'kratos'),
+            'accordion_title_number' => true,
+            'fields' => array(
+                array(
+                    'id' => 'title',
+                    'type' => 'text',
+                    'title' => __('名称', 'kratos'),
+                    'subtitle' => __('用于鼠标悬停提示与无障碍标签', 'kratos'),
+                ),
+                array(
+                    'id' => 'url',
+                    'type' => 'text',
+                    'title' => __('链接', 'kratos'),
+                    'placeholder' => 'https://example.com',
+                ),
+                array(
+                    'id' => 'icon_type',
+                    'type' => 'button_set',
+                    'title' => __('图标类型', 'kratos'),
+                    'options' => array(
+                        'fontawesome' => __('Font Awesome', 'kratos'),
+                        'image' => __('图片', 'kratos'),
+                    ),
+                    'default' => 'fontawesome',
+                ),
+                array(
+                    'id' => 'icon',
+                    'type' => 'icon',
+                    'title' => __('图标', 'kratos'),
+                    'subtitle' => __('从 Font Awesome 图标库中选择', 'kratos'),
+                    'dependency' => array('icon_type', '==', 'fontawesome'),
+                ),
+                array(
+                    'id' => 'icon_image',
+                    'type' => 'upload',
+                    'title' => __('图片', 'kratos'),
+                    'subtitle' => __('建议正方形透明背景 PNG/SVG，推荐 32×32 或更大', 'kratos'),
+                    'library' => 'image',
+                    'preview' => true,
+                    'dependency' => array('icon_type', '==', 'image'),
+                ),
+            ),
+        ),
     ),
 ));
 

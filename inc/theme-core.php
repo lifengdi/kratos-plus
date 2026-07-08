@@ -90,6 +90,17 @@ function theme_autoload()
         }
         if (kratos_option('g_fontawesome', false)) {
             wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+        } else {
+            // 页脚自定义社交图标使用 Font Awesome 时，按需加载 FA CSS
+            $s_social_custom = kratos_option('s_social_custom', array());
+            if (!empty($s_social_custom) && is_array($s_social_custom)) {
+                foreach ($s_social_custom as $item) {
+                    if (($item['icon_type'] ?? 'fontawesome') === 'fontawesome' && trim((string)($item['icon'] ?? '')) !== '' && trim((string)($item['url'] ?? '')) !== '') {
+                        wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+                        break;
+                    }
+                }
+            }
         }
         wp_enqueue_style('kratos', ASSET_PATH . '/style.css', array(), THEME_VERSION);
         if (is_child_theme()) {

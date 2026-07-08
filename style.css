@@ -4590,6 +4590,19 @@ a
     font-size: 40px;
 }
 
+.k-footer .social a > i:not(.kicon) {
+    font-size: 34px;
+    line-height: 45px;
+    vertical-align: middle;
+}
+
+.k-footer .social a .social-custom-img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
 @media screen and (max-width: 768px) {
     .k-footer {
         padding: 30px 0;
@@ -4605,6 +4618,15 @@ a
     a
     .kicon {
         font-size: 38px;
+    }
+
+    .k-footer .social a > i:not(.kicon) {
+        font-size: 32px;
+    }
+
+    .k-footer .social a .social-custom-img {
+        width: 32px;
+        height: 32px;
     }
 }
 
