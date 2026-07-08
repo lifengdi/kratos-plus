@@ -640,7 +640,8 @@ class widget_toc extends WP_Widget
                 }
             }
 
-            $out .= '<li class="toc-item toc-h' . $d . '">'
+            $level = $d - $min + 1;
+            $out .= '<li class="toc-item toc-h' . $d . ' toc-l' . $level . '">'
                  . '<a href="#toc-' . (int) $it['count'] . '">'
                  . esc_html($it['text'])
                  . '</a>';

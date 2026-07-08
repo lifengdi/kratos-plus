@@ -676,7 +676,7 @@ function toc_content($content)
 
         $toc = array();
         $toc_count = 0;
-        $toc_depth = 3;
+        $toc_depth = 6;
 
         $regex = '#<h([1-' . $toc_depth . '])(.*?)>(.*?)</h\\1>#';
         $content = preg_replace_callback($regex, 'toc_replace_heading', $content);
