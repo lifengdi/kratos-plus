@@ -138,3 +138,6 @@ require get_template_directory() . '/inc/theme-featured-title.php';
 // 阅读增强（阅读进度条 / 字数 & 预计阅读时间 / 更新提示条 / 相关文章）
 require get_template_directory() . '/inc/theme-reading-enhance.php';
 
+// 系列文章（连载教程串上下篇）
+require get_template_directory() . '/inc/theme-series.php';
+

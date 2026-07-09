@@ -75,6 +75,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                                 }; ?>
                             </div>
                         </div>
+                        <?php if (function_exists('kratos_series_render_box')) kratos_series_render_box(); ?>
                         <div class="content" id="lightgallery">
                             <?php
                             if (!empty(kratos_option('single_ad_top_group'))) {
@@ -151,6 +152,13 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                 <?php endif; ?>
                 <?php if (function_exists('kratos_read_render_related')) kratos_read_render_related(); ?>
                 <?php require get_template_directory() . '/pages/page-toolbar.php'; ?>
+                <?php
+                $kratos_in_series = function_exists('kratos_series_current_has_series')
+                    && kratos_series_current_has_series()
+                    && kratos_option('g_series_replace_navi', true);
+                if ($kratos_in_series) {
+                    kratos_series_render_nav();
+                } else { ?>
                 <nav class="navigation post-navigation clearfix" role="navigation">
                     <?php
                     $prev_post = get_previous_post(TRUE);
@@ -162,6 +170,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                         echo '<div class="nav-next"><a title="' . $next_post->post_title . '" href="' . get_permalink($next_post->ID) . '">' . __('下一篇 >', 'kratos') . '</a></div>';
                     } ?>
                 </nav>
+                <?php } ?>
                 <?php comments_template(); ?>
             </div>
             <?php if ($kratos_layout === 'two_side') { ?>
