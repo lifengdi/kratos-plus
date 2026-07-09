@@ -51,6 +51,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                             <h1 class="title"><?php the_title(); ?></h1>
                             <div class="meta">
                                 <span><?php echo get_the_date(); ?></span>
+                                <?php if (function_exists('kratos_read_render_meta')) kratos_read_render_meta(); ?>
                                 <?php if (kratos_option('g_post_views', true)) { ?>
                                     <span><?php echo get_post_views();
                                             _e('点热度', 'kratos'); ?></span>
@@ -148,6 +149,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                         </div>
                     </div>
                 <?php endif; ?>
+                <?php if (function_exists('kratos_read_render_related')) kratos_read_render_related(); ?>
                 <?php require get_template_directory() . '/pages/page-toolbar.php'; ?>
                 <nav class="navigation post-navigation clearfix" role="navigation">
                     <?php

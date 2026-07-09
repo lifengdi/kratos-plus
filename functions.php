@@ -8,7 +8,7 @@
  * @version 2025.02.08
  */
 
-define('THEME_VERSION', '1.1.2');
+define('THEME_VERSION', '1.1.3');
 
 if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;
@@ -134,4 +134,7 @@ require get_template_directory() . '/inc/theme-timeline.php';
 
 // 「Kratos+ 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
 require get_template_directory() . '/inc/theme-featured-title.php';
+
+// 阅读增强（阅读进度条 / 字数 & 预计阅读时间 / 更新提示条 / 相关文章）
+require get_template_directory() . '/inc/theme-reading-enhance.php';
 
