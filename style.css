@@ -4929,3 +4929,319 @@ a
         font-size: 20px;
     }
 }
+
+/* ============================================================
+   个人简介小工具（增强版）w-about-plus
+   ============================================================ */
+.k-main .sidebar .w-about.w-about-plus {
+    padding: 0;
+    overflow: hidden;
+}
+.w-about-plus .w-about-header {
+    position: relative;
+    height: 120px;
+}
+.w-about-plus .w-about-overlay {
+    position: absolute;
+    inset: 0;
+}
+.w-about-plus .w-about-wrapper {
+    position: relative;
+    z-index: 2;
+}
+.w-about-plus .w-about-avatar {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+    margin-top: -50px;
+}
+.k-main .sidebar .w-about.w-about-plus .wrapper img {
+    margin: 0;
+}
+.w-about-plus .w-about-avatar img {
+    width: 100px;
+    height: 100px;
+    border: rgba(255, 255, 255, 0.5) 4px solid;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    background: #fff;
+    display: block;
+}
+.w-about-plus .w-about-avatar.is-circle img {
+    border-radius: 50%;
+}
+.w-about-plus .w-about-avatar.is-rounded img {
+    border-radius: 14px;
+}
+.w-about-plus .w-about-avatar.is-hoverable img {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.w-about-plus .w-about-avatar.is-hoverable:hover img {
+    transform: rotate(6deg) scale(1.04);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+.w-about-plus .w-about-online {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #34d399;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.35);
+}
+.w-about-plus .w-about-badge {
+    position: absolute;
+    right: -4px;
+    top: -4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    padding: 2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.w-about-plus .w-about-body {
+    padding: 10px 20px 20px;
+}
+.w-about-plus .w-about-body .username {
+    margin: 6px 0 2px;
+    font-size: 17px;
+    font-weight: 600;
+}
+.w-about-plus .w-about-body .slogan {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: #8a8f99;
+}
+.w-about-plus .about {
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: center;
+    color: #555;
+}
+.w-about-plus .about p {
+    margin: 0 0 6px;
+}
+.w-about-plus .about a {
+    color: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+}
+.w-about-plus .about.is-collapsible .about-inner {
+    max-height: 5.6em;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
+            mask-image: linear-gradient(180deg, #000 60%, transparent);
+}
+.w-about-plus .about.is-collapsible.is-open .about-inner {
+    max-height: none;
+    -webkit-mask-image: none;
+            mask-image: none;
+}
+.w-about-plus .about-toggle {
+    margin-top: 6px;
+    background: none;
+    border: none;
+    color: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 6px;
+}
+
+/* 统计条 */
+.w-about-plus .w-about-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 12px 0 6px;
+    padding: 10px 6px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.08);
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+}
+.w-about-plus .w-about-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    padding: 2px 0;
+}
+.w-about-plus .w-about-stat-num {
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.2;
+}
+.w-about-plus .w-about-stat-label {
+    font-size: 12px;
+    color: #8a8f99;
+    margin-top: 2px;
+}
+.w-about-plus a.w-about-stat:hover .w-about-stat-num {
+    color: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+}
+
+/* 社交 */
+.w-about-plus .w-about-socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 12px 0;
+}
+.w-about-plus .w-about-social {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    background: rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    outline: none;
+}
+.w-about-plus .w-about-social:hover,
+.w-about-plus .w-about-social:focus {
+    background: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+    color: #fff;
+    transform: translateY(-2px);
+}
+.w-about-plus .w-about-social .kicon,
+.w-about-plus .w-about-social i {
+    font-size: 15px;
+    line-height: 1;
+}
+.w-about-plus .w-about-social-letter {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.w-about-plus .w-about-qr-pop {
+    position: absolute;
+    bottom: 42px;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    opacity: 0;
+    pointer-events: none;
+    background: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+    white-space: nowrap;
+    text-align: center;
+}
+.w-about-plus .w-about-qr-pop::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    transform: translateX(-50%) rotate(45deg);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.05);
+}
+.w-about-plus .w-about-qr-pop img {
+    display: block;
+    width: 130px;
+    height: 130px;
+    margin: 0 auto;
+}
+.w-about-plus .w-about-qr-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+.w-about-plus .w-about-social.has-qr:hover .w-about-qr-pop,
+.w-about-plus .w-about-social.has-qr:focus .w-about-qr-pop {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+
+/* CTA */
+.w-about-plus .w-about-cta {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+.w-about-plus .w-about-cta-btn {
+    flex: 1;
+    display: inline-block;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary,
+.w-about-plus a.w-about-cta-btn.is-primary {
+    background: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+    color: #fff;
+    border: 1px solid transparent;
+}
+.k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary:hover,
+.w-about-plus a.w-about-cta-btn.is-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    color: #fff;
+}
+.k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost,
+.w-about-plus a.w-about-cta-btn.is-ghost {
+    background: transparent;
+    color: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+    border: 1px solid var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+}
+.k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost:hover,
+.w-about-plus a.w-about-cta-btn.is-ghost:hover {
+    background: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
+    color: #fff;
+}
+
+/* 深色模式适配（跟随 dark.css 与皮肤主色变量） */
+html[data-theme="dark"] .w-about-plus .about {
+    color: var(--kr-fg, #c9cdd4);
+}
+html[data-theme="dark"] .w-about-plus .w-about-body .slogan,
+html[data-theme="dark"] .w-about-plus .w-about-stat-label {
+    color: var(--kr-fg-muted, #8a8f99);
+}
+html[data-theme="dark"] .w-about-plus .w-about-stat-num {
+    color: var(--kr-fg-strong, #e5e7eb);
+}
+html[data-theme="dark"] .w-about-plus .w-about-social {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--kr-fg, #d0d3da);
+}
+html[data-theme="dark"] .w-about-plus .w-about-stats {
+    border-top-color: var(--kr-border, rgba(255, 255, 255, 0.1));
+    border-bottom-color: var(--kr-border, rgba(255, 255, 255, 0.1));
+}
+html[data-theme="dark"] .w-about-plus .w-about-stat-num {
+    color: var(--kr-fg-strong, #e5e7eb);
+}
+html[data-theme="dark"] .w-about-plus a.w-about-stat:hover .w-about-stat-num {
+    color: var(--kr-link-hover, var(--kr-accent));
+}
+html[data-theme="dark"] .w-about-plus a.w-about-cta-btn.is-primary {
+    color: #fff;
+}
+html[data-theme="dark"] .w-about-plus a.w-about-cta-btn.is-ghost {
+    color: var(--kr-accent);
+    border-color: var(--kr-accent);
+    background: transparent;
+}
+html[data-theme="dark"] .w-about-plus a.w-about-cta-btn.is-ghost:hover {
+    background: var(--kr-accent);
+    color: #fff;
+}
+html[data-theme="dark"] .w-about-plus .about-toggle {
+    color: var(--kr-link-hover, var(--kr-accent));
+}

@@ -276,15 +276,28 @@ class widget_ad extends WP_Widget
     }
 }
 
+/**
+ * 个人简介小工具（增强版）
+ *
+ * 增强点：
+ * 1. 配置化：用户来源（WP 用户 / 自定义）、昵称/签名/头像 URL、标题、头像形状、点击行为、背景类型（图片/纯色/渐变/无）+ 遮罩浓度
+ * 2. 社交入口：可增删的社交链接列表；图标复用主题 kicon 字体，或允许 Font Awesome class（参考 theme-featured-title.php 的按需入队）
+ *    微信/QQ 支持二维码弹层
+ * 3. 站点统计：文章 / 分类 / 标签 / 评论 计数，可分项开关，wp_cache 缓存 10 分钟
+ * 4. 简介 Markdown：复用 PUC 内置的 Parsedown（inc/update-checker/vendor/Parsedown.php）
+ * 5. CTA：最多两个自定义按钮
+ * 6. 视觉：认证徽章 / 在线状态点 / 展开更多折叠 / 深色模式变量
+ */
 class widget_about extends WP_Widget
 {
     public function __construct()
     {
         add_action('admin_enqueue_scripts', array($this, 'scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'front_scripts'));
 
         $widget_ops = array(
-            'name' => __('Kratos+ - 个人简介', 'kratos'),
-            'description' => __('站长个人简介的展示工具', 'kratos'),
+            'name'        => __('Kratos+ - 个人简介', 'kratos'),
+            'description' => __('站长个人简介的展示工具（支持社交、统计、Markdown、CTA、二维码）', 'kratos'),
         );
 
         parent::__construct(false, false, $widget_ops);
@@ -296,53 +309,454 @@ class widget_about extends WP_Widget
         wp_enqueue_media();
         wp_enqueue_script('widget_scripts', ASSET_PATH . '/assets/js/widget.min.js', array('jquery'));
         wp_enqueue_style('widget_css', ASSET_PATH . '/assets/css/widget.min.css', array());
+        wp_enqueue_style('widget_about_admin_css', ASSET_PATH . '/assets/css/widget.min.css', array(), THEME_VERSION);
+    }
+
+    // 前台按需加载 FA CSS（当社交链接里存在 fa 图标 class 时才加载）
+    public function front_scripts()
+    {
+        if (!is_active_widget(false, false, $this->id_base)) {
+            return;
+        }
+        if (wp_style_is('fontawesome', 'enqueued') || wp_style_is('fontawesome', 'registered')) {
+            return;
+        }
+        $settings = $this->get_settings();
+        if (!is_array($settings)) return;
+        foreach ($settings as $instance) {
+            if (empty($instance['socials']) || !is_array($instance['socials'])) continue;
+            foreach ($instance['socials'] as $s) {
+                if (!empty($s['icon']) && stripos($s['icon'], 'fa') !== false && stripos($s['icon'], ' ') !== false) {
+                    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+                    return;
+                }
+            }
+        }
+    }
+
+    private function defaults()
+    {
+        return array(
+            'introduce'      => '',
+            'slogan'         => '',
+            'background'     => '',
+            'collapse_at'    => 0,        // 0=不折叠；>0 字数阈值
+            'show_stats'     => 1,
+            'stat_posts'     => 1,
+            'stat_cats'      => 1,
+            'stat_tags'      => 1,
+            'stat_comments'  => 1,
+            'socials'        => array(),  // list of {icon,label,url,newtab,qrcode}
+            'cta1_text'      => '',
+            'cta1_url'       => '',
+            'cta1_style'     => 'primary',
+            'cta2_text'      => '',
+            'cta2_url'       => '',
+            'cta2_style'     => 'ghost',
+        );
+    }
+
+    /** 数字缩写 1200 -> 1.2k */
+    private function format_count($n)
+    {
+        $n = (int) $n;
+        if ($n >= 10000) return round($n / 10000, 1) . 'w';
+        if ($n >= 1000)  return round($n / 1000, 1) . 'k';
+        return (string) $n;
+    }
+
+    /** 站点计数（缓存 10 分钟） */
+    private function get_site_stats()
+    {
+        $cache = wp_cache_get('kratos_about_stats', 'widget_about');
+        if ($cache !== false) return $cache;
+        $posts = wp_count_posts();
+        $stats = array(
+            'posts'    => isset($posts->publish) ? (int) $posts->publish : 0,
+            'cats'     => (int) wp_count_terms(array('taxonomy' => 'category', 'hide_empty' => true)),
+            'tags'     => (int) wp_count_terms(array('taxonomy' => 'post_tag', 'hide_empty' => true)),
+            'comments' => (int) get_comments(array('count' => true, 'status' => 'approve')),
+        );
+        wp_cache_set('kratos_about_stats', $stats, 'widget_about', 600);
+        return $stats;
     }
 
     public function widget($args, $instance)
     {
-        $introduce = !empty(get_the_author_meta('description', '1')) ? get_the_author_meta('description', '1') : __('这个人很懒，什么都没留下', 'kratos');
-        $username = get_the_author_meta('display_name', '1');
-        $avatar = get_avatar_url('1', ['size' => '300']);
-        $background = !empty($instance['background']) ? $instance['background'] : ASSET_PATH . '/assets/img/about-background.png';
+        $i = wp_parse_args((array) $instance, $this->defaults());
 
-        echo '<div class="widget w-about">';
-        echo '<div class="background" style="background:url(' . $background . ') no-repeat center center;-webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;"></div><div class="wrapper text-center">';
+        // 昵称/头像固定取站长（用户 ID = 1），简介优先自定义再回退用户资料
+        $uid = 1;
+        $username  = get_the_author_meta('display_name', $uid);
+        $avatar    = get_avatar_url($uid, array('size' => 300));
+        $introduce = trim((string) $i['introduce']);
+        if ($introduce === '') {
+            $introduce = (string) get_the_author_meta('description', $uid);
+        }
+        if ($introduce === '') {
+            $introduce = __('这个人很懒，什么都没留下', 'kratos');
+        }
+
+        // 背景图（固定使用图片模式）
+        $bg_url = $i['background'] !== '' ? $i['background'] : ASSET_PATH . '/assets/img/about-background.png';
+        $bg_style = "background:url('" . esc_url($bg_url) . "') no-repeat center center;background-size:cover;";
+
+        // 头像点击（沿用主题选项 g_login 决定是否可点跳登录）
+        $avatar_link_open  = '';
+        $avatar_link_close = '';
         if (kratos_option('g_login', true)) {
-            if (current_user_can('manage_options')) {
-                echo '<a href="' . admin_url() . '">';
-            } else {
-                echo '<a href="' . wp_login_url() . '">';
+            $href = current_user_can('manage_options') ? admin_url() : wp_login_url();
+            $avatar_link_open  = '<a href="' . esc_url($href) . '">';
+            $avatar_link_close = '</a>';
+        }
+
+        // 简介渲染：纯文本，保留换行
+        $introduce_html = '<p>' . nl2br(esc_html($introduce)) . '</p>';
+        $collapse_at = (int) $i['collapse_at'];
+        $collapsed = ($collapse_at > 0 && mb_strlen(wp_strip_all_tags($introduce)) > $collapse_at);
+
+        echo '<div class="widget w-about w-about-plus">';
+
+        // 头部：背景
+        echo '<div class="w-about-header" style="' . $bg_style . '"></div>';
+
+        // 头像 wrapper
+        echo '<div class="wrapper text-center w-about-wrapper">';
+        echo $avatar_link_open;
+        echo '<span class="w-about-avatar is-circle is-hoverable">';
+        echo '<img src="' . esc_url($avatar) . '" alt="' . esc_attr($username) . '">';
+        echo '</span>';
+        echo $avatar_link_close;
+        echo '</div>';
+
+        // 文本区
+        echo '<div class="textwidget text-center w-about-body">';
+        echo '<p class="username">' . esc_html($username) . '</p>';
+        if (!empty($i['slogan'])) {
+            echo '<p class="slogan">' . esc_html($i['slogan']) . '</p>';
+        }
+        if ($collapsed) {
+            echo '<div class="about is-collapsible" data-collapse="1">';
+            echo '<div class="about-inner">' . $introduce_html . '</div>';
+            echo '<button type="button" class="about-toggle" aria-expanded="false">' . esc_html__('展开更多', 'kratos') . '</button>';
+            echo '</div>';
+        } else {
+            echo '<div class="about">' . $introduce_html . '</div>';
+        }
+
+        // 统计条
+        if (!empty($i['show_stats'])) {
+            $stats = $this->get_site_stats();
+            $items = array();
+            if (!empty($i['stat_posts']))    $items[] = array('n' => $stats['posts'],    'label' => __('文章', 'kratos'),   'url' => get_post_type_archive_link('post') ?: home_url('/'));
+            if (!empty($i['stat_cats']))     $items[] = array('n' => $stats['cats'],     'label' => __('分类', 'kratos'),   'url' => '');
+            if (!empty($i['stat_tags']))     $items[] = array('n' => $stats['tags'],     'label' => __('标签', 'kratos'),   'url' => '');
+            if (!empty($i['stat_comments'])) $items[] = array('n' => $stats['comments'], 'label' => __('评论', 'kratos'),   'url' => '');
+            if ($items) {
+                echo '<div class="w-about-stats">';
+                foreach ($items as $it) {
+                    $inner = '<span class="w-about-stat-num">' . esc_html($this->format_count($it['n'])) . '</span><span class="w-about-stat-label">' . esc_html($it['label']) . '</span>';
+                    if ($it['url']) echo '<a class="w-about-stat" href="' . esc_url($it['url']) . '">' . $inner . '</a>';
+                    else echo '<span class="w-about-stat">' . $inner . '</span>';
+                }
+                echo '</div>';
             }
         }
-        echo '<img src="' . $avatar . '">';
-        if (kratos_option('g_login', true)) {
-            echo '</a>';
+
+        // 社交入口
+        if (!empty($i['socials']) && is_array($i['socials'])) {
+            echo '<div class="w-about-socials">';
+            foreach ($i['socials'] as $idx => $s) {
+                $icon   = isset($s['icon']) ? trim($s['icon']) : '';
+                $label  = isset($s['label']) ? $s['label'] : '';
+                $url    = isset($s['url']) ? $s['url'] : '';
+                $newtab = !empty($s['newtab']);
+                $qr     = isset($s['qrcode']) ? $s['qrcode'] : '';
+                if ($icon === '' && $label === '' && $url === '' && $qr === '') continue;
+
+                // 图标节点：kicon（i-xxx）或 fa（含空格视为 FA class）
+                $icon_html = '';
+                if ($icon !== '') {
+                    if (strpos($icon, 'i-') === 0) {
+                        $icon_html = '<i class="kicon ' . esc_attr($icon) . '"></i>';
+                    } elseif (strpos($icon, ' ') !== false) {
+                        $icon_html = '<i class="' . esc_attr($icon) . '"></i>';
+                    } else {
+                        $icon_html = '<i class="kicon i-' . esc_attr(ltrim($icon, 'i-')) . '"></i>';
+                    }
+                } else {
+                    $icon_html = '<span class="w-about-social-letter">' . esc_html(mb_substr($label !== '' ? $label : '?', 0, 1, 'UTF-8')) . '</span>';
+                }
+
+                $tip = $label !== '' ? $label : $url;
+
+                if ($qr !== '') {
+                    echo '<span class="w-about-social has-qr" tabindex="0" title="' . esc_attr($tip) . '">';
+                    echo $icon_html;
+                    echo '<span class="w-about-qr-pop"><img src="' . esc_url($qr) . '" alt=""><span class="w-about-qr-label">' . esc_html($label) . '</span></span>';
+                    echo '</span>';
+                } elseif ($url !== '') {
+                    $target = $newtab ? ' target="_blank" rel="noopener noreferrer"' : '';
+                    echo '<a class="w-about-social" href="' . esc_url($url) . '"' . $target . ' title="' . esc_attr($tip) . '" aria-label="' . esc_attr($tip) . '">' . $icon_html . '</a>';
+                }
+            }
+            echo '</div>';
         }
-        $introduce = str_replace("\n", '<br>', $introduce);
-        echo '</div><div class="textwidget text-center"><p class="username">' . $username . '</p><p class="about">' . $introduce . '</p></div>';
-        echo '</div>';
+
+        // CTA
+        $ctas = array();
+        for ($k = 1; $k <= 2; $k++) {
+            $t = $i["cta{$k}_text"];
+            $u = $i["cta{$k}_url"];
+            $st = $i["cta{$k}_style"];
+            if ($t !== '' && $u !== '') $ctas[] = array('text' => $t, 'url' => $u, 'style' => $st);
+        }
+        if ($ctas) {
+            echo '<div class="w-about-cta">';
+            foreach ($ctas as $c) {
+                echo '<a class="w-about-cta-btn is-' . esc_attr($c['style']) . '" href="' . esc_url($c['url']) . '">' . esc_html($c['text']) . '</a>';
+            }
+            echo '</div>';
+        }
+
+        echo '</div>'; // .textwidget
+        echo '</div>'; // .widget
+
+        // 内联极简 JS：折叠 + 二维码弹层（无 jQuery 依赖）
+        static $inline_printed = false;
+        if (!$inline_printed) {
+            $inline_printed = true;
+            echo <<<HTML
+<script>(function(){
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    if(t&&t.classList&&t.classList.contains('about-toggle')){
+      var box=t.parentNode;var open=box.classList.toggle('is-open');
+      t.setAttribute('aria-expanded',open?'true':'false');
+      t.textContent=open?'收起':'展开更多';
+    }
+  });
+})();</script>
+HTML;
+        }
     }
 
     public function update($new_instance, $old_instance)
     {
-        $instance = array();
+        $d = $this->defaults();
+        $out = wp_parse_args((array) $old_instance, $d);
+        // 表单中保留的三个字段
+        $out['slogan']    = sanitize_text_field($new_instance['slogan'] ?? '');
+        $out['introduce'] = wp_kses_post($new_instance['introduce'] ?? '');
+        $out['background']= esc_url_raw($new_instance['background'] ?? '');
+        $out['collapse_at']   = max(0, (int) ($new_instance['collapse_at'] ?? 0));
+        $out['show_stats']    = !empty($new_instance['show_stats']) ? 1 : 0;
+        $out['stat_posts']    = !empty($new_instance['stat_posts']) ? 1 : 0;
+        $out['stat_cats']     = !empty($new_instance['stat_cats']) ? 1 : 0;
+        $out['stat_tags']     = !empty($new_instance['stat_tags']) ? 1 : 0;
+        $out['stat_comments'] = !empty($new_instance['stat_comments']) ? 1 : 0;
 
-        $instance['background'] = (!empty($new_instance['background'])) ? $new_instance['background'] : '';
+        // 社交列表：并列数组 socials_icon[] / socials_label[] / socials_url[] / socials_newtab[] / socials_qrcode[]
+        $out['socials'] = array();
+        $icons        = (array) ($new_instance['socials_icon']        ?? array());
+        $icons_custom = (array) ($new_instance['socials_icon_custom'] ?? array());
+        $labels = (array) ($new_instance['socials_label']  ?? array());
+        $urls   = (array) ($new_instance['socials_url']    ?? array());
+        $newtab = (array) ($new_instance['socials_newtab'] ?? array());
+        $qrs    = (array) ($new_instance['socials_qrcode'] ?? array());
+        $count  = max(count($icons), count($labels), count($urls), count($qrs));
+        for ($k = 0; $k < $count; $k++) {
+            $custom = sanitize_text_field($icons_custom[$k] ?? '');
+            $icon  = $custom !== '' ? $custom : sanitize_text_field($icons[$k]  ?? '');
+            $label = sanitize_text_field($labels[$k] ?? '');
+            $url   = esc_url_raw($urls[$k] ?? '');
+            $qr    = esc_url_raw($qrs[$k] ?? '');
+            $nb    = !empty($newtab[$k]) ? 1 : 0;
+            if ($icon === '' && $label === '' && $url === '' && $qr === '') continue;
+            $out['socials'][] = array('icon' => $icon, 'label' => $label, 'url' => $url, 'newtab' => $nb, 'qrcode' => $qr);
+        }
 
-        return $instance;
+        foreach (array(1, 2) as $k) {
+            $out["cta{$k}_text"]  = sanitize_text_field($new_instance["cta{$k}_text"]  ?? '');
+            $out["cta{$k}_url"]   = esc_url_raw($new_instance["cta{$k}_url"] ?? '');
+            $out["cta{$k}_style"] = in_array($new_instance["cta{$k}_style"] ?? 'primary', array('primary','ghost'), true) ? $new_instance["cta{$k}_style"] : 'primary';
+        }
+
+        wp_cache_delete('kratos_about_stats', 'widget_about');
+        return $out;
     }
 
     public function form($instance)
     {
-        $background = !empty($instance['background']) ? $instance['background'] : ASSET_PATH . '/assets/img/about-background.png';
-    ?>
-        <div class="media-widget-control">
-            <p>
-                <label for="<?php echo $this->get_field_id('background'); ?>"><?php _e('背景图片:', 'kratos'); ?></label>
-                <input class="widefat" id="<?php echo $this->get_field_id('background'); ?>" name="<?php echo $this->get_field_name('background'); ?>" type="text" value="<?php echo esc_attr($background); ?>">
-                <button type="button" class="button-update-media upload_background"><?php _e('选择图片', 'kratos'); ?></button>
-            </p>
+        $i = wp_parse_args((array) $instance, $this->defaults());
+        $fnm = function ($k) { return $this->get_field_name($k); };
+        $kicons = array('i-github','i-gitee','i-sina','i-twitter','i-youtube','i-bilibili','i-douban','i-stackflow','i-coding','i-linkedin','i-telegram','i-wechat','i-email','i-cemail','i-user','i-author','i-url','i-like','i-donate','i-book','i-comments');
+        $wid = $this->id;
+
+        // 渲染一个社交行
+        $render_row = function ($idx, $s) use ($kicons) {
+            $s = wp_parse_args((array) $s, array('icon'=>'','label'=>'','url'=>'','newtab'=>1,'qrcode'=>''));
+            ob_start(); ?>
+            <div class="wab-social">
+                <div class="wab-r">
+                    <select name="<?php echo esc_attr($this->get_field_name('socials_icon')); ?>[]">
+                        <option value=""><?php _e('图标', 'kratos'); ?></option>
+                        <?php foreach ($kicons as $ic): ?>
+                            <option value="<?php echo esc_attr($ic); ?>" <?php selected($s['icon'], $ic); ?>><?php echo esc_html($ic); ?></option>
+                        <?php endforeach; ?>
+                        <?php if ($s['icon'] !== '' && !in_array($s['icon'], $kicons, true)): ?>
+                            <option value="<?php echo esc_attr($s['icon']); ?>" selected><?php echo esc_html($s['icon']); ?></option>
+                        <?php endif; ?>
+                    </select>
+                    <input type="text" name="<?php echo esc_attr($this->get_field_name('socials_label')); ?>[]" placeholder="<?php esc_attr_e('名称', 'kratos'); ?>" value="<?php echo esc_attr($s['label']); ?>">
+                    <button type="button" class="button-link wab-remove" title="<?php esc_attr_e('删除', 'kratos'); ?>">×</button>
+                </div>
+                <div class="wab-r">
+                    <input type="text" name="<?php echo esc_attr($this->get_field_name('socials_url')); ?>[]" placeholder="<?php esc_attr_e('链接（http… / mailto:）', 'kratos'); ?>" value="<?php echo esc_attr($s['url']); ?>">
+                    <label class="wab-nt"><input type="checkbox" name="<?php echo esc_attr($this->get_field_name('socials_newtab')); ?>[<?php echo (int) $idx; ?>]" value="1" <?php checked(!empty($s['newtab'])); ?>> <?php _e('新窗口', 'kratos'); ?></label>
+                </div>
+                <div class="wab-r">
+                    <input type="text" name="<?php echo esc_attr($this->get_field_name('socials_qrcode')); ?>[]" placeholder="<?php esc_attr_e('二维码 URL（可选，有则覆盖链接）', 'kratos'); ?>" value="<?php echo esc_attr($s['qrcode']); ?>">
+                </div>
+                <input type="hidden" name="<?php echo esc_attr($this->get_field_name('socials_icon_custom')); ?>[]" value="">
+            </div>
+            <?php return ob_get_clean();
+        };
+        ?>
+        <style>
+            .wab-form details{margin:6px 0;border:1px solid #dcdcde;border-radius:4px;background:#fff}
+            .wab-form details[open]{background:#fafafa}
+            .wab-form summary{padding:8px 10px;cursor:pointer;font-weight:600;font-size:13px;color:#1d2327;list-style:none;user-select:none}
+            .wab-form summary::-webkit-details-marker{display:none}
+            .wab-form summary::before{content:"▸";display:inline-block;margin-right:6px;transition:transform .15s;color:#8a8f99}
+            .wab-form details[open] summary::before{transform:rotate(90deg)}
+            .wab-form .wab-body{padding:4px 10px 10px}
+            .wab-form .wab-body p{margin:6px 0}
+            .wab-form .wab-body label{display:block;font-size:12px;color:#50575e;margin-bottom:2px}
+            .wab-form .wab-inline{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+            .wab-form .wab-inline > *{flex:0 0 auto}
+            .wab-form .wab-inline .widefat{flex:1;min-width:0}
+            .wab-form .wab-media{display:flex;gap:6px;align-items:center}
+            .wab-form .wab-media input{flex:1 1 auto;min-width:0;width:100%}
+            .wab-form .wab-media .button{flex:0 0 auto;width:auto;padding:0 6px;min-height:26px;line-height:24px;font-size:11px}
+            .wab-form .wab-checks{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px}
+            .wab-form .wab-checks label{display:inline-flex;align-items:center;gap:4px;margin:0;color:#1d2327}
+            .wab-form .wab-parent{margin:8px 0 4px}
+            .wab-form .wab-children{margin:0 0 6px;padding:6px 8px 6px 24px;border-left:2px solid #dcdcde;background:#f6f7f7;border-radius:0 4px 4px 0;position:relative}
+            .wab-form .wab-children::before{content:"";position:absolute;left:-2px;top:-4px;width:14px;height:10px;border-left:2px solid #dcdcde;border-bottom:2px solid #dcdcde;border-radius:0 0 0 4px}
+            .wab-form .wab-children label{font-size:12px;color:#50575e}
+            .wab-social{border:1px solid #dcdcde;background:#fff;border-radius:4px;padding:6px 8px;margin-bottom:6px;position:relative}
+            .wab-social .wab-r{display:flex;gap:6px;align-items:center;margin-bottom:4px}
+            .wab-social .wab-r > input[type=text]{flex:1;min-width:0}
+            .wab-social .wab-r > select{max-width:120px}
+            .wab-social .wab-nt{flex:0 0 auto;font-size:12px;color:#50575e}
+            .wab-social .wab-remove{color:#b32d2e;font-size:18px;line-height:1;padding:0 4px;text-decoration:none}
+            .wab-add{margin-top:4px}
+            .wab-form .wab-swatches{display:flex;gap:6px;align-items:center}
+            .wab-form .wab-swatches label{display:flex;flex-direction:column;font-size:11px;color:#8a8f99;align-items:center}
+        </style>
+
+        <div class="wab-form" data-widget-id="<?php echo esc_attr($wid); ?>">
+
+        <details open>
+            <summary><?php _e('基础', 'kratos'); ?></summary>
+            <div class="wab-body">
+                <p><input class="widefat" type="text" name="<?php echo $fnm('slogan'); ?>" placeholder="<?php esc_attr_e('一句话签名（可留空）', 'kratos'); ?>" value="<?php echo esc_attr($i['slogan']); ?>"></p>
+                <p><textarea class="widefat" rows="4" name="<?php echo $fnm('introduce'); ?>" placeholder="<?php esc_attr_e('个人简介（留空则使用用户资料的简介）', 'kratos'); ?>"><?php echo esc_textarea($i['introduce']); ?></textarea></p>
+                <p class="wab-media">
+                    <input type="text" name="<?php echo $fnm('background'); ?>" placeholder="<?php esc_attr_e('背景图 URL（留空使用默认）', 'kratos'); ?>" value="<?php echo esc_attr($i['background']); ?>">
+                    <button type="button" class="button button-update-media upload_background"><?php _e('选择', 'kratos'); ?></button>
+                </p>
+            </div>
+        </details>
+
+        <details>
+            <summary><?php _e('模块开关', 'kratos'); ?></summary>
+            <div class="wab-body">
+                <p class="wab-checks">
+                    <label><?php _e('简介折叠字数（0=不折叠）', 'kratos'); ?> <input type="number" min="0" step="1" name="<?php echo $fnm('collapse_at'); ?>" value="<?php echo esc_attr($i['collapse_at']); ?>" style="width:70px"></label>
+                </p>
+                <p class="wab-checks wab-parent">
+                    <label><input type="checkbox" value="1" name="<?php echo $fnm('show_stats'); ?>" <?php checked($i['show_stats'],1); ?>> <strong><?php _e('统计条', 'kratos'); ?></strong></label>
+                </p>
+                <p class="wab-checks wab-children">
+                    <label><input type="checkbox" value="1" name="<?php echo $fnm('stat_posts'); ?>" <?php checked($i['stat_posts'],1); ?>> <?php _e('文章', 'kratos'); ?></label>
+                    <label><input type="checkbox" value="1" name="<?php echo $fnm('stat_cats'); ?>" <?php checked($i['stat_cats'],1); ?>> <?php _e('分类', 'kratos'); ?></label>
+                    <label><input type="checkbox" value="1" name="<?php echo $fnm('stat_tags'); ?>" <?php checked($i['stat_tags'],1); ?>> <?php _e('标签', 'kratos'); ?></label>
+                    <label><input type="checkbox" value="1" name="<?php echo $fnm('stat_comments'); ?>" <?php checked($i['stat_comments'],1); ?>> <?php _e('评论', 'kratos'); ?></label>
+                </p>
+            </div>
+        </details>
+
+        <details>
+            <summary><?php _e('社交入口', 'kratos'); ?></summary>
+            <div class="wab-body">
+                <div class="wab-socials-list">
+                    <?php
+                    $socials = !empty($i['socials']) && is_array($i['socials']) ? $i['socials'] : array();
+                    if (empty($socials)) $socials = array(array('icon'=>'','label'=>'','url'=>'','newtab'=>1,'qrcode'=>''));
+                    foreach ($socials as $idx => $s) echo $render_row($idx, $s);
+                    ?>
+                </div>
+                <p class="wab-add"><button type="button" class="button button-secondary wab-add-btn">+ <?php _e('添加一项', 'kratos'); ?></button></p>
+                <p class="description" style="margin:2px 0 0"><?php _e('图标：主题内置 kicon（i-github/i-wechat…）', 'kratos'); ?></p>
+                <template class="wab-social-tpl"><?php echo $render_row(9999, array('icon'=>'','label'=>'','url'=>'','newtab'=>1,'qrcode'=>'')); ?></template>
+            </div>
+        </details>
+
+        <details>
+            <summary><?php _e('CTA 按钮', 'kratos'); ?></summary>
+            <div class="wab-body">
+                <?php foreach (array(1, 2) as $k): ?>
+                <p class="wab-inline">
+                    <input type="text" name="<?php echo $fnm("cta{$k}_text"); ?>" placeholder="<?php printf(esc_attr__('按钮 %d 文字', 'kratos'), $k); ?>" value="<?php echo esc_attr($i["cta{$k}_text"]); ?>" style="flex:1;min-width:0">
+                    <select name="<?php echo $fnm("cta{$k}_style"); ?>">
+                        <option value="primary" <?php selected($i["cta{$k}_style"],'primary'); ?>><?php _e('实心', 'kratos'); ?></option>
+                        <option value="ghost" <?php selected($i["cta{$k}_style"],'ghost'); ?>><?php _e('描边', 'kratos'); ?></option>
+                    </select>
+                </p>
+                <p><input class="widefat" type="text" name="<?php echo $fnm("cta{$k}_url"); ?>" placeholder="<?php esc_attr_e('链接（http… / mailto:）', 'kratos'); ?>" value="<?php echo esc_attr($i["cta{$k}_url"]); ?>"></p>
+                <?php endforeach; ?>
+            </div>
+        </details>
+
         </div>
+
+        <script>
+        (function(){
+            var root=document.currentScript && document.currentScript.previousElementSibling;
+            if(!root || !root.classList || !root.classList.contains('wab-form')) return;
+            if(root.dataset.wabInit) return; root.dataset.wabInit='1';
+            var syncChildren=function(){
+                var parent=root.querySelector('.wab-parent input[type=checkbox]');
+                var kids=root.querySelectorAll('.wab-children input[type=checkbox]');
+                if(!parent) return;
+                kids.forEach(function(cb){cb.disabled=!parent.checked;});
+                var box=root.querySelector('.wab-children');
+                if(box) box.style.opacity=parent.checked?'1':'0.5';
+            };
+            syncChildren();
+            root.addEventListener('change', function(e){
+                if(e.target.matches('.wab-parent input[type=checkbox]')) syncChildren();
+            });
+            root.addEventListener('click', function(e){
+                var t=e.target;
+                if(t.classList.contains('wab-add-btn')){
+                    var tpl=root.querySelector('template.wab-social-tpl');
+                    var list=root.querySelector('.wab-socials-list');
+                    if(tpl && list){
+                        var frag=document.createElement('div');
+                        frag.innerHTML=tpl.innerHTML.trim();
+                        list.appendChild(frag.firstChild);
+                    }
+                } else if(t.classList.contains('wab-remove')){
+                    e.preventDefault();
+                    var row=t.closest('.wab-social');
+                    if(row) row.parentNode.removeChild(row);
+                }
+            });
+        })();
+        </script>
     <?php
     }
 }
