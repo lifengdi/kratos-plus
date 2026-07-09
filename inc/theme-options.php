@@ -1545,6 +1545,45 @@ CSF::createSection($prefix, array(
             'default' => true,
             'dependency' => array('g_series_enabled', '==', 'true'),
         ),
+        array(
+            'id' => 'g_series_slug',
+            'type' => 'text',
+            'title' => __('系列 URL 前缀', 'kratos'),
+            'subtitle' => __('系列归档地址为 /<前缀>/<slug>/。仅支持小写字母、数字、连字符；留空使用默认 series', 'kratos'),
+            'default' => 'series',
+            'dependency' => array('g_series_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_series_max_depth',
+            'type' => 'number',
+            'title' => __('系列最大层级', 'kratos'),
+            'subtitle' => __('允许创建的最大层级数（顶层计为 1，可选 1 ~ 5，建议 3）；短码 [kratos_series_list] 与归档页默认按此层级递归展开子系列。', 'kratos'),
+            'help' => __('保存后：若已有系列的父级层级超出该限制，编辑/新增 term 时会自动上提到允许的最深祖先，并在后台顶部提示；已渲染的层级过深内容会被裁剪。层级越深卡片越紧凑，超过 5 级已不适合卡片布局。', 'kratos'),
+            'min' => 1,
+            'max' => 5,
+            'default' => 3,
+            'dependency' => array('g_series_enabled', '==', 'true'),
+        ),
+        array(
+            'type'    => 'content',
+            'content' => '<div style="padding:10px 14px;background:#f6f9fc;border-left:3px solid #336699;border-radius:3px;line-height:1.7;font-size:13px;">'
+                . '<strong>' . __('短码 [kratos_series_list]', 'kratos') . '</strong><br>'
+                . __('在任意页面 / 文章正文中插入短码，可渲染<strong>所有系列的树形卡片列表</strong>，含图标、描述、文章数，父子系列自动缩进。', 'kratos') . '<br><br>'
+                . '<strong>' . __('基本用法：', 'kratos') . '</strong><br>'
+                . '<code>[kratos_series_list]</code><br><br>'
+                . '<strong>' . __('可选参数：', 'kratos') . '</strong>'
+                . '<ul style="margin:6px 0 0 18px;padding:0;">'
+                . '<li><code>parent</code> — ' . __('起点父级 term_id（默认 0，表示从顶层开始）', 'kratos') . '</li>'
+                . '<li><code>depth</code> — ' . __('展开层级深度（默认 3）', 'kratos') . '</li>'
+                . '<li><code>hide_empty</code> — ' . __('是否隐藏无文章的系列，yes / no（默认 no）', 'kratos') . '</li>'
+                . '</ul>'
+                . '<strong>' . __('示例：', 'kratos') . '</strong><br>'
+                . '<code>[kratos_series_list depth="2" hide_empty="yes"]</code><br>'
+                . '<span style="color:#888;">' . __('仅展开 2 层，隐藏空系列', 'kratos') . '</span><br><br>'
+                . '<strong>' . __('推荐用法：', 'kratos') . '</strong>'
+                . __('新建一个页面（可选「Kratos+ 特色标题」模板配头图），正文粘贴短码，即得「所有系列」总览页；再把该页加入菜单即可。', 'kratos')
+                . '</div>',
+        ),
     ),
 ));
 
