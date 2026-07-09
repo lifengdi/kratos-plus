@@ -1136,6 +1136,12 @@ CSF::createSection($prefix, array(
             'subtitle' =>  __('网站首页的描述信息', 'kratos'),
         ),
         array(
+            'id' => 'seo_twitter_site',
+            'type' => 'text',
+            'title' => __('Twitter / X 账号', 'kratos'),
+            'subtitle' => __('格式：@username，用于 twitter:site 标签，留空则不输出', 'kratos'),
+        ),
+        array(
             'id' => 'seo_statistical',
             'title' => __('统计代码', 'kratos'),
             'subtitle' => __('<span style="color:red">输入代码时请注意辨别代码安全性</span>', 'kratos'),

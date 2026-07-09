@@ -15,32 +15,9 @@
     <meta charset="UTF-8">
     <title><?php wp_title('-', true, 'right'); ?></title>
     <?php
-    $ogImage = is_home() || !have_posts() ? kratos_option('seo_shareimg', ASSET_PATH . '/assets/img/default.jpg') : share_thumbnail_url();
-    $ogUrl = is_home() || !have_posts() ? get_site_url() : get_the_permalink();
-    $ogTitle = is_home() && is_front_page() ? get_bloginfo('name') : get_the_title();
-
     echo '<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">';
     echo '<meta name="format-detection" content="telphone=no, date=no, address=no, email=no">';
     echo '<meta name="theme-color" content="' . kratos_option('g_chrome', '#282a2c') . '">';
-    echo '<meta name="keywords" itemprop="keywords" content="' . keywords() . '">';
-    echo '<meta name="description" itemprop="description" content="' . description() . '">';
-    echo '<meta itemprop="image" content="' .  $ogImage . '">';
-
-    echo '<meta property="og:site_name" content="' . get_bloginfo('name') . '">';
-    echo '<meta property="og:url" content="' . $ogUrl . '">';
-    echo '<meta property="og:title" content="' . $ogTitle . '">';
-    echo '<meta property="og:image" content="' . $ogImage . '">';
-    echo '<meta property="og:image:type" content="image/webp">';
-    echo '<meta property="og:locale" content="' . get_bloginfo('language') . '">';
-
-    echo '<meta name="twitter:card" content="summary_large_image">';
-    echo '<meta name="twitter:title" content="' . $ogTitle . '">';
-
-    if (is_single() || is_singular()) {
-        global $post;
-        $author_id = $post->post_author;
-        echo '<meta name="twitter:creator" content="' . get_the_author_meta('nickname',  $author_id) . '">';
-    }
 
     if (kratos_option('g_icon')) {
         echo '<link rel="shortcut icon" href="' . kratos_option("g_icon") . '">';

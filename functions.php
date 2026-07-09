@@ -69,6 +69,9 @@ require get_template_directory() . '/inc/theme-core.php';
 // 站点配置
 require get_template_directory() . '/inc/theme-setting.php';
 
+// SEO / 社交分享 meta 统一出口
+require get_template_directory() . '/inc/theme-seo.php';
+
 // 文章配置
 require get_template_directory() . '/inc/theme-article.php';
 
