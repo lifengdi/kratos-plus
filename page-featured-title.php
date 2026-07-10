@@ -101,6 +101,7 @@ $kratos_cols = kratos_layout_cols(); ?>
                         @media (max-width:640px){
                             .kratos-featured-title .kfl-header{padding:18px 18px;gap:10px;}
                             .kratos-featured-title .kfl-title{font-size:19px;}
+                            .kratos-featured-title .kfl-header-divider{display:none;}
                             .kratos-featured-title .kfl-subtitle{flex-basis:100%;font-size:13px;}
                             .kratos-featured-title .kft-content{padding:18px;}
                         }
