@@ -87,3 +87,8 @@ Temporary Items
 !.gitkeep
 .claude/*
 CLAUDE.md
+
+.agents/*
+skills-lock.json
+
+demo/*

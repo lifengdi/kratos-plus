@@ -49,6 +49,7 @@ function kratos_weekday_options()
         'sun' => __('周日 · 金辉', 'kratos'),
         'parchment' => __('羊皮', 'kratos'),
         'silk'      => __('黄绢', 'kratos'),
+        'vermilion' => __('朱砂', 'kratos'),
     );
 }
 

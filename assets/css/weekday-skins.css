@@ -232,6 +232,27 @@ html[data-weekday-skin="silk"] {
     --kr-skin-banner-overlay: rgba(58, 42, 16, 0.55);
 }
 
+/* Vermilion · 朱砂（仅 locked 模式可选）
+ *   中国红 / 喜庆 / 中式雅致：宣纸米底 + 朱砂主色 + 暗金分割 + 楷体气质
+ *   适用节庆季节固定切换。装饰见 §14 / §18。 */
+html[data-weekday-skin="vermilion"] {
+    --kr-skin-bg:          #FBF3E8;
+    --kr-skin-card-bg:     #FFFAF1;
+    --kr-skin-card-soft:   #F5E9D4;
+    --kr-skin-card-line:   rgba(201, 162, 75, 0.32);
+    --kr-skin-heading:     #2A1A15;
+    --kr-skin-text:        #3A2A22;
+    --kr-skin-muted:       #8A6E5A;
+    --kr-skin-link:        #A61E1A;
+    --kr-skin-link-hover:  #7A1512;
+    --kr-skin-accent:      #C8322A;
+    --kr-skin-accent-hover:#A61E1A;
+    --kr-skin-gold:        #C9A24B;
+    --kr-skin-quote-bg:    #FBEEDA;
+    --kr-skin-tag-bg:      rgba(200, 50, 42, 0.10);
+    --kr-skin-banner-overlay: rgba(122, 21, 18, 0.55);
+}
+
 /* ===============================================================
  * 1. 全局
  *   .k-main.color / .banner 都用 inline style 写死背景，必须 !important。
@@ -1039,6 +1060,50 @@ html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details::after {
     pointer-events: none;
 }
 
+/* Vermilion · 朱砂：极淡朱砂径向 + 卡片左上角"福"字印章角标 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main {
+    background-image:
+        radial-gradient(circle at 20% 10%, rgba(201, 162, 75, 0.06), transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(200, 50, 42, 0.05), transparent 45%) !important;
+}
+
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details {
+    position: relative;
+}
+
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .board .article-panel::before {
+    content: "福";
+    position: absolute;
+    top: -14px;
+    left: 22px;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    background: var(--kr-skin-accent);
+    color: #F8E7B8;
+    font-family: "KaiTi", "STKaiti", "Ma Shan Zheng", serif;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 3px;
+    transform: rotate(-6deg);
+    box-shadow: 0 0 0 2px #F8E7B8 inset, 0 3px 8px rgba(122, 21, 18, .3);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 楷体气质：让标题带上中式衬线感 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main h1,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main h2,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main h3,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .article-panel h2,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget-title,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .comments-title {
+    font-family: "KaiTi", "STKaiti", "Ma Shan Zheng", "Noto Serif SC", serif;
+    letter-spacing: 1px;
+}
+
 /* ===============================================================
  * 14.5 浮动工具箱（搜索 / 置顶 / 微信 / 暗夜切换）按钮统一使用当天皮肤主色
  *
@@ -1684,6 +1749,14 @@ html[data-theme="dark"][data-weekday-skin="silk"] {
     --kr-accent: #C89048;
 }
 
+/* 暗夜下 vermilion：把 dark.css 的冷蓝 accent 替换成暖朱红，
+ * 但整体骨架仍用 dark.css 的深底浅字，保持夜间可读性。 */
+html[data-theme="dark"][data-weekday-skin="vermilion"] {
+    --kr-link: #E88A6E;
+    --kr-link-hover: #F5A88C;
+    --kr-accent: #D64A3F;
+}
+
 /* ===============================================================
  * 17. 暗夜模式下，关闭浅模式专属的"形状"层
  *
@@ -1782,15 +1855,17 @@ html[data-theme="dark"][data-weekday-skin="silk"] .kratos-shuoshuo-header {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* 暗夜下 sat/sun 的 .k-main 纹理关闭，回到 dark.css 纯深底 */
+/* 暗夜下 sat/sun/vermilion 的 .k-main 纹理关闭，回到 dark.css 纯深底 */
 html[data-theme="dark"][data-weekday-skin="sat"] .k-main,
-html[data-theme="dark"][data-weekday-skin="sun"] .k-main {
+html[data-theme="dark"][data-weekday-skin="sun"] .k-main,
+html[data-theme="dark"][data-weekday-skin="vermilion"] .k-main {
     background-image: none !important;
 }
 
-/* 暗夜下周日卡片右上角小星花关闭 */
+/* 暗夜下周日卡片右上角小星花 / vermilion "福"字印章关闭 */
 html[data-theme="dark"][data-weekday-skin="sun"] .k-main .board .article-panel::after,
-html[data-theme="dark"][data-weekday-skin="sun"] .k-main .details::after {
+html[data-theme="dark"][data-weekday-skin="sun"] .k-main .details::after,
+html[data-theme="dark"][data-weekday-skin="vermilion"] .k-main .board .article-panel::before {
     display: none;
 }
 
