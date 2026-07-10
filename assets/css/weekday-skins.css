@@ -2799,4 +2799,178 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a
     color: #fff !important;
 }
 
+/* 朱砂细节：去除所有卡片阴影 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .toolbar {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+/* 朱砂细节：卡片金色描边 + 小圆角（仅有背景色的可视卡片） */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget {
+    border: 1px solid var(--kr-skin-card-line);
+    border-radius: 6px;
+}
+
+/* 朱砂细节：文章标题金色下划线 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .article-panel h2,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article h1 {
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--kr-skin-card-line);
+    position: relative;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .article-panel h2::after,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article h1::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, #C8322A, #C9A24B);
+}
+
+/* 朱砂细节：小工具标题双金线 + ◆ 标记 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget-title {
+    padding-bottom: 10px;
+    border-bottom: 2px double #C9A24B !important;
+    letter-spacing: 2px;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget-title::before {
+    content: "◆";
+    color: #C8322A;
+    margin-right: 8px;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+/* 朱砂细节：blockquote 金色左边框 + 「 装饰 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main blockquote {
+    border-left: 4px solid #C9A24B !important;
+    background: var(--kr-skin-quote-bg);
+    position: relative;
+    border-radius: 0 4px 4px 0;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main blockquote::before {
+    content: "「";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    font-size: 26px;
+    color: #C8322A;
+    opacity: 0.4;
+    font-family: "KaiTi", "STKaiti", serif;
+}
+
+/* 朱砂细节：标签红色描边 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .article-tags a,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .tagcloud a,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .tag-links a {
+    border: 1px solid rgba(200, 50, 42, 0.22);
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .article-tags a:hover,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .tagcloud a:hover,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .tag-links a:hover {
+    background: #C8322A;
+    color: #F8E7B8 !important;
+    border-color: #C8322A;
+}
+
+/* 朱砂细节：分页圆角 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link {
+    border-radius: 3px;
+}
+
+/* 朱砂细节：分页当前页红底金字 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .pagination .page-item.active .page-link,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link:hover {
+    background: #C8322A;
+    color: #F8E7B8 !important;
+    border-color: #A61E1A;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link {
+    border: 1px solid var(--kr-skin-card-line);
+}
+
+/* 朱砂细节：评论区评论者头像金色边框 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .comment .avatar {
+    border: 2px solid #E5C97A;
+}
+
+/* 朱砂细节：评论标题双金线 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .comments-title {
+    padding-bottom: 10px;
+    border-bottom: 2px double #C9A24B !important;
+    letter-spacing: 2px;
+}
+
+/* 朱砂细节：Banner 圆角 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-header .banner .content {
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 朱砂细节：Banner 云纹角饰 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-header .banner .content::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-header .banner .content::after {
+    content: "";
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    background: radial-gradient(circle, #E5C97A 0 2px, transparent 3px) 0 0 / 24px 24px;
+    opacity: 0.22;
+    pointer-events: none;
+    z-index: 1;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-header .banner .content::before {
+    top: 16px;
+    left: 20px;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-header .banner .content::after {
+    bottom: 16px;
+    right: 20px;
+    transform: rotate(180deg);
+}
+
+/* 朱砂细节：k-main 宣纸噪点纹理叠加 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.4  0 0 0 0 0.25  0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    z-index: 0;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main {
+    position: relative;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* 朱砂细节：侧栏小工具列表虚线分隔 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget li {
+    border-bottom: 1px dashed var(--kr-skin-card-line);
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget li:last-child {
+    border-bottom: none;
+}
+
+/* 朱砂细节：评论表单暖底 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main #respond .comment-form textarea,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main #respond .comment-form input {
+    border: 1px solid var(--kr-skin-card-line);
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main #respond .comment-form textarea:focus,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main #respond .comment-form input:focus {
+    border-color: #C8322A;
+    box-shadow: 0 0 0 3px rgba(200, 50, 42, 0.1);
+}
 
