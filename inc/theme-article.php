@@ -731,6 +731,9 @@ if (!function_exists('kratos_render_single_ad')) {
             if (!$loader_printed) {
                 $loader_printed = true;
                 $loader = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' . esc_attr($client) . '" crossorigin="anonymous"></script>';
+                // 未填充 / 被拦截的 ins 容器可能残留 iframe 遮住下方元素（如相关文章第一项），彻底折叠
+                // 只在 AdSense 明确判定 unfilled 后折叠容器，避免脚本填充前就被隐藏
+                $loader .= '<style>.kratos-ad-adsense:has(ins.adsbygoogle[data-ad-status="unfilled"]){display:none!important}ins.adsbygoogle[data-ad-status="unfilled"]{display:none!important}</style>';
             }
 
             $ins  = '<ins class="adsbygoogle" style="display:block"';
@@ -740,7 +743,7 @@ if (!function_exists('kratos_render_single_ad')) {
             $ins .= ' data-full-width-responsive="' . ($responsive ? 'true' : 'false') . '"';
             $ins .= '></ins>';
 
-            return '<div style="margin-bottom:5px">' . $loader . $ins . '<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>';
+            return '<div class="kratos-ad-adsense" style="margin-bottom:5px">' . $loader . $ins . '<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>';
         }
 
         // 默认：图片广告
