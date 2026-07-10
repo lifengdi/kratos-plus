@@ -81,6 +81,10 @@ if (comments_open()) { ?>
 							} else {
 								_e('评论内容', 'kratos');
 							} ?></h3>
+		<?php if (is_singular()) {
+			if (function_exists('kratos_render_sticky_comments')) echo kratos_render_sticky_comments(get_the_ID());
+			if (function_exists('kratos_render_hot_comments'))    echo kratos_render_hot_comments(get_the_ID());
+		} ?>
 		<div class="list">
 			<?php if (get_comments_number() > 0) : ?>
 				<?php wp_list_comments('type=comment&callback=comment_callbacks'); ?>

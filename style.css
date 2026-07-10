@@ -5089,34 +5089,70 @@ a
     gap: 8px;
     margin: 12px 0;
 }
-.w-about-plus .w-about-social {
+.w-about-plus .w-about-social,
+.k-main .sidebar .w-about-plus a.w-about-social {
     position: relative;
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: var(--kr-skin-muted, #666);
     background: rgba(0, 0, 0, 0.05);
     text-decoration: none;
-    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
     outline: none;
 }
+/* hover / focus：显式声明 color 为白色（对比 accent 背景），
+   特异性必须高于 weekday-skins.css 里 `html[data-weekday-skin]…​.k-main a:hover` 那条
+   否则皮肤会把图标 color 覆盖成 --kr-skin-link-hover（深色），
+   与 accent 深色背景撞色导致图标视觉消失 */
 .w-about-plus .w-about-social:hover,
-.w-about-plus .w-about-social:focus {
+.w-about-plus .w-about-social:focus,
+.k-main .sidebar .w-about-plus a.w-about-social:hover,
+.k-main .sidebar .w-about-plus a.w-about-social:focus,
+.k-main .sidebar .w-about-plus span.w-about-social:hover,
+.k-main .sidebar .w-about-plus span.w-about-social:focus {
     background: var(--kr-skin-accent, var(--kr-accent, #5a86e0));
     color: #fff;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
+.w-about-plus .w-about-social:hover .kicon,
+.w-about-plus .w-about-social:hover i,
+.w-about-plus .w-about-social:focus .kicon,
+.w-about-plus .w-about-social:focus i,
+.w-about-plus .w-about-social:hover .w-about-social-letter,
+.w-about-plus .w-about-social:focus .w-about-social-letter,
+.k-main .sidebar .w-about-plus a.w-about-social:hover .kicon,
+.k-main .sidebar .w-about-plus a.w-about-social:hover i,
+.k-main .sidebar .w-about-plus a.w-about-social:focus .kicon,
+.k-main .sidebar .w-about-plus a.w-about-social:focus i {
+    color: #fff;
+}
+/* 统一图标尺寸：kicon（iconfont）在 iconfont.min.css 中被 !important 锁到 16px，
+   FontAwesome / 其他 <i> 则继承 font-size；这里用 !important 强制对齐，
+   并给出固定的 1em 方框 + 居中，避免不同字体基线差异导致视觉大小不一 */
 .w-about-plus .w-about-social .kicon,
 .w-about-plus .w-about-social i {
-    font-size: 15px;
+    font-size: 18px !important;
+    line-height: 1;
+    width: 1em;
+    height: 1em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+.w-about-plus .w-about-social .kicon::before,
+.w-about-plus .w-about-social i::before {
+    font-size: inherit;
     line-height: 1;
 }
 .w-about-plus .w-about-social-letter {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     text-transform: uppercase;
 }

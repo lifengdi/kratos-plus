@@ -124,6 +124,12 @@ require get_template_directory() . '/inc/theme-shuoshuo.php';
 // 评论验证码
 require get_template_directory() . '/inc/theme-comment-captcha.php';
 
+// 评论蜜罐（反机器人）
+require get_template_directory() . '/inc/theme-comment-honeypot.php';
+
+// 评论赞踩 + 置顶 + 热门评论
+require get_template_directory() . '/inc/theme-comment-reactions.php';
+
 // 暗夜模式
 require get_template_directory() . '/inc/theme-darkmode.php';
 

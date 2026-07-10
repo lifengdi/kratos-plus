@@ -187,6 +187,48 @@ function theme_autoload()
             'scan'   => __('扫码支付', 'kratos'),
         );
         wp_localize_script('kratos', 'kratos', $data);
+
+        // 评论增强样式（赞踩 / 置顶 / 热门评论）
+        if (is_singular() && comments_open()) {
+            $kc_like_color    = kratos_option('g_comment_reactions_like_color', '#e74c3c');
+            $kc_dislike_color = kratos_option('g_comment_reactions_dislike_color', '#7f8c8d');
+            $kc_css = '
+                .kc-vote{display:inline-flex;align-items:center;gap:8px;margin-right:10px;font-size:12px;color:#888;}
+                .kc-vote a{color:#888;text-decoration:none;display:inline-flex;align-items:center;gap:2px;transition:color .2s;}
+                .kc-vote a:hover{color:' . esc_attr($kc_like_color) . ';}
+                .kc-vote .kc-dislike:hover{color:' . esc_attr($kc_dislike_color) . ';}
+                .kc-vote a.voted.kc-like{color:' . esc_attr($kc_like_color) . ';}
+                .kc-vote a.voted.kc-dislike{color:' . esc_attr($kc_dislike_color) . ';}
+                .kc-vote em{font-style:normal;margin-left:2px;}
+                .kc-sticky-badge{display:inline-block;margin-left:6px;padding:1px 6px;font-size:11px;line-height:1.5;color:#fff;background:#e74c3c;border-radius:3px;vertical-align:middle;}
+                .comment.is-sticky{background:rgba(231,76,60,.04);border-left:3px solid #e74c3c;padding-left:8px;}
+                .hot-comments,.sticky-comments{--hc-accent:var(--kr-skin-accent,#e74c3c);--hc-bg:var(--kr-skin-tag-bg,rgba(0,0,0,.03));background:var(--hc-bg);border-radius:6px;padding:12px 16px;margin-bottom:16px;}
+                .sticky-comments{--hc-accent:#e67e22;}
+                .hot-comments-title{font-size:16px;margin:0 0 10px;color:var(--hc-accent);}
+                .hot-comments-list{list-style:none;padding:0;margin:0;}
+                .hot-comments-list .comment{list-style:none;}
+                .kc-fold-collapsed .hc-collapsed{display:none !important;}
+                .hc-fold-toggle{list-style:none;padding:6px 0 2px;margin-left:60px;}
+                .hc-fold-btn{color:var(--kr-skin-accent,#e74c3c);font-size:12px;text-decoration:none;cursor:pointer;}
+                .hc-fold-btn:hover{opacity:.85;}
+                .kc-fold-collapsed .hc-fold-less{display:none;}
+                .comment:not(.kc-fold-collapsed) .hc-fold-more{display:none;}
+                html[data-theme="dark"] .hot-comments,body.dark .hot-comments,html[data-theme="dark"] .sticky-comments,body.dark .sticky-comments{--hc-bg:rgba(255,255,255,.04);}
+            ';
+            wp_add_inline_style('kratos', $kc_css);
+        }
+
+        // 评论增强脚本（赞踩交互）—— 仅在单页且开启评论时加载
+        if (is_singular() && comments_open() && kratos_option('g_comment_reactions_enabled', true)) {
+            wp_enqueue_script('kratos-comment-enhance', ASSET_PATH . '/assets/js/comment-enhance.js', array(), THEME_VERSION, true);
+            wp_localize_script('kratos-comment-enhance', 'KratosCommentEnhance', array(
+                'ajax_url'       => admin_url('admin-ajax.php'),
+                'nonce'          => wp_create_nonce('kratos_comment_vote'),
+                'reply_collapse' => intval(kratos_option('g_comment_reply_collapse', 5)),
+                'i18n_more'      => __('展开剩余 %d 条回复', 'kratos'),
+                'i18n_less'      => __('收起回复', 'kratos'),
+            ));
+        }
     }
 }
 add_action('wp_enqueue_scripts', 'theme_autoload');

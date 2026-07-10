@@ -274,6 +274,13 @@ if (!function_exists('comment_callback')) :
                             echo '</span>';
                         }; ?>
                     </div>
+                    <div class="tool reply ml-2 d-inline-block float-right">
+                        <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
+                        <?php
+                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ml-1">' . __('回复', 'kratos') . '</span>');
+                        comment_reply_link(array_merge($defaults, array('depth' => 1, 'max_depth' => get_option('thread_comments_depth', 5))));
+                        ?>
+                    </div>
                 </div>
             </div>
         </li>
@@ -307,8 +314,9 @@ if (!function_exists('comment_callbacks')) :
         } else {
             $moderation_note = __('Your comment is awaiting moderation. This is a preview; your comment will be visible after it has been approved.');
         }
-        $GLOBALS['comment'] = $comment; ?>
-        <li class="comment cleanfix" id="comment-<?php echo esc_attr(comment_ID()); ?>">
+        $GLOBALS['comment'] = $comment;
+        $kratos_is_sticky = function_exists('kratos_comment_meta_int') && kratos_comment_meta_int($comment->comment_ID, 'kratos_sticky'); ?>
+        <li class="comment cleanfix<?php echo $kratos_is_sticky ? ' is-sticky' : ''; ?>" id="comment-<?php echo esc_attr(comment_ID()); ?>">
             <div class="avatar float-left d-inline-block mr-2">
                 <?php if (function_exists('get_avatar') && get_option('show_avatars')) {
                     echo get_avatar($comment, 50);
@@ -316,6 +324,9 @@ if (!function_exists('comment_callbacks')) :
             </div>
             <div class="info clearfix">
                 <cite class="author_name"><?php echo get_comment_author_link(); ?></cite>
+                <?php if ($kratos_is_sticky) : ?>
+                    <span class="kc-sticky-badge"><?php _e('置顶', 'kratos'); ?></span>
+                <?php endif; ?>
                 <?php if ('0' == $comment->comment_approved) : ?>
                     <em class="comment-awaiting-moderation"><?php echo $moderation_note; ?></em>
                 <?php endif; ?>
@@ -331,6 +342,7 @@ if (!function_exists('comment_callbacks')) :
                         }; ?>
                     </div>
                     <div class="tool reply ml-2 d-inline-block float-right">
+                        <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
                         $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ml-1">' . __('回复', 'kratos') . '</span>');
                         comment_reply_link(array_merge($defaults, array('depth' => $depth, 'max_depth' => $args['max_depth'])));
