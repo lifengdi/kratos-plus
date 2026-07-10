@@ -137,6 +137,10 @@ function kratos_timeline_shortcode($atts = array())
             </header>
         <?php } ?>
 
+        <?php if (kratos_option('heatmap_enabled', true) && kratos_option('heatmap_on_timeline', true)) {
+            echo do_shortcode('[post_heatmap title=""]');
+        } ?>
+
         <?php if (!$query->have_posts()) { ?>
             <div class="ktl-empty">
                 <?php esc_html_e('暂时还没有文章，敬请期待 ✍️', 'kratos'); ?>

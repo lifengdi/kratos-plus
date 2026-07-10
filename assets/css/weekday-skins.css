@@ -1947,6 +1947,7 @@ html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heart-shortcode,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-links,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-timeline,
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-heatmap,
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-friend-feed {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
@@ -2073,6 +2074,7 @@ html[data-theme="dark"][data-weekday-skin] .kratos-heart-shortcode,
 html[data-theme="dark"][data-weekday-skin] .kratos-topcommenters,
 html[data-theme="dark"][data-weekday-skin] .kratos-friend-links,
 html[data-theme="dark"][data-weekday-skin] .kratos-timeline,
+html[data-theme="dark"][data-weekday-skin] .kratos-heatmap,
 html[data-theme="dark"][data-weekday-skin] .kratos-friend-feed {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;

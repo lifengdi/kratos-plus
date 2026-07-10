@@ -8,7 +8,7 @@
  * @version 2025.02.08
  */
 
-define('THEME_VERSION', '1.1.3');
+define('THEME_VERSION', '1.1.4');
 
 if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;
@@ -140,6 +140,9 @@ require get_template_directory() . '/inc/theme-archives-stats.php';
 
 // 时间轴（含 [timeline] 短码 + page-timeline.php 模板 body class）
 require get_template_directory() . '/inc/theme-timeline.php';
+
+// 文章热力图（[post_heatmap] 短码）
+require get_template_directory() . '/inc/theme-post-heatmap.php';
 
 // 「Kratos+ 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
 require get_template_directory() . '/inc/theme-featured-title.php';

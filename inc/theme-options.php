@@ -2646,6 +2646,83 @@ CSF::createSection($prefix, array(
             'inline' => true,
             'default' => array(),
         ),
+        array(
+            'type' => 'subheading',
+            'content' => __('文章热力图', 'kratos'),
+        ),
+        array(
+            'id' => 'heatmap_enabled',
+            'type' => 'switcher',
+            'title' => __('启用热力图', 'kratos'),
+            'subtitle' => __('启用后可通过 [post_heatmap] 短码在任意文章 / 页面展示 GitHub 风格的发布热力图，同时控制资源是否入队', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'heatmap_on_timeline',
+            'type' => 'switcher',
+            'title' => __('时间轴页自动展示', 'kratos'),
+            'subtitle' => __('开启后，「时间轴」模板页面（page-timeline.php）会在列表上方自动展示一个热力图，无需手动写短码', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'heatmap_sc_title',
+            'type' => 'text',
+            'title' => __('默认标题', 'kratos'),
+            'subtitle' => __('[post_heatmap] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => __('文章热力图', 'kratos'),
+        ),
+        array(
+            'id' => 'heatmap_sc_post_type',
+            'type' => 'text',
+            'title' => __('默认文章类型', 'kratos'),
+            'subtitle' => __('要统计的文章类型别名，例如 post / shuoshuo；短码可通过 post_type 覆盖', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => 'post',
+        ),
+        array(
+            'id' => 'heatmap_sc_time_range',
+            'type' => 'number',
+            'title' => __('默认时间范围（天）', 'kratos'),
+            'subtitle' => __('未选择年份时展示的最近天数；短码可通过 time_range 覆盖', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => 365,
+            'attributes' => array('min' => 30, 'step' => 1),
+        ),
+        array(
+            'id' => 'heatmap_years_max',
+            'type' => 'number',
+            'title' => __('年份标签最多显示', 'kratos'),
+            'subtitle' => __('热力图右侧年份标签最多展示多少年（除"最近一年"外，按年份倒序）；填 0 表示显示全部年份', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => 5,
+            'attributes' => array('min' => 0, 'step' => 1),
+        ),
+        array(
+            'type' => 'content',
+            'content' => __(
+                '<div style="padding:12px 14px;background:#f6f8fa;border:1px solid #e1e4e8;border-radius:6px;line-height:1.8;">'
+                . '<b>短码使用说明：</b><br>'
+                . '<code>[post_heatmap]</code>  显示默认设置的热力图<br>'
+                . '<code>[post_heatmap title="我的写作日历" year="2025"]</code>  指定标题与年份<br>'
+                . '<code>[post_heatmap post_type="shuoshuo" time_range="180"]</code>  统计说说，最近 180 天<br>'
+                . '<code>[post_heatmap width="900px"]</code>  自定义容器宽度<br><br>'
+                . '<b>支持参数：</b><br>'
+                . '• <code>title</code>：标题文本，留空则不显示标题<br>'
+                . '• <code>post_type</code>：文章类型 slug，默认 <code>post</code><br>'
+                . '• <code>year</code>：指定年份（如 <code>2024</code>），留空显示最近 <code>time_range</code> 天<br>'
+                . '• <code>time_range</code>：最近多少天（默认 <code>365</code>）<br>'
+                . '• <code>width</code>：容器宽度（默认 <code>100%</code>）<br><br>'
+                . '<b>皮肤适配：</b>颜色跟随「主题设置 → 皮肤」自动切换，暗夜模式自动反色。'
+                . '</div>',
+                'kratos'
+            ),
+        ),
     ),
 ));
 
