@@ -2165,6 +2165,29 @@ body.is-kratos-friend-feed-page .k-main .details::after {
     display: none !important;
 }
 
+/* =============================================================================
+ * §20 滚动条主题化（跟随每日皮肤）
+ *   - Webkit 用 ::-webkit-scrollbar-*，Firefox 用 scrollbar-width / scrollbar-color
+ *   - 浅色皮肤下 thumb 走 accent，track 走 card-soft；暗夜由 dark.css 独立覆盖
+ *   - 排除 .open (layer 弹层) 保留原有窄条设定
+ * ============================================================================= */
+html[data-weekday-skin]:not([data-theme="dark"]) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--kr-skin-accent) var(--kr-skin-card-soft);
+}
+html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb {
+    background-color: var(--kr-skin-accent);
+    border: 1px solid var(--kr-skin-card-line);
+    border-radius: 6px;
+}
+html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--kr-skin-accent-hover, var(--kr-skin-accent));
+}
+html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
+    background-color: var(--kr-skin-card-soft);
+    border: 1px solid var(--kr-skin-card-line);
+}
+
 /* ---- 「黄绢」皮肤下，归档页 outer container 关掉自带装饰（避免双重装饰）----
  * silk 全站已经在 body + .k-main 复刻了相同的做旧效果，归档 shortcode 再
  * 单独画一遍渐变 + 噪点会出现"盒子套盒子"，所以保持 §18 早先的 outer
