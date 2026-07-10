@@ -97,47 +97,50 @@ function kratos_read_is_single_main()
 }
 
 /**
- * the_content 过滤器：前置更新提示条 + 后置相关文章。
+ * 构建更新提示条 HTML（不满足条件返回空字符串）。
  */
-function kratos_read_filter_content($content)
+function kratos_read_build_update_notice()
 {
     if (!kratos_read_is_single_main()) {
-        return $content;
+        return '';
     }
-
-    $prefix = '';
-    $suffix = '';
-
-    // 更新提示条
-    if (kratos_option('g_read_update_notice_enabled', false)) {
-        $days_threshold = max(1, (int) kratos_option('g_read_update_notice_days', 180));
-        $post_id = get_the_ID();
-        $modified = get_post_modified_time('U', true, $post_id);
-        $published = get_post_time('U', true, $post_id);
-        if ($modified && $published) {
-            $now = current_time('timestamp', true);
-            $days_since_modified = (int) floor(($now - $modified) / DAY_IN_SECONDS);
-            if ($days_since_modified >= $days_threshold) {
-                $tpl = kratos_option(
-                    'g_read_update_notice_text',
-                    __('本文最后更新于 %date%，距今已 %days% 天，其中的信息可能已经发生变化，请注意甄别。', 'kratos')
-                );
-                $msg = str_replace(
-                    array('%date%', '%days%'),
-                    array(
-                        esc_html(get_the_modified_date('', $post_id)),
-                        (int) $days_since_modified,
-                    ),
-                    $tpl
-                );
-                $prefix .= '<div class="kratos-update-notice"><i class="fas fa-info-circle"></i><span>' . wp_kses_post($msg) . '</span></div>';
-            }
-        }
+    if (!kratos_option('g_read_update_notice_enabled', false)) {
+        return '';
     }
-
-    return $prefix . $content . $suffix;
+    $days_threshold = max(1, (int) kratos_option('g_read_update_notice_days', 180));
+    $post_id = get_the_ID();
+    $modified = get_post_modified_time('U', true, $post_id);
+    $published = get_post_time('U', true, $post_id);
+    if (!$modified || !$published) {
+        return '';
+    }
+    $now = current_time('timestamp', true);
+    $days_since_modified = (int) floor(($now - $modified) / DAY_IN_SECONDS);
+    if ($days_since_modified < $days_threshold) {
+        return '';
+    }
+    $tpl = kratos_option(
+        'g_read_update_notice_text',
+        __('本文最后更新于 %date%，距今已 %days% 天，其中的信息可能已经发生变化，请注意甄别。', 'kratos')
+    );
+    $msg = str_replace(
+        array('%date%', '%days%'),
+        array(
+            esc_html(get_the_modified_date('', $post_id)),
+            (int) $days_since_modified,
+        ),
+        $tpl
+    );
+    return '<div class="kratos-update-notice"><i class="fas fa-info-circle"></i><span>' . wp_kses_post($msg) . '</span></div>';
 }
-add_filter('the_content', 'kratos_read_filter_content', 20);
+
+/**
+ * 输出更新提示条（供 single.php 在顶部广告之前调用）。
+ */
+function kratos_read_render_update_notice()
+{
+    echo kratos_read_build_update_notice();
+}
 
 /**
  * 渲染字数 & 预计阅读时间的 meta 片段（供 single.php 直接调用）。

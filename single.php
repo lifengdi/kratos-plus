@@ -78,6 +78,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                         <?php if (function_exists('kratos_series_render_box')) kratos_series_render_box(); ?>
                         <div class="content" id="lightgallery">
                             <?php
+                            if (function_exists('kratos_read_render_update_notice')) kratos_read_render_update_notice();
                             if (!empty(kratos_option('single_ad_top_group'))) {
                                 foreach (kratos_option('single_ad_top_group') as $group_item) {
                                     if (!empty($group_item['ad_switcher'])) {
