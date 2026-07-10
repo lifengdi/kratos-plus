@@ -270,8 +270,8 @@ function kratos_read_enqueue()
     if ($related_enabled) {
         $accent = 'var(--kr-skin-accent, #0abbef)';
         // 通用
-        $css .= '.kratos-related{margin:24px 0;padding:20px;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.06)}';
-        $css .= '.kratos-related-title{font-size:18px;font-weight:600;margin-bottom:16px;padding-left:10px;border-left:4px solid ' . $accent . '}';
+        $css .= '.kratos-related{margin:24px 0;padding:20px;background:var(--kr-skin-card-bg,#fff);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.06);color:var(--kr-skin-text,inherit)}';
+        $css .= '.kratos-related-title{font-size:18px;font-weight:600;margin-bottom:16px;padding-left:10px;border-left:4px solid ' . $accent . ';color:var(--kr-skin-heading,inherit)}';
         $css .= '.kratos-related-items{list-style:none;margin:0;padding:0}';
         $css .= '.kratos-related-item a{display:block;color:inherit;text-decoration:none;transition:transform .2s,color .2s}';
         $css .= '.kratos-related-item a:hover{color:' . $accent . '}';

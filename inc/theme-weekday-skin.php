@@ -124,3 +124,114 @@ function kratos_weekday_enqueue()
 }
 add_action('wp_enqueue_scripts', 'kratos_weekday_enqueue', 25);
 
+/**
+ * 朱砂皮肤专属：鼠标点击烟花特效。
+ * 仅当当前生效皮肤为 vermilion 时挂载脚本；粒子色板取朱红/金/浅金，与皮肤 accent/decor 呼应。
+ */
+function kratos_weekday_vermilion_fireworks()
+{
+    if (is_admin()) return;
+    $s = kratos_weekday_settings();
+    if ($s['mode'] === 'off') return;
+    // auto 模式下 vermilion 不在每日轮播里（只出现在 locked），因此只在 locked=vermilion 才注入
+    if ($s['mode'] !== 'locked' || $s['locked'] !== 'vermilion') return;
+
+    $js = <<<'JS'
+(function(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var colors = ['#C0392B','#E74C3C','#F1C40F','#E8B62D','#FFEDB5'];
+    var canvas, ctx, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var particles = [], raf = null;
+
+    function ensureCanvas(){
+        if (canvas) return;
+        canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:99999';
+        (document.body || document.documentElement).appendChild(canvas);
+        ctx = canvas.getContext('2d', {alpha:true});
+        resize();
+        window.addEventListener('resize', resize, {passive:true});
+    }
+    function resize(){
+        if (!canvas) return;
+        canvas.width = Math.floor(innerWidth * dpr);
+        canvas.height = Math.floor(innerHeight * dpr);
+        canvas.style.width = innerWidth + 'px';
+        canvas.style.height = innerHeight + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function spawn(x, y){
+        var count = 14 + (Math.random()*6|0);
+        for (var i=0;i<count;i++){
+            var angle = Math.random() * Math.PI * 2;
+            var speed = 1 + Math.random() * 2.2;
+            particles.push({
+                x:x, y:y,
+                vx:Math.cos(angle)*speed,
+                vy:Math.sin(angle)*speed,
+                life:1,
+                size:0.8 + Math.random()*1.2,
+                color: colors[(Math.random()*colors.length)|0]
+            });
+        }
+    }
+    function tick(){
+        raf = null;
+        // 用半透明擦除代替 clearRect：老帧的粒子被一层薄薄的透明层反复叠加，
+        // 逐渐变淡形成拖尾/消散烟雾感。destination-out 只擦透明度不涂色。
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = 'rgba(0,0,0,0.18)';
+        ctx.fillRect(0, 0, innerWidth, innerHeight);
+        ctx.globalCompositeOperation = 'source-over';
+        for (var i=particles.length-1;i>=0;i--){
+            var p = particles[i];
+            p.vy += 0.035;
+            p.vx *= 0.965;
+            p.vy *= 0.965;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= 0.022;
+            if (p.life <= 0){ particles.splice(i,1); continue; }
+            // 消散阶段：后半段生命里粒子逐渐缩小 + 提高发光模糊
+            var fade = p.life < 0.5 ? p.life * 2 : 1;
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 6 * fade;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * (0.4 + 0.6 * fade), 0, Math.PI*2);
+            ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+        if (particles.length) raf = requestAnimationFrame(tick);
+        else {
+            // 无粒子后再淡出几帧，把残留拖尾清干净
+            fadeOut();
+        }
+    }
+    function fadeOut(){
+        var frames = 0;
+        function step(){
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(0, 0, innerWidth, innerHeight);
+            ctx.globalCompositeOperation = 'source-over';
+            if (++frames < 12 && !particles.length) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+    window.addEventListener('click', function(e){
+        ensureCanvas();
+        spawn(e.clientX, e.clientY);
+        if (!raf) raf = requestAnimationFrame(tick);
+    }, {passive:true, capture:true});
+})();
+JS;
+    wp_register_script('kratos-vermilion-fireworks', '', array(), THEME_VERSION, true);
+    wp_enqueue_script('kratos-vermilion-fireworks');
+    wp_add_inline_script('kratos-vermilion-fireworks', $js);
+}
+add_action('wp_enqueue_scripts', 'kratos_weekday_vermilion_fireworks', 30);
+

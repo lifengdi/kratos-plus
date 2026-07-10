@@ -17,6 +17,19 @@ html[data-theme="dark"] {
     --kr-link: #6ea8ff;
     --kr-link-hover: #91bdff;
     --kr-accent: #4f86c6;
+    /* 当同时启用了每日皮肤（data-weekday-skin），accent 跟随皮肤色。
+     * fallback 保持原 #4f86c6，避免未启用皮肤时的裸暗色态失色。 */
+}
+
+/* :where() 把选择器权重降为 0，好让 weekday-skins.css §16 的
+ * 手工暗色微调（如周四冷白 accent、玻璃拟态降饱和）保持胜出。 */
+html:where([data-theme="dark"][data-weekday-skin]) {
+    --kr-accent: var(--kr-skin-accent, #4f86c6);
+    --kr-link: var(--kr-skin-link, #6ea8ff);
+    --kr-link-hover: var(--kr-skin-link-hover, #91bdff);
+}
+
+html[data-theme="dark"] {
     --kr-code-bg: #1a1d22;
     --kr-code-fg: #e36ea2;
     --kr-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -557,4 +570,55 @@ body.has-kratos-darkmode-toggle .k-footer .f-toolbox .gotop {
 
 body.has-kratos-darkmode-toggle .k-footer .f-toolbox .gotop.gotop-haswechat {
     bottom: 180px;
+}
+
+/* 系列文章卡片：inc/theme-series.php 内联样式基于 --kr-skin-* 变量，
+ * 未启用每日皮肤时暗夜下会 fallback 到浅色底。这里显式给暗色骨架赋值。 */
+html[data-theme="dark"] .kratos-series {
+    background: var(--kr-bg-elev);
+    border-color: var(--kr-border);
+    color: var(--kr-fg);
+    box-shadow: var(--kr-shadow);
+}
+
+html[data-theme="dark"] .kratos-series-head {
+    background: linear-gradient(90deg, var(--kr-bg-soft), transparent);
+    border-bottom-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .kratos-series-title {
+    color: var(--kr-fg-strong);
+}
+
+html[data-theme="dark"] .kratos-series-pos,
+html[data-theme="dark"] .kratos-series-num {
+    background: var(--kr-bg-soft);
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .kratos-series-toggle {
+    color: var(--kr-fg-muted);
+}
+
+html[data-theme="dark"] .kratos-series-item.is-current {
+    background: var(--kr-bg-soft);
+}
+
+html[data-theme="dark"] .kratos-series-item.is-current .kratos-series-num {
+    background: var(--kr-accent);
+    color: #fff;
+}
+
+html[data-theme="dark"] .kratos-series-name {
+    color: var(--kr-fg);
+}
+
+html[data-theme="dark"] .kratos-series-crumbs,
+html[data-theme="dark"] .kratos-series-crumbs a {
+    color: var(--kr-fg-muted);
+    border-bottom-color: var(--kr-border);
+}
+
+html[data-theme="dark"] .kratos-series-crumb-current {
+    color: var(--kr-fg-strong);
 }

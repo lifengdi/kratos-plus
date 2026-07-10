@@ -42,7 +42,9 @@
  *   --kr-skin-link-hover      链接悬停
  *   --kr-skin-accent          强调色（按钮 / 标签 / tab 高亮 / TOC 圆点 / 翻页 current）
  *   --kr-skin-accent-hover    强调色悬停
- *   --kr-skin-gold            金色装饰（小工具下划线 / blockquote 边 / h2.title 双线 / 角标边）
+ *   --kr-skin-decor           次强调色 / 装饰色（小工具下划线 / blockquote 边 / h2.title 双线 / 角标边）
+ *                             注：命名从 --kr-skin-gold 改为 --kr-skin-decor，因为多数皮肤此项并非金色
+ *                             （周一青蓝、周三墨蓝、周四墨蓝…），旧名与语义不符
  *   --kr-skin-quote-bg        引用块底
  *   --kr-skin-tag-bg          tag / footer tags 标签底
  *   --kr-skin-banner-overlay  banner 蒙层
@@ -62,7 +64,7 @@ html[data-weekday-skin="mon"] {
     --kr-skin-link-hover:  #1A4674;
     --kr-skin-accent:      #4A90D9;
     --kr-skin-accent-hover:#357ABD;
-    --kr-skin-gold:        #4A90D9;
+    --kr-skin-decor:        #4A90D9;
     --kr-skin-quote-bg:    rgba(255, 255, 255, 0.40);
     --kr-skin-tag-bg:      rgba(74, 144, 217, 0.12);
     --kr-skin-banner-overlay: rgba(26, 61, 95, 0.50);
@@ -82,7 +84,7 @@ html[data-weekday-skin="tue"] {
     --kr-skin-link-hover:  #8B2A1F;
     --kr-skin-accent:      #C03A2B;       /* 原色红 */
     --kr-skin-accent-hover:#8B2A1F;
-    --kr-skin-gold:        #E8B62D;       /* 原色黄 */
+    --kr-skin-decor:        #E8B62D;       /* 原色黄 */
     --kr-skin-quote-bg:    #F2E8D0;
     --kr-skin-tag-bg:      #E8B62D;       /* 原色黄 tag */
     --kr-skin-banner-overlay: rgba(26, 26, 26, 0.55);
@@ -102,7 +104,7 @@ html[data-weekday-skin="wed"] {
     --kr-skin-link-hover:  #2F4A6C;
     --kr-skin-accent:      #5E7CA6;
     --kr-skin-accent-hover:#4A6792;
-    --kr-skin-gold:        #5E7CA6;
+    --kr-skin-decor:        #5E7CA6;
     --kr-skin-quote-bg:    #DCE3EB;
     --kr-skin-tag-bg:      #DCE3EB;
     --kr-skin-banner-overlay: rgba(47, 57, 71, 0.45);
@@ -122,7 +124,7 @@ html[data-weekday-skin="thu"] {
     --kr-skin-link-hover:  #1A2C42;       /* 墨蓝 */
     --kr-skin-accent:      #1A2C42;       /* 唯一点缀色：极深墨蓝 */
     --kr-skin-accent-hover:#0A1828;
-    --kr-skin-gold:        #1A2C42;
+    --kr-skin-decor:        #1A2C42;
     --kr-skin-quote-bg:    #F2F2F2;
     --kr-skin-tag-bg:      #ECECEC;
     --kr-skin-banner-overlay: rgba(10, 10, 10, 0.55);
@@ -143,7 +145,7 @@ html[data-weekday-skin="fri"] {
     --kr-skin-link-hover:  #7A4612;
     --kr-skin-accent:      #C8862E;
     --kr-skin-accent-hover:#A86420;
-    --kr-skin-gold:        #C8862E;
+    --kr-skin-decor:        #C8862E;
     --kr-skin-quote-bg:    rgba(255, 255, 255, 0.40);
     --kr-skin-tag-bg:      rgba(200, 134, 46, 0.14);
     --kr-skin-banner-overlay: rgba(90, 58, 18, 0.48);
@@ -162,7 +164,7 @@ html[data-weekday-skin="sat"] {
     --kr-skin-link-hover:  #0F344B;
     --kr-skin-accent:      #2E84B5;
     --kr-skin-accent-hover:#1F6790;
-    --kr-skin-gold:        #E8B860;
+    --kr-skin-decor:        #E8B860;
     --kr-skin-quote-bg:    #E5F1F8;
     --kr-skin-tag-bg:      #D4E8F2;
     --kr-skin-banner-overlay: rgba(46, 132, 181, 0.42);
@@ -181,7 +183,7 @@ html[data-weekday-skin="sun"] {
     --kr-skin-link-hover:  #5F3E08;
     --kr-skin-accent:      #C28A2A;
     --kr-skin-accent-hover:#9E6E1E;
-    --kr-skin-gold:        #D9A94A;
+    --kr-skin-decor:        #D9A94A;
     --kr-skin-quote-bg:    #FAEDC8;
     --kr-skin-tag-bg:      #F1DFAA;
     --kr-skin-banner-overlay: rgba(194, 138, 42, 0.40);
@@ -202,7 +204,7 @@ html[data-weekday-skin="parchment"] {
     --kr-skin-link-hover:  #3E3934;
     --kr-skin-accent:      #6E4F2F;
     --kr-skin-accent-hover:#3E3934;
-    --kr-skin-gold:        #A78C63;
+    --kr-skin-decor:        #A78C63;
     --kr-skin-quote-bg:    #F2EEE8;
     --kr-skin-tag-bg:      #F2EEE8;
     --kr-skin-banner-overlay: rgba(62, 57, 52, 0.55);
@@ -226,7 +228,7 @@ html[data-weekday-skin="silk"] {
     --kr-skin-link-hover:  #5A2D0A;
     --kr-skin-accent:      #7A3F12;
     --kr-skin-accent-hover:#A86028;
-    --kr-skin-gold:        #A86028;
+    --kr-skin-decor:        #A86028;
     --kr-skin-quote-bg:    rgba(255, 250, 232, 0.78);
     --kr-skin-tag-bg:      rgba(255, 250, 232, 0.78);
     --kr-skin-banner-overlay: rgba(58, 42, 16, 0.55);
@@ -247,7 +249,7 @@ html[data-weekday-skin="vermilion"] {
     --kr-skin-link-hover:  #7A1512;
     --kr-skin-accent:      #C8322A;
     --kr-skin-accent-hover:#A61E1A;
-    --kr-skin-gold:        #C9A24B;
+    --kr-skin-decor:        #C9A24B;
     --kr-skin-quote-bg:    #FBEEDA;
     --kr-skin-tag-bg:      rgba(200, 50, 42, 0.10);
     --kr-skin-banner-overlay: rgba(122, 21, 18, 0.55);
@@ -899,7 +901,7 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .page404 .content .acti
  * =============================================================== */
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer p a:hover {
-    color: var(--kr-skin-gold);
+    color: var(--kr-skin-decor);
 }
 
 /* ===============================================================
@@ -1453,6 +1455,54 @@ html[data-weekday-skin="fri"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid rgba(255, 255, 255, 0.55);
     box-shadow: 0 8px 32px rgba(180, 70, 50, 0.10);
+}
+
+/* -------- 玻璃拟态兜底（周一 / 周五）--------
+ *   1) 浏览器不支持 backdrop-filter：卡片背景切换为高不透明度实底，
+ *      避免正文文字与 banner 图像素直接叠加导致对比度不达标（WCAG AA 4.5:1）。
+ *   2) 用户偏好 prefers-reduced-transparency：同样降级为实底，
+ *      并关闭 blur 以减轻 GPU 负担与降低视觉负担。
+ *   变量 --kr-skin-card-bg / --kr-skin-card-soft / --kr-skin-quote-bg
+ *   在浅色玻璃皮肤下是 rgba(255,255,255,0.4~0.55)，此处覆盖成 0.94。 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+html[data-weekday-skin="mon"]:not([data-theme="dark"]),
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) {
+        --kr-skin-card-bg:   rgba(255, 255, 255, 0.94);
+        --kr-skin-card-soft: rgba(255, 255, 255, 0.90);
+        --kr-skin-quote-bg:  rgba(255, 255, 255, 0.94);
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+html[data-weekday-skin="mon"]:not([data-theme="dark"]),
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) {
+        --kr-skin-card-bg:   rgba(255, 255, 255, 0.94);
+        --kr-skin-card-soft: rgba(255, 255, 255, 0.90);
+        --kr-skin-quote-bg:  rgba(255, 255, 255, 0.94);
+    }
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .kratos-shuoshuo-header,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
 }
 
 /* -------- Parchment · 羊皮纸（与归档页 parchment scheme 一致） --------
@@ -2120,4 +2170,387 @@ body.is-kratos-friend-feed-page .k-main .details::after {
  * 单独画一遍渐变 + 噪点会出现"盒子套盒子"，所以保持 §18 早先的 outer
  * 关闭即可。但变量重写要部分还原，让 pill/total/卡片仍走 archives 自家
  * 配色（其实色值与 silk 一致，所以行为完全一样）。 */
+
+/* =============================================================================
+ * §19 正文列表 marker（ul / ol / li）——按皮肤差异化
+ *   作用域：单篇文章正文 .k-main .details .article .content 内的 ul / ol
+ *   .paginations、.related-items、.kratos-series-list 已 list-style:none，
+ *   本节的选择器 `> li` 只会影响直系 li，不会污染这些自定义列表。
+ *   颜色统一走 --kr-skin-accent / --kr-skin-decor，暗夜下 dark.css 会把
+ *   --kr-skin-accent 接到 --kr-accent，marker 会自动换成暗夜 accent。
+ * ============================================================================= */
+
+/* 通用骨架：清默认 marker，改用 ::before 手绘，行距舒展一点。
+ * 用 CSS 变量 --kra-list-scope 将"作用域"抽象化，正文与侧边栏共享同一套规则。
+ * 排除已用 list-style:none 的自定义列表（.paginations / .kratos-series-list / .kratos-related-items 等）。*/
+.k-main .details .article .content ul,
+.k-main .details .article .content ol,
+.widget_recent_entries ul,
+.widget_recent_comments ul,
+.widget_pages ul,
+.widget_meta ul,
+.widget_rss ul,
+.widget_nav_menu ul,
+.widget_block ul {
+    list-style: none;
+    padding-left: 1.6em;
+}
+.k-main .details .article .content ol {
+    counter-reset: kra-ol;
+}
+/* 代码块行号 <ol> 已在 style.css 设 list-style:none，此处显式排除，避免 marker 溢出 */
+.k-main .details .article .content pre ul,
+.k-main .details .article .content pre ol {
+    list-style: none;
+    padding-left: 0;
+    counter-reset: none;
+}
+.k-main .details .article .content ul > li,
+.k-main .details .article .content ol > li,
+.widget_recent_entries ul > li,
+.widget_recent_comments ul > li,
+.widget_pages ul > li,
+.widget_meta ul > li,
+.widget_rss ul > li,
+.widget_nav_menu ul > li,
+.widget_block ul > li {
+    position: relative;
+    margin-bottom: 6px;
+    padding-left: 0.4em;
+}
+.k-main .details .article .content ul > li::before,
+.widget_recent_entries ul > li::before,
+.widget_recent_comments ul > li::before,
+.widget_pages ul > li::before,
+.widget_meta ul > li::before,
+.widget_rss ul > li::before,
+.widget_nav_menu ul > li::before,
+.widget_block ul > li::before {
+    content: "";
+    position: absolute;
+    left: -1em;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--kr-skin-accent, currentColor);
+}
+.k-main .details .article .content ol > li {
+    counter-increment: kra-ol;
+}
+.k-main .details .article .content ol > li::before {
+    content: counter(kra-ol) ".";
+    position: absolute;
+    left: -1.4em;
+    top: 0;
+    min-width: 1.2em;
+    text-align: right;
+    color: var(--kr-skin-accent, currentColor);
+    font-weight: 600;
+}
+/* 嵌套 ul：第二层空心圆，第三层实心方块 */
+.k-main .details .article .content ul ul > li::before,
+.widget_recent_entries ul ul > li::before,
+.widget_recent_comments ul ul > li::before,
+.widget_pages ul ul > li::before,
+.widget_meta ul ul > li::before,
+.widget_rss ul ul > li::before,
+.widget_nav_menu ul ul > li::before,
+.widget_block ul ul > li::before {
+    background: transparent;
+    border: 1px solid var(--kr-skin-accent, currentColor);
+    top: 0.6em;
+}
+.k-main .details .article .content ul ul ul > li::before,
+.widget_recent_entries ul ul,
+.widget_recent_comments ul ul,
+.widget_pages ul ul,
+.widget_meta ul ul,
+.widget_rss ul ul,
+.widget_nav_menu ul ul,
+.widget_block ul ul ul > li::before {
+    background: var(--kr-skin-accent, currentColor);
+    border: none;
+    border-radius: 0;
+    width: 6px;
+    height: 6px;
+    top: 0.7em;
+}
+
+/* ---- 周一 玻璃冷调：ol 前导零 01. 02. ---- */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol, decimal-leading-zero) ".";
+}
+
+/* ---- 周二 几何拼贴 Bauhaus：ul 实心方块，ol 数字带黑框 ---- */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    border-radius: 0;
+    width: 8px;
+    height: 8px;
+    top: 0.55em;
+}
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content ul ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_recent_entries ul ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_recent_comments ul ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_pages ul ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_meta ul ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_rss ul ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_nav_menu ul ul > li::before,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_block ul ul > li::before {
+    background: transparent;
+    border: 1.5px solid var(--kr-skin-accent);
+}
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+    padding-left: 2.4em;
+}
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol);
+    left: -2.2em;
+    top: 0.05em;
+    padding: 0 5px;
+    min-width: 1.6em;
+    border: 1.5px solid var(--kr-skin-card-line);
+    color: var(--kr-skin-heading);
+    background: var(--kr-skin-card-bg);
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+/* ---- 周三 新拟态 Neumorphism：圆点带微阴影，ol 数字气泡 ---- */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(163, 177, 198, 0.5);
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+    padding-left: 2.4em;
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol);
+    left: -2.2em;
+    top: 0.05em;
+    width: 1.7em;
+    height: 1.7em;
+    line-height: 1.7em;
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--kr-skin-bg);
+    box-shadow: inset -2px -2px 4px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(163, 177, 198, 0.45);
+    text-align: center;
+    font-size: 12px;
+}
+
+/* ---- 周四 极简黑白 Minimal：短横线 marker，ol 保持纯数字 ---- */
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 0;
+    background: transparent;
+    border: 1.5px solid var(--kr-skin-heading);
+    top: 0.65em;
+    left: -1.3em;
+}
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .article .content ul ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_recent_entries ul ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_recent_comments ul ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_pages ul ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_meta ul ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_rss ul ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_nav_menu ul ul > li::before,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_block ul ul > li::before {
+    background: var(--kr-skin-heading);
+    border: none;
+    width: 7px;
+    height: 7px;
+}
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol, decimal-leading-zero);
+    color: var(--kr-skin-muted);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+}
+
+/* ---- 周五 玻璃暖调：ol 小写罗马 i. ii. iii. ---- */
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol, lower-roman) ".";
+    font-style: italic;
+}
+
+/* ---- 周六 海滨度假：ul 用菱形 ◆，ol 数字外圆圈 ---- */
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    content: "◆";
+    background: none;
+    border: none;
+    width: auto;
+    height: auto;
+    color: var(--kr-skin-accent);
+    top: 0;
+    left: -1.2em;
+    font-size: 12px;
+    line-height: 1.6;
+}
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+    padding-left: 2.4em;
+}
+html[data-weekday-skin="sat"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol);
+    left: -2.2em;
+    top: 0.05em;
+    width: 1.7em;
+    height: 1.7em;
+    line-height: calc(1.7em - 2px);
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--kr-skin-accent);
+    text-align: center;
+    font-size: 12px;
+    background: var(--kr-skin-card-bg);
+}
+
+/* ---- 周日 金辉庆典：ul 星花 ✦，ol 数字带金色下划线 ---- */
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    content: "✦";
+    background: none;
+    border: none;
+    width: auto;
+    height: auto;
+    color: var(--kr-skin-decor);
+    top: 0;
+    left: -1.2em;
+    font-size: 12px;
+    line-height: 1.6;
+}
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+    padding-left: 2.4em;
+}
+html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol, upper-roman) ".";
+    left: -2.2em;
+    min-width: 1.8em;
+    color: var(--kr-skin-decor);
+    font-weight: 700;
+}
+
+/* ---- 素笺 parchment：ul 中点 ·，ol 数字带圆括号 ---- */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    content: "·";
+    background: none;
+    border: none;
+    width: auto;
+    height: auto;
+    color: var(--kr-skin-accent);
+    top: -0.15em;
+    left: -1em;
+    font-size: 22px;
+    line-height: 1;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+    padding-left: 2.6em;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: "(" counter(kra-ol, lower-alpha) ")";
+    left: -2.4em;
+    color: var(--kr-skin-muted);
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* ---- 绫罗 silk：ul 菱形 ◇，ol 数字后中式顿号 ---- */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    content: "◇";
+    background: none;
+    border: none;
+    width: auto;
+    height: auto;
+    color: var(--kr-skin-decor);
+    top: 0;
+    left: -1.2em;
+    font-size: 12px;
+    line-height: 1.6;
+}
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+    padding-left: 2.6em;
+}
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol, cjk-ideographic) "、";
+    left: -2.4em;
+    min-width: 2em;
+    color: var(--kr-skin-accent);
+}
+
+/* ---- 朱砂 vermilion：ul 朱红实心方块 ▪，ol 中文数字 一、二、三 ---- */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    border-radius: 0;
+    width: 7px;
+    height: 7px;
+    top: 0.6em;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+    padding-left: 2.6em;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol, cjk-ideographic) "、";
+    left: -2.4em;
+    min-width: 2em;
+    color: var(--kr-skin-accent);
+    font-weight: 500;
+}
+
 
