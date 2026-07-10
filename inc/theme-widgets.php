@@ -995,82 +995,39 @@ class widget_toc extends WP_Widget
 
     public function widget($args, $instance)
     {
-        global $toc;
+        // 只在有正文内容的单篇页面输出空壳，具体目录由前端 JS 扫描正文标题生成。
+        // 这样整页缓存 / 对象缓存不会把 A 文章的目录带到 B 文章上。
+        if (!is_singular()) return;
 
-        $index = wp_cache_get(get_the_ID(), 'toc');
+        $collapsed = !empty($instance['collapsed']);
 
-        if ($index === false && $toc) {
-            $items = array();
-            foreach ($toc as $t) {
-                $items[] = array(
-                    'text'  => str_replace(array('[h2title]', '[/h2title]'), '', $t['text']),
-                    'depth' => (int) $t['depth'],
-                    'count' => (int) $t['count'],
-                );
-            }
-            $html = self::render_tree($items);
-            $index = '<div class="widget w-toc">'
-                . '<div class="title" role="button" tabindex="0">' . __('文章目录', 'kratos') . '</div>'
-                . '<div class="item">' . $html . '</div>'
-                . '</div>';
-            wp_cache_set(get_the_ID(), $index, 'toc', 360000);
-        }
-
-        echo $index;
+        echo '<div class="widget w-toc is-empty"'
+            . ' data-toc-target=".k-main .article .content"'
+            . ' data-toc-collapsed="' . ($collapsed ? '1' : '0') . '">'
+            . '<div class="title" role="button" tabindex="0">' . __('文章目录', 'kratos') . '</div>'
+            . '<div class="item"></div>'
+            . '</div>';
     }
 
-    /**
-     * 将扁平 $toc 数组转为嵌套 <ul>。
-     * 每个 li 是否有子级由 JS 决定（更简单可靠）；此处只负责结构。
-     */
-    private static function render_tree($items)
+    public function form($instance)
     {
-        if (empty($items)) return '';
+        $instance  = wp_parse_args((array) $instance, array('collapsed' => 0));
+        $collapsed = !empty($instance['collapsed']);
+        $id        = $this->get_field_id('collapsed');
+        $name      = $this->get_field_name('collapsed');
+?>
+        <p>
+            <input class="checkbox" type="checkbox" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" value="1" <?php checked($collapsed); ?> />
+            <label for="<?php echo esc_attr($id); ?>"><?php _e('默认折叠目录', 'kratos'); ?></label>
+        </p>
+<?php
+    }
 
-        $min = PHP_INT_MAX;
-        foreach ($items as $it) $min = min($min, (int) $it['depth']);
-
-        $out = '';
-        $depth = $min - 1;      // 当前已打开的层级（相对最小深度）
-        $liOpen = false;
-
-        foreach ($items as $it) {
-            $d = (int) $it['depth'];
-
-            if ($d > $depth) {
-                // 进入更深层：为每一级新增一个 <ul>
-                for ($i = $depth; $i < $d; $i++) {
-                    $out .= '<ul class="toc-list">';
-                }
-            } else {
-                // 同级或回退：先关掉当前 li
-                if ($liOpen) {
-                    $out .= '</li>';
-                    $liOpen = false;
-                }
-                // 回退层级
-                for ($i = $depth; $i > $d; $i--) {
-                    $out .= '</ul></li>';
-                }
-            }
-
-            $level = $d - $min + 1;
-            $out .= '<li class="toc-item toc-h' . $d . ' toc-l' . $level . '">'
-                 . '<a href="#toc-' . (int) $it['count'] . '">'
-                 . esc_html($it['text'])
-                 . '</a>';
-            $liOpen = true;
-            $depth = $d;
-        }
-
-        // 收尾：闭合所有未关闭的 li / ul
-        if ($liOpen) $out .= '</li>';
-        for ($i = $depth; $i > $min - 1; $i--) {
-            if ($i > $min) $out .= '</ul></li>';
-            else           $out .= '</ul>';
-        }
-
-        return $out;
+    public function update($new_instance, $old_instance)
+    {
+        $instance = (array) $old_instance;
+        $instance['collapsed'] = !empty($new_instance['collapsed']) ? 1 : 0;
+        return $instance;
     }
 }
 

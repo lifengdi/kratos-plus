@@ -7,9 +7,65 @@
   var toc = document.querySelector(".k-main .sidebar .w-toc");
   if (!toc) return;
 
-  var content = document.querySelector(".k-main .article .content");
+  var contentSel = toc.getAttribute("data-toc-target") || ".k-main .article .content";
+  var content = document.querySelector(contentSel);
   var title = toc.querySelector(".title");
   var item = toc.querySelector(".item");
+
+  // 前端构建目录：从正文标题中扫描 h1–h6，避免服务端缓存把 A 文章的目录带到 B 文章上。
+  // 复用 the_content 过滤器已插入的 <a name="toc-N"> 锚点（每篇文章正文各自缓存，安全）。
+  (function buildTree() {
+    if (!content || !item) return;
+    var headings = content.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    if (!headings.length) return;
+
+    var entries = [];
+    headings.forEach(function (h) {
+      var anchor = h.querySelector('a[name^="toc-"]');
+      if (!anchor) return;
+      entries.push({
+        name: anchor.getAttribute("name"),
+        depth: parseInt(h.tagName.substring(1), 10),
+        text: (h.textContent || "").trim(),
+      });
+    });
+    if (!entries.length) return;
+
+    var min = Infinity;
+    entries.forEach(function (e) { if (e.depth < min) min = e.depth; });
+
+    var html = "";
+    var depth = min - 1;
+    var liOpen = false;
+    entries.forEach(function (e) {
+      var d = e.depth;
+      if (d > depth) {
+        for (var i = depth; i < d; i++) html += '<ul class="toc-list">';
+      } else {
+        if (liOpen) { html += "</li>"; liOpen = false; }
+        for (var j = depth; j > d; j--) html += "</ul></li>";
+      }
+      var level = d - min + 1;
+      html += '<li class="toc-item toc-h' + d + ' toc-l' + level + '">'
+        + '<a href="#' + e.name + '">'
+        + e.text.replace(/[&<>"']/g, function (c) {
+          return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+        })
+        + '</a>';
+      liOpen = true;
+      depth = d;
+    });
+    if (liOpen) html += "</li>";
+    for (var k = depth; k > min - 1; k--) {
+      html += k > min ? "</ul></li>" : "</ul>";
+    }
+
+    item.innerHTML = html;
+    toc.classList.remove("is-empty");
+  })();
+
+  // 空壳未被填充则彻底移除，避免出现空目录框
+  if (!item || !item.firstChild) { toc.parentNode && toc.parentNode.removeChild(toc); return; }
 
   // 三角图标（飞书风格）：展开态 ▼、折叠态 ▶
   var SVG_CARET =
@@ -28,7 +84,7 @@
   window.addEventListener("scroll", updateOffset, { passive: true });
   window.addEventListener("resize", updateOffset);
 
-  // 2) 整体折叠
+  // 2) 整体折叠（移动端才使用；桌面端的"默认折叠"含义在下面的子级里处理）
   if (title) {
     if (window.matchMedia("(max-width: 991.98px)").matches) {
       toc.classList.add("is-collapsed");
@@ -46,16 +102,19 @@
   function setToggle(btn, collapsed) {
     btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
   }
+  // 默认折叠 = 仅保留顶级，其余子级 li 初始折起
+  var defaultCollapsed = toc.getAttribute("data-toc-collapsed") === "1";
   if (item) {
     item.querySelectorAll(".toc-item").forEach(function (li) {
       if (!li.querySelector(":scope > .toc-list")) return;
       li.classList.add("has-children");
+      if (defaultCollapsed) li.classList.add("is-collapsed");
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "toc-toggle";
       btn.setAttribute("aria-label", "折叠 / 展开子目录");
       btn.innerHTML = SVG_CARET;
-      setToggle(btn, false);
+      setToggle(btn, defaultCollapsed);
       btn.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation();

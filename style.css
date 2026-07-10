@@ -4078,6 +4078,7 @@ a {
     justify-content: space-between;
 }
 .k-main .sidebar .w-toc.is-collapsed .item { display: none; }
+.k-main .sidebar .w-toc.is-empty { display: none; }
 
 .k-main .sidebar .w-toc .item {
     flex: 1 1 auto;
