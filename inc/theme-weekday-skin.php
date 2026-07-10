@@ -50,6 +50,7 @@ function kratos_weekday_options()
         'parchment' => __('羊皮', 'kratos'),
         'silk'      => __('黄绢', 'kratos'),
         'vermilion' => __('朱砂', 'kratos'),
+        'morandi'   => __('莫兰迪', 'kratos'),
     );
 }
 

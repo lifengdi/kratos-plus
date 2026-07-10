@@ -67,6 +67,27 @@
             html[data-weekday-skin]:not([data-theme="dark"]) .k-nav.nav-sticky {
                 background: var(--kr-skin-heading, <?php echo esc_attr($nav_sticky_bg); ?>) !important;
             }
+            /* 莫兰迪：吸顶用浅暖底 */
+            html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky {
+                background: var(--kr-skin-card-bg, #F0EDEA) !important;
+                box-shadow: 0 2px 16px rgba(90, 80, 70, 0.07);
+            }
+            /* 朱砂：吸顶用朱红渐变 + 顶部金线 */
+            html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky {
+                background: linear-gradient(180deg, #A61E1A, #8E1815) !important;
+                box-shadow: 0 4px 18px rgba(122, 21, 18, 0.28);
+                border-bottom: none;
+            }
+            html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 8px;
+                right: 8px;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, #E5C97A 20%, #E5C97A 80%, transparent);
+                opacity: 0.7;
+            }
             /* 暗夜模式：跟随暗夜次级底色 */
             html[data-theme="dark"] .k-nav.nav-sticky {
                 background: var(--kr-bg-elev, #1a1d22) !important;

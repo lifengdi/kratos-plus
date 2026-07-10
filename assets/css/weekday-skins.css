@@ -48,6 +48,8 @@
  *   --kr-skin-quote-bg        引用块底
  *   --kr-skin-tag-bg          tag / footer tags 标签底
  *   --kr-skin-banner-overlay  banner 蒙层
+ *   --kr-skin-footer-bg      页脚底色（.k-footer 背景）
+ *   --kr-skin-footer-fg      页脚前景色（文字 / 链接 / 图标）
  * =============================================================== */
 
 /* 周一 · 玻璃拟态 / 冷调（Glass · Cool）
@@ -68,6 +70,8 @@ html[data-weekday-skin="mon"] {
     --kr-skin-quote-bg:    rgba(255, 255, 255, 0.40);
     --kr-skin-tag-bg:      rgba(74, 144, 217, 0.12);
     --kr-skin-banner-overlay: rgba(26, 61, 95, 0.50);
+    --kr-skin-footer-bg:   #152D42;
+    --kr-skin-footer-fg:   #94B8D4;
 }
 
 /* 周二 · 几何拼贴 Bauhaus
@@ -88,6 +92,8 @@ html[data-weekday-skin="tue"] {
     --kr-skin-quote-bg:    #F2E8D0;
     --kr-skin-tag-bg:      #E8B62D;       /* 原色黄 tag */
     --kr-skin-banner-overlay: rgba(26, 26, 26, 0.55);
+    --kr-skin-footer-bg:   #1A1A1A;
+    --kr-skin-footer-fg:   #B8A88C;
 }
 
 /* 周三 · 新拟态 Neumorphism
@@ -108,6 +114,8 @@ html[data-weekday-skin="wed"] {
     --kr-skin-quote-bg:    #DCE3EB;
     --kr-skin-tag-bg:      #DCE3EB;
     --kr-skin-banner-overlay: rgba(47, 57, 71, 0.45);
+    --kr-skin-footer-bg:   #2A3140;
+    --kr-skin-footer-fg:   #9AABBF;
 }
 
 /* 周四 · 极简黑白 Minimal
@@ -128,6 +136,8 @@ html[data-weekday-skin="thu"] {
     --kr-skin-quote-bg:    #F2F2F2;
     --kr-skin-tag-bg:      #ECECEC;
     --kr-skin-banner-overlay: rgba(10, 10, 10, 0.55);
+    --kr-skin-footer-bg:   #0F0F0F;
+    --kr-skin-footer-fg:   #9A9A9A;
 }
 
 /* 周五 · 玻璃拟态 / 暖调（Glass · Warm）—— 焦糖琥珀
@@ -149,6 +159,8 @@ html[data-weekday-skin="fri"] {
     --kr-skin-quote-bg:    rgba(255, 255, 255, 0.40);
     --kr-skin-tag-bg:      rgba(200, 134, 46, 0.14);
     --kr-skin-banner-overlay: rgba(90, 58, 18, 0.48);
+    --kr-skin-footer-bg:   #3A2810;
+    --kr-skin-footer-fg:   #C8A878;
 }
 
 /* 周六 · 海滨度假（Seaside Festival） */
@@ -168,6 +180,8 @@ html[data-weekday-skin="sat"] {
     --kr-skin-quote-bg:    #E5F1F8;
     --kr-skin-tag-bg:      #D4E8F2;
     --kr-skin-banner-overlay: rgba(46, 132, 181, 0.42);
+    --kr-skin-footer-bg:   #0C2838;
+    --kr-skin-footer-fg:   #88B8D4;
 }
 
 /* 周日 · 金辉庆典（Golden Sunday） */
@@ -187,6 +201,8 @@ html[data-weekday-skin="sun"] {
     --kr-skin-quote-bg:    #FAEDC8;
     --kr-skin-tag-bg:      #F1DFAA;
     --kr-skin-banner-overlay: rgba(194, 138, 42, 0.40);
+    --kr-skin-footer-bg:   #3D2E0A;
+    --kr-skin-footer-fg:   #D4B878;
 }
 
 /* Parchment · 羊皮纸（仅 locked 模式可选）
@@ -208,6 +224,8 @@ html[data-weekday-skin="parchment"] {
     --kr-skin-quote-bg:    #F2EEE8;
     --kr-skin-tag-bg:      #F2EEE8;
     --kr-skin-banner-overlay: rgba(62, 57, 52, 0.55);
+    --kr-skin-footer-bg:   #2E2820;
+    --kr-skin-footer-fg:   #B8A890;
 }
 
 /* Silk · 黄绢（仅 locked 模式可选）
@@ -232,6 +250,8 @@ html[data-weekday-skin="silk"] {
     --kr-skin-quote-bg:    rgba(255, 250, 232, 0.78);
     --kr-skin-tag-bg:      rgba(255, 250, 232, 0.78);
     --kr-skin-banner-overlay: rgba(58, 42, 16, 0.55);
+    --kr-skin-footer-bg:   #2A1E0C;
+    --kr-skin-footer-fg:   #C8A870;
 }
 
 /* Vermilion · 朱砂（仅 locked 模式可选）
@@ -253,6 +273,32 @@ html[data-weekday-skin="vermilion"] {
     --kr-skin-quote-bg:    #FBEEDA;
     --kr-skin-tag-bg:      rgba(200, 50, 42, 0.10);
     --kr-skin-banner-overlay: rgba(122, 21, 18, 0.55);
+    --kr-skin-footer-bg:   #8E1815;
+    --kr-skin-footer-fg:   #F8E7B8;
+}
+
+/* Morandi · 莫兰迪柔和（仅 locked 模式可选）
+ *   低饱和灰调暖色系，大圆角 + 松弛间距 + 温柔安静。
+ *   唯一暖色锚点为陶土色 accent #A68B73，
+ *   深色模式用棕炭底 #2A2725 而非冷黑，保持灰调温度。 */
+html[data-weekday-skin="morandi"] {
+    --kr-skin-bg:          #E5E0DA;
+    --kr-skin-card-bg:     #F0EDEA;
+    --kr-skin-card-soft:   #E9E5E0;
+    --kr-skin-card-line:   #D5CFC8;
+    --kr-skin-heading:     #4A4440;
+    --kr-skin-text:        #5C5650;
+    --kr-skin-muted:       #9A938C;
+    --kr-skin-link:        #8B7D6E;
+    --kr-skin-link-hover:  #6B5F52;
+    --kr-skin-accent:      #A68B73;
+    --kr-skin-accent-hover:#8D7460;
+    --kr-skin-decor:        #B5A08A;
+    --kr-skin-quote-bg:    #E9E5E0;
+    --kr-skin-tag-bg:      rgba(166, 139, 115, 0.12);
+    --kr-skin-banner-overlay: rgba(74, 68, 64, 0.45);
+    --kr-skin-footer-bg:   #E9E5E0;
+    --kr-skin-footer-fg:   #9A938C;
 }
 
 /* ===============================================================
@@ -900,8 +946,23 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .page404 .content .acti
  *   仅给 a:hover 一个皮肤色变化（hover 时短暂高亮即可，对比度问题不大）。
  * =============================================================== */
 
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer {
+    background: var(--kr-skin-footer-bg);
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer p,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer p a {
+    color: var(--kr-skin-footer-fg);
+}
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer p a:hover {
-    color: var(--kr-skin-decor);
+    color: #fff;
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a .kicon,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+    color: var(--kr-skin-footer-fg);
+}
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+    color: #fff;
 }
 
 /* ===============================================================
@@ -1733,6 +1794,134 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .articl
     border-radius: 10px;
 }
 
+/* -------- 莫兰迪 · 导航吸顶后切换为浅底暖调 -------- */
+
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav {
+    transition: background-color 0.35s ease, box-shadow 0.35s ease;
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav .navbar-brand,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav .navbar-brand h1,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav .navbar-nav .nav-link,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav .line {
+    transition: color 0.35s ease, background 0.35s ease;
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky {
+    background: #F0EDEA !important;
+    box-shadow: 0 2px 16px rgba(90, 80, 70, 0.07);
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand h1 {
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:focus {
+    color: var(--kr-skin-muted) !important;
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:hover,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .active > .nav-link {
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .line {
+    background: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-menu {
+    background: var(--kr-skin-card-bg);
+    border: 1px solid var(--kr-skin-card-line);
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:hover,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item.active,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:active {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-heading);
+}
+
+/* -------- 朱砂 · 导航吸顶后朱红渐变 + 金色字 -------- */
+
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand h1 {
+    color: #F8E7B8 !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:focus {
+    color: rgba(248, 231, 184, 0.9) !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:hover,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .active > .nav-link {
+    color: #fff !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .line {
+    background: #F8E7B8 !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-menu {
+    background: #A61E1A;
+    border: 1px solid #6E1210;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item {
+    color: #F8E7B8;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:hover,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item.active,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:active {
+    background-color: #8E1815;
+    color: #fff;
+}
+
+/* 莫兰迪页脚：浅底暖调（覆盖通用深底规则） */
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-footer {
+    border-top: 1px solid var(--kr-skin-card-line);
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-footer p a:hover {
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+    color: var(--kr-skin-heading) !important;
+}
+
+/* -------- 莫兰迪 · 柔和圆角 -------- */
+
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    border-radius: 14px !important;
+}
+
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
+    border-radius: 10px !important;
+}
+
+/* 暗夜下莫兰迪也保留大圆角 */
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .details .post-navigation .nav-next,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="morandi"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="morandi"] .kratos-shuoshuo-header {
+    border-radius: 14px !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .board .paginations a,
+html[data-theme="dark"][data-weekday-skin="morandi"] .kratos-shuoshuo .kss-page,
+html[data-theme="dark"][data-weekday-skin="morandi"] .k-main .details .article .content .paginations a span {
+    border-radius: 10px !important;
+}
+
 /* ===============================================================
  * 16. 暗夜模式 —— 复用 dark.css 骨架，仅替换主色
  *
@@ -1805,6 +1994,12 @@ html[data-theme="dark"][data-weekday-skin="vermilion"] {
     --kr-link: #E88A6E;
     --kr-link-hover: #F5A88C;
     --kr-accent: #D64A3F;
+}
+
+html[data-theme="dark"][data-weekday-skin="morandi"] {
+    --kr-link: #C4AD98;
+    --kr-link-hover: #D8C4B0;
+    --kr-accent: #C4A88E;
 }
 
 /* ===============================================================
@@ -2576,6 +2771,32 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .a
     min-width: 2em;
     color: var(--kr-skin-accent);
     font-weight: 500;
+}
+
+/* 朱砂页脚：朱红渐变底 + 顶部金线装饰 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer {
+    background: linear-gradient(180deg, #8E1815, #6E1210) !important;
+    position: relative;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 8px;
+    right: 8px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #E5C97A, transparent);
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer p a:hover {
+    color: #fff !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a .kicon,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+    color: #F8E7B8 !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+    color: #fff !important;
 }
 
 

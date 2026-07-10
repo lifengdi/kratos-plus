@@ -802,6 +802,7 @@ CSF::createSection($prefix, array(
                 'parchment' => __('温色 · 羊皮', 'kratos'),
                 'silk'      => __('笺页 · 黄绢', 'kratos'),
                 'vermilion' => __('喜庆 · 朱砂', 'kratos'),
+                'morandi'   => __('柔和 · 莫兰迪', 'kratos'),
             ),
             'default' => 'mon',
             'dependency' => array('g_weekday_skin_mode', '==', 'locked'),
