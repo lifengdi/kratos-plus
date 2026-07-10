@@ -647,11 +647,15 @@ function kratos_series_render_nav()
     if (!$prev && !$next) return;
 
     echo '<nav class="navigation post-navigation clearfix" role="navigation">';
+    $prev_text = trim((string)kratos_option('g_series_prev_text', ''));
+    if ($prev_text === '') $prev_text = __('&lt; 系列上一篇', 'kratos');
+    $next_text = trim((string)kratos_option('g_series_next_text', ''));
+    if ($next_text === '') $next_text = __('系列下一篇 &gt;', 'kratos');
     if ($prev) {
-        echo '<div class="nav-previous clearfix"><a title="' . esc_attr($prev->post_title) . '" href="' . esc_url(get_permalink($prev->ID)) . '">' . __('&lt; 系列上一篇', 'kratos') . '</a></div>';
+        echo '<div class="nav-previous clearfix"><a title="' . esc_attr($prev->post_title) . '" href="' . esc_url(get_permalink($prev->ID)) . '">' . wp_kses_post($prev_text) . '</a></div>';
     }
     if ($next) {
-        echo '<div class="nav-next"><a title="' . esc_attr($next->post_title) . '" href="' . esc_url(get_permalink($next->ID)) . '">' . __('系列下一篇 &gt;', 'kratos') . '</a></div>';
+        echo '<div class="nav-next"><a title="' . esc_attr($next->post_title) . '" href="' . esc_url(get_permalink($next->ID)) . '">' . wp_kses_post($next_text) . '</a></div>';
     }
     echo '</nav>';
 }

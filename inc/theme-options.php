@@ -1544,6 +1544,22 @@ CSF::createSection($prefix, array(
             'dependency' => array('g_series_enabled', '==', 'true'),
         ),
         array(
+            'id' => 'g_series_prev_text',
+            'type' => 'text',
+            'title' => __('系列上一篇文案', 'kratos'),
+            'subtitle' => __('系列内跳转到上一篇的按钮文字，留空使用默认「&lt; 系列上一篇」', 'kratos'),
+            'default' => __('&lt; 系列上一篇', 'kratos'),
+            'dependency' => array('g_series_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_series_next_text',
+            'type' => 'text',
+            'title' => __('系列下一篇文案', 'kratos'),
+            'subtitle' => __('系列内跳转到下一篇的按钮文字，留空使用默认「系列下一篇 &gt;」', 'kratos'),
+            'default' => __('系列下一篇 &gt;', 'kratos'),
+            'dependency' => array('g_series_enabled', '==', 'true'),
+        ),
+        array(
             'id' => 'g_series_replace_navi',
             'type' => 'switcher',
             'title' => __('替换默认上下篇导航', 'kratos'),
