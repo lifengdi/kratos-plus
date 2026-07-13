@@ -91,10 +91,24 @@ stages:
             fi
 
             echo "PUBLISH_TOKEN length: ${#PUBLISH_TOKEN}"
+            echo "PUBLISH_TOKEN first4: ${PUBLISH_TOKEN:0:4}"
+            echo "PUBLISH_TOKEN last4:  ${PUBLISH_TOKEN: -4}"
+            echo "PUBLISH_TOKEN hex head/tail:"
+            printf '%s' "$PUBLISH_TOKEN" | head -c 4 | xxd
+            printf '%s' "$PUBLISH_TOKEN" | tail -c 4 | xxd
+            # 去掉所有空白 / 引号 / 换行等异常字符
+            PUBLISH_TOKEN="$(printf '%s' "$PUBLISH_TOKEN" | tr -d '[:space:]"\r\n')"
+            echo "PUBLISH_TOKEN sanitized length: ${#PUBLISH_TOKEN}"
             if [ -z "$PUBLISH_TOKEN" ] || [ "${#PUBLISH_TOKEN}" -lt 10 ]; then
-              echo "ERROR: PUBLISH_TOKEN not injected. Check Gitee Go pipeline variables."
+              echo "ERROR: PUBLISH_TOKEN not injected."
               exit 1
             fi
+
+            # 用 sanitized token 先试探一下鉴权
+            echo "=== auth probe: /api/v5/user ==="
+            curl -sS "https://gitee.com/api/v5/user?access_token=${PUBLISH_TOKEN}" | head -c 300
+            echo
+            echo "================================"
             OWNER="lifengdi"
             REPO="kratos-plus"
 
