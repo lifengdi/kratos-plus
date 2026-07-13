@@ -125,10 +125,14 @@ stages:
             REPO="kratos-plus"
 
             # 若同名 Release 已存在，先删除再重建（等效 allowUpdate）
-            EXIST_ID=$(curl -sS "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/tags/${TAG}?access_token=${PUBLISH_TOKEN}" | jq -r '.id // empty')
+            # 遍历 releases 列表找到同 tag 的 release id（比 /releases/tags/{tag} 更可靠）
+            EXIST_ID=$(curl -sS "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases?access_token=${PUBLISH_TOKEN}&per_page=100" \
+              | jq -r --arg tag "$TAG" '.[] | select(.tag_name==$tag) | .id' | head -n1)
             if [ -n "$EXIST_ID" ]; then
               echo "Existing release $EXIST_ID for $TAG — deleting for re-publish."
               curl -sS -X DELETE "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/${EXIST_ID}?access_token=${PUBLISH_TOKEN}"
+              # Gitee 删除是异步/软删除，稍等一下
+              sleep 2
             fi
 
             BODY_JSON=$(jq -Rs \
