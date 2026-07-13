@@ -3154,6 +3154,26 @@ CSF::createSection($prefix, array(
     'icon' => 'fas fa-cloud-download-alt',
     'fields' => array(
         array(
+            'type' => 'subheading',
+            'content' => __('更新下载源', 'kratos'),
+        ),
+        array(
+            'id' => 'g_update_source',
+            'type' => 'select',
+            'title' => __('主题更新下载源', 'kratos'),
+            'subtitle' => __('主题自动升级时的 zip 包下载源；自动模式按 WordPress 时区判断（Asia/Shanghai 等）走 Gitee，其他走 GitHub', 'kratos'),
+            'options' => array(
+                'auto'   => __('自动（按时区，推荐）', 'kratos'),
+                'github' => __('强制 GitHub', 'kratos'),
+                'gitee'  => __('强制 Gitee（国内加速）', 'kratos'),
+            ),
+            'default' => 'auto',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('版本检查', 'kratos'),
+        ),
+        array(
             'type' => 'content',
             'content' => function_exists('kratos_render_update_section') ? kratos_render_update_section() : '',
         ),

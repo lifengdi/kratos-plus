@@ -339,11 +339,13 @@ if (kratos_option('g_replace_gravatar_url_fieldset')['g_replace_gravatar_url'] ?
     add_filter('get_avatar_url', 'replace_gravatar_url');
 }
 
-// Kratos+ 主题自动更新（GitHub Release）
-//   - 仓库：https://github.com/lifengdi/kratos-plus（main 分支）
-//   - PUC v5 会自动定期从 GitHub API 拉取最新 release 的 tag 与 style.css 比对版本号；
-//   - 命中新版后 WP 后台 → 主题列表 → "更新可用"按钮即可一键升级；
-//   - enableReleaseAssets() 表示从 release 上传的 zip 附件下载，避免源 tarball 含 vendor / 开发文件。
+// Kratos+ 主题自动更新（GitHub Release 为源，可选切换到 Gitee 下载）
+//   - 版本探测仍以 GitHub Release 为准（API 稳定、限流宽松）；
+//   - 实际 zip 下载 URL 可由主题选项「主题更新下载源」控制：
+//       auto   ：按时区判断，Asia/Shanghai 等国内时区改写为 Gitee 下载
+//       github ：强制走 GitHub Release 附件
+//       gitee  ：强制走 Gitee Release 附件
+//   - Gitee Release 由 Gitee Go 流水线在 tag 推送后独立构建（与 GitHub Release 使用同一份 note）。
 $kratosPlusUpdater = PucFactory::buildUpdateChecker(
     'https://github.com/lifengdi/kratos-plus/',
     get_template_directory() . '/style.css',
@@ -353,6 +355,39 @@ $kratosPlusUpdater->setBranch('main');
 if (method_exists($kratosPlusUpdater, 'getVcsApi')) {
     $kratosPlusUpdater->getVcsApi()->enableReleaseAssets();
 }
+
+if (!function_exists('kratos_plus_should_use_gitee')) {
+    function kratos_plus_should_use_gitee()
+    {
+        $source = kratos_option('g_update_source', 'auto');
+        if ($source === 'gitee') {
+            return true;
+        }
+        if ($source === 'github') {
+            return false;
+        }
+        // auto：按 WordPress 时区判断，命中国内常用时区走 Gitee
+        $tz = function_exists('wp_timezone_string') ? wp_timezone_string() : '';
+        $cnZones = array('Asia/Shanghai', 'Asia/Chongqing', 'Asia/Harbin', 'Asia/Urumqi', 'Asia/Hong_Kong', 'Asia/Macau', 'PRC');
+        return in_array($tz, $cnZones, true);
+    }
+}
+
+// 改写 PUC 返回的 download_url：github.com/.../releases/download/<tag>/<file>
+//   → gitee.com/<owner>/<repo>/releases/download/<tag>/<file>
+$kratosPlusUpdater->addResultFilter(function ($info) {
+    if (!kratos_plus_should_use_gitee()) {
+        return $info;
+    }
+    if (!empty($info->download_url) && strpos($info->download_url, 'github.com/lifengdi/kratos-plus/releases/download/') !== false) {
+        $info->download_url = str_replace(
+            'https://github.com/lifengdi/kratos-plus/releases/download/',
+            'https://gitee.com/lifengdi/kratos-plus/releases/download/',
+            $info->download_url
+        );
+    }
+    return $info;
+});
 
 // 禁止生成多种尺寸图片
 if (kratos_option('g_removeimgsize', false)) {
