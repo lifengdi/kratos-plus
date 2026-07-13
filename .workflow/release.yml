@@ -1,0 +1,93 @@
+# Gitee Go 流水线：监听 v*.*.* tag 推送，打包主题 zip 并发布到 Gitee Release
+#
+# 使用官方 release@gitee 插件，不需要额外 Token。
+#
+# 前置准备（一次性）：
+#   1. Gitee 仓库 → 流水线 → 开通 Gitee Go
+#   2. 在 Gitee Go 编辑器中粘贴本文件内容并保存
+#   3. 触发规则：Tag 推送，前缀 v
+#
+# 流水线触发：git push gitee vX.Y.Z
+# 完成后会在 https://gitee.com/lifengdi/kratos-plus/releases 看到新版本，
+# 附件 zip 命名为 kratos-plus-X.Y.Z.zip，主题 PUC 会自动拉取。
+
+version: '1.0'
+name: release-to-gitee
+displayName: 发布到 Gitee Release
+triggers:
+  tag:
+    prefix:
+      - v
+stages:
+  - name: build
+    displayName: 构建主题 zip
+    strategy: naturally
+    trigger: auto
+    steps:
+      - step: build@nodejs
+        name: build_zip
+        displayName: 打包 kratos-plus zip
+        nodeVersion: '18.15'
+        commands:
+          - |
+            set -e
+            apt-get update -qq
+            apt-get install -y -qq git zip >/dev/null
+
+            TAG="${GITEE_TAG_NAME}"
+            if [ -z "$TAG" ]; then TAG="$(git describe --tags --exact-match)"; fi
+            VERSION="${TAG#v}"
+            echo "tag=$TAG version=$VERSION"
+
+            STYLE_VER=$(grep -E "^Version:" style.css | head -n1 | sed -E 's/^Version:[[:space:]]*//' | tr -d '\r')
+            if [ "$VERSION" != "$STYLE_VER" ]; then
+              echo "ERROR: style.css Version ($STYLE_VER) does not match tag (v$VERSION)."
+              exit 1
+            fi
+
+            ZIP_NAME="kratos-plus-${VERSION}.zip"
+            STAGE_DIR="$(pwd)/.stage"
+            rm -rf "$STAGE_DIR"
+            mkdir -p "$STAGE_DIR/kratos-plus"
+            git archive --format=tar "$TAG" | tar -x -C "$STAGE_DIR/kratos-plus"
+            rm -rf "$STAGE_DIR/kratos-plus/.github" \
+                   "$STAGE_DIR/kratos-plus/.workflow" \
+                   "$STAGE_DIR/kratos-plus/.idea" \
+                   "$STAGE_DIR/kratos-plus/.eslintignore" \
+                   "$STAGE_DIR/kratos-plus/.prettierignore" \
+                   "$STAGE_DIR/kratos-plus/.gitignore" \
+                   "$STAGE_DIR/kratos-plus/CLAUDE.md" \
+                   "$STAGE_DIR/kratos-plus/crowdin.yml" \
+                   "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"
+            (cd "$STAGE_DIR" && zip -qr "../$ZIP_NAME" "kratos-plus")
+            ls -lh "$ZIP_NAME"
+
+            NOTES_FILE=".github/release-notes/${TAG}.md"
+            if [ -f "$NOTES_FILE" ]; then
+              cp "$NOTES_FILE" RELEASE_BODY.md
+            else
+              printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > RELEASE_BODY.md
+            fi
+        artifacts:
+          - name: KRATOS_ZIP
+            path:
+              - kratos-plus-*.zip
+              - RELEASE_BODY.md
+
+  - name: release
+    displayName: 发布到 Gitee Release
+    strategy: naturally
+    trigger: auto
+    steps:
+      - step: release@gitee
+        name: release_gitee
+        displayName: Gitee Release
+        releaseName: Kratos+ ${GITEE_TAG_NAME}
+        description: RELEASE_BODY.md
+        tagName: ${GITEE_TAG_NAME}
+        upstreamArtifact:
+          - KRATOS_ZIP
+        assertFiles:
+          - kratos-plus-*.zip
+        prerelease: false
+        allowUpdate: true
