@@ -96,8 +96,9 @@ stages:
             echo "PUBLISH_TOKEN hex head/tail:"
             printf '%s' "$PUBLISH_TOKEN" | head -c 4 | xxd
             printf '%s' "$PUBLISH_TOKEN" | tail -c 4 | xxd
-            # 去掉所有空白 / 引号 / 换行等异常字符
-            PUBLISH_TOKEN="$(printf '%s' "$PUBLISH_TOKEN" | tr -d '[:space:]"\r\n')"
+            # 去掉所有空白 / 引号 / 方括号 / 换行等异常字符
+            # （Gitee Go 变量组注入时可能包一层 JSON 数组，如 ["xxx"]）
+            PUBLISH_TOKEN="$(printf '%s' "$PUBLISH_TOKEN" | tr -d '[:space:]"[]\r\n')"
             echo "PUBLISH_TOKEN sanitized length: ${#PUBLISH_TOKEN}"
             if [ -z "$PUBLISH_TOKEN" ] || [ "${#PUBLISH_TOKEN}" -lt 10 ]; then
               echo "ERROR: PUBLISH_TOKEN not injected."
