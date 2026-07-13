@@ -1,4 +1,6 @@
+version: '1.0'
 name: Release to Gitee
+displayName: 发布到 Gitee Release
 
 trigger:
   push:
