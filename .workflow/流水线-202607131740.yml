@@ -1,97 +1,113 @@
-  version: '1.0'
-  name: release-to-gitee
-  displayName: 发布到 Gitee Release
-  triggers:
-    tag:
-      prefix:
-        - v
-  stages:
-    - name: release
-      displayName: 打包并发布
-      strategy: naturally
-      trigger: auto
-      steps:
-        - step: shell@1
-          name: publish
-          displayName: Build zip and create Gitee release
-          inputs:
-            script:
-              - |
-                set -e
-                apt-get update -qq
-                apt-get install -y -qq git zip curl jq ca-certificates >/dev/null
+name: Release to Gitee
 
-                TAG="${GITEE_TAG_NAME}"
-                if [ -z "$TAG" ]; then TAG="$(git describe --tags --exact-match)"; fi
-                VERSION="${TAG#v}"
-                echo "tag=$TAG version=$VERSION"
+trigger:
+  push:
+    tags:
+      - 'v*.*.*'
 
-                STYLE_VER=$(grep -E "^Version:" style.css | head -n1 | sed -E 's/^Version:[[:space:]]*//' | tr -d '\r')
-                if [ "$VERSION" != "$STYLE_VER" ]; then
-                  echo "ERROR: style.css Version ($STYLE_VER) does not match tag (v$VERSION)."
-                  exit 1
-                fi
+stages:
+  - name: build-and-release
+    jobs:
+      - name: release
+        image: ubuntu:22.04
+        steps:
+          - name: Install tools
+            run: |
+              apt-get update -qq
+              apt-get install -y -qq git zip curl jq ca-certificates
 
-                ZIP_NAME="kratos-plus-${VERSION}.zip"
-                STAGE_DIR="$(pwd)/.stage"
-                rm -rf "$STAGE_DIR"
-                mkdir -p "$STAGE_DIR/kratos-plus"
-                git archive --format=tar "$TAG" | tar -x -C "$STAGE_DIR/kratos-plus"
-                rm -rf "$STAGE_DIR/kratos-plus/.github" \
-                       "$STAGE_DIR/kratos-plus/.workflows" \
-                       "$STAGE_DIR/kratos-plus/.idea" \
-                       "$STAGE_DIR/kratos-plus/.eslintignore" \
-                       "$STAGE_DIR/kratos-plus/.prettierignore" \
-                       "$STAGE_DIR/kratos-plus/.gitignore" \
-                       "$STAGE_DIR/kratos-plus/CLAUDE.md" \
-                       "$STAGE_DIR/kratos-plus/crowdin.yml" \
-                       "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"
-                (cd "$STAGE_DIR" && zip -qr "../$ZIP_NAME" "kratos-plus")
-                ZIP_PATH="$(pwd)/$ZIP_NAME"
-                ls -lh "$ZIP_PATH"
+          - name: Resolve version
+            run: |
+              TAG="${GITEE_TAG_NAME:-${CI_COMMIT_TAG:-$(git describe --tags --exact-match)}}"
+              VERSION="${TAG#v}"
+              echo "TAG=$TAG" >> gitee_env
+              echo "VERSION=$VERSION" >> gitee_env
+              echo "resolved tag=$TAG version=$VERSION"
 
-                NOTES_FILE=".github/release-notes/${TAG}.md"
-                if [ -f "$NOTES_FILE" ]; then
-                  cp "$NOTES_FILE" release_body.md
-                else
-                  printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > release_body.md
-                fi
+          - name: Verify style.css Version matches tag
+            run: |
+              source gitee_env
+              STYLE_VER=$(grep -E "^Version:" style.css | head -n1 | sed -E 's/^Version:[[:space:]]*//' | tr -d '\r')
+              echo "tag version : $VERSION"
+              echo "style.css   : $STYLE_VER"
+              if [ "$VERSION" != "$STYLE_VER" ]; then
+                echo "ERROR: style.css Version ($STYLE_VER) does not match tag (v$VERSION)."
+                exit 1
+              fi
 
-                if [ -z "$PUBLISH_TOKEN" ]; then
-                  echo "ERROR: PUBLISH_TOKEN not set."
-                  exit 1
-                fi
+          - name: Build distribution zip
+            run: |
+              source gitee_env
+              ZIP_NAME="kratos-plus-${VERSION}.zip"
+              STAGE_DIR="$(pwd)/.stage"
+              rm -rf "$STAGE_DIR"
+              mkdir -p "$STAGE_DIR/kratos-plus"
+              git archive --format=tar "$TAG" | tar -x -C "$STAGE_DIR/kratos-plus"
+              rm -rf "$STAGE_DIR/kratos-plus/.github" \
+                     "$STAGE_DIR/kratos-plus/.workflows" \
+                     "$STAGE_DIR/kratos-plus/.idea" \
+                     "$STAGE_DIR/kratos-plus/.eslintignore" \
+                     "$STAGE_DIR/kratos-plus/.prettierignore" \
+                     "$STAGE_DIR/kratos-plus/.gitignore" \
+                     "$STAGE_DIR/kratos-plus/CLAUDE.md" \
+                     "$STAGE_DIR/kratos-plus/crowdin.yml" \
+                     "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"
+              (cd "$STAGE_DIR" && zip -qr "../$ZIP_NAME" "kratos-plus")
+              ls -lh "$ZIP_NAME"
+              echo "ZIP_NAME=$ZIP_NAME" >> gitee_env
+              echo "ZIP_PATH=$(pwd)/$ZIP_NAME" >> gitee_env
 
-                BODY_JSON=$(jq -Rs \
-                  --arg tag "$TAG" \
-                  --arg name "Kratos+ $TAG" \
-                  --arg target "main" \
-                  --arg token "$PUBLISH_TOKEN" \
-                  '{access_token:$token, tag_name:$tag, name:$name, body:., prerelease:false, target_commitish:$target}' \
-                  release_body.md)
+          - name: Resolve release notes
+            run: |
+              source gitee_env
+              NOTES_FILE=".github/release-notes/${TAG}.md"
+              if [ -f "$NOTES_FILE" ]; then
+                echo "using handwritten notes: $NOTES_FILE"
+                cp "$NOTES_FILE" release_body.md
+              else
+                echo "no handwritten notes at $NOTES_FILE — using minimal auto body"
+                printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > release_body.md
+              fi
 
-                CREATE_RESP=$(curl -sS -X POST \
-                  "https://gitee.com/api/v5/repos/lifengdi/kratos-plus/releases" \
-                  -H "Content-Type: application/json;charset=UTF-8" \
-                  -d "$BODY_JSON")
-                echo "$CREATE_RESP" | jq '.' || echo "$CREATE_RESP"
-                RELEASE_ID=$(echo "$CREATE_RESP" | jq -r '.id // empty')
-                if [ -z "$RELEASE_ID" ]; then
-                  echo "ERROR: failed to create Gitee release."
-                  exit 1
-                fi
+          - name: Create Gitee Release and upload zip
+            run: |
+              source gitee_env
+              if [ -z "$PUBLISH_TOKEN" ]; then
+                echo "ERROR: PUBLISH_TOKEN not set in pipeline variables."
+                exit 1
+              fi
+              OWNER="lifengdi"
+              REPO="kratos-plus"
+              BODY_JSON=$(jq -Rs \
+                --arg tag "$TAG" \
+                --arg name "Kratos+ $TAG" \
+                --arg target "main" \
+                '{tag_name:$tag, name:$name, body:., prerelease:false, target_commitish:$target}' \
+                release_body.md)
 
-                UPLOAD_RESP=$(curl -sS -X POST \
-                  "https://gitee.com/api/v5/repos/lifengdi/kratos-plus/releases/${RELEASE_ID}/attach_files" \
-                  -F "access_token=${PUBLISH_TOKEN}" \
-                  -F "file=@${ZIP_PATH}")
-                echo "$UPLOAD_RESP" | jq '.' || echo "$UPLOAD_RESP"
-                DL_URL=$(echo "$UPLOAD_RESP" | jq -r '.browser_download_url // empty')
-                if [ -z "$DL_URL" ]; then
-                  echo "ERROR: attachment upload failed."
-                  exit 1
-                fi
-                echo "Done. Download URL: $DL_URL"
+              echo "Creating Gitee release for $TAG ..."
+              CREATE_RESP=$(curl -sS -X POST \
+                "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases" \
+                -H "Content-Type: application/json;charset=UTF-8" \
+                -d "$(echo "$BODY_JSON" | jq --arg t "$PUBLISH_TOKEN" '. + {access_token:$t}')")
+              echo "$CREATE_RESP" | jq '.' || echo "$CREATE_RESP"
 
-────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-❯ 
+              RELEASE_ID=$(echo "$CREATE_RESP" | jq -r '.id // empty')
+              if [ -z "$RELEASE_ID" ]; then
+                echo "ERROR: failed to create Gitee release."
+                exit 1
+              fi
+
+              echo "Uploading attachment $ZIP_NAME to release $RELEASE_ID ..."
+              UPLOAD_RESP=$(curl -sS -X POST \
+                "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/${RELEASE_ID}/attach_files" \
+                -F "access_token=${PUBLISH_TOKEN}" \
+                -F "file=@${ZIP_PATH}")
+              echo "$UPLOAD_RESP" | jq '.' || echo "$UPLOAD_RESP"
+
+              DL_URL=$(echo "$UPLOAD_RESP" | jq -r '.browser_download_url // empty')
+              if [ -z "$DL_URL" ]; then
+                echo "ERROR: attachment upload failed."
+                exit 1
+              fi
+              echo "Done. Download URL: $DL_URL"
