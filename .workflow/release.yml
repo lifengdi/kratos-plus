@@ -1,170 +1,167 @@
-# Gitee Go 流水线：监听 v*.*.* tag 推送，打包主题 zip 并发布到 Gitee Release
-#
-# 说明：
-#   Gitee Go 官方 release@gitee 插件需要静态 tagName，无法从 shell 计算的变量传入，
-#   因此这里用单阶段 shell + Gitee OpenAPI 方式发布，动态解析 tag 名字。
-#
-# 前置准备（一次性）：
-#   1. Gitee 仓库 → 流水线 → 开通 Gitee Go
-#   2. 用户设置 → 私人令牌 → 生成令牌，勾选 projects 权限
-#   3. Gitee Go 流水线「变量」中新增私密变量：
-#        PUBLISH_TOKEN = <上一步的令牌>
-#   4. 触发规则：Tag 推送，前缀 v
-#
-# 流水线触发：git push gitee vX.Y.Z
-# 完成后会在 https://gitee.com/lifengdi/kratos-plus/releases 看到新版本，
-# 附件 zip 命名为 kratos-plus-X.Y.Z.zip，主题 PUC 会自动拉取。
-
-version: '1.0'
+version: "1.0"
 name: release-to-gitee
 displayName: 发布到 Gitee Release
+stages:
+- name: 打包并发布
+  displayName: 打包并发布
+  strategy: naturally
+  trigger: auto
+  steps:
+  - step: build@nodejs
+    name: publish
+    displayName: Build zip and publish Gitee release
+    nodeVersion: "18.15"
+    commands:
+    - set -e
+    - apt-get update -qq
+    - apt-get install -y -qq git zip curl jq >/dev/null
+    - ""
+    - git fetch --tags --force --quiet || true
+    - ""
+    - '# 解析 tag：'
+    - '#  - tag 触发时，GITEE_COMMIT 指向 tag 所在 commit，能直接反查'
+    - '#  - 手动触发时，checkout 到 main HEAD，反查失败 → 回退到仓库里最新的 vX.Y.Z tag'
+    - "TAG=\"$(git tag --points-at \"${GITEE_COMMIT}\" 2>/dev/null | grep -E '^v[0-9]+\\\
+      .[0-9]+\\.[0-9]+$' | head -n1)\""
+    - "if [ -z \"$TAG\" ]; then"
+    - "  echo \"no tag on commit ${GITEE_COMMIT}, falling back to latest vX.Y.Z tag\""
+    - '  TAG="$(git tag -l ''v*.*.*'' --sort=-v:refname | head -n1)"'
+    - fi
+    - "if [ -z \"$TAG\" ]; then"
+    - "  echo \"ERROR: cannot resolve any release tag.\""
+    - '  exit 1'
+    - fi
+    - "VERSION=\"${TAG#v}\""
+    - echo "tag=$TAG version=$VERSION commit=$GITEE_COMMIT"
+    - ""
+    - "STYLE_VER=$(grep -E \"^Version:\" style.css | head -n1 | sed -E 's/^Version:[[:space:]]*//'\
+      \ | tr -d '\\r')"
+    - "if [ \"$VERSION\" != \"$STYLE_VER\" ]; then"
+    - "  echo \"ERROR: style.css Version ($STYLE_VER) does not match tag (v$VERSION).\""
+    - '  exit 1'
+    - fi
+    - ""
+    - "ZIP_NAME=\"kratos-plus-${VERSION}.zip\""
+    - STAGE_DIR="$(pwd)/.stage"
+    - rm -rf "$STAGE_DIR"
+    - mkdir -p "$STAGE_DIR/kratos-plus"
+    - git archive --format=tar "$TAG" | tar -x -C "$STAGE_DIR/kratos-plus"
+    - rm -rf "$STAGE_DIR/kratos-plus/.github" \
+    - '       "$STAGE_DIR/kratos-plus/.workflow" \'
+    - '       "$STAGE_DIR/kratos-plus/.idea" \'
+    - '       "$STAGE_DIR/kratos-plus/.eslintignore" \'
+    - '       "$STAGE_DIR/kratos-plus/.prettierignore" \'
+    - '       "$STAGE_DIR/kratos-plus/.gitignore" \'
+    - '       "$STAGE_DIR/kratos-plus/CLAUDE.md" \'
+    - '       "$STAGE_DIR/kratos-plus/crowdin.yml" \'
+    - '       "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"'
+    - (cd "$STAGE_DIR" && zip -qr "../$ZIP_NAME" "kratos-plus")
+    - ZIP_PATH="$(pwd)/$ZIP_NAME"
+    - ls -lh "$ZIP_PATH"
+    - ""
+    - "NOTES_FILE=\".github/release-notes/${TAG}.md\""
+    - "if [ -f \"$NOTES_FILE\" ]; then"
+    - '  cp "$NOTES_FILE" release_body.md'
+    - else
+    - '  printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > release_body.md'
+    - fi
+    - ""
+    - "echo \"PUBLISH_TOKEN length: ${#PUBLISH_TOKEN}\""
+    - "echo \"PUBLISH_TOKEN first4: ${PUBLISH_TOKEN:0:4}\""
+    - "echo \"PUBLISH_TOKEN last4:  ${PUBLISH_TOKEN: -4}\""
+    - echo "PUBLISH_TOKEN hex head/tail:"
+    - printf '%s' "$PUBLISH_TOKEN" | head -c 4 | xxd
+    - printf '%s' "$PUBLISH_TOKEN" | tail -c 4 | xxd
+    - "# Gitee Go 变量注入时可能把值包装成 JSON 数组字符串（如 [\"xxx\"]）"
+    - '# 抽取第一段十六进制/十六进制 token（Gitee 私人令牌是 32 位十六进制）'
+    - RAW_TOKEN="$PUBLISH_TOKEN"
+    - "PUBLISH_TOKEN=\"$(printf '%s' \"$RAW_TOKEN\" | grep -oE '[0-9a-fA-F]{20,64}'\
+      \ | head -n1)\""
+    - "if [ -z \"$PUBLISH_TOKEN\" ]; then"
+    - "  # 兜底：直接剥掉常见包装字符"
+    - '  PUBLISH_TOKEN="$RAW_TOKEN"'
+    - "  PUBLISH_TOKEN=\"${PUBLISH_TOKEN//\\\"/}\""
+    - "  PUBLISH_TOKEN=\"${PUBLISH_TOKEN//\\[/}\""
+    - "  PUBLISH_TOKEN=\"${PUBLISH_TOKEN//\\]/}\""
+    - "  PUBLISH_TOKEN=\"${PUBLISH_TOKEN// /}\""
+    - "  PUBLISH_TOKEN=\"${PUBLISH_TOKEN//$'\\r'/}\""
+    - "  PUBLISH_TOKEN=\"${PUBLISH_TOKEN//$'\\n'/}\""
+    - fi
+    - "# 关键：Gitee Go 会在 YAML 层预替换 ${PUBLISH_TOKEN}（还带 [] 包装），"
+    - '# 因此下面统一改用另一个变量名 GITEE_TOKEN，避开 Gitee Go 的预替换。'
+    - GITEE_TOKEN="$PUBLISH_TOKEN"
+    - "echo \"GITEE_TOKEN sanitized length: ${#GITEE_TOKEN}\""
+    - "if [ -z \"$GITEE_TOKEN\" ] || [ \"${#GITEE_TOKEN}\" -lt 10 ]; then"
+    - "  echo \"ERROR: PUBLISH_TOKEN not injected.\""
+    - '  exit 1'
+    - fi
+    - ""
+    - "echo \"=== auth probe: /api/v5/user ===\""
+    - curl -sS "https://gitee.com/api/v5/user?access_token=$GITEE_TOKEN" | head -c
+      300
+    - echo
+    - echo "================================"
+    - OWNER="lifengdi"
+    - REPO="kratos-plus"
+    - ""
+    - EXIST_ID=$(curl -sS "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases?access_token=$GITEE_TOKEN&per_page=100"
+      \
+    - "  | jq -r --arg tag \"$TAG\" '.[] | select(.tag_name==$tag) | .id' | head -n1)"
+    - "if [ -n \"$EXIST_ID\" ]; then"
+    - '  echo "Existing release $EXIST_ID for $TAG — deleting for re-publish."'
+    - '  curl -sS -X DELETE "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases/$EXIST_ID?access_token=$GITEE_TOKEN"'
+    - '  sleep 2'
+    - fi
+    - ""
+    - BODY_JSON=$(jq -Rs \
+    - '  --arg tag "$TAG" \'
+    - '  --arg name "Kratos+ $TAG" \'
+    - '  --arg target "main" \'
+    - '  --arg token "$GITEE_TOKEN" \'
+    - "  '{access_token:$token, tag_name:$tag, name:$name, body:., prerelease:false,\
+      \ target_commitish:$target}' \\"
+    - '  release_body.md)'
+    - ""
+    - CREATE_RESP=$(curl -sS -X POST \
+    - '  "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases" \'
+    - "  -H \"Content-Type: application/json;charset=UTF-8\" \\"
+    - '  -d "$BODY_JSON")'
+    - echo "$CREATE_RESP" | jq '.' || echo "$CREATE_RESP"
+    - RELEASE_ID=$(echo "$CREATE_RESP" | jq -r '.id // empty')
+    - "if [ -z \"$RELEASE_ID\" ]; then"
+    - "  echo \"ERROR: failed to create Gitee release.\""
+    - '  exit 1'
+    - fi
+    - ""
+    - UPLOAD_RESP=$(curl -sS -X POST \
+    - '  "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases/$RELEASE_ID/attach_files"
+      \'
+    - '  -F "access_token=$GITEE_TOKEN" \'
+    - '  -F "file=@$ZIP_PATH")'
+    - echo "$UPLOAD_RESP" | jq '.' || echo "$UPLOAD_RESP"
+    - DL_URL=$(echo "$UPLOAD_RESP" | jq -r '.browser_download_url // empty')
+    - "if [ -z \"$DL_URL\" ]; then"
+    - "  echo \"ERROR: attachment upload failed.\""
+    - '  exit 1'
+    - fi
+    - "echo \"Done. Download URL: $DL_URL\""
+    - ""
+    - "# Gitee Go 网页编辑器会默认追加 artifacts: ./dist，本地 stage 出来放进去规避"
+    - mkdir -p ./dist
+    - cp kratos-plus-*.zip ./dist/ || true
+    artifacts:
+    - name: BUILD_ARTIFACT
+      path:
+      - ./dist
+      type: .tar.gz
 triggers:
-  tag:
-    prefix:
-      - v
-# 声明流水线变量：把「变量组」里同名的 PUBLISH_TOKEN 注入到 shell 环境
+  trigger: auto
+  push:
+    tags:
+      prefix: []
+      precise: []
+      include:
+      - ^v\d+\.\d+\.\d+$
 variables:
   global:
-    - PUBLISH_TOKEN
-stages:
-  - name: release
-    displayName: 打包并发布
-    strategy: naturally
-    trigger: auto
-    steps:
-      - step: build@nodejs
-        name: publish
-        displayName: Build zip and publish Gitee release
-        nodeVersion: '18.15'
-        commands:
-          - |
-            set -e
-            apt-get update -qq
-            apt-get install -y -qq git zip curl jq >/dev/null
-
-            git fetch --tags --force --quiet || true
-
-            # 解析 tag：
-            #  - tag 触发时，GITEE_COMMIT 指向 tag 所在 commit，能直接反查
-            #  - 手动触发时，checkout 到 main HEAD，反查失败 → 回退到仓库里最新的 vX.Y.Z tag
-            TAG="$(git tag --points-at "${GITEE_COMMIT}" 2>/dev/null | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1)"
-            if [ -z "$TAG" ]; then
-              echo "no tag on commit ${GITEE_COMMIT}, falling back to latest vX.Y.Z tag"
-              TAG="$(git tag -l 'v*.*.*' --sort=-v:refname | head -n1)"
-            fi
-            if [ -z "$TAG" ]; then
-              echo "ERROR: cannot resolve any release tag."
-              exit 1
-            fi
-            VERSION="${TAG#v}"
-            echo "tag=$TAG version=$VERSION commit=$GITEE_COMMIT"
-
-            STYLE_VER=$(grep -E "^Version:" style.css | head -n1 | sed -E 's/^Version:[[:space:]]*//' | tr -d '\r')
-            if [ "$VERSION" != "$STYLE_VER" ]; then
-              echo "ERROR: style.css Version ($STYLE_VER) does not match tag (v$VERSION)."
-              exit 1
-            fi
-
-            ZIP_NAME="kratos-plus-${VERSION}.zip"
-            STAGE_DIR="$(pwd)/.stage"
-            rm -rf "$STAGE_DIR"
-            mkdir -p "$STAGE_DIR/kratos-plus"
-            git archive --format=tar "$TAG" | tar -x -C "$STAGE_DIR/kratos-plus"
-            rm -rf "$STAGE_DIR/kratos-plus/.github" \
-                   "$STAGE_DIR/kratos-plus/.workflow" \
-                   "$STAGE_DIR/kratos-plus/.idea" \
-                   "$STAGE_DIR/kratos-plus/.eslintignore" \
-                   "$STAGE_DIR/kratos-plus/.prettierignore" \
-                   "$STAGE_DIR/kratos-plus/.gitignore" \
-                   "$STAGE_DIR/kratos-plus/CLAUDE.md" \
-                   "$STAGE_DIR/kratos-plus/crowdin.yml" \
-                   "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"
-            (cd "$STAGE_DIR" && zip -qr "../$ZIP_NAME" "kratos-plus")
-            ZIP_PATH="$(pwd)/$ZIP_NAME"
-            ls -lh "$ZIP_PATH"
-
-            NOTES_FILE=".github/release-notes/${TAG}.md"
-            if [ -f "$NOTES_FILE" ]; then
-              cp "$NOTES_FILE" release_body.md
-            else
-              printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > release_body.md
-            fi
-
-            echo "PUBLISH_TOKEN length: ${#PUBLISH_TOKEN}"
-            echo "PUBLISH_TOKEN first4: ${PUBLISH_TOKEN:0:4}"
-            echo "PUBLISH_TOKEN last4:  ${PUBLISH_TOKEN: -4}"
-            echo "PUBLISH_TOKEN hex head/tail:"
-            printf '%s' "$PUBLISH_TOKEN" | head -c 4 | xxd
-            printf '%s' "$PUBLISH_TOKEN" | tail -c 4 | xxd
-            # Gitee Go 变量注入时可能把值包装成 JSON 数组字符串（如 ["xxx"]）
-            # 抽取第一段十六进制/十六进制 token（Gitee 私人令牌是 32 位十六进制）
-            RAW_TOKEN="$PUBLISH_TOKEN"
-            PUBLISH_TOKEN="$(printf '%s' "$RAW_TOKEN" | grep -oE '[0-9a-fA-F]{20,64}' | head -n1)"
-            if [ -z "$PUBLISH_TOKEN" ]; then
-              # 兜底：直接剥掉常见包装字符
-              PUBLISH_TOKEN="$RAW_TOKEN"
-              PUBLISH_TOKEN="${PUBLISH_TOKEN//\"/}"
-              PUBLISH_TOKEN="${PUBLISH_TOKEN//\[/}"
-              PUBLISH_TOKEN="${PUBLISH_TOKEN//\]/}"
-              PUBLISH_TOKEN="${PUBLISH_TOKEN// /}"
-              PUBLISH_TOKEN="${PUBLISH_TOKEN//$'\r'/}"
-              PUBLISH_TOKEN="${PUBLISH_TOKEN//$'\n'/}"
-            fi
-            # 关键：Gitee Go 会在 YAML 层预替换 ${PUBLISH_TOKEN}（还带 [] 包装），
-            # 因此下面统一改用另一个变量名 GITEE_TOKEN，避开 Gitee Go 的预替换。
-            GITEE_TOKEN="$PUBLISH_TOKEN"
-            echo "GITEE_TOKEN sanitized length: ${#GITEE_TOKEN}"
-            if [ -z "$GITEE_TOKEN" ] || [ "${#GITEE_TOKEN}" -lt 10 ]; then
-              echo "ERROR: PUBLISH_TOKEN not injected."
-              exit 1
-            fi
-
-            echo "=== auth probe: /api/v5/user ==="
-            curl -sS "https://gitee.com/api/v5/user?access_token=$GITEE_TOKEN" | head -c 300
-            echo
-            echo "================================"
-            OWNER="lifengdi"
-            REPO="kratos-plus"
-
-            EXIST_ID=$(curl -sS "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases?access_token=$GITEE_TOKEN&per_page=100" \
-              | jq -r --arg tag "$TAG" '.[] | select(.tag_name==$tag) | .id' | head -n1)
-            if [ -n "$EXIST_ID" ]; then
-              echo "Existing release $EXIST_ID for $TAG — deleting for re-publish."
-              curl -sS -X DELETE "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases/$EXIST_ID?access_token=$GITEE_TOKEN"
-              sleep 2
-            fi
-
-            BODY_JSON=$(jq -Rs \
-              --arg tag "$TAG" \
-              --arg name "Kratos+ $TAG" \
-              --arg target "main" \
-              --arg token "$GITEE_TOKEN" \
-              '{access_token:$token, tag_name:$tag, name:$name, body:., prerelease:false, target_commitish:$target}' \
-              release_body.md)
-
-            CREATE_RESP=$(curl -sS -X POST \
-              "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases" \
-              -H "Content-Type: application/json;charset=UTF-8" \
-              -d "$BODY_JSON")
-            echo "$CREATE_RESP" | jq '.' || echo "$CREATE_RESP"
-            RELEASE_ID=$(echo "$CREATE_RESP" | jq -r '.id // empty')
-            if [ -z "$RELEASE_ID" ]; then
-              echo "ERROR: failed to create Gitee release."
-              exit 1
-            fi
-
-            UPLOAD_RESP=$(curl -sS -X POST \
-              "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases/$RELEASE_ID/attach_files" \
-              -F "access_token=$GITEE_TOKEN" \
-              -F "file=@$ZIP_PATH")
-            echo "$UPLOAD_RESP" | jq '.' || echo "$UPLOAD_RESP"
-            DL_URL=$(echo "$UPLOAD_RESP" | jq -r '.browser_download_url // empty')
-            if [ -z "$DL_URL" ]; then
-              echo "ERROR: attachment upload failed."
-              exit 1
-            fi
-            echo "Done. Download URL: $DL_URL"
-
-            # Gitee Go 网页编辑器会默认追加 artifacts: ./dist，本地 stage 出来放进去规避
-            mkdir -p ./dist
-            cp kratos-plus-*.zip ./dist/ || true
+  - PUBLISH_TOKEN
