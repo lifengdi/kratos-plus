@@ -22,11 +22,10 @@ triggers:
   tag:
     prefix:
       - v
-# 声明流水线变量，Gitee Go 会把 UI 里同名变量的值注入到 shell 环境
+# 声明流水线变量：把「变量组」里同名的 PUBLISH_TOKEN 注入到 shell 环境
 variables:
-  - name: PUBLISH_TOKEN
-    default: ''
-    description: 'Gitee 私人令牌（在流水线变量组配置为私密变量）'
+  global:
+    - PUBLISH_TOKEN
 stages:
   - name: release
     displayName: 打包并发布
