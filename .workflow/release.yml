@@ -158,10 +158,10 @@ triggers:
   trigger: auto
   push:
     tags:
-      prefix: []
+      prefix:
+      - v
       precise: []
-      include:
-      - ^v\d+\.\d+\.\d+$
+      include: []
 variables:
   global:
   - PUBLISH_TOKEN
