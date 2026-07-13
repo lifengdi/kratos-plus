@@ -40,11 +40,16 @@ stages:
 
             git fetch --tags --force --quiet || true
 
-            # 解析 tag：Gitee Go 未提供 GITEE_TAG_NAME，用 commit 反查
+            # 解析 tag：
+            #  - tag 触发时，GITEE_COMMIT 指向 tag 所在 commit，能直接反查
+            #  - 手动触发时，checkout 到 main HEAD，反查失败 → 回退到仓库里最新的 vX.Y.Z tag
             TAG="$(git tag --points-at "${GITEE_COMMIT}" 2>/dev/null | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1)"
             if [ -z "$TAG" ]; then
-              echo "ERROR: cannot resolve tag for commit ${GITEE_COMMIT}."
-              git tag --points-at "${GITEE_COMMIT}" || true
+              echo "no tag on commit ${GITEE_COMMIT}, falling back to latest vX.Y.Z tag"
+              TAG="$(git tag -l 'v*.*.*' --sort=-v:refname | head -n1)"
+            fi
+            if [ -z "$TAG" ]; then
+              echo "ERROR: cannot resolve any release tag."
               exit 1
             fi
             VERSION="${TAG#v}"
