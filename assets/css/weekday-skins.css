@@ -80,7 +80,7 @@ html[data-weekday-skin="tue"] {
     --kr-skin-bg:          #F5EDD8;
     --kr-skin-card-bg:     #FFFEF7;
     --kr-skin-card-soft:   #F7EFD9;
-    --kr-skin-card-line:   #1A1A1A;
+    --kr-skin-card-line:   rgba(26, 26, 26, 0.25);
     --kr-skin-heading:     #1A1A1A;
     --kr-skin-text:        #2A2A2A;
     --kr-skin-muted:       #6E6650;
@@ -176,7 +176,7 @@ html[data-weekday-skin="sat"] {
     --kr-skin-link-hover:  #0F344B;
     --kr-skin-accent:      #2E84B5;
     --kr-skin-accent-hover:#1F6790;
-    --kr-skin-decor:        #E8B860;
+    --kr-skin-decor:        #F5A891;
     --kr-skin-quote-bg:    #E5F1F8;
     --kr-skin-tag-bg:      #D4E8F2;
     --kr-skin-banner-overlay: rgba(46, 132, 181, 0.42);
@@ -1454,6 +1454,8 @@ html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-cur
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page:hover {
     background: #E4E9F0 !important;
     color: var(--kr-skin-accent) !important;
+    border: none !important;
+    border-radius: 12px !important;
     box-shadow:
         inset 4px 4px 10px rgba(163, 177, 198, 0.55),
         inset -4px -4px 10px rgba(255, 255, 255, 0.85) !important;
@@ -2897,9 +2899,10 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .pagination
     border: 1px solid var(--kr-skin-card-line);
 }
 
-/* 朱砂细节：评论区评论者头像金色边框 */
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .comment .avatar {
-    border: 2px solid #E5C97A;
+/* 朱砂细节：评论区评论者头像去除皮肤附加的方形边框（保留原头像自身圆形） */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .comment .avatar,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .comments .comment .avatar img {
+    border: none !important;
 }
 
 /* 朱砂细节：评论标题双金线 */
@@ -2974,3 +2977,164 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main #respond .c
     box-shadow: 0 0 0 3px rgba(200, 50, 42, 0.1);
 }
 
+/* ===============================================================
+ * §21 分页 / 圆角 / 玻璃 tag 的皮肤一致性补丁
+ *   针对以下"风格破功"点：
+ *     - Bauhaus 正文翻页 + 评论翻页对齐黑边硬阴影
+ *     - Neumorphism 正文当前页 + 评论翻页对齐凸起/inset
+ *     - Morandi 分页 current/dots/kss-current 对齐 10px 圆角
+ *     - Vermilion 圆角统一到 3–4px
+ *     - Silk / Parchment 分页跟随卡片圆角
+ *     - Glass Cool / Warm tag 补上半透明白 + blur 玻璃语言
+ * =============================================================== */
+
+/* Bauhaus 正文翻页 + 评论翻页 —— 黑边硬阴影方块 */
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) #commentpage .current {
+    border-radius: 0 !important;
+    border: 1.5px solid #1A1A1A !important;
+    box-shadow: 3px 3px 0 #1A1A1A;
+}
+
+/* Neumorphism 正文当前页凹陷 */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span:hover,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    background: #E4E9F0 !important;
+    color: var(--kr-skin-accent) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow:
+        inset 4px 4px 10px rgba(163, 177, 198, 0.55),
+        inset -4px -4px 10px rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Neumorphism 评论翻页：凸起药丸 / current & hover 凹陷 */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) #commentpage .current {
+    border: none !important;
+    border-radius: 12px !important;
+    background: #E4E9F0 !important;
+    box-shadow:
+        4px 4px 10px rgba(163, 177, 198, 0.55),
+        -4px -4px 10px rgba(255, 255, 255, 0.85);
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) #commentpage a:hover,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) #commentpage .current {
+    background: #E4E9F0 !important;
+    color: var(--kr-skin-accent) !important;
+    box-shadow:
+        inset 4px 4px 10px rgba(163, 177, 198, 0.55),
+        inset -4px -4px 10px rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Morandi 分页统一 10px */
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .board .paginations .dots,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-ellipsis,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) #commentpage .current,
+html[data-weekday-skin="morandi"]:not([data-theme="dark"]) #commentpage .dots {
+    border-radius: 10px !important;
+}
+
+/* Silk / Parchment 分页跟随卡片圆角 */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .board .paginations .dots,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) #commentpage .current {
+    border-radius: 8px !important;
+}
+
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .board .paginations .dots,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) #commentpage .current {
+    border-radius: 10px !important;
+}
+
+/* Vermilion 圆角统一到 4px（卡片 / 分页 / Banner / blockquote / tag） */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-header .banner .content {
+    border-radius: 4px !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link {
+    border-radius: 4px !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main blockquote {
+    border-radius: 0 4px 4px 0 !important;
+}
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .article-tags a,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .tagcloud a,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .tag-links a,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    border-radius: 4px !important;
+}
+
+/* Neumorphism 热力图：wed 的 --kr-skin-card-line 是透明（靠阴影显形，不要边线），
+ * §18 映射后 --khs-line 也变透明，导致 level-0 空格子与页面底色 #E4E9F0 融为一体。
+ * 单独给热力图空格子一个可见的暖灰底。 */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-cell,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-legend-cell {
+    background: #CDD5DF;
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-cell.level-1,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-legend-cell.level-1 {
+    background: color-mix(in srgb, var(--kr-skin-accent) 30%, #CDD5DF);
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-cell.level-2,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-legend-cell.level-2 {
+    background: color-mix(in srgb, var(--kr-skin-accent) 55%, #CDD5DF);
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-cell.level-3,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-legend-cell.level-3 {
+    background: color-mix(in srgb, var(--kr-skin-accent) 78%, #CDD5DF);
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-cell.level-4,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .kratos-heatmap .kph-legend-cell.level-4 {
+    background: var(--kr-skin-accent);
+}
+
+/* Neumorphism：wed 的 --kr-skin-card-line 透明，导致依赖它的分隔线整体消失。
+ * 表格 thead 下边框 / td 边框 / hr / breadcrumb 底线等需要一根可见细线的地方，
+ * 单独用暖灰实色。 */
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main thead,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content table th,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content table td {
+    border-color: #C5CDD8 !important;
+}
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content hr,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .breadcrumb-box,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .footer,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .comments .title,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .sidebar .title {
+    border-color: #C5CDD8 !important;
+}
+
+/* Glass Cool / Warm tag —— 半透明白 + backdrop-filter blur */
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(6px) saturate(140%);
+    -webkit-backdrop-filter: blur(6px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
+    color: var(--kr-skin-heading) !important;
+}
