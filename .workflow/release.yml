@@ -96,9 +96,20 @@ stages:
             echo "PUBLISH_TOKEN hex head/tail:"
             printf '%s' "$PUBLISH_TOKEN" | head -c 4 | xxd
             printf '%s' "$PUBLISH_TOKEN" | tail -c 4 | xxd
-            # 去掉所有空白 / 引号 / 方括号 / 换行等异常字符
-            # （Gitee Go 变量组注入时可能包一层 JSON 数组，如 ["xxx"]）
-            PUBLISH_TOKEN="$(printf '%s' "$PUBLISH_TOKEN" | tr -d '[:space:]"[]\r\n')"
+            # Gitee Go 变量注入时可能把值包装成 JSON 数组字符串（如 ["xxx"]）
+            # 抽取第一段十六进制/十六进制 token（Gitee 私人令牌是 32 位十六进制）
+            RAW_TOKEN="$PUBLISH_TOKEN"
+            PUBLISH_TOKEN="$(printf '%s' "$RAW_TOKEN" | grep -oE '[0-9a-fA-F]{20,64}' | head -n1)"
+            if [ -z "$PUBLISH_TOKEN" ]; then
+              # 兜底：直接剥掉常见包装字符
+              PUBLISH_TOKEN="$RAW_TOKEN"
+              PUBLISH_TOKEN="${PUBLISH_TOKEN//\"/}"
+              PUBLISH_TOKEN="${PUBLISH_TOKEN//\[/}"
+              PUBLISH_TOKEN="${PUBLISH_TOKEN//\]/}"
+              PUBLISH_TOKEN="${PUBLISH_TOKEN// /}"
+              PUBLISH_TOKEN="${PUBLISH_TOKEN//$'\r'/}"
+              PUBLISH_TOKEN="${PUBLISH_TOKEN//$'\n'/}"
+            fi
             echo "PUBLISH_TOKEN sanitized length: ${#PUBLISH_TOKEN}"
             if [ -z "$PUBLISH_TOKEN" ] || [ "${#PUBLISH_TOKEN}" -lt 10 ]; then
               echo "ERROR: PUBLISH_TOKEN not injected."
