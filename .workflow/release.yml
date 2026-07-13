@@ -164,3 +164,7 @@ stages:
               exit 1
             fi
             echo "Done. Download URL: $DL_URL"
+
+            # Gitee Go 网页编辑器会默认追加 artifacts: ./dist，本地 stage 出来放进去规避
+            mkdir -p ./dist
+            cp kratos-plus-*.zip ./dist/ || true
