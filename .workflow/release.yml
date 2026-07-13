@@ -1,11 +1,15 @@
 # Gitee Go 流水线：监听 v*.*.* tag 推送，打包主题 zip 并发布到 Gitee Release
 #
-# 使用官方 release@gitee 插件，不需要额外 Token。
+# 说明：
+#   Gitee Go 官方 release@gitee 插件需要静态 tagName，无法从 shell 计算的变量传入，
+#   因此这里用单阶段 shell + Gitee OpenAPI 方式发布，动态解析 tag 名字。
 #
 # 前置准备（一次性）：
 #   1. Gitee 仓库 → 流水线 → 开通 Gitee Go
-#   2. 在 Gitee Go 编辑器中粘贴本文件内容并保存
-#   3. 触发规则：Tag 推送，前缀 v
+#   2. 用户设置 → 私人令牌 → 生成令牌，勾选 projects 权限
+#   3. Gitee Go 流水线「变量」中新增私密变量：
+#        PUBLISH_TOKEN = <上一步的令牌>
+#   4. 触发规则：Tag 推送，前缀 v
 #
 # 流水线触发：git push gitee vX.Y.Z
 # 完成后会在 https://gitee.com/lifengdi/kratos-plus/releases 看到新版本，
@@ -19,25 +23,32 @@ triggers:
     prefix:
       - v
 stages:
-  - name: build
-    displayName: 构建主题 zip
+  - name: release
+    displayName: 打包并发布
     strategy: naturally
     trigger: auto
     steps:
       - step: build@nodejs
-        name: build_zip
-        displayName: 打包 kratos-plus zip
+        name: publish
+        displayName: Build zip and publish Gitee release
         nodeVersion: '18.15'
         commands:
           - |
             set -e
             apt-get update -qq
-            apt-get install -y -qq git zip >/dev/null
+            apt-get install -y -qq git zip curl jq >/dev/null
 
-            TAG="${GITEE_TAG_NAME}"
-            if [ -z "$TAG" ]; then TAG="$(git describe --tags --exact-match)"; fi
+            git fetch --tags --force --quiet || true
+
+            # 解析 tag：Gitee Go 未提供 GITEE_TAG_NAME，用 commit 反查
+            TAG="$(git tag --points-at "${GITEE_COMMIT}" 2>/dev/null | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1)"
+            if [ -z "$TAG" ]; then
+              echo "ERROR: cannot resolve tag for commit ${GITEE_COMMIT}."
+              git tag --points-at "${GITEE_COMMIT}" || true
+              exit 1
+            fi
             VERSION="${TAG#v}"
-            echo "tag=$TAG version=$VERSION"
+            echo "tag=$TAG version=$VERSION commit=$GITEE_COMMIT"
 
             STYLE_VER=$(grep -E "^Version:" style.css | head -n1 | sed -E 's/^Version:[[:space:]]*//' | tr -d '\r')
             if [ "$VERSION" != "$STYLE_VER" ]; then
@@ -60,34 +71,57 @@ stages:
                    "$STAGE_DIR/kratos-plus/crowdin.yml" \
                    "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"
             (cd "$STAGE_DIR" && zip -qr "../$ZIP_NAME" "kratos-plus")
-            ls -lh "$ZIP_NAME"
+            ZIP_PATH="$(pwd)/$ZIP_NAME"
+            ls -lh "$ZIP_PATH"
 
             NOTES_FILE=".github/release-notes/${TAG}.md"
             if [ -f "$NOTES_FILE" ]; then
-              cp "$NOTES_FILE" RELEASE_BODY.md
+              cp "$NOTES_FILE" release_body.md
             else
-              printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > RELEASE_BODY.md
+              printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > release_body.md
             fi
-        artifacts:
-          - name: KRATOS_ZIP
-            path:
-              - kratos-plus-*.zip
-              - RELEASE_BODY.md
 
-  - name: release
-    displayName: 发布到 Gitee Release
-    strategy: naturally
-    trigger: auto
-    steps:
-      - step: release@gitee
-        name: release_gitee
-        displayName: Gitee Release
-        releaseName: Kratos+ ${GITEE_TAG_NAME}
-        description: RELEASE_BODY.md
-        tagName: ${GITEE_TAG_NAME}
-        upstreamArtifact:
-          - KRATOS_ZIP
-        assertFiles:
-          - kratos-plus-*.zip
-        prerelease: false
-        allowUpdate: true
+            if [ -z "$PUBLISH_TOKEN" ]; then
+              echo "ERROR: PUBLISH_TOKEN not set in pipeline variables."
+              exit 1
+            fi
+            OWNER="lifengdi"
+            REPO="kratos-plus"
+
+            # 若同名 Release 已存在，先删除再重建（等效 allowUpdate）
+            EXIST_ID=$(curl -sS "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/tags/${TAG}?access_token=${PUBLISH_TOKEN}" | jq -r '.id // empty')
+            if [ -n "$EXIST_ID" ]; then
+              echo "Existing release $EXIST_ID for $TAG — deleting for re-publish."
+              curl -sS -X DELETE "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/${EXIST_ID}?access_token=${PUBLISH_TOKEN}"
+            fi
+
+            BODY_JSON=$(jq -Rs \
+              --arg tag "$TAG" \
+              --arg name "Kratos+ $TAG" \
+              --arg target "main" \
+              --arg token "$PUBLISH_TOKEN" \
+              '{access_token:$token, tag_name:$tag, name:$name, body:., prerelease:false, target_commitish:$target}' \
+              release_body.md)
+
+            CREATE_RESP=$(curl -sS -X POST \
+              "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases" \
+              -H "Content-Type: application/json;charset=UTF-8" \
+              -d "$BODY_JSON")
+            echo "$CREATE_RESP" | jq '.' || echo "$CREATE_RESP"
+            RELEASE_ID=$(echo "$CREATE_RESP" | jq -r '.id // empty')
+            if [ -z "$RELEASE_ID" ]; then
+              echo "ERROR: failed to create Gitee release."
+              exit 1
+            fi
+
+            UPLOAD_RESP=$(curl -sS -X POST \
+              "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/${RELEASE_ID}/attach_files" \
+              -F "access_token=${PUBLISH_TOKEN}" \
+              -F "file=@${ZIP_PATH}")
+            echo "$UPLOAD_RESP" | jq '.' || echo "$UPLOAD_RESP"
+            DL_URL=$(echo "$UPLOAD_RESP" | jq -r '.browser_download_url // empty')
+            if [ -z "$DL_URL" ]; then
+              echo "ERROR: attachment upload failed."
+              exit 1
+            fi
+            echo "Done. Download URL: $DL_URL"
