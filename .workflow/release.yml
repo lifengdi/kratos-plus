@@ -110,28 +110,27 @@ stages:
               PUBLISH_TOKEN="${PUBLISH_TOKEN//$'\r'/}"
               PUBLISH_TOKEN="${PUBLISH_TOKEN//$'\n'/}"
             fi
-            echo "PUBLISH_TOKEN sanitized length: ${#PUBLISH_TOKEN}"
-            if [ -z "$PUBLISH_TOKEN" ] || [ "${#PUBLISH_TOKEN}" -lt 10 ]; then
+            # 关键：Gitee Go 会在 YAML 层预替换 ${PUBLISH_TOKEN}（还带 [] 包装），
+            # 因此下面统一改用另一个变量名 GITEE_TOKEN，避开 Gitee Go 的预替换。
+            GITEE_TOKEN="$PUBLISH_TOKEN"
+            echo "GITEE_TOKEN sanitized length: ${#GITEE_TOKEN}"
+            if [ -z "$GITEE_TOKEN" ] || [ "${#GITEE_TOKEN}" -lt 10 ]; then
               echo "ERROR: PUBLISH_TOKEN not injected."
               exit 1
             fi
 
-            # 用 sanitized token 先试探一下鉴权
             echo "=== auth probe: /api/v5/user ==="
-            curl -sS "https://gitee.com/api/v5/user?access_token=${PUBLISH_TOKEN}" | head -c 300
+            curl -sS "https://gitee.com/api/v5/user?access_token=$GITEE_TOKEN" | head -c 300
             echo
             echo "================================"
             OWNER="lifengdi"
             REPO="kratos-plus"
 
-            # 若同名 Release 已存在，先删除再重建（等效 allowUpdate）
-            # 遍历 releases 列表找到同 tag 的 release id（比 /releases/tags/{tag} 更可靠）
-            EXIST_ID=$(curl -sS "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases?access_token=${PUBLISH_TOKEN}&per_page=100" \
+            EXIST_ID=$(curl -sS "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases?access_token=$GITEE_TOKEN&per_page=100" \
               | jq -r --arg tag "$TAG" '.[] | select(.tag_name==$tag) | .id' | head -n1)
             if [ -n "$EXIST_ID" ]; then
               echo "Existing release $EXIST_ID for $TAG — deleting for re-publish."
-              curl -sS -X DELETE "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/${EXIST_ID}?access_token=${PUBLISH_TOKEN}"
-              # Gitee 删除是异步/软删除，稍等一下
+              curl -sS -X DELETE "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases/$EXIST_ID?access_token=$GITEE_TOKEN"
               sleep 2
             fi
 
@@ -139,12 +138,12 @@ stages:
               --arg tag "$TAG" \
               --arg name "Kratos+ $TAG" \
               --arg target "main" \
-              --arg token "$PUBLISH_TOKEN" \
+              --arg token "$GITEE_TOKEN" \
               '{access_token:$token, tag_name:$tag, name:$name, body:., prerelease:false, target_commitish:$target}' \
               release_body.md)
 
             CREATE_RESP=$(curl -sS -X POST \
-              "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases" \
+              "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases" \
               -H "Content-Type: application/json;charset=UTF-8" \
               -d "$BODY_JSON")
             echo "$CREATE_RESP" | jq '.' || echo "$CREATE_RESP"
@@ -155,9 +154,9 @@ stages:
             fi
 
             UPLOAD_RESP=$(curl -sS -X POST \
-              "https://gitee.com/api/v5/repos/${OWNER}/${REPO}/releases/${RELEASE_ID}/attach_files" \
-              -F "access_token=${PUBLISH_TOKEN}" \
-              -F "file=@${ZIP_PATH}")
+              "https://gitee.com/api/v5/repos/$OWNER/$REPO/releases/$RELEASE_ID/attach_files" \
+              -F "access_token=$GITEE_TOKEN" \
+              -F "file=@$ZIP_PATH")
             echo "$UPLOAD_RESP" | jq '.' || echo "$UPLOAD_RESP"
             DL_URL=$(echo "$UPLOAD_RESP" | jq -r '.browser_download_url // empty')
             if [ -z "$DL_URL" ]; then
