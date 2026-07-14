@@ -159,7 +159,7 @@ triggers:
   push:
     tags:
       prefix:
-      - v
+      - ""
       precise: []
       include: []
 variables:
