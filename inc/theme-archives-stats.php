@@ -545,6 +545,8 @@ function kratos_archives_stats_shortcode($atts = array())
         @media (max-width: 560px) {
             .kratos-archives-shortcode .kas-header { padding: 18px 20px; }
             .kratos-archives-shortcode .kas-header-title { font-size: 19px; }
+            .kratos-archives-shortcode .kas-header-divider { display: none; }
+            .kratos-archives-shortcode .kas-header-subtitle { flex-basis: 100%; }
             .kratos-archives-shortcode .kas-totals {
                 grid-template-columns: 1fr;
                 gap: 12px;

@@ -50,7 +50,11 @@ function kratos_weekday_options()
         'parchment' => __('羊皮', 'kratos'),
         'silk'      => __('黄绢', 'kratos'),
         'vermilion' => __('朱砂', 'kratos'),
-        'morandi'   => __('莫兰迪', 'kratos'),
+        'morandi'   => __('莫兰迪 · 柔和', 'kratos'),
+        'mist'      => __('莫兰迪 · 雾霭', 'kratos'),
+        'linen'     => __('莫兰迪 · 亚麻', 'kratos'),
+        'porcelain' => __('莫兰迪 · 青瓷', 'kratos'),
+        'lavender'  => __('莫兰迪 · 薰衣草', 'kratos'),
     );
 }
 
@@ -116,12 +120,39 @@ function kratos_weekday_enqueue()
     if ($s['mode'] === 'off') {
         return;
     }
-    wp_enqueue_style(
-        'kratos-weekday-skin',
-        ASSET_PATH . '/assets/css/weekday-skins.css',
-        array('kratos'),
-        THEME_VERSION
+    /**
+     * 额外皮肤（羊皮 / 黄绢 / 朱砂 / 莫兰迪家族）拆到独立 CSS 文件，且每个文件
+     * 已内嵌通用规则副本（选择器锁定该 slug），加载它就完整自足；无需再叠加
+     * weekday-skins.css。工作日 mon~sun（auto 模式或 locked 命中 mon~sun）仍
+     * 使用统一的 weekday-skins.css。
+     */
+    $variant_files = array(
+        'mist'      => 'morandi-mist.css',
+        'linen'     => 'morandi-linen.css',
+        'porcelain' => 'morandi-porcelain.css',
+        'lavender'  => 'morandi-lavender.css',
+        'parchment' => 'parchment.css',
+        'silk'      => 'silk.css',
+        'vermilion' => 'vermilion.css',
+        'morandi'   => 'morandi.css',
     );
+    if ($s['mode'] === 'locked' && isset($variant_files[$s['locked']])) {
+        // extra-skin：只加载该独立文件
+        wp_enqueue_style(
+            'kratos-weekday-skin',
+            ASSET_PATH . '/assets/css/skins/' . $variant_files[$s['locked']],
+            array('kratos'),
+            THEME_VERSION
+        );
+    } else {
+        // 工作日皮肤（auto 或 locked 命中 mon~sun）
+        wp_enqueue_style(
+            'kratos-weekday-skin',
+            ASSET_PATH . '/assets/css/weekday-skins.css',
+            array('kratos'),
+            THEME_VERSION
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'kratos_weekday_enqueue', 25);
 

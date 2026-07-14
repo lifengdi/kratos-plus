@@ -1,0 +1,1174 @@
+/**
+ * Morandi Mist · 莫兰迪雾霭 皮肤
+ *
+ * 清新简约 / 雾霭青 + 鼠尾草 + 米白 / 细边线 + 呼吸感
+ *
+ * 依赖：weekday-skins.css 已提供通用 html[data-weekday-skin]:not([data-theme="dark"])
+ *       与 dark.css 的通用骨架；本文件仅注入变量并覆盖 slug 专属结构。
+ *
+ * 亮色：EEF0EC 底 / FBFBF8 卡 / 8AA79D accent
+ * 暗色：232827 底 / 2C3230 卡 / A8C0B7 accent
+ */
+
+/* ─── 变量定义（亮色） ─── */
+html[data-weekday-skin="mist"] {
+    --kr-skin-bg:          #EEF0EC;
+    --kr-skin-card-bg:     #FBFBF8;
+    --kr-skin-card-soft:   #F2F4F0;
+    --kr-skin-card-line:   #E0E3DE;
+    --kr-skin-heading:     #3F4A46;
+    --kr-skin-text:        #5A625E;
+    --kr-skin-muted:       #9AA39F;
+    --kr-skin-link:        #7A9088;
+    --kr-skin-link-hover:  #5A7770;
+    --kr-skin-accent:      #8AA79D;
+    --kr-skin-accent-hover:#6D8E83;
+    --kr-skin-decor:       #B9C7BF;
+    --kr-skin-quote-bg:    #F2F4F0;
+    --kr-skin-tag-bg:      rgba(138, 167, 157, 0.14);
+    --kr-skin-banner-overlay: rgba(63, 74, 70, 0.38);
+    --kr-skin-footer-bg:   #F2F4F0;
+    --kr-skin-footer-fg:   #9AA39F;
+}
+
+/* ─── 导航吸顶（浅色雾霭调） ─── */
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav {
+    transition: background-color 0.35s ease, box-shadow 0.35s ease;
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav .navbar-brand,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav .navbar-brand h1,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav .navbar-nav .nav-link,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav .line {
+    transition: color 0.35s ease, background 0.35s ease;
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky {
+    background: #FBFBF8 !important;
+    box-shadow: 0 1px 12px rgba(80, 95, 88, 0.06);
+    border-bottom: 1px solid var(--kr-skin-card-line);
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand h1 {
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:focus {
+    color: var(--kr-skin-muted) !important;
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .active > .nav-link {
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .line {
+    background: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-menu {
+    background: var(--kr-skin-card-bg);
+    border: 1px solid var(--kr-skin-card-line);
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item.active,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:active {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-heading);
+}
+
+/* ─── 页脚（浅底冷调） ─── */
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer {
+    border-top: 1px solid var(--kr-skin-card-line);
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer p a:hover {
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+    color: var(--kr-skin-heading) !important;
+}
+
+/* ─── 卡片：细边线代替阴影 + 12px 圆角 ─── */
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    border-radius: 12px !important;
+    border: 1px solid var(--kr-skin-card-line);
+    box-shadow: 0 1px 12px rgba(80, 95, 88, 0.06);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
+    border-radius: 10px !important;
+    border: 1px solid var(--kr-skin-card-line);
+}
+
+/* ─── 暗夜 · 变量注入（把 dark.css 的冷蓝 accent 换成雾霭青） ─── */
+html[data-theme="dark"][data-weekday-skin="mist"] {
+    --kr-link:       #A8C0B7;
+    --kr-link-hover: #C0D6CD;
+    --kr-accent:     #A8C0B7;
+}
+
+/* ─── 暗夜 · 结构还原：卡片保持大圆角（配合亮色的清新气质） ─── */
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .board .article-panel,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .details,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .details .article,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .details .toolbar,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .details .comments,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .details .post-navigation .nav-previous,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .details .post-navigation .nav-next,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .sidebar .widget,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-shuoshuo .kss-item,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-shuoshuo-header {
+    border-radius: 12px !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .board .paginations a,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-shuoshuo .kss-page,
+html[data-theme="dark"][data-weekday-skin="mist"] .k-main .details .article .content .paginations a span {
+    border-radius: 10px !important;
+}
+
+/* ─── 分页/评论页当前态 ─── */
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations .dots,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-ellipsis,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage .current,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage .dots {
+    border-radius: 10px !important;
+}
+
+/* ─── 文章详情页 details 系列：去掉边框与阴影，仅保留卡片底色与圆角 ─── */
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* ===== [BEGIN shared rules injected from weekday-skins.css for slug=mist] ===== */
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) body {
+    background-color: var(--kr-skin-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main {
+    background-color: var(--kr-skin-bg) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main p,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main ol,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main ul,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo p,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo ul {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo a {
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main a:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo a:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-header .banner .overlay {
+    background-color: var(--kr-skin-banner-overlay);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a:hover {
+    color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content p {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta {
+    border-top-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label {
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label .label-arrow {
+    border-left-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .article-panel .search-title {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations a {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations a:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations .current {
+    background: var(--kr-skin-accent);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-muted);
+    cursor: default;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .breadcrumb-box {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .header .meta {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .header .meta > span:not(:last-child):after {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content p {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .content h2.title {
+    background-color: transparent;
+    border-left: 0;
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .content h2.title::after {
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
+    background: var(--kr-skin-quote-bg);
+    border-left-color: var(--kr-skin-accent);
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content hr {
+    border-top-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content table th,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content table td {
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content table tr:nth-child(2n) {
+    background-color: var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main thead {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .copyright span {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .footer {
+    border-top-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .footer .tags span,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .footer .tool span {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a {
+    background-color: var(--kr-skin-tag-bg);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .downbtn {
+    border-color: var(--kr-skin-accent);
+    background: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .downbtn:hover {
+    background: var(--kr-skin-accent-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations span {
+    margin: 0 !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px !important;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1;
+    transition: all .2s ease;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    background: var(--kr-skin-accent);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar .motto {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar .meta .name a {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate {
+    border-color: var(--kr-skin-accent);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:focus,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:hover {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-accent);
+    color: #fff;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .list > li,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .children {
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name a {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p span {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta a {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment .avatar img {
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage .current,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage .dots {
+    background: var(--kr-skin-card-bg, #fff);
+    color: var(--kr-skin-accent);
+    border-color: var(--kr-skin-border, rgba(0,0,0,0.08));
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage a:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage .current {
+    background: var(--kr-skin-accent);
+    border-color: transparent;
+    color: #fff;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) #commentpage .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-fg-muted, #999);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .input-group-text,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .form-control {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .form-control::placeholder {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea {
+    border-color: var(--kr-skin-card-line);
+    background-color: var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea {
+    background-color: transparent;
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea::placeholder {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar {
+    background-color: var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn:hover {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .smile .smile-tabs {
+    background: var(--kr-skin-card-soft);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab {
+    border-right-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab.active {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile .smile-panel a {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .error {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary {
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary:hover {
+    background-color: var(--kr-skin-accent-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget {
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .title {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .title::after {
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li a,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a {
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background-color: var(--kr-skin-tag-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li {
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li:hover,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-desc {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .nav-tabs .nav-link {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .nav-tabs .nav-item.show .nav-link,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .nav-tabs .nav-link.active {
+    background-color: transparent !important;
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar tbody a {
+    background: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-accent);
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments a:not(:last-child) {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .message {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .author,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .date {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc {
+    border-left-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::before,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::after {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li::before {
+    border-color: var(--kr-skin-card-bg);
+    background: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item li:hover::before {
+    background: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) input[type="text"],
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) input[type="email"],
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) input[type="url"],
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) input[type="search"],
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) input[type="password"],
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) textarea,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) select {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-captcha-input {
+    color: var(--kr-skin-text);
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-captcha-input::placeholder {
+    color: var(--kr-skin-muted);
+    opacity: 1;          /* Firefox 默认 0.54，覆盖让 muted 色更稳定可见 */
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-captcha-input:focus {
+    border-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-captcha-q {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .btn-search {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .dropdown-item.active,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .dropdown-item:active {
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-prevpage {
+    border-color: var(--kr-skin-accent);
+    background-color: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index {
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer {
+    background: var(--kr-skin-footer-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer p,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer p a {
+    color: var(--kr-skin-footer-fg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer p a:hover {
+    color: #fff;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .social a .kicon,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+    color: var(--kr-skin-footer-fg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+    color: #fff;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item {
+    background: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author {
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author::before {
+    background: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-text {
+    color: var(--kr-skin-text);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-time {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle {
+    color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle::after {
+    border-top-color: var(--kr-skin-link);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle:hover {
+    color: var(--kr-skin-link-hover);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    background: var(--kr-skin-card-bg);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title::before {
+    background: var(--kr-skin-accent);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-subtitle {
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo-back {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-muted) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo-back:hover {
+    color: var(--kr-skin-link) !important;
+    border-color: var(--kr-skin-accent);
+    background: var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-link) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page:hover {
+    background: var(--kr-skin-accent);
+    border-color: var(--kr-skin-accent);
+    color: #fff !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current {
+    background: var(--kr-skin-accent);
+    border-color: var(--kr-skin-accent);
+    color: #fff !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-ellipsis {
+    color: var(--kr-skin-muted) !important;
+    background: transparent;
+    border-color: transparent;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article h1,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content h1,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content h2,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content h3,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content h4,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content h5,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .article .content h6 {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
+    transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-heart-shortcode,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-topcommenters,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-timeline,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-heatmap,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-feed {
+    --khs-bg-1: var(--kr-skin-bg) !important;
+    --khs-bg-2: var(--kr-skin-bg) !important;
+    --khs-bg-3: var(--kr-skin-bg) !important;
+    --khs-fg: var(--kr-skin-text) !important;
+    --khs-fg-soft: var(--kr-skin-text) !important;
+    --khs-fg-dim: var(--kr-skin-muted) !important;
+    --khs-fg-mute: var(--kr-skin-muted) !important;
+    --khs-accent: var(--kr-skin-accent) !important;
+    --khs-accent-2: var(--kr-skin-accent-hover) !important;
+    --khs-line: var(--kr-skin-card-line) !important;
+    --khs-line-strong: var(--kr-skin-accent) !important;
+    --khs-card-bg: var(--kr-skin-card-bg) !important;
+    --khs-page-on: #fff !important;
+    /* stat 三个图标渐变也用皮肤色，避免出现羊皮纸的橘色调 */
+    --khs-stat-comment-1: var(--kr-skin-accent) !important;
+    --khs-stat-comment-2: var(--kr-skin-accent-hover) !important;
+    --khs-stat-post-1: var(--kr-skin-accent) !important;
+    --khs-stat-post-2: var(--kr-skin-accent-hover) !important;
+    --khs-stat-user-1: var(--kr-skin-accent) !important;
+    --khs-stat-user-2: var(--kr-skin-accent-hover) !important;
+    --khs-heart-fill: var(--kr-skin-accent) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::after {
+    display: none !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-stat,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-row,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links .kfl-header,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-feed .kff-header,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-feed .kff-card {
+    border-color: var(--kr-skin-card-line) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
+    background: var(--kr-skin-bg) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links .kfl-input:focus {
+    border-color: var(--kr-skin-accent) !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .06) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit {
+    background: var(--kr-skin-accent) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit:hover {
+    background: var(--kr-skin-accent-hover) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: var(--kr-skin-bg) !important;
+    color: var(--kr-skin-text) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-skin-accent) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count {
+    border-left-color: var(--kr-skin-card-line) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode {
+    --kas-bg-1: var(--kr-skin-bg) !important;
+    --kas-bg-2: var(--kr-skin-bg) !important;
+    --kas-bg-3: var(--kr-skin-bg) !important;
+    --kas-fg: var(--kr-skin-text) !important;
+    --kas-fg-soft: var(--kr-skin-text) !important;
+    --kas-fg-dim: var(--kr-skin-muted) !important;
+    --kas-fg-mute: var(--kr-skin-muted) !important;
+    --kas-accent: var(--kr-skin-accent) !important;
+    --kas-accent-2: var(--kr-skin-accent-hover) !important;
+    --kas-line: var(--kr-skin-card-line) !important;
+    --kas-line-strong: var(--kr-skin-accent) !important;
+    --kas-card-bg: var(--kr-skin-card-bg) !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header {
+    border-color: var(--kr-skin-card-line) !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-heart-shortcode,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-topcommenters,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-friend-links,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-timeline,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-heatmap,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-friend-feed {
+    --khs-accent: var(--kr-accent) !important;
+    --khs-accent-2: var(--kr-link-hover) !important;
+    --khs-line-strong: var(--kr-accent) !important;
+    --khs-stat-comment-1: var(--kr-accent) !important;
+    --khs-stat-comment-2: var(--kr-link-hover) !important;
+    --khs-stat-post-1: var(--kr-accent) !important;
+    --khs-stat-post-2: var(--kr-link-hover) !important;
+    --khs-stat-user-1: var(--kr-accent) !important;
+    --khs-stat-user-2: var(--kr-link-hover) !important;
+    --khs-heart-fill: var(--kr-accent) !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: rgba(255, 255, 255, .06) !important;
+    color: var(--kr-fg, #d6d8db) !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-accent) !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-archives-shortcode {
+    --kas-accent: var(--kr-accent) !important;
+    --kas-accent-2: var(--kr-link-hover) !important;
+    --kas-line-strong: var(--kr-accent) !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-heart-shortcode.khs-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-heart-shortcode.khs-scheme-parchment::after {
+    display: none !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin="mist"] .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+
+body.is-kratos-archives-page .k-main .details,
+body.is-kratos-heart-page .k-main .details,
+body.is-kratos-shuoshuo-page .k-main .details,
+body.is-kratos-topcommenters-page .k-main .details,
+body.is-kratos-friend-links-page .k-main .details,
+body.is-kratos-timeline-page .k-main .details,
+body.is-kratos-friend-feed-page .k-main .details {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+}
+
+body.is-kratos-archives-page .k-main .details::after,
+body.is-kratos-heart-page .k-main .details::after,
+body.is-kratos-shuoshuo-page .k-main .details::after,
+body.is-kratos-topcommenters-page .k-main .details::after,
+body.is-kratos-friend-links-page .k-main .details::after,
+body.is-kratos-timeline-page .k-main .details::after,
+body.is-kratos-friend-feed-page .k-main .details::after {
+    display: none !important;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--kr-skin-accent) var(--kr-skin-card-soft);
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb {
+    background-color: var(--kr-skin-accent);
+    border: 1px solid var(--kr-skin-card-line);
+    border-radius: 6px;
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--kr-skin-accent-hover, var(--kr-skin-accent));
+}
+
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
+    background-color: var(--kr-skin-card-soft);
+    border: 1px solid var(--kr-skin-card-line);
+}
+
+.k-main .details .article .content ul,
+.k-main .details .article .content ol,
+.widget_recent_entries ul,
+.widget_recent_comments ul,
+.widget_pages ul,
+.widget_meta ul,
+.widget_rss ul,
+.widget_nav_menu ul,
+.widget_block ul {
+    list-style: none;
+    padding-left: 1.6em;
+}
+
+.k-main .details .article .content ol {
+    counter-reset: kra-ol;
+}
+
+.k-main .details .article .content pre ul,
+.k-main .details .article .content pre ol {
+    list-style: none;
+    padding-left: 0;
+    counter-reset: none;
+}
+
+.k-main .details .article .content ul > li,
+.k-main .details .article .content ol > li,
+.widget_recent_entries ul > li,
+.widget_recent_comments ul > li,
+.widget_pages ul > li,
+.widget_meta ul > li,
+.widget_rss ul > li,
+.widget_nav_menu ul > li,
+.widget_block ul > li {
+    position: relative;
+    margin-bottom: 6px;
+    padding-left: 0.4em;
+}
+
+.k-main .details .article .content ul > li::before,
+.widget_recent_entries ul > li::before,
+.widget_recent_comments ul > li::before,
+.widget_pages ul > li::before,
+.widget_meta ul > li::before,
+.widget_rss ul > li::before,
+.widget_nav_menu ul > li::before,
+.widget_block ul > li::before {
+    content: "";
+    position: absolute;
+    left: -1em;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--kr-skin-accent, currentColor);
+}
+
+.k-main .details .article .content ol > li {
+    counter-increment: kra-ol;
+}
+
+.k-main .details .article .content ol > li::before {
+    content: counter(kra-ol) ".";
+    position: absolute;
+    left: -1.4em;
+    top: 0;
+    min-width: 1.2em;
+    text-align: right;
+    color: var(--kr-skin-accent, currentColor);
+    font-weight: 600;
+}
+
+.k-main .details .article .content ul ul > li::before,
+.widget_recent_entries ul ul > li::before,
+.widget_recent_comments ul ul > li::before,
+.widget_pages ul ul > li::before,
+.widget_meta ul ul > li::before,
+.widget_rss ul ul > li::before,
+.widget_nav_menu ul ul > li::before,
+.widget_block ul ul > li::before {
+    background: transparent;
+    border: 1px solid var(--kr-skin-accent, currentColor);
+    top: 0.6em;
+}
+
+.k-main .details .article .content ul ul ul > li::before,
+.widget_recent_entries ul ul,
+.widget_recent_comments ul ul,
+.widget_pages ul ul,
+.widget_meta ul ul,
+.widget_rss ul ul,
+.widget_nav_menu ul ul,
+.widget_block ul ul ul > li::before {
+    background: var(--kr-skin-accent, currentColor);
+    border: none;
+    border-radius: 0;
+    width: 6px;
+    height: 6px;
+    top: 0.7em;
+}
+/* ===== [END shared rules] ===== */

@@ -344,14 +344,24 @@ function kratos_shuoshuo_feed_shortcode($atts)
                                 <?php } ?>
                             <?php } ?>
 
-                            <?php if ($img_count > 0) { ?>
+                            <?php if ($img_count > 0) {
+                                $extra = $img_count > 9 ? ($img_count - 9) : 0;
+                            ?>
                                 <div class="kss-images <?php echo esc_attr($grid_class); ?>">
                                     <?php foreach ($images as $i => $src) {
-                                        if ($i >= 9) break; // 朋友圈最多 9 张
+                                        if ($i >= 9) break; // 列表页仅显示 9 格，超出走详情页
+                                        $is_last_with_more = ($extra > 0 && $i === 8);
                                     ?>
-                                        <a class="kss-img-cell" href="<?php echo esc_url($src); ?>">
-                                            <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
-                                        </a>
+                                        <?php if ($is_last_with_more) { ?>
+                                            <a class="kss-img-more-link" href="<?php echo esc_url($permalink); ?>" title="<?php echo esc_attr(sprintf(__('还有 %d 张，查看详情', 'kratos'), $extra)); ?>">
+                                                <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
+                                                <span class="kss-img-more-mask">+<?php echo (int) $extra; ?></span>
+                                            </a>
+                                        <?php } else { ?>
+                                            <a class="kss-img-cell" href="<?php echo esc_url($src); ?>">
+                                                <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
+                                            </a>
+                                        <?php } ?>
                                     <?php } ?>
                                 </div>
                             <?php } ?>
@@ -464,15 +474,16 @@ function kratos_shuoshuo_assets()
         .kratos-shuoshuo .kss-text a{color:#336699;}
         .kratos-shuoshuo .kss-images{display:grid;gap:4px;margin-top:10px;max-width:420px;}
         .kratos-shuoshuo .kss-images.kss-grid-1{grid-template-columns:1fr;max-width:300px;}
-        .kratos-shuoshuo .kss-images.kss-grid-1 .kss-img-cell{aspect-ratio:auto;height:auto;}
-        .kratos-shuoshuo .kss-images.kss-grid-1 .kss-img-bg{position:static;background-size:contain;background-repeat:no-repeat;background-position:left top;height:300px;display:block;width:100%;}
         .kratos-shuoshuo .kss-images.kss-grid-2{grid-template-columns:repeat(2,1fr);max-width:280px;}
         .kratos-shuoshuo .kss-images.kss-grid-3{grid-template-columns:repeat(3,1fr);}
         .kratos-shuoshuo .kss-images.kss-grid-4{grid-template-columns:repeat(2,1fr);max-width:280px;}
         .kratos-shuoshuo .kss-images.kss-grid-9{grid-template-columns:repeat(3,1fr);}
-        .kratos-shuoshuo .kss-img-cell{position:relative;display:block;aspect-ratio:1/1;border-radius:2px;overflow:hidden;background:#f1f1f1;cursor:zoom-in;}
-        .kratos-shuoshuo .kss-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .25s ease;}
-        .kratos-shuoshuo .kss-img-cell:hover .kss-img-bg{transform:scale(1.04);}
+        .kratos-shuoshuo .kss-img-cell,.kratos-shuoshuo .kss-img-more-link{position:relative;display:block;aspect-ratio:1/1;border-radius:2px;overflow:hidden;background:#f1f1f1;cursor:zoom-in;}
+        .kratos-shuoshuo .kss-img-bg{position:absolute;inset:0;width:100%;height:100%;background-size:cover;background-position:center center;background-repeat:no-repeat;transition:transform .25s ease;}
+        .kratos-shuoshuo .kss-img-cell:hover .kss-img-bg,.kratos-shuoshuo .kss-img-more-link:hover .kss-img-bg{transform:scale(1.04);}
+        .kratos-shuoshuo .kss-img-more-link{cursor:pointer;}
+        .kratos-shuoshuo .kss-img-more-mask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:22px;font-weight:600;letter-spacing:1px;pointer-events:none;}
+        .kratos-shuoshuo .kss-img-hidden{display:none !important;}
         .kratos-shuoshuo .kss-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#999;}
         .kratos-shuoshuo .kss-time{flex:1;}
         .kratos-shuoshuo .kss-actions{display:inline-flex;gap:14px;}
@@ -502,7 +513,6 @@ function kratos_shuoshuo_assets()
         .kratos-shuoshuo-single .kss-text{font-size:16px;line-height:1.85;}
         .kratos-shuoshuo-single .kss-images{margin-top:14px;max-width:520px;}
         .kratos-shuoshuo-single .kss-images.kss-grid-1{max-width:420px;}
-        .kratos-shuoshuo-single .kss-images.kss-grid-1 .kss-img-bg{height:380px;}
         .kratos-shuoshuo-single .kss-meta{margin-top:16px;padding-top:14px;border-top:1px dashed rgba(0,0,0,.06);font-size:13px;}
         .kratos-shuoshuo-single + .comments,
         .kratos-shuoshuo-single ~ .comments{margin-top:0 !important;border-radius:0 0 2px 2px;border-top:1px solid rgba(0,0,0,.04);}
@@ -520,11 +530,10 @@ function kratos_shuoshuo_assets()
             .kratos-shuoshuo .kss-item{padding:14px;gap:10px;}
             .kratos-shuoshuo .kss-avatar img,.kratos-shuoshuo .kss-avatar-img{width:40px !important;height:40px !important;}
             .kratos-shuoshuo .kss-images{max-width:100%;}
-            .kratos-shuoshuo .kss-images.kss-grid-1 .kss-img-bg{height:240px;}
+            .kratos-shuoshuo .kss-images.kss-grid-1{max-width:80%;}
             .kratos-shuoshuo-single .kss-item{padding:18px;gap:12px;}
             .kratos-shuoshuo-single .kss-avatar img,.kratos-shuoshuo-single .kss-avatar-img{width:46px !important;height:46px !important;}
             .kratos-shuoshuo-single .kss-text{font-size:15px;}
-            .kratos-shuoshuo-single .kss-images.kss-grid-1 .kss-img-bg{height:280px;}
             .kratos-shuoshuo-header{padding:20px 22px;}
             .kratos-shuoshuo-header .kss-h-title{font-size:19px;}
             .kratos-shuoshuo-header .kss-h-subtitle{font-size:13px;}

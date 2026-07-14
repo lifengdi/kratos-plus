@@ -83,12 +83,19 @@ if (!empty($kratos_ss_back_pages)) {
                                     <?php if ($text !== '') { ?>
                                         <div class="kss-text"><?php echo $text; ?></div>
                                     <?php } ?>
-                                    <?php if ($img_count > 0) { ?>
+                                    <?php if ($img_count > 0) {
+                                        $extra = $img_count > 9 ? ($img_count - 9) : 0;
+                                    ?>
                                         <div class="kss-images <?php echo esc_attr($grid_class); ?>" id="kss-gallery-<?php echo (int) $post_id; ?>">
                                             <?php foreach ($images as $i => $src) {
-                                                if ($i >= 9) break; ?>
-                                                <a class="kss-img-cell" href="<?php echo esc_url($src); ?>" data-src="<?php echo esc_url($src); ?>">
+                                                $is_hidden = ($i >= 9);
+                                                $is_last_visible_with_more = ($extra > 0 && $i === 8);
+                                            ?>
+                                                <a class="kss-img-cell<?php echo $is_hidden ? ' kss-img-hidden' : ''; ?><?php echo $is_last_visible_with_more ? ' kss-img-more' : ''; ?>" href="<?php echo esc_url($src); ?>" data-src="<?php echo esc_url($src); ?>"<?php echo $is_hidden ? ' aria-hidden="true"' : ''; ?>>
                                                     <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
+                                                    <?php if ($is_last_visible_with_more) { ?>
+                                                        <span class="kss-img-more-mask">+<?php echo (int) $extra; ?></span>
+                                                    <?php } ?>
                                                 </a>
                                             <?php } ?>
                                         </div>
