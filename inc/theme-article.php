@@ -93,6 +93,36 @@ function get_post_views($echo = 1)
     return $views;
 }
 
+// 后台「所有文章」列表新增「热度」列（可排序）
+add_filter('manage_post_posts_columns', function ($cols) {
+    $new = array();
+    foreach ($cols as $k => $v) {
+        if ($k === 'date') {
+            $new['post_views'] = __('热度', 'kratos');
+        }
+        $new[$k] = $v;
+    }
+    if (!isset($new['post_views'])) {
+        $new['post_views'] = __('热度', 'kratos');
+    }
+    return $new;
+});
+add_action('manage_post_posts_custom_column', function ($col, $post_id) {
+    if ($col !== 'post_views') return;
+    $views = (int) get_post_meta($post_id, 'views', true);
+    echo '<span class="kratos-post-views">' . esc_html(number_format_i18n($views)) . '</span>';
+}, 10, 2);
+add_filter('manage_edit-post_sortable_columns', function ($cols) {
+    $cols['post_views'] = 'post_views';
+    return $cols;
+});
+add_action('pre_get_posts', function ($q) {
+    if (!is_admin() || !$q->is_main_query()) return;
+    if ($q->get('orderby') !== 'post_views') return;
+    $q->set('meta_key', 'views');
+    $q->set('orderby', 'meta_value_num');
+});
+
 // 文章列表简介内容
 function custom_excerpt_length($length)
 {
