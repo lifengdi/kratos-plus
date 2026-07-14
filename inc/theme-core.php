@@ -392,6 +392,14 @@ $kratosPlusUpdater->addResultFilter(function ($info) {
     return $info;
 });
 
+// Gitee 会对 User-Agent 为 "WordPress/x.x" 的请求返回 403，下载 zip 时改用浏览器 UA。
+add_filter('http_request_args', function ($args, $url) {
+    if (is_string($url) && strpos($url, 'gitee.com/') !== false) {
+        $args['user-agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+    }
+    return $args;
+}, 10, 2);
+
 // 禁止生成多种尺寸图片
 if (kratos_option('g_removeimgsize', false)) {
     function remove_default_images($sizes)
