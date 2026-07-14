@@ -2,44 +2,66 @@
 /* Kratos+ 皮肤 · 黄绢 silk（从 weekday-skins.css 抽出） */
 
 html[data-weekday-skin="silk"] {
-    --kr-skin-bg:          #EFD9A9;
-    --kr-skin-card-bg:     rgba(255, 250, 232, 0.78);
-    --kr-skin-card-soft:   rgba(255, 250, 232, 0.55);
-    --kr-skin-card-line:   rgba(120, 80, 30, 0.22);
-    --kr-skin-heading:     #3A2A10;
-    --kr-skin-text:        #3A2A10;
-    --kr-skin-muted:       #7A5A26;
-    --kr-skin-link:        #7A3F12;
-    --kr-skin-link-hover:  #5A2D0A;
-    --kr-skin-accent:      #7A3F12;
-    --kr-skin-accent-hover:#A86028;
-    --kr-skin-decor:        #A86028;
-    --kr-skin-quote-bg:    rgba(255, 250, 232, 0.78);
-    --kr-skin-tag-bg:      rgba(255, 250, 232, 0.78);
-    --kr-skin-banner-overlay: rgba(58, 42, 16, 0.55);
-    --kr-skin-footer-bg:   #2A1E0C;
-    --kr-skin-footer-fg:   #C8A870;
+    --kr-skin-bg:          #E8CE94;
+    --kr-skin-card-bg:     rgba(253, 245, 220, 0.86);
+    --kr-skin-card-soft:   rgba(253, 245, 220, 0.60);
+    --kr-skin-card-line:   rgba(139, 87, 34, 0.28);
+    --kr-skin-heading:     #3A1F0A;
+    --kr-skin-text:        #3A2810;
+    --kr-skin-muted:       #86612B;
+    --kr-skin-link:        #8B2A18;
+    --kr-skin-link-hover:  #6B1E10;
+    --kr-skin-accent:      #A6321E;
+    --kr-skin-accent-hover:#C24A2E;
+    --kr-skin-decor:        #C24A2E;
+    --kr-skin-quote-bg:    rgba(253, 245, 220, 0.86);
+    --kr-skin-tag-bg:      rgba(253, 245, 220, 0.86);
+    --kr-skin-banner-overlay: rgba(58, 32, 14, 0.55);
+    --kr-skin-footer-bg:   #2A1809;
+    --kr-skin-footer-fg:   #D4B274;
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) body {
-    background-color: #EFD9A9;
+    background-color: #E8CE94;
     background-image:
-        radial-gradient(ellipse at top left, rgba(120, 80, 30, 0.18), transparent 55%),
-        radial-gradient(ellipse at bottom right, rgba(120, 80, 30, 0.20), transparent 60%),
-        radial-gradient(ellipse at center, rgba(255, 243, 206, 0.45), transparent 70%),
-        linear-gradient(135deg, #F5E7C4 0%, #EFD9A9 50%, #E9CC91 100%);
+        radial-gradient(ellipse at top left, rgba(166, 50, 30, 0.10), transparent 55%),
+        radial-gradient(ellipse at bottom right, rgba(139, 87, 34, 0.16), transparent 60%),
+        radial-gradient(ellipse at center, rgba(255, 245, 208, 0.55), transparent 70%),
+        linear-gradient(135deg, #F3E3B8 0%, #E8CE94 50%, #DDBE7C 100%);
     background-attachment: fixed;
     position: relative;
 }
+/* 丝绸横向织纹 —— 细密平行经纬线，替代原来的颗粒噪点 */
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.35;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.40  0 0 0 0 0.20  0 0 0 0.6 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
-    background-size: 240px 240px;
+    opacity: 0.55;
+    mix-blend-mode: soft-light;
+    background-image:
+        repeating-linear-gradient(90deg,
+            rgba(120, 80, 30, 0.10) 0 1px,
+            transparent 1px 3px),
+        repeating-linear-gradient(0deg,
+            rgba(255, 245, 208, 0.22) 0 1px,
+            transparent 1px 4px);
+}
+/* 绸缎斜向柔光 —— 让整幅像被光斜扫过 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(115deg,
+        transparent 0%,
+        rgba(255, 250, 220, 0.28) 32%,
+        rgba(255, 250, 220, 0.42) 50%,
+        rgba(255, 250, 220, 0.20) 68%,
+        transparent 100%);
+    mix-blend-mode: screen;
+    opacity: 0.55;
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-header,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main,
@@ -60,18 +82,30 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .post-n
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .widget,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
-    background-color: rgba(255, 250, 232, 0.78);
-    border: 1px solid rgba(120, 80, 30, 0.22);
-    border-radius: 14px;
-    box-shadow: 0 1px 3px rgba(120, 80, 30, 0.10);
+    background-color: rgba(253, 245, 220, 0.86);
+    background-image:
+        linear-gradient(135deg,
+            rgba(255, 250, 225, 0.55) 0%,
+            rgba(255, 250, 225, 0) 40%,
+            rgba(255, 250, 225, 0) 60%,
+            rgba(230, 200, 140, 0.18) 100%);
+    border: 1px solid rgba(139, 87, 34, 0.28);
+    border-radius: 6px;
+    box-shadow:
+        0 1px 3px rgba(120, 80, 30, 0.10),
+        inset 0 0 0 1px rgba(255, 250, 225, 0.55),
+        inset 0 0 0 3px rgba(139, 87, 34, 0.06);
     transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .board .article-panel:hover,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .widget:hover,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(120, 80, 30, 0.22);
-    border-color: rgba(120, 80, 30, 0.40);
+    box-shadow:
+        0 10px 22px rgba(120, 60, 20, 0.22),
+        inset 0 0 0 1px rgba(255, 250, 225, 0.70),
+        inset 0 0 0 3px rgba(166, 50, 30, 0.10);
+    border-color: rgba(166, 50, 30, 0.42);
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details {
     background-color: transparent !important;
@@ -80,10 +114,10 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details {
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
-    background: rgba(255, 250, 232, 0.78) !important;
-    border: 1px solid rgba(120, 80, 30, 0.22) !important;
-    color: #7A3F12 !important;
-    border-radius: 10px !important;
+    background: rgba(253, 245, 220, 0.86) !important;
+    border: 1px solid rgba(139, 87, 34, 0.28) !important;
+    color: #8B2A18 !important;
+    border-radius: 3px !important;
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .content h2.title {
     border-left: 0;
@@ -131,16 +165,16 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_meta ul > li::be
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_rss ul > li::before,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_block ul > li::before {
-    content: "◇";
+    content: "❖";
     background: none;
     border: none;
     width: auto;
     height: auto;
     color: var(--kr-skin-decor);
     top: 0;
-    left: -1.2em;
-    font-size: 12px;
-    line-height: 1.6;
+    left: -1.3em;
+    font-size: 11px;
+    line-height: 1.8;
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol {
     padding-left: 2.6em;
@@ -160,7 +194,7 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .articl
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) #commentpage a,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) #commentpage .current {
-    border-radius: 10px !important;
+    border-radius: 3px !important;
 }
 
 /* ===== [BEGIN shared rules injected from weekday-skins.css for slug=silk] ===== */
@@ -972,6 +1006,114 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortco
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header {
     border-color: var(--kr-skin-card-line) !important;
 }
+
+/* ===== silk · 特色页面 shortcode 绢面装裱风格 =====
+ * 走心评论 / 归档 / 友链 / 排行榜 / 时间轴 / 博友圈 / 特色标题：
+ * 标题卡片 + 内部卡片统一套用丝绸卡片（描边裱框 + 斜角柔光 + 缎面渐变）。
+ */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-stat,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-row,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-card,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-item,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-card,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heatmap .khm-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heatmap .khm-card,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-featured-title .kfl-header,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-featured-title .kft-content {
+    background-color: rgba(253, 245, 220, 0.86) !important;
+    background-image:
+        linear-gradient(135deg,
+            rgba(255, 250, 225, 0.55) 0%,
+            rgba(255, 250, 225, 0) 40%,
+            rgba(255, 250, 225, 0) 60%,
+            rgba(230, 200, 140, 0.18) 100%) !important;
+    border: 1px solid rgba(139, 87, 34, 0.28) !important;
+    border-radius: 6px !important;
+    box-shadow:
+        0 1px 3px rgba(120, 80, 30, 0.10),
+        inset 0 0 0 1px rgba(255, 250, 225, 0.55),
+        inset 0 0 0 3px rgba(139, 87, 34, 0.06) !important;
+}
+
+/* hover 稍强化（仅列表项类，避免标题卡跳动） */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-row:hover,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item:hover,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-card:hover,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-item:hover,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-card:hover {
+    box-shadow:
+        0 8px 18px rgba(120, 60, 20, 0.22),
+        inset 0 0 0 1px rgba(255, 250, 225, 0.70),
+        inset 0 0 0 3px rgba(166, 50, 30, 0.10) !important;
+    border-color: rgba(166, 50, 30, 0.42) !important;
+}
+
+/* 标题图标 —— 朱红色晕，替代原默认渐变，避免与皮肤色调冲突 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title-icon,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-title-icon,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-title-icon,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title-icon,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-title-icon,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heatmap .khm-title-icon,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header-icon,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-featured-title .kfl-title-icon {
+    background: linear-gradient(135deg, var(--kr-skin-accent), var(--kr-skin-accent-hover)) !important;
+    color: #FFF5DC !important;
+    box-shadow:
+        0 2px 6px rgba(166, 50, 30, 0.28),
+        inset 0 0 0 1px rgba(255, 250, 225, 0.40) !important;
+}
+
+/* 标题分隔线 —— 朱红 -> 透明的丝带感 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-header-divider,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header-divider,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-header-divider,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-header-divider,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-header-divider,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heatmap .khm-header-divider,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header-divider,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-featured-title .kfl-header-divider {
+    background: linear-gradient(90deg,
+        var(--kr-skin-accent) 0%,
+        rgba(166, 50, 30, 0.35) 60%,
+        transparent 100%) !important;
+}
+
+/* 特色页面标题文本一律用皮肤 heading 色，防止被 shortcode 内联 CSS 变量覆盖成米黄 */
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-title,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-title,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-title,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heatmap .khm-title,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header-title,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-featured-title .kfl-title {
+    color: var(--kr-skin-heading) !important;
+}
+
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-subtitle,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-subtitle,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-links .kfl-subtitle,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-friend-feed .kff-subtitle,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-timeline .ktl-subtitle,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-heatmap .khm-subtitle,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header-subtitle {
+    color: var(--kr-skin-muted) !important;
+}
+/* ===== silk · 特色页面 shortcode 绢面装裱风格 END ===== */
 
 html[data-theme="dark"][data-weekday-skin="silk"] .kratos-heart-shortcode,
 html[data-theme="dark"][data-weekday-skin="silk"] .kratos-topcommenters,
