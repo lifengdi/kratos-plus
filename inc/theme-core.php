@@ -373,17 +373,20 @@ if (!function_exists('kratos_plus_should_use_gitee')) {
     }
 }
 
-// 改写 PUC 返回的 download_url：github.com/.../releases/download/<tag>/<file>
-//   → gitee.com/<owner>/<repo>/releases/download/<tag>/<file>
+// 改写 PUC 返回的 download_url 到 Gitee Release 附件：
+//   https://gitee.com/lifengdi/kratos-plus/releases/download/v<version>/kratos-plus-<version>.zip
+// 注意：PUC 启用 enableReleaseAssets() 后，GitHub 侧的 download_url 是 api.github.com 的 asset 接口，
+// 无法用 str_replace 直接改写，这里改为按版本号重建 Gitee URL。
 $kratosPlusUpdater->addResultFilter(function ($info) {
     if (!kratos_plus_should_use_gitee()) {
         return $info;
     }
-    if (!empty($info->download_url) && strpos($info->download_url, 'github.com/lifengdi/kratos-plus/releases/download/') !== false) {
-        $info->download_url = str_replace(
-            'https://github.com/lifengdi/kratos-plus/releases/download/',
-            'https://gitee.com/lifengdi/kratos-plus/releases/download/',
-            $info->download_url
+    if (!empty($info->version)) {
+        $version = ltrim($info->version, 'v');
+        $info->download_url = sprintf(
+            'https://gitee.com/lifengdi/kratos-plus/releases/download/v%s/kratos-plus-%s.zip',
+            $version,
+            $version
         );
     }
     return $info;
