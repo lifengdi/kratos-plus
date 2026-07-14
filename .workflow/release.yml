@@ -160,8 +160,6 @@ triggers:
     tags:
       prefix:
       - ""
-      precise: []
-      include: []
 variables:
   global:
   - PUBLISH_TOKEN
