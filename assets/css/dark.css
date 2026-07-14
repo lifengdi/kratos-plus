@@ -490,6 +490,16 @@ html[data-theme="dark"] .k-main .sidebar .w-toc .item li:hover::before {
     background: var(--kr-accent);
 }
 
+/* 目录小工具：当前阅读高亮（暗色） */
+html[data-theme="dark"] .k-main .sidebar .w-toc .toc-item > a.active {
+    background: var(--kr-bg-soft);
+    color: var(--kr-accent);
+}
+
+html[data-theme="dark"] .k-main .sidebar .w-toc .is-active-parent > a {
+    color: var(--kr-accent);
+}
+
 /* 9. 表单 / 输入控件兜底 */
 html[data-theme="dark"] input[type="text"],
 html[data-theme="dark"] input[type="email"],
