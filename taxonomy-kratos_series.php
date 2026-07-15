@@ -66,18 +66,18 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                         <span class="ksa-sep">›</span>
                         <span class="ksa-current"><?php echo esc_html($series_title); ?></span>
                     </nav>
-                    <header class="kfl-header">
-                        <span class="kfl-title-icon" aria-hidden="true">
+                    <header class="kfl-header kr-hd">
+                        <span class="kfl-title-icon kr-ico" aria-hidden="true">
                             <?php if ($has_custom_icon) { ?>
                                 <i class="<?php echo esc_attr($series_icon); ?>"></i>
                             <?php } else { ?>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.9 7.06 17.4 8 11.9 4 8l5.61-1.16L12 2z"/></svg>
                             <?php } ?>
                         </span>
-                        <span class="kfl-title"><?php echo esc_html($series_title); ?></span>
+                        <span class="kfl-title kr-hd-title"><?php echo esc_html($series_title); ?></span>
                         <?php if ($series_desc !== '') { ?>
-                            <span class="kfl-header-divider" aria-hidden="true"></span>
-                            <p class="kfl-subtitle"><?php echo esc_html($series_desc); ?></p>
+                            <span class="kfl-header-divider kr-hd-divider" aria-hidden="true"></span>
+                            <p class="kfl-subtitle kr-hd-sub"><?php echo esc_html($series_desc); ?></p>
                         <?php } ?>
                     </header>
 
@@ -116,7 +116,7 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                         </div>
                     <?php endif; ?>
 
-                    <div class="content kft-content ksa-content">
+                    <div class="content kft-content ksa-content kr-card">
                         <?php if ($total === 0) { ?>
                             <p class="ksa-empty"><?php _e('该系列暂无文章', 'kratos'); ?></p>
                         <?php } else { ?>

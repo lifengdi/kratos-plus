@@ -1,0 +1,117 @@
+/* ============================================================
+ * Kratos+ · 短代码/特色页公共组件样式（components.css）
+ * ------------------------------------------------------------
+ * 统一类词表（kr-*），承接"标题卡 / 主体卡 / 图标胶囊 / 卡片 /
+ * 分隔线 / 按钮 / 药丸 / 小圆点"的公共外观，取代此前散落在各短代码
+ * PHP 内联 <style> 里、并在每个皮肤逐命名空间重复覆盖的样板。
+ *
+ *   .kr-hd          组件顶部标题卡外壳
+ *   .kr-body        组件主体卡外壳（包着轴线/网格/列表：ktl-body/kph-body/kfl-section/ktc-body）
+ *   .kr-hd-title    大标题文字
+ *   .kr-hd-sub      副标题
+ *   .kr-hd-divider  标题下分隔线
+ *   .kr-ico         图标胶囊（所有 *-title-icon / *-header-icon / *-section-icon / *-stat-icon / *-heart-icon / *-item-icon）
+ *   .kr-card        内容卡片（khs-card/kff-card/ktc-row/kfl-item/kas-section/kft-content/ksl-card）
+ *   .kr-btn         按钮（kfl-submit/kfl-copy-btn）
+ *   .kr-pill        药丸/计数徽章（kas-pill/kfl-section-count/kfl-visitor-link/kph-year-tag）
+ *   .kr-dot         小圆点（ktl-*-dot/ktc-dot/kfl-probe-dot）
+ *
+ * 加载顺序：style.css → components.css → 皮肤（kratos-weekday-skin，依赖 kratos-components）。
+ * 详见 docs/css-refactor-plan.md。
+ *
+ * 阶段说明：
+ *   - 阶段 1（当前）：markup 已附加 kr-* 类，本文件暂不写任何可视规则，
+ *     以保证"零视觉变化"（此时没有任何 CSS 命中 kr-*，外观完全由既有私有类决定）。
+ *   - 阶段 3：把各短代码 PHP 内联的"共享默认外观（亮色 + html[data-theme="dark"] 暗色）"
+ *     下沉到本文件，并移除被取代的内联规则。
+ * ============================================================ */
+
+/* ------------------------------------------------------------
+ * 皮肤关闭态（<html> 无 data-weekday-skin 属性）默认外观
+ * ------------------------------------------------------------
+ * 皮肤开启时 <html data-weekday-skin="..."> 由各皮肤文件接管卡片形态，
+ * 故此段用 :not([data-weekday-skin]) 锁定"仅皮肤关闭态"，不影响任何皮肤。
+ * data-theme（亮/暗）是另一个独立属性，本段亮暗通用。
+ * ------------------------------------------------------------ */
+
+/* 卡片元素统一直角（标题卡 / 主体卡 / 内容卡） */
+html:not([data-weekday-skin]) :is(.kr-hd, .kr-body, .kr-card) {
+    border-radius: 0;
+}
+
+/* ------------------------------------------------------------
+ * 短代码「命名空间变量 → 皮肤令牌」公共别名层
+ * ------------------------------------------------------------
+ * 此前每个皮肤都要为每个短代码重复一遍「私有变量映射到 --kr-skin-*」的样板
+ * （9 个皮肤 × 每命名空间十余行）。这些映射在各皮肤间字节级一致，属于纯重复，
+ * 故上收到本文件一次。皮肤只需定义 --kr-skin-* / --kr-* 的取值即可。
+ *
+ * 作用域 html[data-weekday-skin]：仅在任一皮肤激活时生效；皮肤关闭态
+ * （无该属性）不命中，短代码回落到各自 PHP 内联默认值，与重构前一致。
+ * 与皮肤内同名规则同特异性 (0,3,1)，且本文件先于皮肤加载，故皮肤如需
+ * 个性化（如 retro 的强调色对调）只要再写一条即可覆盖本层。
+ * ------------------------------------------------------------ */
+
+/* 归档 kas：亮色 —— 多数皮肤的通用映射（retro 在自身文件内覆盖强调色三行） */
+html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode {
+    --kas-bg-1: var(--kr-skin-bg) !important;
+    --kas-bg-2: var(--kr-skin-bg) !important;
+    --kas-bg-3: var(--kr-skin-bg) !important;
+    --kas-fg: var(--kr-skin-text) !important;
+    --kas-fg-soft: var(--kr-skin-text) !important;
+    --kas-fg-dim: var(--kr-skin-muted) !important;
+    --kas-fg-mute: var(--kr-skin-muted) !important;
+    --kas-accent: var(--kr-skin-accent) !important;
+    --kas-accent-2: var(--kr-skin-accent-hover) !important;
+    --kas-line: var(--kr-skin-card-line) !important;
+    --kas-line-strong: var(--kr-skin-accent) !important;
+    --kas-card-bg: var(--kr-skin-card-bg) !important;
+}
+/* 归档 kas：暗色 —— 9 皮肤一致 */
+html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode {
+    --kas-accent: var(--kr-accent) !important;
+    --kas-accent-2: var(--kr-link-hover) !important;
+    --kas-line-strong: var(--kr-accent) !important;
+}
+
+/* khs 命名空间（走心/榜首/友链/时间轴/热度图/博友圈 共用）：亮色
+ * —— 多数皮肤通用映射（retro 在自身文件内覆盖强调色 8 行） */
+html[data-weekday-skin]:not([data-theme="dark"]) :is(
+    .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
+    .kratos-timeline, .kratos-heatmap, .kratos-friend-feed) {
+    --khs-bg-1: var(--kr-skin-bg) !important;
+    --khs-bg-2: var(--kr-skin-bg) !important;
+    --khs-bg-3: var(--kr-skin-bg) !important;
+    --khs-fg: var(--kr-skin-text) !important;
+    --khs-fg-soft: var(--kr-skin-text) !important;
+    --khs-fg-dim: var(--kr-skin-muted) !important;
+    --khs-fg-mute: var(--kr-skin-muted) !important;
+    --khs-accent: var(--kr-skin-accent) !important;
+    --khs-accent-2: var(--kr-skin-accent-hover) !important;
+    --khs-line: var(--kr-skin-card-line) !important;
+    --khs-line-strong: var(--kr-skin-accent) !important;
+    --khs-card-bg: var(--kr-skin-card-bg) !important;
+    --khs-page-on: #fff !important;
+    --khs-stat-comment-1: var(--kr-skin-accent) !important;
+    --khs-stat-comment-2: var(--kr-skin-accent-hover) !important;
+    --khs-stat-post-1: var(--kr-skin-accent) !important;
+    --khs-stat-post-2: var(--kr-skin-accent-hover) !important;
+    --khs-stat-user-1: var(--kr-skin-accent) !important;
+    --khs-stat-user-2: var(--kr-skin-accent-hover) !important;
+    --khs-heart-fill: var(--kr-skin-accent) !important;
+}
+/* khs 命名空间：暗色 —— 9 皮肤一致 */
+html[data-theme="dark"][data-weekday-skin] :is(
+    .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
+    .kratos-timeline, .kratos-heatmap, .kratos-friend-feed) {
+    --khs-accent: var(--kr-accent) !important;
+    --khs-accent-2: var(--kr-link-hover) !important;
+    --khs-line-strong: var(--kr-accent) !important;
+    --khs-heart-fill: var(--kr-accent) !important;
+    --khs-stat-comment-1: var(--kr-accent) !important;
+    --khs-stat-comment-2: var(--kr-link-hover) !important;
+    --khs-stat-post-1: var(--kr-accent) !important;
+    --khs-stat-post-2: var(--kr-link-hover) !important;
+    --khs-stat-user-1: var(--kr-accent) !important;
+    --khs-stat-user-2: var(--kr-link-hover) !important;
+}

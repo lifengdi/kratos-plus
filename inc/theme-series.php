@@ -584,10 +584,10 @@ function kratos_series_render_box()
         $pid_i = (int) $p_i->parent;
     }
     echo '<div class="kratos-series' . ($open ? ' is-open' : '') . '">';
-    echo '<div class="kratos-series-head">';
+    echo '<div class="kratos-series-head kr-hd">';
     echo '<div class="kratos-series-titlewrap">';
-    echo '<i class="' . esc_attr(kratos_series_get_icon($term->term_id)) . ' kratos-series-icon"></i>';
-    echo '<a class="kratos-series-title" href="' . esc_url(get_term_link($term)) . '">' . wp_kses_post($title) . '</a>';
+    echo '<i class="' . esc_attr(kratos_series_get_icon($term->term_id)) . ' kratos-series-icon kr-ico"></i>';
+    echo '<a class="kratos-series-title kr-hd-title" href="' . esc_url(get_term_link($term)) . '">' . wp_kses_post($title) . '</a>';
     echo '<span class="kratos-series-pos">' . esc_html($pos) . '</span>';
     echo '</div>';
     echo '<button type="button" class="kratos-series-toggle" aria-expanded="' . ($open ? 'true' : 'false') . '" aria-label="' . esc_attr__('展开/收起系列列表', 'kratos') . '"><i class="fas fa-chevron-down"></i></button>';
@@ -940,7 +940,7 @@ function kratos_series_list_render_branch($tree, $parent_id, $level, $max_depth)
         $has_children = !empty($tree[$term->term_id]);
 
         echo '<li class="ksl-item' . ($has_children ? ' has-children' : '') . '">';
-        echo '<a class="ksl-card" href="' . esc_url(get_term_link($term)) . '">';
+        echo '<a class="ksl-card kr-card" href="' . esc_url(get_term_link($term)) . '">';
         echo '<span class="ksl-icon" aria-hidden="true">';
         if ($has_icon) {
             echo '<i class="' . esc_attr($icon) . '"></i>';

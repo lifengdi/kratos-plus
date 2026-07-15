@@ -558,51 +558,51 @@ function kratos_friend_feed_shortcode($atts)
     ?>
     <div class="kratos-friend-feed" id="kratos-friend-feed-list">
         <?php if ($title !== '' || $subtitle !== '') { ?>
-            <header class="kff-header">
+            <header class="kff-header kr-hd">
                 <?php if ($title !== '') { ?>
-                    <span class="kff-title-icon" aria-hidden="true">
+                    <span class="kff-title-icon kr-ico" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
                     </span>
-                    <span class="kff-title"><?php echo esc_html($title); ?></span>
+                    <span class="kff-title kr-hd-title"><?php echo esc_html($title); ?></span>
                 <?php } ?>
                 <?php if ($subtitle !== '') { ?>
-                    <?php if ($title !== '') { ?><span class="kff-header-divider" aria-hidden="true"></span><?php } ?>
-                    <p class="kff-subtitle"><?php echo esc_html($subtitle); ?></p>
+                    <?php if ($title !== '') { ?><span class="kff-header-divider kr-hd-divider" aria-hidden="true"></span><?php } ?>
+                    <p class="kff-subtitle kr-hd-sub"><?php echo esc_html($subtitle); ?></p>
                 <?php } ?>
             </header>
         <?php } ?>
 
         <div class="kff-stats">
-            <div class="kff-stat">
-                <span class="kff-stat-icon" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <div class="kff-stat kr-card">
+                <span class="kff-stat-icon kr-ico" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 </span>
                 <div class="kff-stat-body">
                     <div class="kff-stat-label"><?php esc_html_e('文章总数', 'kratos'); ?></div>
                     <div class="kff-stat-num"><?php echo (int) $stats['total']; ?></div>
                 </div>
             </div>
-            <div class="kff-stat">
-                <span class="kff-stat-icon" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <div class="kff-stat kr-card">
+                <span class="kff-stat-icon kr-ico" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 </span>
                 <div class="kff-stat-body">
                     <div class="kff-stat-label"><?php esc_html_e('订阅站点', 'kratos'); ?></div>
                     <div class="kff-stat-num"><?php echo (int) $stats['sources']; ?></div>
                 </div>
             </div>
-            <div class="kff-stat">
-                <span class="kff-stat-icon" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div class="kff-stat kr-card">
+                <span class="kff-stat-icon kr-ico" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 </span>
                 <div class="kff-stat-body">
                     <div class="kff-stat-label"><?php esc_html_e('本月文章', 'kratos'); ?></div>
                     <div class="kff-stat-num"><?php echo (int) $stats['month']; ?></div>
                 </div>
             </div>
-            <div class="kff-stat">
-                <span class="kff-stat-icon" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div class="kff-stat kr-card">
+                <span class="kff-stat-icon kr-ico" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </span>
                 <div class="kff-stat-body">
                     <div class="kff-stat-label"><?php esc_html_e('最近更新', 'kratos'); ?></div>
@@ -646,7 +646,7 @@ function kratos_friend_feed_shortcode($atts)
                     $letter    = function_exists('kratos_friend_first_letter') ? kratos_friend_first_letter($site_name !== '' ? $site_name : $site_url) : '#';
                     $bg        = function_exists('kratos_friend_placeholder_color') ? kratos_friend_placeholder_color($site_name !== '' ? $site_name : $site_url) : 'linear-gradient(135deg,#5b7fb8,#3a5a8a)';
                 ?>
-                    <a class="kff-card" href="<?php echo esc_url($it->permalink); ?>" target="_blank" rel="noopener external" title="<?php echo esc_attr($title); ?>">
+                    <a class="kff-card kr-card" href="<?php echo esc_url($it->permalink); ?>" target="_blank" rel="noopener external" title="<?php echo esc_attr($title); ?>">
                         <div class="kff-card-head">
                             <span class="kfl-logo kff-logo">
                                 <?php if ($site_image !== '') { ?>

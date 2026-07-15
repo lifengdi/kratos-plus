@@ -263,23 +263,23 @@ function kratos_top_commenters_shortcode($atts)
     ?>
     <div class="kratos-topcommenters" id="kratos-topcommenters-list">
         <?php if ($title !== '' || $subtitle !== '') { ?>
-            <header class="ktc-header">
+            <header class="ktc-header kr-hd">
                 <?php if ($title !== '') { ?>
-                    <span class="ktc-title-icon" aria-hidden="true">
+                    <span class="ktc-title-icon kr-ico" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-5.5 3 2-6-5-4h6L12 2l2.5 6h6l-5 4 2 6z"/></svg>
                     </span>
-                    <span class="ktc-title"><?php echo esc_html($title); ?></span>
+                    <span class="ktc-title kr-hd-title"><?php echo esc_html($title); ?></span>
                 <?php } ?>
                 <?php if ($subtitle !== '') { ?>
-                    <?php if ($title !== '') { ?><span class="ktc-header-divider" aria-hidden="true"></span><?php } ?>
-                    <p class="ktc-subtitle"><?php echo esc_html($subtitle); ?></p>
+                    <?php if ($title !== '') { ?><span class="ktc-header-divider kr-hd-divider" aria-hidden="true"></span><?php } ?>
+                    <p class="ktc-subtitle kr-hd-sub"><?php echo esc_html($subtitle); ?></p>
                 <?php } ?>
             </header>
         <?php } ?>
 
         <div class="ktc-stats">
-            <div class="ktc-stat ktc-stat-user">
-                <span class="ktc-stat-icon" aria-hidden="true">
+            <div class="ktc-stat kr-card ktc-stat-user">
+                <span class="ktc-stat-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </span>
                 <div class="ktc-stat-body">
@@ -287,8 +287,8 @@ function kratos_top_commenters_shortcode($atts)
                     <div class="ktc-stat-num"><?php echo (int) $total_users; ?></div>
                 </div>
             </div>
-            <div class="ktc-stat ktc-stat-comment">
-                <span class="ktc-stat-icon" aria-hidden="true">
+            <div class="ktc-stat kr-card ktc-stat-comment">
+                <span class="ktc-stat-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </span>
                 <div class="ktc-stat-body">
@@ -296,8 +296,8 @@ function kratos_top_commenters_shortcode($atts)
                     <div class="ktc-stat-num"><?php echo (int) $total_comments; ?></div>
                 </div>
             </div>
-            <div class="ktc-stat ktc-stat-heart">
-                <span class="ktc-stat-icon" aria-hidden="true">
+            <div class="ktc-stat kr-card ktc-stat-heart">
+                <span class="ktc-stat-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
                 </span>
                 <div class="ktc-stat-body">
@@ -326,7 +326,7 @@ function kratos_top_commenters_shortcode($atts)
                         $name_html = '<a class="ktc-name ktc-name-link" href="' . esc_url($it['url']) . '" target="_blank" rel="nofollow noopener external">' . esc_html($it['name']) . '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ktc-name-arrow"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>';
                     }
                 ?>
-                    <li class="ktc-row<?php echo $rank <= 3 ? ' ktc-row-top' : ''; ?>">
+                    <li class="ktc-row kr-card<?php echo $rank <= 3 ? ' ktc-row-top' : ''; ?>">
                         <span class="ktc-rank<?php echo $rank <= 3 ? ' ktc-rank-medal' : ''; ?>"<?php echo $medal_bg ? ' style="background:' . esc_attr($medal_bg) . ';"' : ''; ?>><?php echo (int) $rank; ?></span>
                         <span class="ktc-avatar"><?php echo $it['avatar_html']; ?></span>
                         <div class="ktc-body">
@@ -343,7 +343,7 @@ function kratos_top_commenters_shortcode($atts)
                                     <span class="ktc-count-label"><?php esc_html_e('条', 'kratos'); ?></span>
                                 </span>
                                 <?php if ($time_rel !== '') { ?>
-                                    <span class="ktc-dot" aria-hidden="true">·</span>
+                                    <span class="ktc-dot kr-dot" aria-hidden="true">·</span>
                                     <span class="ktc-lasttime" title="<?php echo esc_attr($time_full); ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                         <span><?php echo esc_html($time_rel); ?></span>

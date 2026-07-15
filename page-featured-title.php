@@ -28,24 +28,24 @@ $kratos_cols = kratos_layout_cols(); ?>
                 ?>
                     <div class="kratos-friend-links kratos-featured-title">
                         <?php if ($kft_title !== '' || $kft_subtitle !== '') { ?>
-                            <header class="kfl-header">
+                            <header class="kfl-header kr-hd">
                                 <?php if ($kft_title !== '') { ?>
-                                    <span class="kfl-title-icon" aria-hidden="true">
+                                    <span class="kfl-title-icon kr-ico" aria-hidden="true">
                                         <?php if ($kft_icon !== '') { ?>
                                             <i class="<?php echo esc_attr($kft_icon); ?>"></i>
                                         <?php } else { ?>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.9 7.06 17.4 8 11.9 4 8l5.61-1.16L12 2z"/></svg>
                                         <?php } ?>
                                     </span>
-                                    <span class="kfl-title"><?php echo esc_html($kft_title); ?></span>
+                                    <span class="kfl-title kr-hd-title"><?php echo esc_html($kft_title); ?></span>
                                 <?php } ?>
                                 <?php if ($kft_subtitle !== '') { ?>
-                                    <?php if ($kft_title !== '') { ?><span class="kfl-header-divider" aria-hidden="true"></span><?php } ?>
-                                    <p class="kfl-subtitle"><?php echo esc_html($kft_subtitle); ?></p>
+                                    <?php if ($kft_title !== '') { ?><span class="kfl-header-divider kr-hd-divider" aria-hidden="true"></span><?php } ?>
+                                    <p class="kfl-subtitle kr-hd-sub"><?php echo esc_html($kft_subtitle); ?></p>
                                 <?php } ?>
                             </header>
                         <?php } ?>
-                        <div class="content kft-content" id="lightgallery">
+                        <div class="content kft-content kr-card" id="lightgallery">
                             <?php the_content(); ?>
                         </div>
                     </div>

@@ -103,6 +103,10 @@ function theme_autoload()
             }
         }
         wp_enqueue_style('kratos', ASSET_PATH . '/style.css', array(), THEME_VERSION);
+        // 短代码/特色页公共组件样式（kr-* 统一类的默认外观层）。
+        // 必须在 style.css 之后、任何皮肤（kratos-weekday-skin）之前加载，
+        // 皮肤文件通过依赖 kratos-components 锁定级联顺序，见 inc/theme-weekday-skin.php。
+        wp_enqueue_style('kratos-components', ASSET_PATH . '/assets/css/components.css', array('kratos'), THEME_VERSION);
         if (is_child_theme()) {
             wp_enqueue_style('kratos-child', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
         }

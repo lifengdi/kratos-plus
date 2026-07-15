@@ -111,15 +111,15 @@ function kratos_heatmap_shortcode($atts)
          data-years="<?php echo esc_attr($years_json); ?>"
          style="width: <?php echo $width; ?>; max-width: 100%;">
         <?php if ($title !== '') { ?>
-        <div class="kph-header">
-            <span class="kph-title-icon" aria-hidden="true">
+        <div class="kph-header kr-hd">
+            <span class="kph-title-icon kr-ico" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             </span>
-            <h3 class="kph-title"><?php echo esc_html($title); ?></h3>
+            <h3 class="kph-title kr-hd-title"><?php echo esc_html($title); ?></h3>
         </div>
         <?php } ?>
 
-        <div class="kph-body">
+        <div class="kph-body kr-body">
             <div id="<?php echo esc_attr($heatmap_id); ?>" class="kph-canvas"></div>
             <script type="application/json" class="kph-data-<?php echo esc_attr($heatmap_id); ?>">
                 <?php echo wp_json_encode(array(
@@ -618,9 +618,9 @@ function kratos_heatmap_js()
         var years=\$canvas.closest('.kratos-heatmap').data('years')||[];
         if(typeof years==='string'){try{years=JSON.parse(years);}catch(e){years=[];}}
         var \$tags=$('<div class="kph-year-tags"></div>');
-        \$tags.append('<button type="button" class="kph-year-tag'+(!year?' is-active':'')+'" data-year="">'+I18N.recentYear+'</button>');
+        \$tags.append('<button type="button" class="kph-year-tag kr-pill'+(!year?' is-active':'')+'" data-year="">'+I18N.recentYear+'</button>');
         years.forEach(function(y){
-            \$tags.append('<button type="button" class="kph-year-tag'+(String(year)===String(y)?' is-active':'')+'" data-year="'+y+'">'+I18N.yearLabel.replace('%d',y)+'</button>');
+            \$tags.append('<button type="button" class="kph-year-tag kr-pill'+(String(year)===String(y)?' is-active':'')+'" data-year="'+y+'">'+I18N.yearLabel.replace('%d',y)+'</button>');
         });
         \$wrap.append(\$tags);
         \$canvas.append(\$wrap);

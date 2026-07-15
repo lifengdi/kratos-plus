@@ -108,7 +108,7 @@ function kratos_archives_stats_get_totals()
 /** 渲染单个总数卡。 */
 function kratos_archives_stats_render_total($label, $value, $svg)
 {
-    return '<div class="kas-total"><span class="kas-total-icon" aria-hidden="true">' . $svg . '</span>'
+    return '<div class="kas-total kr-card"><span class="kas-total-icon kr-ico" aria-hidden="true">' . $svg . '</span>'
         . '<div class="kas-total-body">'
         . '<div class="kas-total-label">' . esc_html($label) . '</div>'
         . '<div class="kas-total-num">' . esc_html(number_format_i18n($value)) . '</div>'
@@ -193,12 +193,12 @@ function kratos_archives_stats_shortcode($atts = array())
     <div class="kratos-archives-shortcode kas-scheme-<?php echo esc_attr($scheme); ?>">
 
         <!-- 页头：图标 + 标题 + 副标题 -->
-        <header class="kas-header">
-            <span class="kas-header-icon" aria-hidden="true"><?php echo $svg_doc; ?></span>
-            <h2 class="kas-header-title"><?php echo esc_html($atts['title']); ?></h2>
+        <header class="kas-header kr-hd">
+            <span class="kas-header-icon kr-ico" aria-hidden="true"><?php echo $svg_doc; ?></span>
+            <h2 class="kas-header-title kr-hd-title"><?php echo esc_html($atts['title']); ?></h2>
             <?php if ($atts['subtitle'] !== '') { ?>
-                <span class="kas-header-divider" aria-hidden="true"></span>
-                <p class="kas-header-subtitle"><?php echo esc_html($atts['subtitle']); ?></p>
+                <span class="kas-header-divider kr-hd-divider" aria-hidden="true"></span>
+                <p class="kas-header-subtitle kr-hd-sub"><?php echo esc_html($atts['subtitle']); ?></p>
             <?php } ?>
         </header>
 
@@ -214,14 +214,14 @@ function kratos_archives_stats_shortcode($atts = array())
 
         <!-- 分类统计 -->
         <?php if (!empty($categories)) { ?>
-            <section class="kas-section">
+            <section class="kas-section kr-card">
                 <header class="kas-section-head">
-                    <span class="kas-section-icon" aria-hidden="true"><?php echo $svg_folder; ?></span>
+                    <span class="kas-section-icon kr-ico" aria-hidden="true"><?php echo $svg_folder; ?></span>
                     <h3 class="kas-section-title"><?php esc_html_e('分类统计', 'kratos'); ?></h3>
                 </header>
                 <div class="kas-grid kas-grid-cat">
                     <?php foreach ($categories as $cat) { ?>
-                        <a class="kas-pill" href="<?php echo esc_url(get_category_link($cat->term_id)); ?>">
+                        <a class="kas-pill kr-pill" href="<?php echo esc_url(get_category_link($cat->term_id)); ?>">
                             <span class="kas-pill-label"><?php echo esc_html($cat->name); ?></span>
                             <span class="kas-pill-count"><?php
                                 /* translators: %d: 篇数 */
@@ -235,14 +235,14 @@ function kratos_archives_stats_shortcode($atts = array())
 
         <!-- 标签统计 -->
         <?php if (!empty($tags)) { ?>
-            <section class="kas-section">
+            <section class="kas-section kr-card">
                 <header class="kas-section-head">
-                    <span class="kas-section-icon" aria-hidden="true"><?php echo $svg_tag_section; ?></span>
+                    <span class="kas-section-icon kr-ico" aria-hidden="true"><?php echo $svg_tag_section; ?></span>
                     <h3 class="kas-section-title"><?php esc_html_e('标签统计', 'kratos'); ?></h3>
                 </header>
                 <div class="kas-grid kas-grid-tag">
                     <?php foreach ($tags as $tag) { ?>
-                        <a class="kas-pill" href="<?php echo esc_url(get_term_link($tag)); ?>" title="<?php echo esc_attr($tag->name); ?>">
+                        <a class="kas-pill kr-pill" href="<?php echo esc_url(get_term_link($tag)); ?>" title="<?php echo esc_attr($tag->name); ?>">
                             <span class="kas-pill-label"><?php echo esc_html($tag->name); ?></span>
                             <span class="kas-pill-count"><?php
                                 printf(esc_html__('%d 篇', 'kratos'), (int) $tag->count);
@@ -255,9 +255,9 @@ function kratos_archives_stats_shortcode($atts = array())
 
         <!-- 时间归档（年/月 Tab，默认年）-->
         <?php if (!empty($years) || !empty($months)) { ?>
-            <section class="kas-section kas-time-section">
+            <section class="kas-section kas-time-section kr-card">
                 <header class="kas-section-head kas-time-head">
-                    <span class="kas-section-icon" aria-hidden="true"><?php echo $svg_calendar; ?></span>
+                    <span class="kas-section-icon kr-ico" aria-hidden="true"><?php echo $svg_calendar; ?></span>
                     <h3 class="kas-section-title"><?php esc_html_e('时间归档', 'kratos'); ?></h3>
                     <div class="kas-tabs" role="tablist">
                         <?php if (!empty($years)) { ?>
@@ -272,7 +272,7 @@ function kratos_archives_stats_shortcode($atts = array())
                 <?php if (!empty($years)) { ?>
                     <div class="kas-grid kas-grid-time kas-tab-panel" data-kas-panel="year">
                         <?php foreach ($years as $row) { ?>
-                            <a class="kas-pill" href="<?php echo esc_url(get_year_link($row['year'])); ?>">
+                            <a class="kas-pill kr-pill" href="<?php echo esc_url(get_year_link($row['year'])); ?>">
                                 <span class="kas-pill-label"><?php
                                     /* translators: %d: 年份 */
                                     printf(esc_html__('%d 年', 'kratos'), $row['year']);
@@ -288,7 +288,7 @@ function kratos_archives_stats_shortcode($atts = array())
                 <?php if (!empty($months)) { ?>
                     <div class="kas-grid kas-grid-time kas-tab-panel<?php echo empty($years) ? '' : ' is-hidden'; ?>" data-kas-panel="month">
                         <?php foreach ($months as $row) { ?>
-                            <a class="kas-pill" href="<?php echo esc_url(get_month_link($row['year'], $row['month'])); ?>">
+                            <a class="kas-pill kr-pill" href="<?php echo esc_url(get_month_link($row['year'], $row['month'])); ?>">
                                 <span class="kas-pill-label"><?php
                                     /* translators: 1: 年份, 2: 月份 */
                                     printf(esc_html__('%1$d 年 %2$d 月', 'kratos'), $row['year'], $row['month']);

@@ -55,6 +55,7 @@ function kratos_weekday_options()
         'linen'     => __('莫兰迪 · 亚麻', 'kratos'),
         'porcelain' => __('莫兰迪 · 青瓷', 'kratos'),
         'lavender'  => __('莫兰迪 · 薰衣草', 'kratos'),
+        'retro'     => __('复古 · 牛皮纸', 'kratos'),
     );
 }
 
@@ -135,13 +136,14 @@ function kratos_weekday_enqueue()
         'silk'      => 'silk.css',
         'vermilion' => 'vermilion.css',
         'morandi'   => 'morandi.css',
+        'retro'     => 'retro.css',
     );
     if ($s['mode'] === 'locked' && isset($variant_files[$s['locked']])) {
         // extra-skin：只加载该独立文件
         wp_enqueue_style(
             'kratos-weekday-skin',
             ASSET_PATH . '/assets/css/skins/' . $variant_files[$s['locked']],
-            array('kratos'),
+            array('kratos', 'kratos-components'),
             THEME_VERSION
         );
     } else {
@@ -149,7 +151,7 @@ function kratos_weekday_enqueue()
         wp_enqueue_style(
             'kratos-weekday-skin',
             ASSET_PATH . '/assets/css/weekday-skins.css',
-            array('kratos'),
+            array('kratos', 'kratos-components'),
             THEME_VERSION
         );
     }

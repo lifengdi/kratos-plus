@@ -25,12 +25,12 @@ $kratos_ss_subtitle = trim((string) kratos_option('shuoshuo_subtitle', ''));
                 <?php if (have_posts()) : the_post();
                     update_post_caches($posts); ?>
                     <?php if ($kratos_ss_title !== '' || $kratos_ss_subtitle !== '') { ?>
-                        <header class="kratos-shuoshuo-header">
+                        <header class="kratos-shuoshuo-header kr-hd">
                             <?php if ($kratos_ss_title !== '') { ?>
-                                <h1 class="kss-h-title"><?php echo esc_html($kratos_ss_title); ?></h1>
+                                <h1 class="kss-h-title kr-hd-title"><?php echo esc_html($kratos_ss_title); ?></h1>
                             <?php } ?>
                             <?php if ($kratos_ss_subtitle !== '') { ?>
-                                <p class="kss-h-subtitle"><?php echo esc_html($kratos_ss_subtitle); ?></p>
+                                <p class="kss-h-subtitle kr-hd-sub"><?php echo esc_html($kratos_ss_subtitle); ?></p>
                             <?php } ?>
                         </header>
                     <?php } ?>

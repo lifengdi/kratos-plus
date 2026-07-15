@@ -990,6 +990,7 @@ span {
     position: absolute;
     top: -16px;
     right: -1px;
+    z-index: 999;
 }
 
 .k-main
@@ -2029,14 +2030,6 @@ tr:nth-child(
 .article
 .content
 .card-body {
-    padding: 10px 15px;
-}
-
-.k-main
-.details
-.article
-.content
-.alert {
     padding: 10px 15px;
 }
 
@@ -4672,7 +4665,7 @@ a
 
 /* 图文左右式增强版 —— 保留经典左右结构，加圆角、阴影、hover 抬升、左右交替 */
 .k-main .board .post-list.layout-enhanced .article-panel {
-    border-radius: 8px;
+    /*border-radius: 8px;*/
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }

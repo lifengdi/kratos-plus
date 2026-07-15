@@ -376,23 +376,23 @@ function kratos_heart_shortcode($atts)
     ?>
     <div class="kratos-heart-shortcode khs-scheme-parchment" id="kratos-heart-list">
         <?php if ($title !== '' || $subtitle !== '') { ?>
-            <header class="khs-header">
+            <header class="khs-header kr-hd">
                 <?php if ($title !== '') { ?>
-                    <span class="khs-title-icon" aria-hidden="true">
+                    <span class="khs-title-icon kr-ico" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
                     </span>
-                    <span class="khs-title"><?php echo esc_html($title); ?></span>
+                    <span class="khs-title kr-hd-title"><?php echo esc_html($title); ?></span>
                 <?php } ?>
                 <?php if ($subtitle !== '') { ?>
-                    <?php if ($title !== '') { ?><span class="khs-header-divider" aria-hidden="true"></span><?php } ?>
-                    <p class="khs-subtitle"><?php echo esc_html($subtitle); ?></p>
+                    <?php if ($title !== '') { ?><span class="khs-header-divider kr-hd-divider" aria-hidden="true"></span><?php } ?>
+                    <p class="khs-subtitle kr-hd-sub"><?php echo esc_html($subtitle); ?></p>
                 <?php } ?>
             </header>
         <?php } ?>
 
         <div class="khs-stats">
-            <div class="khs-stat khs-stat-comment">
-                <span class="khs-stat-icon" aria-hidden="true">
+            <div class="khs-stat kr-card khs-stat-comment">
+                <span class="khs-stat-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>
                 </span>
                 <div class="khs-stat-body">
@@ -400,8 +400,8 @@ function kratos_heart_shortcode($atts)
                     <div class="khs-stat-num"><?php echo (int) $stats['comments']; ?></div>
                 </div>
             </div>
-            <div class="khs-stat khs-stat-post">
-                <span class="khs-stat-icon" aria-hidden="true">
+            <div class="khs-stat kr-card khs-stat-post">
+                <span class="khs-stat-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
                 </span>
                 <div class="khs-stat-body">
@@ -409,8 +409,8 @@ function kratos_heart_shortcode($atts)
                     <div class="khs-stat-num"><?php echo (int) $stats['posts']; ?></div>
                 </div>
             </div>
-            <div class="khs-stat khs-stat-user">
-                <span class="khs-stat-icon" aria-hidden="true">
+            <div class="khs-stat kr-card khs-stat-user">
+                <span class="khs-stat-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </span>
                 <div class="khs-stat-body">
@@ -418,8 +418,8 @@ function kratos_heart_shortcode($atts)
                     <div class="khs-stat-num"><?php echo (int) $stats['users']; ?></div>
                 </div>
             </div>
-            <div class="khs-stat khs-stat-monthly">
-                <span class="khs-stat-icon" aria-hidden="true">
+            <div class="khs-stat kr-card khs-stat-monthly">
+                <span class="khs-stat-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>
                 </span>
                 <div class="khs-stat-body">
@@ -449,14 +449,14 @@ function kratos_heart_shortcode($atts)
                     $excerpt      = wp_strip_all_tags(get_comment_text($c->comment_ID));
                     $excerpt      = function_exists('mb_strimwidth') ? mb_strimwidth($excerpt, 0, 120, '…', 'UTF-8') : (mb_strlen($excerpt) > 60 ? mb_substr($excerpt, 0, 60) . '…' : $excerpt);
                 ?>
-                    <a class="khs-card" href="<?php echo esc_url($comment_link); ?>" title="<?php echo esc_attr($post_title); ?>">
+                    <a class="khs-card kr-card" href="<?php echo esc_url($comment_link); ?>" title="<?php echo esc_attr($post_title); ?>">
                         <div class="khs-card-head">
                             <span class="khs-avatar"><?php echo $avatar; ?></span>
                             <div class="khs-meta">
                                 <span class="khs-author"><?php echo esc_html($author); ?></span>
                                 <span class="khs-time" title="<?php echo esc_attr($time_full); ?>"><?php echo esc_html($time_human); ?></span>
                             </div>
-                            <span class="khs-heart-icon" aria-hidden="true">
+                            <span class="khs-heart-icon kr-ico" aria-hidden="true">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
                             </span>
                         </div>

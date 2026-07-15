@@ -211,7 +211,7 @@ function kratos_read_render_related()
     // list / compact 强制无图（compact 为无图紧凑列表）
     if ($style === 'compact') $show_thumb = false;
 
-    echo '<div class="kratos-related kratos-related-' . esc_attr($style) . ($show_thumb ? '' : ' no-thumb') . '">';
+    echo '<div class="kratos-related kr-card kratos-related-' . esc_attr($style) . ($show_thumb ? '' : ' no-thumb') . '">';
     if (!empty($title)) {
         echo '<div class="kratos-related-title">' . esc_html($title) . '</div>';
     }

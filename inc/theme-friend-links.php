@@ -289,16 +289,16 @@ function kratos_friend_shortcode($atts)
     ?>
     <div class="kratos-friend-links" id="kratos-friend-links">
         <?php if ($title !== '' || $subtitle !== '') { ?>
-            <header class="kfl-header">
+            <header class="kfl-header kr-hd">
                 <?php if ($title !== '') { ?>
-                    <span class="kfl-title-icon" aria-hidden="true">
+                    <span class="kfl-title-icon kr-ico" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1 1"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1-1"/></svg>
                     </span>
-                    <span class="kfl-title"><?php echo esc_html($title); ?></span>
+                    <span class="kfl-title kr-hd-title"><?php echo esc_html($title); ?></span>
                 <?php } ?>
                 <?php if ($subtitle !== '') { ?>
-                    <?php if ($title !== '') { ?><span class="kfl-header-divider" aria-hidden="true"></span><?php } ?>
-                    <p class="kfl-subtitle"><?php echo esc_html($subtitle); ?></p>
+                    <?php if ($title !== '') { ?><span class="kfl-header-divider kr-hd-divider" aria-hidden="true"></span><?php } ?>
+                    <p class="kfl-subtitle kr-hd-sub"><?php echo esc_html($subtitle); ?></p>
                 <?php } ?>
             </header>
         <?php } ?>
@@ -316,7 +316,7 @@ function kratos_friend_shortcode($atts)
             if ($si_desc === '') $si_desc = get_bloginfo('description');
             if ($si_rss === '')  $si_rss  = get_bloginfo('rss2_url');
         ?>
-            <section class="kfl-section kfl-siteinfo-section">
+            <section class="kfl-section kr-body kfl-siteinfo-section">
                 <header class="kfl-section-head">
                     <h3 class="kfl-section-title"><?php esc_html_e('本站信息', 'kratos'); ?></h3>
                 </header>
@@ -329,7 +329,7 @@ function kratos_friend_shortcode($atts)
                     $copy_label   = esc_attr__('复制', 'kratos');
                     $copied_label = esc_attr__('已复制', 'kratos');
                     $render_copy_btn = function() use ($copy_svg, $copy_label, $copied_label) {
-                        return '<button type="button" class="kfl-copy-btn" title="' . $copy_label . '" aria-label="' . $copy_label . '" data-copied-label="' . $copied_label . '">' . $copy_svg . '</button>';
+                        return '<button type="button" class="kfl-copy-btn kr-btn" title="' . $copy_label . '" aria-label="' . $copy_label . '" data-copied-label="' . $copied_label . '">' . $copy_svg . '</button>';
                     };
                     ?>
                     <div class="kfl-siteinfo-fields">
@@ -370,10 +370,10 @@ function kratos_friend_shortcode($atts)
                 $links = $group['links'];
                 if (empty($links)) continue;
                 ?>
-                <section class="kfl-section">
+                <section class="kfl-section kr-body">
                     <header class="kfl-section-head">
                         <h3 class="kfl-section-title"><?php echo esc_html($term->name); ?></h3>
-                        <span class="kfl-section-count"><?php echo (int) count($links); ?></span>
+                        <span class="kfl-section-count kr-pill"><?php echo (int) count($links); ?></span>
                         <?php if ($term->description !== '') { ?>
                             <p class="kfl-section-desc"><?php echo esc_html($term->description); ?></p>
                         <?php } ?>
@@ -388,7 +388,7 @@ function kratos_friend_shortcode($atts)
                             $letter = kratos_friend_first_letter($name !== '' ? $name : $url);
                             $bg     = kratos_friend_placeholder_color($name !== '' ? $name : $url);
                             ?>
-                            <a class="kfl-item" href="<?php echo esc_url($url); ?>" target="<?php echo esc_attr($target); ?>" rel="nofollow noopener external" title="<?php echo esc_attr($name . ($desc !== '' ? ' — ' . $desc : '')); ?>">
+                            <a class="kfl-item kr-card" href="<?php echo esc_url($url); ?>" target="<?php echo esc_attr($target); ?>" rel="nofollow noopener external" title="<?php echo esc_attr($name . ($desc !== '' ? ' — ' . $desc : '')); ?>">
                                 <?php if ($probe_enabled && isset($probe_data[(int) $link->link_id])) {
                                     $p = $probe_data[(int) $link->link_id];
                                     $p_cls = $p['status'] === 'reachable' ? 'is-up' : 'is-down';
@@ -397,7 +397,7 @@ function kratos_friend_shortcode($atts)
                                         $p_tip .= ' · ' . human_time_diff((int) $p['checked_at'], time()) . __('前检测', 'kratos');
                                     }
                                 ?>
-                                    <span class="kfl-probe-dot <?php echo esc_attr($p_cls); ?>" title="<?php echo esc_attr($p_tip); ?>"></span>
+                                    <span class="kfl-probe-dot kr-dot <?php echo esc_attr($p_cls); ?>" title="<?php echo esc_attr($p_tip); ?>"></span>
                                 <?php } ?>
                                 <span class="kfl-logo">
                                     <?php if ($img !== '') { ?>
@@ -430,11 +430,11 @@ function kratos_friend_shortcode($atts)
             if (!empty($visitors)) {
                 $date_fmt = get_option('date_format') . ' ' . get_option('time_format');
         ?>
-            <section class="kfl-section kfl-visitors-section">
+            <section class="kfl-section kr-body kfl-visitors-section">
                 <?php if ($recent_title !== '') { ?>
                     <header class="kfl-section-head">
                         <h3 class="kfl-section-title"><?php echo esc_html($recent_title); ?></h3>
-                        <span class="kfl-section-count"><?php echo (int) count($visitors); ?></span>
+                        <span class="kfl-section-count kr-pill"><?php echo (int) count($visitors); ?></span>
                     </header>
                 <?php } ?>
                 <ul class="kfl-visitors">
@@ -446,7 +446,7 @@ function kratos_friend_shortcode($atts)
                         $tag = $has_url ? 'a' : 'span';
                     ?>
                         <li class="kfl-visitor" tabindex="0">
-                            <a class="kfl-visitor-link" href="<?php echo esc_url($v['comment_link']); ?>" title="<?php echo esc_attr(sprintf(__('查看 %s 的评论', 'kratos'), $v['name'])); ?>">
+                            <a class="kfl-visitor-link kr-pill" href="<?php echo esc_url($v['comment_link']); ?>" title="<?php echo esc_attr(sprintf(__('查看 %s 的评论', 'kratos'), $v['name'])); ?>">
                                 <span class="kfl-visitor-avatar"><?php echo $v['avatar_html']; ?></span>
                                 <span class="kfl-visitor-name"><?php echo esc_html($v['name']); ?></span>
                             </a>
@@ -480,7 +480,7 @@ function kratos_friend_shortcode($atts)
             $req_content = (string) kratos_option('g_friend_requirements_content', '');
             if ($req_content !== '') {
         ?>
-            <section class="kfl-section kfl-requirements-section">
+            <section class="kfl-section kr-body kfl-requirements-section">
                 <?php if ($req_title !== '') { ?>
                     <header class="kfl-section-head">
                         <h3 class="kfl-section-title"><?php echo esc_html($req_title); ?></h3>
@@ -493,7 +493,7 @@ function kratos_friend_shortcode($atts)
         <?php if ($atts['form'] === '1') {
             $form_intro = (string) kratos_option('g_friend_form_intro', __('填写下方表单提交友链申请，站长审核通过后会自动上线。', 'kratos'));
         ?>
-            <section class="kfl-section kfl-form-section" id="kratos-friend-apply">
+            <section class="kfl-section kr-body kfl-form-section" id="kratos-friend-apply">
                 <header class="kfl-section-head">
                     <h3 class="kfl-section-title"><?php esc_html_e('申请友链', 'kratos'); ?></h3>
                     <?php if ($form_intro !== '') { ?>
@@ -570,7 +570,7 @@ function kratos_friend_shortcode($atts)
                     <?php } ?>
 
                     <div class="kfl-form-actions">
-                        <button type="submit" class="kfl-submit"><?php esc_html_e('提交申请', 'kratos'); ?></button>
+                        <button type="submit" class="kfl-submit kr-btn"><?php esc_html_e('提交申请', 'kratos'); ?></button>
                     </div>
                 </form>
             </section>
@@ -589,7 +589,7 @@ function kratos_friend_shortcode($atts)
             --khs-card-shadow:0 1px 3px rgba(0,0,0,.06);
             --khs-card-shadow-hv:0 8px 18px rgba(0,0,0,.10);
             padding:0;position:relative;background:transparent;
-            max-width:100%;overflow-x:hidden;
+            max-width:100%;
         }
         .kratos-friend-links > *{position:relative;z-index:1;}
 

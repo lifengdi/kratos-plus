@@ -123,16 +123,16 @@ function kratos_timeline_shortcode($atts = array())
     ?>
     <div class="kratos-timeline" id="kratos-timeline-list">
         <?php if ($title !== '' || $subtitle !== '') { ?>
-            <header class="ktl-header">
+            <header class="ktl-header kr-hd">
                 <?php if ($title !== '') { ?>
-                    <span class="ktl-title-icon" aria-hidden="true">
+                    <span class="ktl-title-icon kr-ico" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     </span>
-                    <span class="ktl-title"><?php echo esc_html($title); ?></span>
+                    <span class="ktl-title kr-hd-title"><?php echo esc_html($title); ?></span>
                 <?php } ?>
                 <?php if ($subtitle !== '') { ?>
-                    <?php if ($title !== '') { ?><span class="ktl-header-divider" aria-hidden="true"></span><?php } ?>
-                    <p class="ktl-subtitle"><?php echo esc_html($subtitle); ?></p>
+                    <?php if ($title !== '') { ?><span class="ktl-header-divider kr-hd-divider" aria-hidden="true"></span><?php } ?>
+                    <p class="ktl-subtitle kr-hd-sub"><?php echo esc_html($subtitle); ?></p>
                 <?php } ?>
             </header>
         <?php } ?>
@@ -169,7 +169,7 @@ function kratos_timeline_shortcode($atts = array())
             $current_year  = null;
             $current_month = null;
             ?>
-            <div class="ktl-body">
+            <div class="ktl-body kr-body">
                 <div class="ktl-spine" aria-hidden="true"></div>
                 <?php foreach ($rows as $row) {
                     $y = $row['year'];
@@ -184,7 +184,7 @@ function kratos_timeline_shortcode($atts = array())
                         echo '<div class="ktl-year">';
                         echo '<div class="ktl-year-head">'
                             . '<span class="ktl-year-badge">' . esc_html($y) . '</span>'
-                            . '<span class="ktl-year-dot" aria-hidden="true"></span>'
+                            . '<span class="ktl-year-dot kr-dot" aria-hidden="true"></span>'
                             . '</div>';
                     }
                     if ($current_month !== $m) {
@@ -196,11 +196,11 @@ function kratos_timeline_shortcode($atts = array())
                         echo '<div class="ktl-month">';
                         echo '<div class="ktl-month-head">'
                             . '<span class="ktl-month-label">' . esc_html($month_label) . '</span>'
-                            . '<span class="ktl-month-dot" aria-hidden="true"></span>'
+                            . '<span class="ktl-month-dot kr-dot" aria-hidden="true"></span>'
                             . '</div>';
                     } ?>
                     <div class="ktl-item">
-                        <span class="ktl-item-dot" aria-hidden="true"></span>
+                        <span class="ktl-item-dot kr-dot" aria-hidden="true"></span>
                         <a class="ktl-item-title" href="<?php echo esc_url($row['link']); ?>"><?php echo esc_html($row['title']); ?></a>
                         <span class="ktl-item-meta">
                             <span class="ktl-item-date"><?php echo esc_html($row['md']); ?></span>
@@ -281,7 +281,7 @@ function kratos_timeline_shortcode($atts = array())
             --khs-bg-1: #f5f5f5; --khs-bg-2: #f0f0f0; --khs-bg-3: #ebebeb;
             --khs-fg: #333; --khs-fg-soft: #444; --khs-fg-dim: #777; --khs-fg-mute: #999;
             --khs-accent: #336699; --khs-accent-2: #2B5278;
-            --khs-line: rgba(0, 0, 0, .08); --khs-line-strong: rgba(0, 0, 0, .16);
+            --khs-line: rgba(0, 0, 0, .08); --khs-line-strong: #999;
             --khs-card-bg: #ffffff;
             --khs-card-shadow: 0 1px 3px rgba(0, 0, 0, .06);
             --khs-card-shadow-hv: 0 8px 18px rgba(0, 0, 0, .10);

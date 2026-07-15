@@ -19,6 +19,13 @@ html[data-weekday-skin="parchment"] {
     --kr-skin-banner-overlay: rgba(62, 57, 52, 0.55);
     --kr-skin-footer-bg:   #2E2820;
     --kr-skin-footer-fg:   #B8A890;
+    /* 形态令牌 shape tokens（零视觉变化重构） */
+    --kr-shape-radius:      8px;
+    --kr-shape-radius-sm:   6px;
+    --kr-shape-radius-xs:   2px;
+    --kr-shape-shadow:      0 2px 6px rgba(0,0,0,.08);
+    --kr-shape-border:      1px solid var(--kr-skin-card-line);
+    --kr-shape-border-soft: 1px solid rgba(0, 0, 0, 0.08);
 }
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) body {
     background-color: #F7F4EE;
@@ -98,7 +105,7 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .w
     background: #F2EEE8 !important;
     border: 1px solid #DDD6CC !important;
     color: #6E4F2F !important;
-    border-radius: 6px !important;
+    border-radius: var(--kr-shape-radius-sm) !important;
 }
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
     background: #F2EEE8;
@@ -174,7 +181,7 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .a
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span,
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) #commentpage a,
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) #commentpage .current {
-    border-radius: 8px !important;
+    border-radius: var(--kr-shape-radius) !important;
 }
 
 /* ===== [BEGIN shared rules injected from weekday-skins.css for slug=parchment] ===== */
@@ -268,8 +275,8 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .board .pag
     height: 34px;
     margin: 0 !important;
     padding: 0 12px !important;
-    border-radius: 2px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--kr-shape-radius-xs);
+    border: var(--kr-shape-border-soft);
     font-size: 13px;
     line-height: 1;
     text-decoration: none;
@@ -397,8 +404,8 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .a
     min-width: 34px;
     height: 34px;
     padding: 0 12px !important;
-    border-radius: 2px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--kr-shape-radius-xs);
+    border: var(--kr-shape-border-soft);
     font-size: 13px;
     font-weight: normal;
     line-height: 1;
@@ -869,35 +876,6 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-footer .f-toolbo
     transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
 }
 
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heart-shortcode,
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-topcommenters,
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-friend-links,
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-timeline,
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heatmap,
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-friend-feed {
-    --khs-bg-1: var(--kr-skin-bg) !important;
-    --khs-bg-2: var(--kr-skin-bg) !important;
-    --khs-bg-3: var(--kr-skin-bg) !important;
-    --khs-fg: var(--kr-skin-text) !important;
-    --khs-fg-soft: var(--kr-skin-text) !important;
-    --khs-fg-dim: var(--kr-skin-muted) !important;
-    --khs-fg-mute: var(--kr-skin-muted) !important;
-    --khs-accent: var(--kr-skin-accent) !important;
-    --khs-accent-2: var(--kr-skin-accent-hover) !important;
-    --khs-line: var(--kr-skin-card-line) !important;
-    --khs-line-strong: var(--kr-skin-accent) !important;
-    --khs-card-bg: var(--kr-skin-card-bg) !important;
-    --khs-page-on: #fff !important;
-    /* stat 三个图标渐变也用皮肤色，避免出现羊皮纸的橘色调 */
-    --khs-stat-comment-1: var(--kr-skin-accent) !important;
-    --khs-stat-comment-2: var(--kr-skin-accent-hover) !important;
-    --khs-stat-post-1: var(--kr-skin-accent) !important;
-    --khs-stat-post-2: var(--kr-skin-accent-hover) !important;
-    --khs-stat-user-1: var(--kr-skin-accent) !important;
-    --khs-stat-user-2: var(--kr-skin-accent-hover) !important;
-    --khs-heart-fill: var(--kr-skin-accent) !important;
-}
-
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment {
     background: transparent !important;
     box-shadow: none !important;
@@ -953,21 +931,6 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-topcommente
     border-left-color: var(--kr-skin-card-line) !important;
 }
 
-html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-archives-shortcode {
-    --kas-bg-1: var(--kr-skin-bg) !important;
-    --kas-bg-2: var(--kr-skin-bg) !important;
-    --kas-bg-3: var(--kr-skin-bg) !important;
-    --kas-fg: var(--kr-skin-text) !important;
-    --kas-fg-soft: var(--kr-skin-text) !important;
-    --kas-fg-dim: var(--kr-skin-muted) !important;
-    --kas-fg-mute: var(--kr-skin-muted) !important;
-    --kas-accent: var(--kr-skin-accent) !important;
-    --kas-accent-2: var(--kr-skin-accent-hover) !important;
-    --kas-line: var(--kr-skin-card-line) !important;
-    --kas-line-strong: var(--kr-skin-accent) !important;
-    --kas-card-bg: var(--kr-skin-card-bg) !important;
-}
-
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment {
     background: transparent !important;
     box-shadow: none !important;
@@ -987,24 +950,6 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-archives-sh
     border-color: var(--kr-skin-card-line) !important;
 }
 
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-heart-shortcode,
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-topcommenters,
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-friend-links,
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-timeline,
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-heatmap,
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-friend-feed {
-    --khs-accent: var(--kr-accent) !important;
-    --khs-accent-2: var(--kr-link-hover) !important;
-    --khs-line-strong: var(--kr-accent) !important;
-    --khs-stat-comment-1: var(--kr-accent) !important;
-    --khs-stat-comment-2: var(--kr-link-hover) !important;
-    --khs-stat-post-1: var(--kr-accent) !important;
-    --khs-stat-post-2: var(--kr-link-hover) !important;
-    --khs-stat-user-1: var(--kr-accent) !important;
-    --khs-stat-user-2: var(--kr-link-hover) !important;
-    --khs-heart-fill: var(--kr-accent) !important;
-}
-
 html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
     background: rgba(255, 255, 255, .06) !important;
     color: var(--kr-fg, #d6d8db) !important;
@@ -1012,12 +957,6 @@ html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-topcommenters .kt
 
 html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-topcommenters .ktc-count-num {
     color: var(--kr-accent) !important;
-}
-
-html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-archives-shortcode {
-    --kas-accent: var(--kr-accent) !important;
-    --kas-accent-2: var(--kr-link-hover) !important;
-    --kas-line-strong: var(--kr-accent) !important;
 }
 
 html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-heart-shortcode.khs-scheme-parchment {
@@ -1076,8 +1015,8 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) {
 
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb {
     background-color: var(--kr-skin-accent);
-    border: 1px solid var(--kr-skin-card-line);
-    border-radius: 6px;
+    border: var(--kr-shape-border);
+    border-radius: var(--kr-shape-radius-sm);
 }
 
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb:hover {
@@ -1086,7 +1025,7 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) ::-webkit-scrollbar
 
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
     background-color: var(--kr-skin-card-soft);
-    border: 1px solid var(--kr-skin-card-line);
+    border: var(--kr-shape-border);
 }
 
 .k-main .details .article .content ul,
@@ -1189,3 +1128,25 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) ::-webkit-scrollbar
     top: 0.7em;
 }
 /* ===== [END shared rules] ===== */
+
+/* ===== heatmap 覆盖：tooltip / year-tag / year-select ===== */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heatmap .kph-tooltip {
+    background: var(--kr-skin-heading) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,.18) !important;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-tag,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-tag.is-active {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-select {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-heading) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
