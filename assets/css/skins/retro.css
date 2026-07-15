@@ -333,9 +333,9 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .board .paginat
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .widget li {
     border-bottom: 1px dotted var(--kr-skin-card-line);
 }
-html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .widget li:last-child {
-    border-bottom: none;
-}
+/*html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .widget li:last-child {*/
+/*    border-bottom: none;*/
+/*}*/
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .widget_pages ul > li::before,
@@ -404,6 +404,9 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer p a {
 }
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer p a:hover {
     color: #fff !important;
+}
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .social a {
+    border-bottom: none !important;
 }
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .social a .kicon,
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
@@ -1947,6 +1950,15 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .kratos-heart-badge {
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .details .post-navigation {
     display: flex;
     flex-wrap: wrap;
+}
+/* 只有下一篇（没有上一篇）时：靠右，且宽度与成对时的下一篇一致。
+ * 关键：基础主题 style.css 给 .nav-next 设了 max-width:50%（皮肤未覆盖，仍生效）。
+ * 保留 item 的 flex-grow:1，独子想撑满但被 50% 卡住 → 恰好 50% 宽；再加 margin-left:auto
+ * 把左侧空白吃掉 → 靠右。桌面/手机都是「50% 宽、靠右」，与成对时的下一篇完全一致。
+ * （不要设 flex-grow:0，否则退回 flex-basis 260px 定宽，比成对的 50% 窄。） */
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next:only-child,
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next:only-child {
+    margin-left: auto;
 }
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,

@@ -522,7 +522,10 @@ function kratos_timeline_shortcode($atts = array())
             .kratos-timeline .ktl-month-label { width: 66px; font-size: 13px; }
             .kratos-timeline .ktl-month-dot { left: 74px; }
             .kratos-timeline .ktl-year-dot  { left: 72px; }
-            .kratos-timeline .ktl-year-badge { font-size: 18px; padding: 3px 10px; }
+            /* 窄屏左栏（badge 起点 x≈18 → 圆点左缘 x=90，仅 ~72px）放不下 18px
+             * 加字距的年份，皮肤又给 badge 叠了 letter-spacing:2px+边框，会压到竖线
+             * 圆点上。收到 16px + 紧内距，让 badge 稳落在圆点左侧（不动几何/圆点位置）。 */
+            .kratos-timeline .ktl-year-badge { font-size: 16px; padding: 2px 8px; }
             .kratos-timeline .ktl-item { gap: 8px; }
             .kratos-timeline .ktl-item-title { font-size: 14px; }
             .kratos-timeline .ktl-item-meta { font-size: 12px; width: 100%; }

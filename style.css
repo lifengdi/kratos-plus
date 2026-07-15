@@ -2,7 +2,7 @@
 /*
 Theme Name: Kratos+
 Text Domain: kratos
-Version: 1.1.7
+Version: 1.1.8
 Requires PHP: 8.0
 Requires at least: 5.3.0
 Description: Kratos+ 在 Seaton Jiang 的 Kratos 主题（GPL-3.0）基础上二次开发，新增可视化代码高亮、布局自定义、评论数学验证码等功能。本主题继承 GPL-3.0 协议。
@@ -4913,12 +4913,17 @@ a
         max-width: 100%;
     }
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
+    /* 偶数篇在桌面是左右交替（thumb float:right）。移动端要恢复成图上文下的
+     * 堆叠：thumb 必须 float:none（不是 float:left——通用移动端已把 thumb 设成
+     * width:auto;height:0;padding-bottom:53% 的等比盒，再叠 float 会塌缩成窄浮动，
+     * .a-post 绕排导致标题/内容被挤没）。padding 也要跟奇数篇一致重置。 */
     .k-main .board .post-list.layout-enhanced .article-panel:nth-child(even) .a-thumb {
-        float: left;
+        float: none;
     }
     .k-main .board .post-list.layout-enhanced .article-panel:nth-child(even) .a-post {
         margin-right: 0;
+        padding: 0 12px;
     }
     .k-main .board .post-list.layout-magazine .article-panel .a-thumb {
         height: 200px;

@@ -411,8 +411,11 @@ function kratos_heatmap_css()
 .kratos-heatmap .kph-legend-cell.level-4 { background: var(--khs-accent); }
 
 .kratos-heatmap .kph-year-tags {
-    display: flex; flex-direction: column; gap: 6px;
-    align-items: stretch;
+    flex: 1 1 130px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 6px;
+    align-content: start;
 }
 .kratos-heatmap .kph-year-tag {
     font-size: 13px; font-weight: 600;
@@ -484,6 +487,8 @@ function kratos_heatmap_css()
     .kratos-heatmap .kph-wrapper { gap: 10px; flex-direction: column; align-items: stretch; }
     .kratos-heatmap .kph-year-tags {
         order: -1;
+        flex: 0 1 auto;
+        display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         gap: 6px;
