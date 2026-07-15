@@ -813,6 +813,13 @@ CSF::createSection($prefix, array(
             'default' => 'mon',
             'dependency' => array('g_weekday_skin_mode', '==', 'locked'),
         ),
+        array(
+            'id' => 'g_weekday_skin_switcher',
+            'type' => 'switcher',
+            'title' => __('前端皮肤切换器', 'kratos'),
+            'subtitle' => __('开启后，前台工具箱在暗夜按钮上方多出一个「皮肤」按钮，访客可自行切换皮肤预览。', 'kratos'),
+            'default' => false,
+        ),
     ),
 ));
 

@@ -1,0 +1,241 @@
+@charset "UTF-8";
+/*
+ * Kratos+ 前端皮肤切换器（开发版）
+ *  - 工具箱「皮肤」按钮：与 .darkmode 同款圆角方钮，紧贴其上方
+ *  - 弹出面板：列出默认外观 + 全部皮肤，色板小圆点预览
+ *  仅当主题选项 g_weekday_skin_switcher 开启时加载。
+ */
+
+/* ---------- 工具箱按钮 ---------- */
+.k-footer .f-toolbox .skin-switcher {
+    display: table;
+    background: rgba(132, 132, 132, 0.7);
+    cursor: pointer;
+    /* 有暗夜按钮时叠在其上方（130），否则占暗夜按钮的位置（80） */
+    bottom: 80px;
+}
+
+body.has-kratos-darkmode-toggle .k-footer .f-toolbox .skin-switcher {
+    bottom: 130px;
+}
+
+/* 图标用 CSS mask + currentColor 上色：颜色跟随元素 color，故各皮肤只要把
+ * `.skin-switcher .skin-switcher-ico` 挂进其「工具箱图标色」规则组即可自动跟色，
+ * 无需为每套皮肤重画一份 SVG（对比 .darkmode-ico 走 background-image 需逐皮肤重绘）。 */
+.k-footer .f-toolbox .skin-switcher .skin-switcher-ico {
+    display: table-cell;
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    text-align: center;
+    /* 默认白色，与 dark.css 里工具箱按钮的白图标一致（暗夜模式沿用） */
+    color: #fff;
+    background-color: currentColor;
+    -webkit-mask: var(--skin-switcher-ico-mask) center center / 20px 20px no-repeat;
+    mask: var(--skin-switcher-ico-mask) center center / 20px 20px no-repeat;
+    --skin-switcher-ico-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='13.5' cy='6.5' r='.5'/><circle cx='17.5' cy='10.5' r='.5'/><circle cx='8.5' cy='7.5' r='.5'/><circle cx='6.5' cy='12.5' r='.5'/><path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996C18.978 16.668 22 13.646 22 10c0-4.418-4.5-8-10-8z'/></svg>");
+}
+
+/* 切换器挂载后，把 wechat/gotop 再上移 50px 给「皮肤」按钮腾位。
+ * 高特异性覆盖 dark.css 里 has-kratos-darkmode-toggle 的 130/180。 */
+body.has-kratos-skin-switcher .k-footer .f-toolbox .wechat,
+body.has-kratos-skin-switcher .k-footer .f-toolbox .gotop {
+    bottom: 130px;
+}
+body.has-kratos-skin-switcher .k-footer .f-toolbox .gotop.gotop-haswechat {
+    bottom: 180px;
+}
+body.has-kratos-darkmode-toggle.has-kratos-skin-switcher .k-footer .f-toolbox .wechat,
+body.has-kratos-darkmode-toggle.has-kratos-skin-switcher .k-footer .f-toolbox .gotop {
+    bottom: 180px;
+}
+body.has-kratos-darkmode-toggle.has-kratos-skin-switcher .k-footer .f-toolbox .gotop.gotop-haswechat {
+    bottom: 230px;
+}
+
+/* ---------- 弹出面板 ---------- */
+.skin-switcher-panel {
+    position: fixed;
+    right: 72px;
+    bottom: 30px;
+    z-index: 10000;
+    width: 236px;
+    max-height: 62vh;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    transform-origin: bottom right;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+}
+
+.skin-switcher-panel.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.skin-switcher-head {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.skin-switcher-t {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.skin-switcher-sub {
+    margin-top: 2px;
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.skin-switcher-list {
+    padding: 6px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.skin-switcher-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    margin: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 13.5px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.skin-switcher-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.skin-switcher-item.is-current {
+    background: rgba(0, 0, 0, 0.06);
+    font-weight: 600;
+}
+
+.skin-switcher-item.is-current::after {
+    content: "\2713";
+    margin-left: auto;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.skin-switcher-name {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.skin-switcher-dot {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+/* 默认外观：透明棋盘格示意 */
+.skin-dot-__default__ {
+    background:
+        linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%) 0 0/8px 8px,
+        linear-gradient(45deg, #ccc 25%, #fff 25%, #fff 75%, #ccc 75%) 4px 4px/8px 8px;
+}
+
+/* 各皮肤代表色 */
+.skin-dot-mon       { background: #6aa9c9; }
+.skin-dot-tue       { background: #d94f4f; }
+.skin-dot-wed       { background: #e6ddcd; }
+.skin-dot-thu       { background: #2b3a4a; }
+.skin-dot-fri       { background: #e0a458; }
+.skin-dot-sat       { background: #3b8fd0; }
+.skin-dot-sun       { background: #e8c04a; }
+.skin-dot-parchment { background: #c9a86a; }
+.skin-dot-silk      { background: #d8c58a; }
+.skin-dot-vermilion { background: #c0392b; }
+.skin-dot-morandi   { background: #a89a8c; }
+.skin-dot-mist      { background: #9fb0b3; }
+.skin-dot-linen     { background: #cbb79c; }
+.skin-dot-porcelain { background: #8fb0a8; }
+.skin-dot-lavender  { background: #b0a4c4; }
+.skin-dot-retro     { background: #a9743f; }
+.skin-dot-web1998   { background: #1a3d7c; }
+
+/* ---------- 底部：恢复默认 ---------- */
+.skin-switcher-foot {
+    padding: 8px 10px 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.skin-switcher-reset {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.04);
+    color: inherit;
+    font-size: 12.5px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.skin-switcher-reset:hover {
+    background: rgba(0, 0, 0, 0.09);
+}
+
+/* ---------- 暗夜模式下的面板 ---------- */
+html[data-theme="dark"] .skin-switcher-panel {
+    background: #23262b;
+    color: #e6e6e6;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+}
+html[data-theme="dark"] .skin-switcher-head {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .skin-switcher-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .skin-switcher-item.is-current {
+    background: rgba(255, 255, 255, 0.1);
+}
+html[data-theme="dark"] .skin-switcher-dot {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+html[data-theme="dark"] .skin-switcher-foot {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .skin-switcher-reset {
+    background: rgba(255, 255, 255, 0.06);
+}
+html[data-theme="dark"] .skin-switcher-reset:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- 移动端 ---------- */
+@media screen and (max-width: 768px) {
+    .skin-switcher-panel {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-height: 56vh;
+    }
+}

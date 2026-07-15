@@ -1077,6 +1077,7 @@ html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details::after {
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
     background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
     transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
@@ -1088,10 +1089,12 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.act
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
     background: rgba(255, 255, 255, 0.55);
     backdrop-filter: blur(12px) saturate(140%);
@@ -1103,10 +1106,12 @@ html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span {
     color: var(--kr-skin-heading);
 }
@@ -1128,6 +1133,7 @@ html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .sea
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
     background: #E8B62D;        /* 原色黄 */
     border: 1.5px solid #1A1A1A;
@@ -1138,7 +1144,8 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
-html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico {
     color: #1A1A1A;
 }
 
@@ -1155,6 +1162,7 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .sea
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
     background: #E4E9F0;
     border: none;
@@ -1167,7 +1175,8 @@ html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
-html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico {
     color: #5E7CA6;
 }
 
@@ -1184,6 +1193,7 @@ html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .sea
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
     background: #FFFFFF;
     border: 1px solid #ECECEC;
@@ -1193,7 +1203,8 @@ html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
-html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico {
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico {
     color: #0A0A0A;
 }
 

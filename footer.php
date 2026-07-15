@@ -34,6 +34,11 @@
                 <span class="darkmode-ico" aria-hidden="true"></span>
             </div>
         <?php } ?>
+        <?php if (kratos_weekday_switcher_enabled()) { ?>
+            <div class="skin-switcher" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e('切换皮肤', 'kratos'); ?>" title="<?php esc_attr_e('切换皮肤', 'kratos'); ?>">
+                <span class="skin-switcher-ico" aria-hidden="true"></span>
+            </div>
+        <?php } ?>
     </div>
     <div class="container">
         <div class="row">

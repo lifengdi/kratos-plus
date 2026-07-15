@@ -859,6 +859,7 @@ html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-main .details .articl
 html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="mist"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
     background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
     transition: background .2s ease, box-shadow .2s ease, transform .15s ease;

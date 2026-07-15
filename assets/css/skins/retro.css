@@ -198,6 +198,11 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .widget {
     border-radius: var(--kr-shape-radius) !important;
     position: relative;
 }
+/* 文章目录小工具需保持吸顶：上面的 .widget position:relative 会盖掉
+ * style.css 里 .w-toc 的 position:sticky，这里用更高特异性(加 .sidebar)恢复。 */
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .sidebar .w-toc {
+    position: sticky;
+}
 /* 右上角做旧折痕（demo::before） */
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .board .article-panel::before {
     content: "";
@@ -993,6 +998,7 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .details .artic
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
     background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
     transition: background .2s ease, box-shadow .2s ease, transform .15s ease;

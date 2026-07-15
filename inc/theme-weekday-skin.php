@@ -60,6 +60,58 @@ function kratos_weekday_options()
     );
 }
 
+/** 前端皮肤切换器（开发版）是否开启。独立于皮肤模式，off 时也可用。 */
+function kratos_weekday_switcher_enabled()
+{
+    return (bool) kratos_option('g_weekday_skin_switcher', false);
+}
+
+/**
+ * 「额外皮肤」slug → 独立 CSS 文件名映射。
+ * 工作日 mon~sun 不在此列（它们共用 weekday-skins.css，见 kratos_weekday_css_map）。
+ */
+function kratos_weekday_variant_files()
+{
+    return array(
+        'mist'      => 'morandi-mist.css',
+        'linen'     => 'morandi-linen.css',
+        'porcelain' => 'morandi-porcelain.css',
+        'lavender'  => 'morandi-lavender.css',
+        'parchment' => 'parchment.css',
+        'silk'      => 'silk.css',
+        'vermilion' => 'vermilion.css',
+        'morandi'   => 'morandi.css',
+        'retro'     => 'retro.css',
+        'web1998'   => 'web1998.css',
+    );
+}
+
+/**
+ * 全部皮肤 slug → CSS 文件 URL 的映射，供前端切换器按需注入 <link>。
+ * mon~sun 共用 weekday-skins.css（内部按 attr 锁定），额外皮肤各自独立文件。
+ */
+function kratos_weekday_css_map()
+{
+    $map = array();
+    foreach (kratos_weekday_slugs() as $slug) {
+        $map[$slug] = ASSET_PATH . '/assets/css/weekday-skins.css';
+    }
+    foreach (kratos_weekday_variant_files() as $slug => $file) {
+        $map[$slug] = ASSET_PATH . '/assets/css/skins/' . $file;
+    }
+    return $map;
+}
+
+/** 切换器 localStorage 键名 + 「默认外观」哨兵值。 */
+function kratos_weekday_switcher_storage_key()
+{
+    return 'kratos_skin_override';
+}
+function kratos_weekday_switcher_default_sentinel()
+{
+    return '__default__';
+}
+
 /** 把任意输入归一化成已知 slug，未命中回退到周一。 */
 function kratos_weekday_normalize_slug($value)
 {
@@ -98,16 +150,53 @@ function kratos_weekday_settings()
 function kratos_weekday_head_inline()
 {
     $s = kratos_weekday_settings();
-    if ($s['mode'] === 'off') {
+    $switcher = kratos_weekday_switcher_enabled();
+    // 模式为 off 且切换器也没开：无需注入任何早期脚本。
+    if ($s['mode'] === 'off' && !$switcher) {
         return;
     }
     $cfg = wp_json_encode(array(
-        'mode'   => $s['mode'],
-        'slugs'  => $s['slugs'],
-        'locked' => $s['locked'],
+        'mode'     => $s['mode'],
+        'slugs'    => $s['slugs'],
+        'locked'   => $s['locked'],
+        'switcher' => $switcher,
+        'storage'  => kratos_weekday_switcher_storage_key(),
+        'sentinel' => kratos_weekday_switcher_default_sentinel(),
+        'cssMap'   => $switcher ? kratos_weekday_css_map() : new stdClass(),
     ));
-    echo "<script>(function(){try{var c=" . $cfg . ";var slug=c.mode==='locked'?c.locked:c.slugs[new Date().getDay()];document.documentElement.setAttribute('data-weekday-skin',slug);}catch(e){}})();</script>\n";
+    // 早期解析当前皮肤：localStorage 覆盖（切换器开启时）优先于站点 auto/locked。
+    // 这里只把 data-weekday-skin 写到 <html>（避免颜色 FOUC），并把解析结果暂存到
+    // window.__kratosSkin，供后续注入 CSS 用。CSS <link> 的注入延后到 priority 99
+    // （见 kratos_weekday_switcher_head_css），此时 components.css 已在 DOM 中，
+    // 动态 link 追加到其后才能保证「皮肤晚于 components」的级联顺序。
+    echo "<script>(function(){try{var c=" . $cfg . ";var h=document.documentElement;var ov=null;"
+        . "if(c.switcher){try{ov=window.localStorage.getItem(c.storage);}catch(e){}}"
+        . "var slug=null;"
+        . "if(ov===c.sentinel){slug=null;}"
+        . "else if(ov&&c.cssMap[ov]){slug=ov;}"
+        . "else if(c.mode==='locked'){slug=c.locked;}"
+        . "else if(c.mode==='auto'){slug=c.slugs[new Date().getDay()];}"
+        . "if(slug){h.setAttribute('data-weekday-skin',slug);}"
+        . "window.__kratosSkin={slug:slug,url:(slug&&c.cssMap[slug])?c.cssMap[slug]:null};"
+        . "}catch(e){}})();</script>\n";
 }
+
+/**
+ * 在 wp_head 末尾（components.css 已打印后）按需注入被 localStorage 覆盖的皮肤 CSS。
+ * 只在切换器开启时输出；无覆盖或该 CSS 已由服务端入队时跳过。仍在 <head> 内、
+ * body 渲染前完成，故不会出现可见的样式闪烁。
+ */
+function kratos_weekday_switcher_head_css()
+{
+    if (!kratos_weekday_switcher_enabled()) {
+        return;
+    }
+    echo "<script>(function(){try{var s=window.__kratosSkin;if(!s||!s.url)return;"
+        . "var ls=document.getElementsByTagName('link');for(var i=0;i<ls.length;i++){if(ls[i].rel==='stylesheet'&&ls[i].href&&ls[i].href.indexOf(s.url)!==-1)return;}"
+        . "var l=document.createElement('link');l.rel='stylesheet';l.href=s.url;l.setAttribute('data-kratos-skin-dyn','');document.head.appendChild(l);"
+        . "}catch(e){}})();</script>\n";
+}
+add_action('wp_head', 'kratos_weekday_switcher_head_css', 99);
 add_action('wp_head', 'kratos_weekday_head_inline', 1);
 
 /**
@@ -119,6 +208,8 @@ function kratos_weekday_enqueue()
         return;
     }
     $s = kratos_weekday_settings();
+    // 模式为 off 但切换器开启：服务端不预入队任何皮肤（默认外观），皮肤 CSS 由
+    // 切换器按需动态注入；无覆盖时保持默认外观。
     if ($s['mode'] === 'off') {
         return;
     }
@@ -128,18 +219,7 @@ function kratos_weekday_enqueue()
      * weekday-skins.css。工作日 mon~sun（auto 模式或 locked 命中 mon~sun）仍
      * 使用统一的 weekday-skins.css。
      */
-    $variant_files = array(
-        'mist'      => 'morandi-mist.css',
-        'linen'     => 'morandi-linen.css',
-        'porcelain' => 'morandi-porcelain.css',
-        'lavender'  => 'morandi-lavender.css',
-        'parchment' => 'parchment.css',
-        'silk'      => 'silk.css',
-        'vermilion' => 'vermilion.css',
-        'morandi'   => 'morandi.css',
-        'retro'     => 'retro.css',
-        'web1998'   => 'web1998.css',
-    );
+    $variant_files = kratos_weekday_variant_files();
     if ($s['mode'] === 'locked' && isset($variant_files[$s['locked']])) {
         // extra-skin：只加载该独立文件
         wp_enqueue_style(
@@ -270,4 +350,69 @@ JS;
     wp_add_inline_script('kratos-vermilion-fireworks', $js);
 }
 add_action('wp_enqueue_scripts', 'kratos_weekday_vermilion_fireworks', 30);
+
+/**
+ * 前端皮肤切换器（开发版）：入队样式 + 脚本，并把皮肤清单/URL/存储键喂给 JS。
+ * 独立于皮肤模式，仅由 g_weekday_skin_switcher 开关控制。
+ */
+function kratos_weekday_switcher_enqueue()
+{
+    if (is_admin() || !kratos_weekday_switcher_enabled()) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'kratos-skin-switcher',
+        ASSET_PATH . '/assets/css/skin-switcher.css',
+        array('kratos'),
+        THEME_VERSION
+    );
+
+    wp_enqueue_script(
+        'kratos-skin-switcher',
+        ASSET_PATH . '/assets/js/skin-switcher.js',
+        array(),
+        THEME_VERSION,
+        true
+    );
+
+    // 皮肤清单：按 kratos_weekday_options() 的顺序，附中文 label 与 CSS URL。
+    $labels = kratos_weekday_options();
+    $css    = kratos_weekday_css_map();
+    $skins  = array();
+    foreach ($labels as $slug => $label) {
+        if (!isset($css[$slug])) {
+            continue;
+        }
+        $skins[] = array(
+            'slug'  => $slug,
+            'label' => $label,
+            'url'   => $css[$slug],
+        );
+    }
+
+    // 站点皮肤配置：供「恢复默认」清除本地覆盖后，在 JS 端重算站点当前皮肤
+    // （auto 按访客本地星期、locked 用锁定皮肤、off 无皮肤），无需刷新页面。
+    $s = kratos_weekday_settings();
+
+    wp_localize_script('kratos-skin-switcher', 'kratosSkinSwitcher', array(
+        'storage'  => kratos_weekday_switcher_storage_key(),
+        'sentinel' => kratos_weekday_switcher_default_sentinel(),
+        'skins'    => $skins,
+        'site'     => array(
+            'mode'   => $s['mode'],
+            'locked' => $s['locked'],
+            'slugs'  => $s['slugs'],
+        ),
+        'i18n'     => array(
+            'title'     => __('切换皮肤', 'kratos'),
+            'subtitle'  => __('人生要勇于尝试', 'kratos'),
+            'default'   => __('默认外观', 'kratos'),
+            'restore'   => __('恢复默认（清除本地设置）', 'kratos'),
+            'close'     => __('关闭', 'kratos'),
+            'current'   => __('当前', 'kratos'),
+        ),
+    ));
+}
+add_action('wp_enqueue_scripts', 'kratos_weekday_switcher_enqueue', 30);
 
