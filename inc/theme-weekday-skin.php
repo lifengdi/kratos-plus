@@ -56,6 +56,7 @@ function kratos_weekday_options()
         'porcelain' => __('莫兰迪 · 青瓷', 'kratos'),
         'lavender'  => __('莫兰迪 · 薰衣草', 'kratos'),
         'retro'     => __('复古 · 牛皮纸', 'kratos'),
+        'web1998'   => __('复古 · 千禧网页', 'kratos'),
     );
 }
 
@@ -137,6 +138,7 @@ function kratos_weekday_enqueue()
         'vermilion' => 'vermilion.css',
         'morandi'   => 'morandi.css',
         'retro'     => 'retro.css',
+        'web1998'   => 'web1998.css',
     );
     if ($s['mode'] === 'locked' && isset($variant_files[$s['locked']])) {
         // extra-skin：只加载该独立文件

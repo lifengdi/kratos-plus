@@ -857,6 +857,46 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .page404 .conte
     color: var(--kr-skin-card-bg);
 }
 
+/* ===== 关于我小工具 CTA 按钮（直角 + 硬阴影，与主按钮统一） ===== */
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary,
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary {
+    background: var(--kr-skin-accent-hover);
+    color: #fff;
+    border: var(--kr-shape-border);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: 3px 3px 0 var(--kr-skin-heading);
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: transform .15s, box-shadow .15s, background .2s;
+}
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary:hover,
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary:hover {
+    background: var(--kr-skin-heading);
+    color: #fff;
+    opacity: 1;
+    transform: translate(1px, 1px);
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost,
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-accent-hover);
+    border: 1px solid var(--kr-skin-accent);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: 2px 2px 0 var(--kr-skin-card-line);
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost:hover,
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost:hover {
+    background: var(--kr-skin-accent);
+    color: var(--kr-skin-card-bg);
+    box-shadow: 2px 2px 0 var(--kr-skin-heading);
+}
+
 /* ===== 说说 ===== */
 html[data-weekday-skin="retro"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item {
     background: var(--kr-skin-card-bg);
@@ -1290,6 +1330,12 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .kratos-heart-shortcode
     border-radius: var(--kr-shape-radius) !important;
     border: var(--kr-shape-border) !important;
     box-shadow: var(--kr-shape-shadow-sm);
+}
+/* 头像图片本体默认 border-radius:50%（theme-comment-heart.php 内联 !important），必须显式改方形 */
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar-img,
+html[data-weekday-skin="retro"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
 }
 
 /* ---------- 说说 kss ---------- */

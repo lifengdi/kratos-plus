@@ -808,6 +808,7 @@ CSF::createSection($prefix, array(
                 'porcelain' => __('清雅 · 莫兰迪青瓷', 'kratos'),
                 'lavender'  => __('柔美 · 莫兰迪薰衣草', 'kratos'),
                 'retro'     => __('复古 · 牛皮纸', 'kratos'),
+                'web1998'   => __('复古 · 千禧网页', 'kratos'),
             ),
             'default' => 'mon',
             'dependency' => array('g_weekday_skin_mode', '==', 'locked'),

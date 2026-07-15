@@ -1,0 +1,2146 @@
+@charset "UTF-8";
+/* Kratos+ 皮肤 · 千禧网页 web1998
+ * 视觉参考：demo/skin-web1998.html —— 20 年前的互联网观感：
+ * Windows 98 / GeoCities 时代。铁灰窗体 + 立体斜切边框（bevel）、
+ * 深青（teal）桌面底、藏青标题栏、经典蓝下划线链接、Times New Roman
+ * 正文 + Tahoma 界面字、直角、无软阴影。与其它皮肤保持一致的选择器覆盖面。
+ *
+ * 色谱：
+ *   青   #008080  Win98 桌面底
+ *   银   #C0C0C0  窗体铁灰
+ *   白   #FFFFFF  窗口客户区
+ *   藏青 #000080  标题栏 / 主强调
+ *   亮蓝 #1084D0  激活标题栏渐变 / 分割线
+ *   蓝   #0000EE  经典未访问链接
+ *   紫   #551A8B  已访问链接
+ *   红   #EE0000  hover
+ *   黄   #FFFFCC  记事本高亮引用
+ */
+
+html[data-weekday-skin="web1998"] {
+    --kr-skin-bg:          #008080;   /* 深青桌面 */
+    --kr-skin-card-bg:     #FFFFFF;   /* 窗口客户区 */
+    --kr-skin-card-soft:   #C0C0C0;   /* 铁灰窗体 */
+    --kr-skin-card-line:   #b0b0b0;
+    --kr-skin-card-line-strong: #808080;
+    --kr-skin-heading:     #000080;   /* 藏青标题 */
+    --kr-skin-text:        #000000;   /* 纯黑正文 */
+    --kr-skin-muted:       #555555;
+    --kr-skin-link:        #0000EE;   /* 经典蓝链接 */
+    --kr-skin-link-hover:  #EE0000;   /* 红 hover */
+    --kr-skin-accent:      #1084D0;   /* 亮蓝：分割线 / 描边 */
+    --kr-skin-accent-hover:#000080;   /* 藏青：按钮 / 激活态填充 */
+    --kr-skin-decor:       #000080;
+    --kr-skin-quote-bg:    #FFFFCC;   /* 记事本高亮黄 */
+    --kr-skin-tag-bg:      rgba(16, 132, 208, 0.12);
+    --kr-skin-banner-overlay: rgba(0, 0, 128, 0.55);
+    --kr-skin-footer-bg:   #000080;
+    --kr-skin-footer-fg:   #FFFFFF;
+
+    /* 形状语言令牌 —— Windows 98 立体斜切边（bevel）。
+     * 卡片/窗体：外描边 1px 灰 + 内嵌四层斜切（左上高光、右下暗影）＝ 凸起窗口。
+     * 输入框用「凹陷」bevel（--kr-shape-shadow-in）。改这里即全局生效。 */
+    --kr-shape-radius:        0;
+    --kr-shape-shadow:        inset -1px -1px 0 #0a0a0a, inset 1px 1px 0 #ffffff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+    --kr-shape-shadow-sm:     inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff, inset -2px -2px 0 #404040, inset 2px 2px 0 #dfdfdf;
+    --kr-shape-shadow-in:     inset -1px -1px 0 #ffffff, inset 1px 1px 0 #808080, inset -2px -2px 0 #dfdfdf, inset 2px 2px 0 #0a0a0a;
+    --kr-shape-shadow-accent: 3px 3px 0 var(--kr-skin-heading);
+    --kr-shape-border:        1px solid var(--kr-skin-card-line-strong);
+    --kr-shape-border-strong: 1px solid var(--kr-skin-card-line-strong);
+}
+
+/* ===== 主区：深青桌面 + 极淡星点平铺（老式 tiled background 观感） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main {
+    background-color: var(--kr-skin-bg) !important;
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .5;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><circle cx='4' cy='4' r='1' fill='%23ffffff' fill-opacity='0.10'/><circle cx='20' cy='16' r='1' fill='%23ffffff' fill-opacity='0.07'/></svg>");
+    background-size: 32px 32px;
+    z-index: 0;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== 全站字体：正文 Times New Roman，界面/标题 Tahoma ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo {
+    font-family: "Times New Roman", "SimSun", "宋体", serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h1,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h2,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h3,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h4,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h5,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h6,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .article-panel h2,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .comments-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif;
+    letter-spacing: 1px;
+    font-weight: 900;
+}
+
+/* ===== 顶部导航（吸顶态：深油墨底 + 芥末字，报头风） =====
+ * 注：header.php 已用 `html[data-weekday-skin]:not([data-theme="dark"]) .k-nav.nav-sticky`
+ * 强制把 sticky 背景设为 var(--kr-skin-heading)（油墨深棕）。这里顺着它，
+ * 文字统一走浅色（牛皮/芥末），并在底部补一条金线呼应报头装饰。
+ */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky {
+    background: var(--kr-skin-heading) !important;
+    box-shadow: 0 3px 0 var(--kr-skin-accent), 0 8px 22px rgba(59, 47, 36, 0.28) !important;
+    border-bottom: none;
+    position: fixed;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 8px;
+    right: 8px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--kr-skin-accent) 20%, var(--kr-skin-accent) 80%, transparent);
+    opacity: .8;
+    pointer-events: none;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand h1 {
+    color: var(--kr-skin-card-bg) !important;
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand:focus {
+    color: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav > li.nav-item > a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:focus,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav > li.nav-item > a:focus {
+    color: var(--kr-skin-card-bg) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
+    opacity: .92;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav > li.nav-item > a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .active > .nav-link {
+    color: var(--kr-skin-accent) !important;
+    opacity: 1;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .line {
+    background: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-toggler {
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-menu {
+    background: var(--kr-skin-heading);
+    border: 1px solid var(--kr-skin-accent);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item {
+    color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item.active,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .dropdown-item:active {
+    background-color: var(--kr-skin-accent-hover);
+    color: #F2E8D0;
+}
+
+/* ===== Banner（网点做旧 + 双描边） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-header .banner .content {
+    border-radius: var(--kr-shape-radius);
+    overflow: hidden;
+    position: relative;
+    border: var(--kr-shape-border);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-header .banner .content::before {
+    content: "";
+    position: absolute;
+    inset: 14px;
+    border: 1px double var(--kr-skin-accent);
+    opacity: .7;
+    pointer-events: none;
+    z-index: 2;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-header .banner .content::after {
+    /* 老报纸网点做旧 */
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .18;
+    background-image: radial-gradient(circle, var(--kr-skin-accent) 1px, transparent 1.4px);
+    background-size: 8px 8px;
+    mix-blend-mode: screen;
+    z-index: 1;
+}
+
+/* ===== 文章卡片（报纸剪贴 + 硬阴影 + 折痕） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .toolbar {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget {
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius) !important;
+    position: relative;
+}
+/* 右上角做旧折痕（demo::before） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    display: none;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ===== 标题下的虚线分割 & 强调线 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .article-panel h2,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article h1 {
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--kr-skin-card-line-strong);
+    position: relative;
+    color: var(--kr-skin-heading);
+}
+
+/* ===== 侧栏 / 评论区双线小标题 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .comments-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    padding-bottom: 8px;
+    border-bottom: 3px double var(--kr-skin-accent) !important;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .title::after,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget-title::after {
+    display: none !important;
+}
+
+/* ===== 引用块（双线左边 + 引号） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main blockquote,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
+    border-left: 4px double var(--kr-skin-accent) !important;
+    background: var(--kr-skin-quote-bg);
+    color: var(--kr-skin-muted);
+    font-style: italic;
+    position: relative;
+    border-radius: var(--kr-shape-radius) !important;
+    padding-left: 30px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main blockquote::before {
+    content: "\201C";
+    position: absolute;
+    top: -4px;
+    left: 8px;
+    font-size: 44px;
+    color: var(--kr-skin-accent);
+    opacity: 0.4;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+
+/* ===== 标签（硬边直角 + hover 反色） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .article-tags a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .tagcloud a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .tag-links a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background: var(--kr-skin-tag-bg);
+    color: var(--kr-skin-accent-hover) !important;
+    border: 1px solid var(--kr-skin-accent);
+    border-radius: var(--kr-shape-radius) !important;
+    letter-spacing: 1px;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .article-tags a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .tagcloud a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .tag-links a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover {
+    background: var(--kr-skin-accent);
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent);
+}
+
+/* ===== 分页（硬边直角） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border-strong);
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .pagination .page-item.active .page-link,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link:hover {
+    background: var(--kr-skin-accent-hover);
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-muted);
+    cursor: default;
+}
+
+/* ===== 侧栏列表（§ 前缀 + 点线分割） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget li {
+    border-bottom: 1px dotted var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget li:last-child {
+    border-bottom: none;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    content: "\A7";           /* § */
+    background: transparent !important;
+    border: none !important;
+    color: var(--kr-skin-accent);
+    font-weight: 700;
+    width: auto !important;
+    height: auto !important;
+    top: 0 !important;
+    left: -1em !important;
+    border-radius: var(--kr-shape-radius) !important;
+}
+
+/* ===== 表单输入 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main #respond .comment-form textarea,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main #respond .comment-form input {
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow-in);
+    background: #fff;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main #respond .comment-form textarea:focus,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main #respond .comment-form input:focus {
+    border-color: var(--kr-skin-accent-hover);
+    box-shadow: var(--kr-shape-shadow-in);
+    outline: 1px dotted var(--kr-skin-heading);
+    outline-offset: -4px;
+}
+
+/* ===== 页脚 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer {
+    background: var(--kr-skin-footer-bg) !important;
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: var(--kr-skin-accent);
+    opacity: .6;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer::after {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: var(--kr-skin-accent);
+    opacity: .3;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer p,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer p a {
+    color: var(--kr-skin-footer-fg);
+    letter-spacing: 1px;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer p a {
+    color: var(--kr-skin-accent);
+    border-bottom: 1px dotted var(--kr-skin-accent);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer p a:hover {
+    color: #fff !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .social a .kicon,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+    color: var(--kr-skin-footer-fg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+    color: #fff;
+}
+
+/* ============ 通用规则（复用自 weekday-skins.css，锁定到本 slug） ============ */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body {
+    background-color: var(--kr-skin-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main {
+    background-color: var(--kr-skin-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main p,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main ol,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main ul,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo p,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo ul {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo a {
+    color: var(--kr-skin-link);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo a:hover {
+    color: var(--kr-skin-link-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-header .banner .overlay {
+    background-color: var(--kr-skin-banner-overlay);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a:hover {
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content p {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta {
+    border-top-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a:hover {
+    color: var(--kr-skin-link-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label {
+    background-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label .label-arrow {
+    border-left-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .article-panel .search-title {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .breadcrumb-box {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .header .meta {
+    color: var(--kr-skin-muted);
+    font-family: "Tahoma", "Verdana", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .header .meta > span:not(:last-child):after {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content p {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .content h2.title {
+    background-color: transparent;
+    border-left: 0;
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .content h2.title::after {
+    background-color: var(--kr-skin-accent);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content hr {
+    border-top-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content table th,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content table td {
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content table tr:nth-child(2n) {
+    background-color: var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main thead {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .copyright span {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .footer {
+    border-top-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .footer .tags span,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .footer .tool span {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .downbtn {
+    border-color: var(--kr-skin-accent-hover);
+    background: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: 3px 3px 0 var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .downbtn:hover {
+    background: var(--kr-skin-heading);
+    transform: translate(1px, 1px);
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations span {
+    margin: 0 !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px !important;
+    border-radius: var(--kr-shape-radius);
+    border: var(--kr-shape-border-strong);
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1;
+    transition: all .2s ease;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    background: var(--kr-skin-accent-hover);
+    color: #fff;
+    border-color: var(--kr-skin-accent-hover);
+    font-weight: 600;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .toolbar {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .toolbar .motto {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .toolbar .meta .name a {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate {
+    border-color: var(--kr-skin-accent-hover);
+    color: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:focus,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:hover {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-accent-hover);
+    color: #fff;
+}
+
+/* ===== 评论 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .list > li,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .children {
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name a {
+    color: var(--kr-skin-accent-hover);
+    font-family: "Tahoma", "Verdana", sans-serif;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p span {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta a {
+    color: var(--kr-skin-muted);
+    font-style: italic;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .avatar img {
+    border-color: var(--kr-skin-heading);
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) #commentpage .current,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) #commentpage .dots {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    border-color: var(--kr-skin-card-line-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) #commentpage a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) #commentpage .current {
+    background: var(--kr-skin-accent-hover);
+    border-color: var(--kr-skin-accent-hover);
+    color: #fff;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) #commentpage .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .input-group-text,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .form-control {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line-strong);
+    color: var(--kr-skin-text);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .form-control::placeholder {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea {
+    border-color: var(--kr-skin-card-line-strong);
+    background-color: var(--kr-skin-card-soft);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea {
+    background-color: transparent;
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea::placeholder {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar {
+    background-color: var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn:hover {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .smile .smile-tabs {
+    background: var(--kr-skin-card-soft);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab {
+    border-right-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab.active {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile .smile-panel a {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .error {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line-strong);
+}
+/* 与 demo 的「提交留言」按钮（.btn98）一致：银灰底 + Win98 凸起 bevel + 黑字，
+ * hover/active 反转为凹陷 bevel（按下感），不是藏青实心。 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary {
+    background-color: var(--kr-skin-card-soft) !important;
+    border: 1px solid var(--kr-skin-card-line-strong) !important;
+    color: #000000 !important;
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow-sm);
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+    text-transform: none;
+    font-weight: 400;
+    transition: box-shadow .1s ease;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary:active {
+    background-color: var(--kr-skin-card-soft) !important;
+    color: var(--kr-skin-heading) !important;
+    transform: none;
+    box-shadow: var(--kr-shape-shadow-in);
+}
+
+/* ===== 侧栏 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a {
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background-color: var(--kr-skin-tag-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li {
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-desc {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item:hover {
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .nav-tabs .nav-link {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .nav-tabs .nav-item.show .nav-link,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .nav-tabs .nav-link.active {
+    background-color: transparent !important;
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar tbody a {
+    background: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-accent-hover);
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments a:not(:last-child) {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .message {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .author,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .date {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc {
+    border-left-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::after {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li::before {
+    border-color: var(--kr-skin-card-bg);
+    background: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item li:hover::before {
+    background: var(--kr-skin-accent-hover);
+}
+
+/* ===== 通用输入 / 按钮 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) input[type="text"],
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) input[type="email"],
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) input[type="url"],
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) input[type="search"],
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) input[type="password"],
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) textarea,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) select {
+    background-color: #ffffff;
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line-strong);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow-in);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-captcha-input {
+    color: var(--kr-skin-text);
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-captcha-input::placeholder {
+    color: var(--kr-skin-muted);
+    opacity: 1;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-captcha-input:focus {
+    border-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-captcha-q {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .btn-search {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .dropdown-item.active,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .dropdown-item:active {
+    background-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-prevpage {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: 3px 3px 0 var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index {
+    border-color: var(--kr-skin-heading);
+    color: var(--kr-skin-heading);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index:hover {
+    background-color: var(--kr-skin-heading);
+    color: var(--kr-skin-card-bg);
+}
+
+/* ===== 关于我小工具 CTA 按钮（Win98 立体按钮语言） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary {
+    background: var(--kr-skin-accent-hover);
+    color: #ffffff;
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow-sm);
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary:hover {
+    background: var(--kr-skin-heading);
+    color: #ffffff;
+    opacity: 1;
+    transform: none;
+    box-shadow: var(--kr-shape-shadow-in);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost {
+    background: var(--kr-skin-card-soft);
+    color: var(--kr-skin-heading);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow-sm);
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost:hover {
+    background: var(--kr-skin-accent-hover);
+    color: #ffffff;
+    box-shadow: var(--kr-shape-shadow-in);
+}
+
+/* ===== 说说 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item {
+    background: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author {
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author::before {
+    background: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-text {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-time {
+    color: var(--kr-skin-muted);
+    font-style: italic;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle {
+    color: var(--kr-skin-link);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle::after {
+    border-top-color: var(--kr-skin-link);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle:hover {
+    color: var(--kr-skin-link-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    background: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title::before {
+    background: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-subtitle {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-back {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line-strong);
+    color: var(--kr-skin-muted) !important;
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-back:hover {
+    color: var(--kr-skin-accent-hover) !important;
+    border-color: var(--kr-skin-accent-hover);
+    background: var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line-strong);
+    color: var(--kr-skin-heading) !important;
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page:hover {
+    background: var(--kr-skin-accent-hover);
+    border-color: var(--kr-skin-accent-hover);
+    color: #fff !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current {
+    background: var(--kr-skin-accent-hover);
+    border-color: var(--kr-skin-accent-hover);
+    color: #fff !important;
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-ellipsis {
+    color: var(--kr-skin-muted) !important;
+    background: transparent;
+    border-color: transparent;
+}
+
+/* ===== 详情页 header 强制统一色 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article h1,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content h1,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content h2,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content h3,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content h4,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content h5,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content h6 {
+    color: var(--kr-skin-heading);
+}
+
+/* ===== 底部工具盒图标 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
+    transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+
+/* ===== 首字下沉（老书刊仪式感） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content > p:first-of-type::first-letter {
+    float: left;
+    font-size: 56px;
+    line-height: 0.9;
+    padding: 6px 10px 0 0;
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif;
+    font-weight: 900;
+    color: var(--kr-skin-accent-hover);
+}
+
+/* ===== 短代码 shortcode 变量映射 ===== */
+/* khs 通用映射见 components.css；retro 仅覆盖强调色相关 8 行（铁锈红为主 + 墨色/链接色点缀） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heatmap,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed {
+    --khs-accent: var(--kr-skin-accent-hover) !important;
+    --khs-accent-2: var(--kr-skin-accent) !important;
+    --khs-line-strong: var(--kr-skin-accent-hover) !important;
+    --khs-stat-comment-1: var(--kr-skin-accent-hover) !important;
+    --khs-stat-comment-2: var(--kr-skin-heading) !important;
+    --khs-stat-user-1: var(--kr-skin-link) !important;
+    --khs-stat-user-2: var(--kr-skin-heading) !important;
+    --khs-heart-fill: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::after {
+    display: none !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-stat,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-row,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-header,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-header,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-card {
+    border-color: var(--kr-skin-card-line-strong) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
+    background: var(--kr-skin-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-input:focus {
+    border-color: var(--kr-skin-accent-hover) !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .06) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit {
+    background: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit:hover {
+    background: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: var(--kr-skin-bg) !important;
+    color: var(--kr-skin-text) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count {
+    border-left-color: var(--kr-skin-card-line) !important;
+}
+/* 归档 kas：通用映射见 components.css；retro 仅对调强调色（铁锈红为主强调） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode {
+    --kas-accent: var(--kr-skin-accent-hover) !important;
+    --kas-accent-2: var(--kr-skin-accent) !important;
+    --kas-line-strong: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header {
+    border-color: var(--kr-skin-card-line-strong) !important;
+}
+
+/* ===== Dark 模式（暗夜优先） ===== */
+html[data-theme="dark"][data-weekday-skin="web1998"] {
+    --kr-link: #E8B95C;
+    --kr-link-hover: #F0CB7E;
+    --kr-accent: #C89B3C;
+}
+html[data-theme="dark"][data-weekday-skin="web1998"] .k-main {
+    background-image: none !important;
+}
+html[data-theme="dark"][data-weekday-skin="web1998"] .k-main::after,
+html[data-theme="dark"][data-weekday-skin="web1998"] .k-main .board .article-panel::before {
+    display: none !important;
+}
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: rgba(255, 255, 255, .06) !important;
+    color: var(--kr-fg, #d6d8db) !important;
+}
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-accent) !important;
+}
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-heart-shortcode.khs-scheme-parchment,
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    clip-path: none !important;
+}
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-heart-shortcode.khs-scheme-parchment::after,
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+
+/* ===== 特殊页面（归档/心情等）关闭卡片装饰 ===== */
+body.is-kratos-archives-page .k-main .details,
+body.is-kratos-heart-page .k-main .details,
+body.is-kratos-shuoshuo-page .k-main .details,
+body.is-kratos-topcommenters-page .k-main .details,
+body.is-kratos-friend-links-page .k-main .details,
+body.is-kratos-timeline-page .k-main .details,
+body.is-kratos-friend-feed-page .k-main .details {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: var(--kr-shape-radius) !important;
+    padding: 0 !important;
+}
+body.is-kratos-archives-page .k-main .details::after,
+body.is-kratos-heart-page .k-main .details::after,
+body.is-kratos-shuoshuo-page .k-main .details::after,
+body.is-kratos-topcommenters-page .k-main .details::after,
+body.is-kratos-friend-links-page .k-main .details::after,
+body.is-kratos-timeline-page .k-main .details::after,
+body.is-kratos-friend-feed-page .k-main .details::after {
+    display: none !important;
+}
+
+/* ===== 滚动条 ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--kr-skin-accent-hover) var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb {
+    background-color: var(--kr-skin-accent-hover);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
+    background-color: var(--kr-skin-card-soft);
+    border: 1px solid var(--kr-skin-card-line);
+}
+
+/* ===== 列表（复用其它皮肤的方案，配色替换为 accent-hover 铁锈红） ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    background: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    color: var(--kr-skin-accent-hover);
+}
+
+.k-main .details .article .content ul,
+.k-main .details .article .content ol,
+.widget_recent_entries ul,
+.widget_recent_comments ul,
+.widget_pages ul,
+.widget_meta ul,
+.widget_rss ul,
+.widget_nav_menu ul,
+.widget_block ul {
+    list-style: none;
+    padding-left: 1.6em;
+}
+.k-main .details .article .content ol {
+    counter-reset: kra-ol;
+}
+.k-main .details .article .content ul > li,
+.k-main .details .article .content ol > li,
+.widget_recent_entries ul > li,
+.widget_recent_comments ul > li,
+.widget_pages ul > li,
+.widget_meta ul > li,
+.widget_rss ul > li,
+.widget_nav_menu ul > li,
+.widget_block ul > li {
+    position: relative;
+    margin-bottom: 6px;
+    padding-left: 0.4em;
+}
+.k-main .details .article .content ul > li::before {
+    content: "";
+    position: absolute;
+    left: -1em;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--kr-skin-accent, currentColor);
+}
+.k-main .details .article .content ol > li {
+    counter-increment: kra-ol;
+}
+.k-main .details .article .content ol > li::before {
+    content: counter(kra-ol) ".";
+    position: absolute;
+    left: -1.4em;
+    top: 0;
+    min-width: 1.2em;
+    text-align: right;
+    color: var(--kr-skin-accent, currentColor);
+    font-weight: 600;
+}
+
+/* ============================================================
+ * 特色页面 / 短代码 · 复古强化覆盖
+ * 走心评论 / 说说 / 归档 / 时间轴 / 博友圈 / 榜首评论人 / 特色标题页
+ * 统一：牛皮底 + 无圆角（0）+ 硬阴影（3px 3px 0）+ 双线小标题 +
+ *      衬线大写字距标题 + 铁锈红 accent-hover 高亮
+ * ============================================================ */
+
+/* ---------- 共通：把「卡片系」全部拉直角 + 硬阴影 ----------
+ * 统一走公共类：.kr-hd（标题卡）/ .kr-body（主体卡）/ .kr-card（内容卡 + 统计小卡 + 系列列表卡 + 相关文章卡）。
+ * 覆盖对象等价于此前逐命名空间枚举的 22 个选择器；新增短代码只要挂 kr-* 即自动继承。 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) :is(.kr-hd, .kr-body, .kr-card) {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border-strong) !important;
+    background: var(--kr-skin-card-bg) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+
+/* ---------- 共通：标题/大字段 用衬线体 + 大写字距 ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h1,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h2 {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+    color: var(--kr-skin-heading) !important;
+}
+
+/* 副标题（斜体老报纸味）—— 统一走公共类 .kr-hd-sub */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-hd-sub {
+    color: var(--kr-skin-muted) !important;
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-style: italic !important;
+    letter-spacing: 1px !important;
+}
+
+/* 标题下的分隔线：双线金 —— 统一走公共类 .kr-hd-divider */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-hd-divider {
+    background: transparent !important;
+    border-top: 3px double var(--kr-skin-accent) !important;
+    height: 0 !important;
+    opacity: 1 !important;
+}
+
+/* ---------- 走心评论 khs ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat-num {
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card {
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    display: none;
+    pointer-events: none;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-author,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-from {
+    color: var(--kr-skin-accent-hover) !important;
+    font-weight: 700;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-time {
+    color: var(--kr-skin-muted) !important;
+    font-style: italic;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-page {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-heading) !important;
+    border: var(--kr-shape-border-strong) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-page:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-current {
+    background: var(--kr-skin-accent-hover) !important;
+    color: #fff !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+/* 头像图片本体默认 border-radius:50%（theme-comment-heart.php 内联 !important），必须显式改方形 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar-img,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+
+/* ---------- 说说 kss ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item {
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    display: none;
+    pointer-events: none;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* ---------- 榜首评论人 ktc ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-avatar,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-avatar img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank {
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    color: var(--kr-skin-heading) !important;
+    background: var(--kr-skin-bg) !important;
+    border-radius: var(--kr-shape-radius) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank.ktc-rank-medal {
+    background: var(--kr-skin-accent) !important;
+    color: var(--kr-skin-heading) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    font-weight: 700;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-lasttime {
+    font-style: italic;
+    color: var(--kr-skin-muted) !important;
+}
+
+/* ---------- 友链 kfl ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-logo,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-logo img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-logo-letter {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-weight: 900;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    font-weight: 700;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-desc {
+    color: var(--kr-skin-muted) !important;
+    font-style: italic;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    letter-spacing: 2px;
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-copy-btn {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--kr-skin-heading);
+    transition: transform .15s, box-shadow .15s, background .2s;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-copy-btn:hover {
+    transform: translate(1px, 1px);
+    box-shadow: var(--kr-shape-shadow-sm);
+    background: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-input,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-textarea {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border-strong) !important;
+    background: var(--kr-skin-card-soft) !important;
+    color: var(--kr-skin-text) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert {
+    border-radius: var(--kr-shape-radius) !important;
+    border: 1px dashed var(--kr-skin-accent-hover) !important;
+    background: var(--kr-skin-quote-bg) !important;
+}
+
+/* ---------- 博友圈 kff ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-logo,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-logo img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-site {
+    font-family: "Tahoma", "Verdana", sans-serif;
+    color: var(--kr-skin-heading) !important;
+    font-weight: 700;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-time,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-from,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-meta {
+    color: var(--kr-skin-muted) !important;
+    font-style: italic;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat-num {
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-badge {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-tag-bg) !important;
+    color: var(--kr-skin-accent-hover) !important;
+    border: 1px solid var(--kr-skin-accent) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+}
+
+/* ---------- 归档 kas ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-num,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count {
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-label,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-label {
+    color: var(--kr-skin-muted) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    box-shadow: 2px 2px 0 var(--kr-skin-card-line);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill.is-active {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-tab {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-tab.is-active,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-tab:hover {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section-title,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-time-head {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    color: var(--kr-skin-heading) !important;
+    letter-spacing: 2px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section-head {
+    border-bottom: 1px dashed var(--kr-skin-card-line-strong) !important;
+}
+
+/* ---------- 时间轴 ktl（.kratos-timeline） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-year {
+    color: var(--kr-skin-accent-hover) !important;
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-month {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    border-bottom: 1px dashed var(--kr-skin-card-line-strong) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item {
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item a {
+    color: var(--kr-skin-link) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-date {
+    color: var(--kr-skin-muted) !important;
+    font-style: italic;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+
+/* ---------- 特色标题页（page-featured-title） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content {
+    padding: 28px 32px;
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    display: none;
+    pointer-events: none;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h1,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h2,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h3 {
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 3px double var(--kr-skin-accent);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content blockquote {
+    border-left: 4px double var(--kr-skin-accent) !important;
+    background: var(--kr-skin-quote-bg) !important;
+    font-style: italic;
+    border-radius: var(--kr-shape-radius) !important;
+}
+
+/* ---------- 特殊页面主容器背景兜底（透明化） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-archives-page .k-main .details,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-heart-page .k-main .details,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-shuoshuo-page .k-main .details,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-topcommenters-page .k-main .details,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-friend-links-page .k-main .details,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-timeline-page .k-main .details,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-friend-feed-page .k-main .details {
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* ============================================================
+ * 补丁 · 复古扩展覆盖
+ * 覆盖对象：走心评论标题头 / 时间轴内容卡片 / 系列短码 /
+ *          系列列表页 / 相关文章卡片 / 详情页评论卡片 /
+ *          上下篇导航按钮
+ * ============================================================ */
+
+/* ---------- 走心评论：标题头（.khs-header）图标块 ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-header {
+    padding: 22px 26px !important;
+    gap: 14px;
+}
+/* .khs-title-icon 走统一图标胶囊规则（见文件底部） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase;
+    color: var(--kr-skin-heading) !important;
+}
+
+/* ---------- 时间轴：条目行（不作为独立卡片，保持轴线内联样式） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    position: relative;
+}
+/* 年份/月份是轴内分组标签，不是卡片（只卸背景/阴影，保留装饰边线） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-year,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-month {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+/* 年份徽章：牛皮底 + 深棕描边 + 硬阴影，替代默认圆角灰底 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-year-badge {
+    background: var(--kr-skin-accent) !important;
+    color: var(--kr-skin-heading) !important;
+    border: var(--kr-shape-border) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow-sm) !important;
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    letter-spacing: 2px !important;
+}
+/* 时间轴中轴线：换成金线 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-spine {
+    background: var(--kr-skin-accent) !important;
+    opacity: .7;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-title {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-title:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-meta,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-date,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-sep,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-views,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-comments {
+    color: var(--kr-skin-muted) !important;
+    font-style: italic;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+/* .ktl-title-icon / .ktl-item-icon 走统一图标胶囊规则（见文件底部） */
+
+/* ---------- 系列短码（文章页内的 .kratos-series） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    display: none;
+    pointer-events: none;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-head {
+    border-bottom: 3px double var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-icon {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-title {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 2px !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-title:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-pos {
+    background: var(--kr-skin-tag-bg) !important;
+    color: var(--kr-skin-accent-hover) !important;
+    border: 1px solid var(--kr-skin-accent) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-toggle {
+    background: transparent !important;
+    color: var(--kr-skin-accent-hover) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-toggle:hover {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumbs,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumbs a {
+    color: var(--kr-skin-muted) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    font-style: italic;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumbs a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumb-current {
+    color: var(--kr-skin-heading) !important;
+    font-weight: 700;
+    font-style: normal;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumb-sep {
+    color: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-item {
+    border-bottom: 1px dotted var(--kr-skin-card-line-strong) !important;
+    padding: 8px 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-item:last-child {
+    border-bottom: none !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-item.is-current {
+    background: var(--kr-skin-quote-bg) !important;
+    padding-left: 8px !important;
+    border-left: 4px double var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-num {
+    background: var(--kr-skin-heading) !important;
+    color: var(--kr-skin-accent) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-weight: 900 !important;
+    min-width: 26px;
+    text-align: center;
+    padding: 2px 6px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-item.is-current .kratos-series-num {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 0.5px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) a.kratos-series-name:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-badge {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 2px 8px;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+
+/* ---------- 系列列表页（.kratos-series-list-wrap 内的 .ksl-*） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap {
+    --ksl-bg: var(--kr-skin-card-bg) !important;
+    --ksl-card-bg: var(--kr-skin-card-bg) !important;
+    --ksl-line: var(--kr-skin-card-line-strong) !important;
+    --ksl-accent: var(--kr-skin-accent-hover) !important;
+    --ksl-fg: var(--kr-skin-heading) !important;
+    --ksl-fg-dim: var(--kr-skin-muted) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-card {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-card:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: var(--kr-shape-shadow-accent) !important;
+    background: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-icon {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 2px !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-desc {
+    color: var(--kr-skin-muted) !important;
+    font-style: italic;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap [class*="ksl-level-"]:not(.ksl-level-0):not(.ksl-level-1) {
+    border-left: 4px double var(--kr-skin-accent) !important;
+}
+
+/* ---------- 相关文章卡片 .kratos-related ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    display: none;
+    pointer-events: none;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-title {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase;
+    color: var(--kr-skin-heading) !important;
+    padding-left: 0 !important;
+    padding-bottom: 8px !important;
+    border-left: 0 !important;
+    border-bottom: 3px double var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-item a {
+    background: var(--kr-skin-card-soft) !important;
+    border: 1px solid var(--kr-skin-card-line) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    color: var(--kr-skin-heading) !important;
+    transition: transform .15s, box-shadow .15s !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-item a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+    transform: translate(-1px, -1px);
+    background: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-thumb {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    filter: sepia(.15) contrast(1.02);
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    font-weight: 600;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-date {
+    color: var(--kr-skin-muted) !important;
+    font-style: italic;
+    font-family: "Tahoma", "Verdana", sans-serif;
+}
+
+/* ---------- 详情页评论区（.details .comments 主卡片） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments {
+    background-color: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    position: relative;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    display: none;
+    pointer-events: none;
+    z-index: 2;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase;
+    padding-bottom: 8px !important;
+    border-bottom: 3px double var(--kr-skin-accent) !important;
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .list > li {
+    border-bottom: 1px dashed var(--kr-skin-card-line-strong) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-badge {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent) !important;
+    color: var(--kr-skin-heading) !important;
+    border: var(--kr-shape-border) !important;
+    font-family: "Tahoma", "Verdana", sans-serif;
+    letter-spacing: 1px;
+    box-shadow: 1px 1px 0 var(--kr-skin-heading);
+}
+
+/* ---------- 文章底部：上一篇 / 下一篇按钮 ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation {
+    display: flex;
+    flex-wrap: wrap;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease !important;
+    flex: 1 1 260px;
+    padding: 12px 16px;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: var(--kr-shape-shadow-accent) !important;
+    background: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous a,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next a {
+    color: var(--kr-skin-heading) !important;
+    font-family: "Tahoma", "Verdana", sans-serif !important;
+    letter-spacing: 1px;
+    text-decoration: none;
+    font-weight: 600;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous a:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+
+/* ============================================================
+ * 补丁 · 图标复古化 & 友链卡片阴影修正
+ * ============================================================ */
+
+/* ---------- 通用：所有 *-title-icon / *-header-icon / *-section-icon /
+ *              *-total-icon / *-stat-icon / khs-heart-icon
+ *   统一改为「深棕描边 + 芥末黄底 + 铁锈红图标 + 2px 硬阴影 + 直角」
+ *   （用 accent 芥末黄底衬托铁锈红图标，与页头描边的报纸报头感一致） */
+/* 图标胶囊统一样式令牌 —— 皮肤内所有图标胶囊都吃这一套变量，
+ * 想换整套图标语言只改这里即可。 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) {
+    --kr-skin-icon-bg:      var(--kr-skin-accent);        /* 芥末黄底 */
+    --kr-skin-icon-fg:      var(--kr-skin-accent-hover);  /* 铁锈红图标 */
+    --kr-skin-icon-border:  var(--kr-skin-heading);       /* 深棕描边 */
+    --kr-skin-icon-radius:  0;                            /* 直角 */
+    --kr-skin-icon-shadow:  2px 2px 0 var(--kr-skin-heading); /* 硬阴影 */
+}
+/* 图标胶囊统一走公共类 .kr-ico（等价于此前 14 成员的 :is 枚举，且自动覆盖新增短代码的图标） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-ico {
+    border-radius: var(--kr-skin-icon-radius) !important;
+    background: var(--kr-skin-icon-bg) !important;
+    color: var(--kr-skin-icon-fg) !important;
+    border: 1px solid var(--kr-skin-icon-border) !important;
+    box-shadow: var(--kr-skin-icon-shadow) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-ico > * {
+    color: var(--kr-skin-icon-fg) !important;
+}
+/* SVG 里 fill=currentColor 的走跟色；带 stroke 的中空图标保持中空
+ * （只让描边跟色，fill 强制透明，避免把空腔填死） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-ico svg {
+    color: var(--kr-skin-icon-fg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-ico svg [stroke]:not([stroke="none"]) {
+    stroke: var(--kr-skin-icon-fg) !important;
+    fill: none !important;
+}
+
+/* ---------- 时间轴：小圆点（年/月/条目）— 复古方点 ----------
+ * 默认 dot 尺寸/left 已按 spine 中线（桌面 145 / 移动 99）算好，
+ * 这里不改 left / width / height，只换成方形描边 + 硬阴影。
+ * 用 outline 而非 border（避免 border-box 收缩 content 导致视觉偏移），
+ * box-shadow ring 对称：内圈 card-bg（遮 spine）+ 外圈 heading（描边）。 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    border: none !important;
+    outline: 1px solid var(--kr-skin-heading) !important;
+    outline-offset: 0 !important;
+    box-shadow: 0 0 0 3px var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-year-dot,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-month-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    border: none !important;
+    outline: 1px solid var(--kr-skin-heading) !important;
+    outline-offset: 0 !important;
+    box-shadow: 0 0 0 2px var(--kr-skin-card-bg) !important;
+}
+
+/* ---------- 榜首评论人：ktc-dot（作者名前小点） ---------- */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    border: var(--kr-shape-border) !important;
+}
+
+/* ---------- 友链：卡片阴影修正 ----------
+ * 默认 .kfl-item 在共通块被设置为 3px 3px 0 硬阴影，但 hover 时基础样式
+ * 使用 var(--khs-card-shadow-hv)（羊皮预设，柔和大阴影），破坏复古风。
+ * 这里把 hover 阴影明确改回 4px 4px 0 芥末硬阴影 + 位移，与其它卡一致。
+ * 另外 .kfl-item 本身的 border-radius 也需强制 0。 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item {
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .2s ease !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item:hover {
+    transform: translate(-1px, -1px) !important;
+    box-shadow: var(--kr-shape-shadow-accent) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+/* 友链探针小点（在线/离线指示） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-probe-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+/* 友链警告 icon（表单校验反馈） */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert-icon {
+    color: var(--kr-skin-accent-hover) !important;
+}
+/* 友链其它默认圆角/柔阴影零散元素统一直角化 */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert-ok,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert-err,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-empty,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-link,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-tip {
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: 2px 2px 0 var(--kr-skin-card-line) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-avatar-img,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-avatar img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-link:hover,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor:focus .kfl-visitor-link,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor:focus-within .kfl-visitor-link {
+    transform: translate(-1px, -1px) !important;
+    box-shadow: 3px 3px 0 var(--kr-skin-accent) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+    background: var(--kr-skin-card-bg) !important;
+}
+
+/* ===== heatmap 覆盖：tooltip / year-tag / year-select ===== */
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heatmap .kph-tooltip {
+    background: var(--kr-skin-heading) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: 3px 3px 0 var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-tag,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-tag.is-active {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: 2px 2px 0 var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-select {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-heading) !important;
+    box-shadow: 2px 2px 0 var(--kr-skin-accent) !important;
+}
