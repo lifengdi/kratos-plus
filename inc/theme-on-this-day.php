@@ -44,7 +44,7 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
     $today_d = (int) current_time('d');
     $today_y = (int) current_time('Y');
     // v3：确保 thumb 用 post ID 取，避免旧缓存的空 thumb 干扰
-    $cache_key = 'kratos_otd_v4_' . current_time('Ymd') . '_' . md5(implode(',', $post_types) . '_' . (int) $limit);
+    $cache_key = 'kratos_otd_v1_' . current_time('Ymd') . '_' . md5(implode(',', $post_types) . '_' . (int) $limit);
 
     $cached = get_transient($cache_key);
     if (is_array($cached)) {
@@ -98,7 +98,7 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
                 'date'      => get_the_date(get_option('date_format'), $p),
                 'years_ago' => $years_ago,
                 'thumb'     => $thumb,
-                'excerpt'   => wp_trim_words(wp_strip_all_tags(strip_shortcodes($p->post_content)), 40, '…'),
+                'excerpt'   => wp_trim_words(wp_strip_all_tags(strip_shortcodes($p->post_content)), 60, '…'),
                 'post_type' => $p->post_type,
             );
         }
@@ -182,9 +182,9 @@ function kratos_otd_shortcode($atts)
     }
 
     ob_start(); ?>
-    <div class="kratos-otd">
+    <div class="kratos-otd kr-hd">
         <?php if ($title !== '' || $subtitle !== '') { ?>
-            <header class="kratos-otd-header kr-hd">
+            <header class="kratos-otd-header">
                 <span class="kotd-icon kr-ico" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </span>
@@ -199,10 +199,10 @@ function kratos_otd_shortcode($atts)
                 <span class="kotd-divider kr-hd-divider"></span>
             </header>
         <?php } ?>
-        <div class="kratos-otd-body kr-body">
+        <div class="kratos-otd-body">
             <ul class="kotd-list">
                 <?php foreach ($items as $it) { ?>
-                    <li class="kotd-item kr-card">
+                    <li class="kotd-item">
                         <?php if ($show_thumb && !empty($it['thumb'])) { ?>
                             <a class="kotd-thumb" href="<?php echo esc_url($it['permalink']); ?>" aria-hidden="true" tabindex="-1">
                                 <span class="kotd-thumb-bg" style="background-image:url('<?php echo esc_url($it['thumb']); ?>');"></span>
@@ -238,33 +238,36 @@ function kratos_otd_inline_assets()
     $printed = true;
     ob_start(); ?>
     <style>
-        .kratos-otd{margin:0 0 20px;}
-        .kratos-otd-header{position:relative;padding:22px 26px 16px;margin:0 0 12px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+        .kratos-otd{margin:24px 0;border:var(--kr-shape-border);border-radius:var(--kr-shape-radius);box-shadow:0 1px 3px rgba(0,0,0,.04);}
+        .kratos-otd-header{position:relative;padding:22px 26px 16px;}
         .kratos-otd .kotd-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:linear-gradient(135deg,#ffd7a5,#ff9d5c);color:#fff;border-radius:8px;margin-right:10px;vertical-align:middle;box-shadow:0 2px 6px rgba(255,157,92,.35);}
         .kratos-otd .kotd-title{display:inline-flex;align-items:center;gap:10px;margin:0;font-size:20px;font-weight:600;color:#222;vertical-align:middle;}
         .kratos-otd .kotd-today{display:inline-flex;align-items:center;height:22px;padding:0 10px;background:color-mix(in srgb, var(--khs-accent,#336699) 10%, transparent);color:var(--khs-accent,#336699);border-radius:999px;font-size:12px;font-weight:500;letter-spacing:.3px;}
         .kratos-otd .kotd-subtitle{margin:8px 0 0;font-size:13px;color:#888;line-height:1.6;}
         .kratos-otd .kotd-divider{display:block;height:1px;margin-top:12px;background:linear-gradient(90deg,var(--kr-skin-tag-bg, rgba(0, 0, 0, .35)),transparent);}
-        .kratos-otd .kotd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
-        .kratos-otd .kotd-item{display:flex;gap:14px;padding:14px 18px;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:box-shadow .2s ease,transform .2s ease;}
-        .kratos-otd .kotd-item:hover{box-shadow:0 6px 18px rgba(0,0,0,.08);transform:translateY(-1px);}
+        .kratos-otd-body{padding:4px 26px;}
+        .kratos-otd .kotd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+        .kratos-otd .kotd-item{display:flex;gap:14px;margin:0 -20px;padding:16px 20px;border-bottom:1px solid rgba(0,0,0,.06);transition:background .2s ease;}
+        .kratos-otd .kotd-item:last-child{border-bottom:none;}
+        .kratos-otd .kotd-item:hover{background:color-mix(in srgb, var(--khs-accent,#336699) 4%, transparent);}
         .kratos-otd .kotd-thumb{position:relative;flex-shrink:0;width:96px;height:96px;border-radius:2px;overflow:hidden;background:#f1f1f1;}
         .kratos-otd .kotd-thumb-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .3s ease;}
         .kratos-otd .kotd-thumb:hover .kotd-thumb-bg{transform:scale(1.05);}
         .kratos-otd .kotd-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
         .kratos-otd .kotd-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:#999;}
         .kratos-otd .kotd-badge{display:inline-flex;align-items:center;height:20px;padding:0 10px;background:color-mix(in srgb, var(--khs-accent,#336699) 10%, transparent);color:var(--khs-accent,#336699);border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.3px;}
-        .kratos-otd .kotd-title-link{font-size:15px;font-weight:600;color:#222 !important;text-decoration:none !important;line-height:1.4;}
-        .kratos-otd .kotd-title-link:hover{color:#336699 !important;}
-        .kratos-otd .kotd-excerpt{margin:0;font-size:13px;color:#666;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+        .kratos-otd .kotd-title-link{font-size:15px;font-weight:600;text-decoration:none !important;line-height:1.4;}
+        .kratos-otd .kotd-excerpt{margin:0;font-size:13px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
         @media (max-width:576px){
             .kratos-otd-header{padding:18px 20px 12px;}
             .kratos-otd .kotd-title{font-size:18px;}
-            .kratos-otd .kotd-item{padding:12px;gap:10px;}
+            .kratos-otd-body{padding:2px 14px;}
+            .kratos-otd .kotd-item{margin:0 -14px;padding:14px;gap:10px;}
             .kratos-otd .kotd-thumb{width:72px;height:72px;}
         }
         html[data-theme="dark"] .kratos-otd-header,body.dark .kratos-otd-header,
-        html[data-theme="dark"] .kratos-otd .kotd-item,body.dark .kratos-otd .kotd-item{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);box-shadow:0 2px 6px rgba(0,0,0,.3);}
+        html[data-theme="dark"] .kratos-otd-body,body.dark .kratos-otd-body{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);box-shadow:0 2px 6px rgba(0,0,0,.3);}
+        html[data-theme="dark"] .kratos-otd .kotd-item,body.dark .kratos-otd .kotd-item{border-bottom-color:rgba(255,255,255,.08);}
         html[data-theme="dark"] .kratos-otd .kotd-title,body.dark .kratos-otd .kotd-title{color:#e8e4ec;}
         html[data-theme="dark"] .kratos-otd .kotd-subtitle,body.dark .kratos-otd .kotd-subtitle,
         html[data-theme="dark"] .kratos-otd .kotd-excerpt,body.dark .kratos-otd .kotd-excerpt{color:#aaa;}

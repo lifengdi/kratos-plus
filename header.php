@@ -33,6 +33,7 @@
 <?php flush(); ?>
 
 <body>
+    <?php wp_body_open(); ?>
     <?php
     $nav_sticky_pc = kratos_option('nav_sticky_pc', false);
     $nav_sticky_pad = kratos_option('nav_sticky_pad', false);

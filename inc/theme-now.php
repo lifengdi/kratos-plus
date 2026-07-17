@@ -173,15 +173,17 @@ function kratos_now_render_hero($post)
     ?>
     <article class="knw-hero kr-card">
         <header class="knw-hero-head">
-            <span class="knw-hero-ico kr-ico" aria-hidden="true"><?php echo esc_html($mood_display); ?></span>
             <span class="knw-hero-badge">NOW</span>
             <span class="knw-hero-ago" title="<?php echo esc_attr($time_full); ?>">
                 <?php echo esc_html(sprintf(__('上次更新 %s前', 'kratos'), $time_ago === '' ? '' : $time_ago)); ?>
             </span>
         </header>
-        <?php if ($title !== '') { ?>
-            <h2 class="knw-hero-title"><?php echo esc_html($title); ?></h2>
-        <?php } ?>
+        <div class="knw-hero-titlebar">
+            <span class="knw-hero-ico" aria-hidden="true"><?php echo esc_html($mood_display); ?></span>
+            <?php if ($title !== '') { ?>
+                <h2 class="knw-hero-title"><?php echo esc_html($title); ?></h2>
+            <?php } ?>
+        </div>
         <?php if (trim(wp_strip_all_tags($content)) !== '') { ?>
             <div class="knw-hero-content"><?php echo $content; ?></div>
         <?php } ?>
@@ -330,10 +332,11 @@ function kratos_now_inline_assets()
         /* ---------- 英雄大卡（当前 Now） ---------- */
         .kratos-now .knw-hero{padding:32px 36px;margin:0 0 24px;position:relative;}
         .kratos-now .knw-hero-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
-        .kratos-now .knw-hero-ico{width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;font-size:26px;line-height:1;flex-shrink:0;}
+        .kratos-now .knw-hero-ico{display:inline-flex;align-items:center;justify-content:center;font-size:30px;line-height:1;flex-shrink:0;background:none;border:none;box-shadow:none;padding:0;width:auto;height:auto;border-radius:0;}
         .kratos-now .knw-hero-badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:3px;color:var(--khs-accent,#336699);background:color-mix(in srgb, var(--khs-accent,#336699) 14%, transparent);padding:4px 12px;border-radius:999px;}
         .kratos-now .knw-hero-ago{font-size:12px;color:var(--khs-fg-dim,#999);letter-spacing:.5px;margin-left:auto;}
-        .kratos-now .knw-hero-title{margin:0 0 14px;font-size:26px;font-weight:700;line-height:1.35;color:var(--khs-fg,#1f2937);letter-spacing:.5px;}
+        .kratos-now .knw-hero-titlebar{display:flex;align-items:center;gap:14px;margin:0 0 14px;}
+        .kratos-now .knw-hero-title{margin:0;font-size:26px;font-weight:700;line-height:1.35;color:var(--khs-fg,#1f2937);letter-spacing:.5px;}
         .kratos-now .knw-hero-content{font-size:16px;line-height:1.9;color:var(--khs-fg-soft,var(--khs-fg,#2c2c2c));word-break:break-word;}
         .kratos-now .knw-hero-content p{margin:0 0 12px;}
         .kratos-now .knw-hero-content p:last-child{margin-bottom:0;}

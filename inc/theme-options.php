@@ -2736,7 +2736,7 @@ CSF::createSection($prefix, array(
             'id' => 'otd_after_post',
             'type' => 'switcher',
             'title' => __('在文章底部自动展示', 'kratos'),
-            'subtitle' => __('单篇文章正文之后自动追加，仅在今天确实有历史内容时展示。', 'kratos'),
+            'subtitle' => __('仅在今天有历史内容时展示。', 'kratos'),
             'default' => false,
         ),
     ),

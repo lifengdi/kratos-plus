@@ -206,7 +206,7 @@ function theme_autoload()
                 .kc-vote em{font-style:normal;margin-left:2px;}
                 .kc-sticky-badge{display:inline-block;margin-left:6px;padding:1px 6px;font-size:11px;line-height:1.5;color:#fff;background:#e74c3c;border-radius:3px;vertical-align:middle;}
                 .comment.is-sticky{background:rgba(231,76,60,.04);border-left:3px solid #e74c3c;padding-left:8px;}
-                .hot-comments,.sticky-comments{--hc-accent:var(--kr-skin-accent,#e74c3c);--hc-bg:var(--kr-skin-tag-bg,rgba(0,0,0,.03));background:var(--hc-bg);border-radius:6px;padding:12px 16px;margin-bottom:16px;}
+                .hot-comments,.sticky-comments{--hc-accent:var(--kr-skin-accent,#e74c3c);--hc-bg:var(--kr-skin-tag-bg,rgba(0,0,0,.03));background:var(--hc-bg);border-radius:6px;padding:12px 16px;margin-bottom:16px;margin-top:16px;}
                 .sticky-comments{--hc-accent:#e67e22;}
                 .hot-comments-title{font-size:16px;margin:0 0 10px;color:var(--hc-accent);}
                 .hot-comments-list{list-style:none;padding:0;margin:0;}

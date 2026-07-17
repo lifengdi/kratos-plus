@@ -454,6 +454,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .board .paginations .do
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article {
     background-color: var(--kr-skin-card-bg);
+    border:var(--kr-shape-border);
+    border-radius:var(--kr-shape-radius);
 }
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .article .breadcrumb-box {
@@ -601,6 +603,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) .navigation.post-navigation .na
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar {
     background-color: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border) !important;
+    border-radius: var(--kr-shape-radius) !important;
 }
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar .motto {
@@ -629,6 +633,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .toolbar .shar
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments {
     background-color: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border) !important;
+    border-radius: var(--kr-shape-radius) !important;
 }
 
 html[data-weekday-skin]:not([data-theme="dark"]) .k-main .details .comments .title {

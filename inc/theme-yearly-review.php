@@ -29,7 +29,7 @@ function kratos_yr_aggregate($year)
 
     $current_year = (int) current_time('Y');
     $ttl = ($year >= $current_year) ? (6 * HOUR_IN_SECONDS) : (30 * DAY_IN_SECONDS);
-    $cache_key = 'kratos_yr_' . $year;
+    $cache_key = 'kratos_yr_v2_' . $year;
 
     $cached = get_transient($cache_key);
     if (is_array($cached) && !empty($cached['_ok'])) {
@@ -98,7 +98,7 @@ function kratos_yr_aggregate($year)
         usort($post_rows, function ($a, $b) {
             return ((int) $b['comment_count']) <=> ((int) $a['comment_count']);
         });
-        foreach (array_slice($post_rows, 0, 3) as $r) {
+        foreach (array_slice($post_rows, 0, 10) as $r) {
             $top_posts[] = array(
                 'id'       => (int) $r['ID'],
                 'title'    => (string) $r['post_title'],
@@ -207,6 +207,24 @@ function kratos_yr_render($year = null)
     $data = kratos_yr_aggregate($year);
     $site_name = get_bloginfo('name');
     $site_url  = home_url('/');
+
+    // 分享二维码指向的目标地址：优先取 page-yearly-review.php 模板页面，附带 yr_year 年份参数；
+    // 找不到模板页时回退到首页 + 年份参数
+    $share_base = '';
+    $yr_pages = get_posts(array(
+        'post_type'      => 'page',
+        'posts_per_page' => 1,
+        'meta_key'       => '_wp_page_template',
+        'meta_value'     => 'page-yearly-review.php',
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    ));
+    if (!empty($yr_pages)) {
+        $share_base = get_permalink($yr_pages[0]);
+    } else {
+        $share_base = $site_url;
+    }
+    $share_url = esc_url(add_query_arg('yr_year', (int) $year, $share_base));
     $author_name = (string) kratos_option('g_signature', $site_name);
     $author_avatar = get_avatar_url(get_option('admin_email'), array('size' => 160));
     $message = trim((string) kratos_option('yr_message', __('感谢每一位读者的陪伴，我们下一年见 🥂', 'kratos')));
@@ -225,9 +243,15 @@ function kratos_yr_render($year = null)
             </button>
             <div class="kyr-year-switch">
                 <?php
-                $years = array();
-                for ($y = (int) current_time('Y'); $y >= (int) current_time('Y') - 5; $y--) $years[] = $y;
-                foreach ($years as $y) {
+                $cur_year = (int) current_time('Y');
+                $birthday = (string) kratos_option('site_birthday', '');
+                $bd_ts    = $birthday ? strtotime($birthday) : 0;
+                $start_year = ($bd_ts > 0) ? (int) date('Y', $bd_ts) : ($cur_year - 5);
+                if ($start_year > $cur_year) $start_year = $cur_year;
+                $max_n = (int) apply_filters('kratos_yr_year_switch_max', 8);
+                if ($max_n < 1) $max_n = 1;
+                if (($cur_year - $start_year + 1) > $max_n) $start_year = $cur_year - $max_n + 1;
+                for ($y = $cur_year; $y >= $start_year; $y--) {
                     $url = esc_url(add_query_arg('yr_year', $y));
                     $active = $y === $year ? ' is-active' : '';
                     echo '<a class="kyr-year' . $active . '" href="' . $url . '">' . (int) $y . '</a>';
@@ -291,7 +315,7 @@ function kratos_yr_render($year = null)
 
             <?php if (!empty($data['top_posts'])) { ?>
                 <section class="kyr-section">
-                    <h3 class="kyr-h"><?php esc_html_e('年度热文 TOP 3', 'kratos'); ?></h3>
+                    <h3 class="kyr-h"><?php esc_html_e('年度热文 TOP 10', 'kratos'); ?></h3>
                     <ol class="kyr-top-posts">
                         <?php foreach ($data['top_posts'] as $i => $p) { ?>
                             <li>
@@ -340,10 +364,17 @@ function kratos_yr_render($year = null)
                 </section>
             <?php } ?>
 
-            <footer class="kyr-footer">
-                <span class="kyr-site-url"><?php echo esc_html(preg_replace('#^https?://#', '', rtrim($site_url, '/'))); ?></span>
-                <span class="kyr-generated"><?php echo esc_html(date_i18n(get_option('date_format'), current_time('timestamp'))); ?></span>
-            </footer>
+            <section class="kyr-share">
+                <div class="kyr-qr" id="kyr-qr" data-url="<?php echo esc_attr($share_url); ?>"></div>
+                <div class="kyr-share-text">
+                    <div class="kyr-share-title"><?php esc_html_e('扫码查看本页', 'kratos'); ?></div>
+                    <div class="kyr-share-sub"><?php esc_html_e('分享给朋友，一起回顾这一年', 'kratos'); ?></div>
+                    <div class="kyr-share-meta">
+                        <span class="kyr-site-url"><?php echo esc_html(preg_replace('#^https?://#', '', rtrim($site_url, '/'))); ?></span>
+                        <span class="kyr-generated"><?php echo esc_html(date_i18n(get_option('date_format'), current_time('timestamp'))); ?></span>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
     <?php echo kratos_yr_inline_assets($year);
@@ -365,59 +396,78 @@ function kratos_yr_inline_assets($year)
     $printed = true;
     ob_start(); ?>
     <style>
-        .kratos-yr-wrap{max-width:760px;margin:0 auto;}
+        /* 颜色令牌：默认走「羊皮」外观（皮肤关闭态），皮肤开启时自动吃 --kr-skin-* 跟随皮肤配色 */
+        .kratos-yr-wrap{
+            --kyr-accent:   var(--kr-skin-accent, #c46a2b);
+            --kyr-accent-2: var(--kr-skin-accent-hover, #e8823b);
+            --kyr-text:     var(--kr-skin-text, #2c2320);
+            --kyr-heading:  var(--kr-skin-heading, #2c2320);
+            --kyr-muted:    var(--kr-skin-muted, #8a6a5a);
+            --kyr-card:     var(--kr-skin-card-bg, #fff);
+            --kyr-line:     var(--kr-skin-card-line, rgba(196,106,43,.15));
+            --kyr-bg:       var(--kr-skin-card-bg, linear-gradient(180deg,#fffdf9 0%,#fff9f0 100%));
+            max-width:760px;margin:0 auto;
+        }
         .kyr-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
-        .kyr-download{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;font-size:13px;background:linear-gradient(135deg,#c46a2b,#e8823b);color:#fff !important;border:none;border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(196,106,43,.35);transition:transform .2s ease,box-shadow .2s ease;}
+        .kyr-download{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;font-size:13px;background:linear-gradient(135deg,var(--kyr-accent),var(--kyr-accent-2));color:#fff !important;border:none;border-radius:999px;cursor:pointer;box-shadow:0 4px 14px var(--kyr-accent-2);transition:transform .2s ease,box-shadow .2s ease;}
         .kyr-download:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(196,106,43,.45);}
         .kyr-year-switch{display:inline-flex;gap:4px;background:rgba(0,0,0,.04);padding:4px;border-radius:999px;}
-        .kyr-year{padding:4px 12px;font-size:12px;color:#666 !important;text-decoration:none !important;border-radius:999px;}
-        .kyr-year.is-active{background:#fff;color:#c46a2b !important;box-shadow:0 1px 3px rgba(0,0,0,.08);font-weight:600;}
+        .kyr-year{padding:4px 12px;font-size:12px;color:var(--kyr-muted) !important;text-decoration:none !important;border-radius:999px;}
+        .kyr-year.is-active{background:var(--kyr-card);color:var(--kyr-accent) !important;box-shadow:0 1px 3px rgba(0,0,0,.08);font-weight:600;}
 
-        .kratos-yearly-review{background:linear-gradient(180deg,#fffaf3 0%,#fff5e6 100%);padding:36px 32px;border-radius:12px;color:#2c2320;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;}
+        .kratos-yearly-review{background:var(--kyr-bg);padding:36px 32px;border-radius:12px;color:var(--kyr-text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;}
         .kyr-brand{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
-        .kyr-avatar{width:52px;height:52px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.1);}
-        .kyr-blog{font-size:13px;color:#8a5a2b;letter-spacing:1px;}
-        .kyr-title{font-size:24px;font-weight:700;color:#2c2320;line-height:1.3;}
+        .kyr-avatar{width:52px;height:52px;border-radius:50%;border:2px solid var(--kyr-card);box-shadow:0 2px 8px rgba(0,0,0,.1);}
+        .kyr-blog{font-size:13px;color:var(--kyr-accent);letter-spacing:1px;}
+        .kyr-title{font-size:24px;font-weight:700;color:var(--kyr-heading);line-height:1.3;}
 
         .kyr-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
-        .kyr-stat{background:#fff;border-radius:10px;padding:16px 8px;text-align:center;box-shadow:0 2px 8px rgba(196,106,43,.06);}
-        .kyr-stat-num{font-size:22px;font-weight:800;color:#c46a2b;line-height:1;}
-        .kyr-stat-label{margin-top:6px;font-size:11px;color:#8a6a5a;letter-spacing:.5px;}
+        .kyr-stat{background:var(--kyr-card);border:1px solid var(--kyr-line);border-radius:10px;padding:16px 8px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+        .kyr-stat-num{font-size:22px;font-weight:800;color:var(--kyr-accent);line-height:1;}
+        .kyr-stat-label{margin-top:6px;font-size:11px;color:var(--kyr-muted);letter-spacing:.5px;}
 
-        .kyr-birthday{background:rgba(196,106,43,.08);padding:12px 16px;border-radius:8px;text-align:center;font-size:13px;color:#8a5a2b;margin-bottom:20px;}
-        .kyr-birthday strong{color:#c46a2b;font-size:16px;}
+        .kyr-birthday{background:var(--kyr-card);border:1px solid var(--kyr-line);padding:12px 16px;border-radius:8px;text-align:center;font-size:13px;color:var(--kyr-accent);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px;}
+        .kyr-birthday strong{color:var(--kyr-accent);font-size:16px;}
 
-        .kyr-section{background:#fff;border-radius:10px;padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(196,106,43,.05);}
-        .kyr-h{margin:0 0 14px;font-size:14px;font-weight:700;color:#2c2320;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
-        .kyr-h::before{content:"";display:inline-block;width:3px;height:14px;background:#c46a2b;border-radius:2px;}
+        .kyr-section{background:var(--kyr-card);border:1px solid var(--kyr-line);border-radius:10px;padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+        .kyr-h{margin:0 0 14px;font-size:14px;font-weight:700;color:var(--kyr-heading);letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+        .kyr-h::before{content:"";display:inline-block;width:3px;height:14px;background:var(--kyr-accent);border-radius:2px;}
 
         .kyr-monthly{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;height:110px;}
         .kyr-mo{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;}
-        .kyr-mo-bar{display:block;width:100%;max-width:32px;background:linear-gradient(180deg,#e8823b,#c46a2b);border-radius:3px 3px 0 0;min-height:4px;}
-        .kyr-mo-c{position:absolute;top:-2px;font-size:9px;color:#c46a2b;font-weight:700;transform:translateY(-100%);}
-        .kyr-mo-m{margin-top:4px;font-size:10px;color:#8a6a5a;}
+        .kyr-mo-bar{display:block;width:100%;max-width:32px;background:linear-gradient(180deg,var(--kyr-accent-2),var(--kyr-accent));border-radius:3px 3px 0 0;min-height:4px;}
+        .kyr-mo-c{position:absolute;top:-2px;font-size:9px;color:var(--kyr-accent);font-weight:700;transform:translateY(-100%);}
+        .kyr-mo-m{margin-top:4px;font-size:10px;color:var(--kyr-muted);}
 
         .kyr-top-posts{list-style:none;margin:0;padding:0;counter-reset:none;}
-        .kyr-top-posts li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(196,106,43,.15);font-size:13px;}
+        .kyr-top-posts li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--kyr-line);font-size:13px;}
         .kyr-top-posts li:last-child{border-bottom:none;}
-        .kyr-rank{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:linear-gradient(135deg,#f4c37a,#c46a2b);color:#fff;border-radius:6px;font-size:11px;font-weight:800;}
-        .kyr-tp-title{flex:1;color:#2c2320;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-        .kyr-tp-c{flex-shrink:0;font-size:11px;color:#8a6a5a;}
+        .kyr-rank{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:linear-gradient(135deg,var(--kyr-accent-2),var(--kyr-accent));color:#fff;border-radius:6px;font-size:11px;font-weight:800;}
+        .kyr-tp-title{flex:1;color:var(--kyr-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .kyr-tp-c{flex-shrink:0;font-size:11px;color:var(--kyr-muted);}
 
         .kyr-commenters{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
         .kyr-commenter{text-align:center;}
-        .kyr-c-avatar{width:44px;height:44px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.06);}
-        .kyr-c-name{margin-top:6px;font-size:11px;color:#2c2320;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-        .kyr-c-num{font-size:11px;color:#c46a2b;font-weight:700;}
+        .kyr-c-avatar{width:44px;height:44px;border-radius:50%;border:2px solid var(--kyr-card);box-shadow:0 2px 4px rgba(0,0,0,.06);}
+        .kyr-c-name{margin-top:6px;font-size:11px;color:var(--kyr-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .kyr-c-num{font-size:11px;color:var(--kyr-accent);font-weight:700;}
 
         .kyr-tags{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;}
-        .kyr-tag{color:#c46a2b;font-weight:600;}
+        .kyr-tag{color:var(--kyr-accent);font-weight:600;}
 
-        .kyr-message{background:linear-gradient(135deg,#fff5e6,#ffe6c8);padding:24px;border-radius:10px;text-align:center;position:relative;margin-bottom:14px;}
-        .kyr-quote{position:absolute;top:8px;left:16px;font-size:36px;color:rgba(196,106,43,.25);font-family:Georgia,serif;line-height:1;}
-        .kyr-message p{margin:0;font-size:14px;line-height:1.8;color:#2c2320;font-style:italic;}
+        .kyr-message{background:var(--kr-skin-quote-bg, linear-gradient(135deg,#fff5e6,#ffe6c8));padding:24px;border-radius:10px;text-align:center;position:relative;margin-bottom:14px;}
+        .kyr-quote{position:absolute;top:8px;left:16px;font-size:36px;var(--kyr-text);font-family:Georgia,serif;line-height:1;}
+        .kyr-message p{margin:0;font-size:14px;line-height:1.8;color:var(--kyr-text);font-style:italic;}
 
-        .kyr-footer{display:flex;justify-content:space-between;font-size:11px;color:#8a6a5a;margin-top:8px;padding:0 4px;}
+        .kyr-share{display:flex;align-items:flex-start;gap:16px;background:var(--kyr-card);border:1px solid var(--kyr-line);border-radius:10px;padding:16px 20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+        .kyr-qr{flex-shrink:0;width:88px;height:88px;background:var(--kyr-card);border:1px solid var(--kyr-line);border-radius:8px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;}
+        .kyr-qr img,.kyr-qr canvas{width:100%;height:100%;display:block;}
+        .kyr-share-text{flex:1;min-width:0;}
+        .kyr-share-title{font-size:14px;font-weight:700;color:var(--kyr-heading);}
+        .kyr-share-sub{margin-top:6px;font-size:12px;color:var(--kyr-muted);line-height:1.6;}
+        .kyr-share-meta{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--kyr-line);font-size:11px;color:var(--kyr-accent);}
+        .kyr-share-meta .kyr-site-url{flex:1;min-width:0;word-break:break-all;line-height:1.5;}
+        .kyr-share-meta .kyr-generated{flex-shrink:0;white-space:nowrap;color:var(--kyr-muted);}
 
         @media (max-width:576px){
             .kratos-yearly-review{padding:24px 18px;}
@@ -425,15 +475,39 @@ function kratos_yr_inline_assets($year)
             .kyr-stat-row{grid-template-columns:repeat(2,1fr);}
             .kyr-commenters{grid-template-columns:repeat(5,1fr);}
             .kyr-c-avatar{width:36px;height:36px;}
+            .kyr-share{flex-direction:column;align-items:center;text-align:center;gap:12px;}
+            .kyr-share-meta{flex-direction:column;align-items:center;text-align:center;gap:3px;}
         }
     </style>
     <script>
         (function(){
             if (window.kratosYrBound) return;
             window.kratosYrBound = true;
+            function renderQr(){
+                var box = document.getElementById('kyr-qr');
+                if (!box || box.dataset.done) return;
+                if (typeof QRCode !== 'function') { setTimeout(renderQr, 200); return; }
+                box.dataset.done = '1';
+                try {
+                    new QRCode(box, {
+                        text: box.getAttribute('data-url'),
+                        width: 160,
+                        height: 160,
+                        colorDark: '#2c2320',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                } catch (e) {
+                    box.dataset.done = '';
+                    console.error('QR generate failed:', e);
+                }
+                // 注意：不要手动隐藏 canvas —— qrcodejs 会异步把 canvas 换成 img 并自行处理显隐，
+                // 手动同步隐藏 canvas 会导致部分移动端浏览器在异步 img 就绪前一片空白。
+            }
             function bind(){
                 var btn = document.getElementById('kyr-download-btn');
                 var node = document.getElementById('kratos-yearly-review');
+                renderQr();
                 if (!btn || !node) return;
                 btn.addEventListener('click', function(){
                     if (typeof html2canvas !== 'function') {
@@ -479,7 +553,8 @@ function kratos_yr_enqueue()
     }
     if (!$need) return;
 
-    wp_enqueue_script('html2canvas', 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js', array(), '1.4.1', true);
+    wp_enqueue_script('html2canvas', get_template_directory_uri() . '/assets/js/html2canvas.min.js', array(), '1.4.1', true);
+    wp_enqueue_script('qrcodejs', get_template_directory_uri() . '/assets/js/qrcode.min.js', array(), '1.0.0', true);
 }
 add_action('wp_enqueue_scripts', 'kratos_yr_enqueue');
 
@@ -500,7 +575,7 @@ add_filter('body_class', 'kratos_yr_body_class');
  */
 function kratos_yr_birthday_hint()
 {
-    if (!is_home() && !is_front_page()) return;
+//     if (!is_home() && !is_front_page()) return;
     if (!kratos_option('yr_birthday_hint', false)) return;
     $birthday = (string) kratos_option('site_birthday', '');
     if (!$birthday) return;
@@ -523,9 +598,9 @@ function kratos_yr_birthday_hint()
     ));
     if (!empty($pages)) $link = get_permalink($pages[0]);
     ?>
-    <div style="background:linear-gradient(135deg,#c46a2b,#e8823b);color:#fff;text-align:center;padding:10px 16px;font-size:14px;">
-        🎂 <?php printf(esc_html__('今天是本博客 %d 岁生日 →', 'kratos'), $age_years); ?>
-        <a href="<?php echo esc_url($link); ?>" style="color:#fff !important;text-decoration:underline;margin-left:6px;font-weight:600;"><?php esc_html_e('查看专属长图', 'kratos'); ?></a>
+    <div style="background:linear-gradient(130deg, var(--kr-skin-tag-bg, rgba(0, 0, 0, .35)), transparent);text-align:center;padding:10px 16px;font-size:14px;">
+        🎂 <?php printf(esc_html__('今天是本博客 %d 岁生日 ', 'kratos'), $age_years); ?>
+        <a href="<?php echo esc_url($link); ?>" style="color:var(--kr-skin-link);text-decoration:underline;margin-left:6px;font-weight:600;"><?php esc_html_e('查看专属长图', 'kratos'); ?></a>
     </div>
     <?php
 }
