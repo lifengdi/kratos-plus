@@ -675,7 +675,7 @@ add_action('wp_enqueue_scripts', function () {
     $muted    = 'var(--kr-skin-muted, #888)';
     $tag_bg   = 'var(--kr-skin-tag-bg, rgba(0,0,0,.04))';
     $css = '';
-    $css .= '.kratos-series{margin:0 0 24px;padding:0;background:' . $card_bg . ';border:1px solid ' . $card_line . ';border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.04);overflow:hidden;color:' . $text . '}';
+    $css .= '.kratos-series{margin:0 0 24px;padding:0;overflow:hidden;color:' . $text . '}';
     $css .= '.kratos-series-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:linear-gradient(90deg,' . $tag_bg . ',transparent);border-bottom:1px solid ' . $card_line . '}';
     $css .= '.kratos-series-titlewrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1;min-width:0}';
     $css .= '.kratos-series-icon{color:' . $accent . ';font-size:16px}';
@@ -1007,6 +1007,17 @@ function kratos_series_list_render_style()
     .kratos-series-list-wrap [class*="ksl-level-"]:not(.ksl-level-0) .ksl-name{font-size:14px;font-weight:500;}
     .kratos-series-list-wrap [class*="ksl-level-"]:not(.ksl-level-0) .ksl-desc{font-size:12px;-webkit-line-clamp:1;max-height:1.5em;}
     @media (max-width:640px){.kratos-series-list-wrap .ksl-level-0{grid-template-columns:1fr;}}
+    /* 暗夜模式兜底：未启用皮肤时 --kr-skin-* 无值，卡片会变白底深字。此处显式给出暗色 */
+    html[data-theme="dark"] .kratos-series-list-wrap{
+        --ksl-fg:#e8e8ea;
+        --ksl-fg-soft:#b8bcc4;
+        --ksl-accent:var(--kr-link, #6ea8ff);
+        --ksl-line:rgba(255,255,255,.10);
+        --ksl-card-bg:#1c1f24;
+        --ksl-child-bg:rgba(255,255,255,.04);
+        --ksl-shadow:0 1px 3px rgba(0,0,0,.4);
+    }
+    html[data-theme="dark"] .kratos-series-list-wrap .ksl-count{background:rgba(110,168,255,.15);}
     </style>
     <?php
 }

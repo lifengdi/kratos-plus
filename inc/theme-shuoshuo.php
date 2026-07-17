@@ -194,6 +194,7 @@ add_action('save_post_' . KRATOS_SHUOSHUO_CPT, 'kratos_shuoshuo_auto_title', 20,
 function kratos_shuoshuo_split_content($content)
 {
     $images = array();
+    $videos = array();
 
     if (!empty($content) && stripos($content, '<img') !== false) {
         if (preg_match_all('#<img\b[^>]*?\bsrc=([\'"])([^\'"]+?)\1[^>]*>#i', $content, $m)) {
@@ -206,8 +207,41 @@ function kratos_shuoshuo_split_content($content)
         }
     }
 
+    // 抽取 <video> 的 src（含 <video src="..."> 与 <video><source src="..."></video>）
+    if (!empty($content) && stripos($content, '<video') !== false) {
+        if (preg_match_all('#<video\b([^>]*)>(.*?)</video>#is', $content, $vm)) {
+            foreach ($vm[0] as $idx => $whole) {
+                $attrs = $vm[1][$idx];
+                $inner = $vm[2][$idx];
+                $src   = '';
+                if (preg_match('#\bsrc=([\'"])([^\'"]+?)\1#i', $attrs, $sm)) {
+                    $src = trim($sm[2]);
+                }
+                if ($src === '' && preg_match('#<source\b[^>]*?\bsrc=([\'"])([^\'"]+?)\1#i', $inner, $sm2)) {
+                    $src = trim($sm2[2]);
+                }
+                if ($src !== '' && !in_array($src, $videos, true)) {
+                    $videos[] = $src;
+                }
+            }
+        }
+        // 也支持自闭合形式 <video src="..." />
+        if (preg_match_all('#<video\b[^>]*?\bsrc=([\'"])([^\'"]+?)\1[^>]*/?>#i', $content, $vm2)) {
+            foreach ($vm2[2] as $src) {
+                $src = trim($src);
+                if ($src !== '' && !in_array($src, $videos, true)) {
+                    $videos[] = $src;
+                }
+            }
+        }
+    }
+
     // 移除 <figure>...</figure>（可能包含 <img> 与 <figcaption>）
     $stripped = preg_replace('#<figure\b[^>]*>.*?</figure>#is', '', $content);
+    // 移除 <video>...</video>
+    $stripped = preg_replace('#<video\b[^>]*>.*?</video>#is', '', $stripped);
+    // 移除自闭合 <video ... />
+    $stripped = preg_replace('#<video\b[^>]*/?>#i', '', $stripped);
     // 移除 <a><img></a>
     $stripped = preg_replace('#<a\b[^>]*>\s*<img\b[^>]*>\s*</a>#is', '', $stripped);
     // 移除裸 <img>
@@ -226,6 +260,7 @@ function kratos_shuoshuo_split_content($content)
 
     return array(
         'images'    => $images,
+        'videos'    => $videos,
         'text_html' => $text_html,
     );
 }
@@ -285,11 +320,17 @@ function kratos_shuoshuo_feed_shortcode($atts)
 
                     $parts  = kratos_shuoshuo_split_content(get_the_content('', false, $post_id));
                     $images = $parts['images'];
+                    $videos = isset($parts['videos']) ? $parts['videos'] : array();
                     $text   = $parts['text_html'];
                     $img_count = count($images);
+                    $video_count = count($videos);
+
+                    // 单媒体（单张图 / 单个视频，且没有其他媒体）走朋友圈原比例样式
+                    $is_single_image = ($img_count === 1 && $video_count === 0);
+                    $is_single_video = ($video_count === 1 && $img_count === 0);
 
                     // 没有图片时如果有特色图，把特色图当成单图
-                    if ($img_count === 0 && has_post_thumbnail($post_id)) {
+                    if ($img_count === 0 && $video_count === 0 && has_post_thumbnail($post_id)) {
                         $thumb = wp_get_attachment_image_url(get_post_thumbnail_id($post_id), 'large');
                         if ($thumb) {
                             $images = array($thumb);
@@ -344,7 +385,17 @@ function kratos_shuoshuo_feed_shortcode($atts)
                                 <?php } ?>
                             <?php } ?>
 
-                            <?php if ($img_count > 0) {
+                            <?php if ($is_single_video) { ?>
+                                <div class="kss-single-media kss-single-video">
+                                    <video class="kss-video" src="<?php echo esc_url($videos[0]); ?>" controls preload="metadata" playsinline></video>
+                                </div>
+                            <?php } elseif ($is_single_image) { ?>
+                                <div class="kss-single-media kss-single-image">
+                                    <a class="kss-img-single" href="<?php echo esc_url($images[0]); ?>">
+                                        <img src="<?php echo esc_url($images[0]); ?>" alt="" loading="lazy">
+                                    </a>
+                                </div>
+                            <?php } elseif ($img_count > 0) {
                                 $extra = $img_count > 9 ? ($img_count - 9) : 0;
                             ?>
                                 <div class="kss-images <?php echo esc_attr($grid_class); ?>">
@@ -484,6 +535,13 @@ function kratos_shuoshuo_assets()
         .kratos-shuoshuo .kss-img-more-link{cursor:pointer;}
         .kratos-shuoshuo .kss-img-more-mask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:22px;font-weight:600;letter-spacing:1px;pointer-events:none;}
         .kratos-shuoshuo .kss-img-hidden{display:none !important;}
+
+        /* ---------- 单张图 / 单个视频：按原比例显示（朋友圈样式） ---------- */
+        .kratos-shuoshuo .kss-single-media{margin-top:10px;max-width:360px;}
+        .kratos-shuoshuo .kss-img-single{display:inline-block;max-width:100%;border-radius:2px;overflow:hidden;background:#f1f1f1;cursor:zoom-in;line-height:0;}
+        .kratos-shuoshuo .kss-img-single img{display:block;max-width:100%;max-height:420px;width:auto;height:auto;object-fit:contain;transition:transform .25s ease;}
+        .kratos-shuoshuo .kss-img-single:hover img{transform:scale(1.02);}
+        .kratos-shuoshuo .kss-video{display:block;max-width:100%;max-height:480px;width:auto;height:auto;border-radius:2px;background:#000;}
         .kratos-shuoshuo .kss-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#999;}
         .kratos-shuoshuo .kss-time{flex:1;}
         .kratos-shuoshuo .kss-actions{display:inline-flex;gap:14px;}
@@ -513,6 +571,9 @@ function kratos_shuoshuo_assets()
         .kratos-shuoshuo-single .kss-text{font-size:16px;line-height:1.85;}
         .kratos-shuoshuo-single .kss-images{margin-top:14px;max-width:520px;}
         .kratos-shuoshuo-single .kss-images.kss-grid-1{max-width:420px;}
+        .kratos-shuoshuo-single .kss-single-media{margin-top:14px;max-width:560px;}
+        .kratos-shuoshuo-single .kss-img-single img{max-height:640px;}
+        .kratos-shuoshuo-single .kss-video{max-height:640px;}
         .kratos-shuoshuo-single .kss-meta{margin-top:16px;padding-top:14px;border-top:1px dashed rgba(0,0,0,.06);font-size:13px;}
         .kratos-shuoshuo-single + .comments,
         .kratos-shuoshuo-single ~ .comments{margin-top:0 !important;border-radius:0 0 2px 2px;border-top:1px solid rgba(0,0,0,.04);}

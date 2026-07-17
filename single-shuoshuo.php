@@ -53,14 +53,20 @@ if (!empty($kratos_ss_back_pages)) {
 
                     $parts  = kratos_shuoshuo_split_content(get_the_content('', false, $post_id));
                     $images = $parts['images'];
+                    $videos = isset($parts['videos']) ? $parts['videos'] : array();
                     $text   = $parts['text_html'];
                     $img_count = count($images);
+                    $video_count = count($videos);
 
-                    if ($img_count === 0 && has_post_thumbnail($post_id)) {
+                    $is_single_image = ($img_count === 1 && $video_count === 0);
+                    $is_single_video = ($video_count === 1 && $img_count === 0);
+
+                    if ($img_count === 0 && $video_count === 0 && has_post_thumbnail($post_id)) {
                         $thumb = wp_get_attachment_image_url(get_post_thumbnail_id($post_id), 'large');
                         if ($thumb) {
                             $images = array($thumb);
                             $img_count = 1;
+                            $is_single_image = true;
                         }
                     }
 
@@ -83,7 +89,17 @@ if (!empty($kratos_ss_back_pages)) {
                                     <?php if ($text !== '') { ?>
                                         <div class="kss-text"><?php echo $text; ?></div>
                                     <?php } ?>
-                                    <?php if ($img_count > 0) {
+                                    <?php if ($is_single_video) { ?>
+                                        <div class="kss-single-media kss-single-video">
+                                            <video class="kss-video" src="<?php echo esc_url($videos[0]); ?>" controls preload="metadata" playsinline></video>
+                                        </div>
+                                    <?php } elseif ($is_single_image) { ?>
+                                        <div class="kss-single-media kss-single-image">
+                                            <a class="kss-img-single" href="<?php echo esc_url($images[0]); ?>" data-src="<?php echo esc_url($images[0]); ?>">
+                                                <img src="<?php echo esc_url($images[0]); ?>" alt="" loading="lazy">
+                                            </a>
+                                        </div>
+                                    <?php } elseif ($img_count > 0) {
                                         $extra = $img_count > 9 ? ($img_count - 9) : 0;
                                     ?>
                                         <div class="kss-images <?php echo esc_attr($grid_class); ?>" id="kss-gallery-<?php echo (int) $post_id; ?>">

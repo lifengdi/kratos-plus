@@ -78,7 +78,8 @@ html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode {
  * —— 多数皮肤通用映射（retro 在自身文件内覆盖强调色 8 行） */
 html[data-weekday-skin]:not([data-theme="dark"]) :is(
     .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
-    .kratos-timeline, .kratos-heatmap, .kratos-friend-feed) {
+    .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
+    .kratos-now-header, .kratos-now-history, .kratos-otd-header) {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -103,7 +104,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) :is(
 /* khs 命名空间：暗色 —— 9 皮肤一致 */
 html[data-theme="dark"][data-weekday-skin] :is(
     .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
-    .kratos-timeline, .kratos-heatmap, .kratos-friend-feed) {
+    .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
+    .kratos-now-header, .kratos-now-history, .kratos-otd-header) {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;

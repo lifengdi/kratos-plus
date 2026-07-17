@@ -90,9 +90,9 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .p
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .widget,
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item,
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
-    background-color: #FBFAF7;
-    border: 1px solid #E7E1D8;
-    border-radius: 10px;
+    background-color: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border);
+    border-radius: var(--kr-shape-radius);
     box-shadow: 0 4px 12px rgba(62, 57, 52, 0.06);
 }
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details {
@@ -988,7 +988,10 @@ body.is-kratos-shuoshuo-page .k-main .details,
 body.is-kratos-topcommenters-page .k-main .details,
 body.is-kratos-friend-links-page .k-main .details,
 body.is-kratos-timeline-page .k-main .details,
-body.is-kratos-friend-feed-page .k-main .details {
+body.is-kratos-friend-feed-page .k-main .details,
+body.is-kratos-now-page .k-main .details,
+body.is-kratos-featured-title-page .k-main .details,
+body.is-kratos-yearly-review-page .k-main .details {
     background-color: transparent !important;
     background-image: none !important;
     border: none !important;
@@ -1151,3 +1154,108 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kratos-heatmap .kp
     color: var(--kr-skin-heading) !important;
     box-shadow: var(--kr-shape-shadow) !important;
 }
+
+/* ===== 亮色下 kr-hd/kr-body/kr-card 卡片外壳（羊皮基线：软阴影 + 米白卡纸） ===== */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) :is(.kr-hd, .kr-body, .kr-card) {
+    background-color: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow);
+}
+
+/* ===== 图标胶囊统一（.kr-ico） ===== */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) {
+    --kr-skin-icon-bg:     var(--kr-skin-card-soft);
+    --kr-skin-icon-fg:     var(--kr-skin-accent);
+    --kr-skin-icon-border: var(--kr-skin-card-line);
+    --kr-skin-icon-radius: var(--kr-shape-radius-sm);
+    --kr-skin-icon-shadow: none;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kr-ico {
+    background: var(--kr-skin-icon-bg) !important;
+    color: var(--kr-skin-icon-fg) !important;
+    border: 1px solid var(--kr-skin-icon-border) !important;
+    border-radius: var(--kr-skin-icon-radius) !important;
+    box-shadow: var(--kr-skin-icon-shadow) !important;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kr-ico > *,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kr-ico svg {
+    color: var(--kr-skin-icon-fg) !important;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .kr-ico svg [stroke]:not([stroke="none"]) {
+    stroke: var(--kr-skin-icon-fg) !important;
+    fill: none !important;
+}
+
+/* ===== 关于我 CTA 按钮形态（避免默认 6px 圆角与皮肤基线不统一，显式 primary color） ===== */
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary {
+    background: var(--kr-skin-accent) !important;
+    color: #fff !important;
+    border: 1px solid var(--kr-skin-accent) !important;
+    border-radius: var(--kr-shape-radius-sm) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary:hover,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary:hover {
+    background: var(--kr-skin-accent-hover) !important;
+    color: #fff !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost {
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-link) !important;
+    border: 1px solid var(--kr-skin-card-line) !important;
+    border-radius: var(--kr-shape-radius-sm) !important;
+    box-shadow: none !important;
+}
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost:hover,
+html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost:hover {
+    background: var(--kr-skin-card-soft) !important;
+    color: var(--kr-skin-link-hover) !important;
+    border-color: var(--kr-skin-accent) !important;
+}
+
+/* ===== 暗夜兜底 ===== */
+/* Now / OTD 等短代码卡片外壳仅在 :not([data-weekday-skin]) 定义了亮色/暗色背景；
+ * 皮肤开启后必须由皮肤提供暗夜卡片外壳，否则 Now/OTD 在暗底下透明不可读。 */
+html[data-theme="dark"][data-weekday-skin="parchment"] :is(.kr-hd, .kr-body, .kr-card) {
+    background: rgba(255, 255, 255, .04) !important;
+    border: 1px solid rgba(255, 255, 255, .08) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .3) !important;
+}
+
+/* Now 页面暗夜字色（PHP 内联浅底深字在暗底下不可读） */
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-header .knw-h-title,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now .knw-hero-title,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-history .knw-item-title { color: #e8e4ec !important; }
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now .knw-hero-content,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-history .knw-item-content,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-history .knw-item-day { color: #cfc9d1 !important; }
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-header .knw-h-sub,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now .knw-hero-ago,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now .knw-hero-meta,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-history .knw-item-time,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-history .knw-item-meta,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-empty,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-now-history-title { color: #aaa !important; }
+
+/* 岁月同一天暗夜字色 */
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd .kotd-title,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd .kotd-title-link { color: #e8e4ec !important; }
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd .kotd-subtitle,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd .kotd-excerpt { color: #aaa !important; }
+
+/* 岁月同一天首页紧凑版（markup 未挂 kr-* 公共类，需单独兜底） */
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd-compact {
+    background: rgba(255, 255, 255, .04) !important;
+    border: 1px solid rgba(255, 255, 255, .08) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .3) !important;
+}
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd-compact .kotd-c-label,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd-compact .kotd-c-title-link { color: #e8e4ec !important; }
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd-compact .kotd-c-today,
+html[data-theme="dark"][data-weekday-skin="parchment"] .kratos-otd-compact .kotd-c-date { color: #aaa !important; }

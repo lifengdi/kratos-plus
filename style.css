@@ -749,7 +749,9 @@ li {
 /*--------------------------------------------------------------
 4. 首页轮播
 --------------------------------------------------------------*/
-
+.carousel-inner {
+    border-radius: var(--kr-shape-radius) !important;
+}
 .k-main
 .board
 .article-carousel {

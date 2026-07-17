@@ -2602,6 +2602,147 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'id' => 'yr_fields',
+    'title' => __('年度回顾', 'kratos'),
+    'icon' => 'far fa-calendar-check',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('生成博客年度数据长图（新建页面并选择「年度回顾」模板即可访问），支持一键下载为 PNG。也可通过短代码 [yearly_review year="2026"] 嵌入任意页面。', 'kratos'),
+        ),
+        array(
+            'id' => 'site_birthday',
+            'type' => 'text',
+            'title' => __('建站日期', 'kratos'),
+            'subtitle' => __('格式 YYYY-MM-DD，用于计算「陪伴天数」和「生日提示条」', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'id' => 'yr_message',
+            'type' => 'textarea',
+            'title' => __('送给读者的一句话', 'kratos'),
+            'subtitle' => __('展示在年度长图底部', 'kratos'),
+            'default' => __('感谢每一位读者的陪伴，我们下一年见 🥂', 'kratos'),
+        ),
+        array(
+            'id' => 'yr_birthday_hint',
+            'type' => 'switcher',
+            'title' => __('生日当天首页提示', 'kratos'),
+            'subtitle' => __('生日当天在首页顶部显示彩色提示条，引导访客查看专属长图', 'kratos'),
+            'default' => false,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'now_fields',
+    'title' => __('Now 页面', 'kratos'),
+    'icon' => 'far fa-clock',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('用于展示「我最近在做什么」。新建一个页面并选择「Now」模板，页面内容来自后台「Now」菜单里发布的条目。', 'kratos'),
+        ),
+        array(
+            'id' => 'now_page_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'default' => __('Now', 'kratos'),
+        ),
+        array(
+            'id' => 'now_page_subtitle',
+            'type' => 'textarea',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('展示在标题下方，介绍这是一张「此刻的我」的名片', 'kratos'),
+            'default' => __('这是我最近在做的事、在想的事、在学的事。', 'kratos'),
+        ),
+        array(
+            'id' => 'now_show_history',
+            'type' => 'switcher',
+            'title' => __('展示历史条目', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'now_history_limit',
+            'type' => 'number',
+            'title' => __('历史条目数量', 'kratos'),
+            'default' => 20,
+            'attributes' => array('min' => 1, 'step' => 1),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'otd_fields',
+    'title' => __('岁月同一天', 'kratos'),
+    'icon' => 'far fa-calendar-alt',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('展示历史年份中同月同日发布的文章 / 说说。短码 [on_this_day]，也可作为小工具、首页顶部或文章底部自动展示。', 'kratos'),
+        ),
+        array(
+            'id' => 'otd_enable',
+            'type' => 'switcher',
+            'title' => __('启用', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'otd_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'default' => __('岁月同一天', 'kratos'),
+        ),
+        array(
+            'id' => 'otd_subtitle',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => __('回望过去的今天，你在写什么', 'kratos'),
+        ),
+        array(
+            'id' => 'otd_post_types',
+            'type' => 'checkbox',
+            'title' => __('包含的文章类型', 'kratos'),
+            'options' => array(
+                'post'     => __('博客文章 (post)', 'kratos'),
+                'shuoshuo' => __('说说 (shuoshuo)', 'kratos'),
+            ),
+            'default' => array('post'),
+        ),
+        array(
+            'id' => 'otd_limit',
+            'type' => 'number',
+            'title' => __('最多条数', 'kratos'),
+            'default' => 20,
+            'attributes' => array('min' => 1, 'step' => 1),
+        ),
+        array(
+            'id' => 'otd_show_thumb',
+            'type' => 'switcher',
+            'title' => __('展示缩略图', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'otd_home_position',
+            'type' => 'select',
+            'title' => __('首页位置', 'kratos'),
+            'options' => array(
+                'none' => __('不展示', 'kratos'),
+                'top'  => __('首页主循环顶部', 'kratos'),
+            ),
+            'default' => 'none',
+        ),
+        array(
+            'id' => 'otd_after_post',
+            'type' => 'switcher',
+            'title' => __('在文章底部自动展示', 'kratos'),
+            'subtitle' => __('单篇文章正文之后自动追加，仅在今天确实有历史内容时展示。', 'kratos'),
+            'default' => false,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'timeline_fields',
     'title' => __('时间轴配置', 'kratos'),
     'icon' => 'fas fa-stream',

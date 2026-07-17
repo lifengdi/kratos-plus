@@ -16,6 +16,10 @@ $kratos_cols = kratos_layout_cols(); ?>
                 <?php if (is_home() && kratos_option('g_carousel', false)) {
                     kratos_carousel();
                 }
+                if ((is_home() || is_front_page()) && !is_paged() && function_exists('kratos_otd_shortcode')
+                    && kratos_option('otd_enable', true) && kratos_option('otd_home_position', 'none') === 'top') {
+                    echo do_shortcode('[on_this_day variant="compact"]');
+                }
                 if (is_search()) { ?>
                     <div class="article-panel">
                         <div class="search-title"><?php _e('搜索内容：', 'kratos');

@@ -153,3 +153,12 @@ require get_template_directory() . '/inc/theme-reading-enhance.php';
 // 系列文章（连载教程串上下篇）
 require get_template_directory() . '/inc/theme-series.php';
 
+// 「岁月同一天」On This Day —— 短代码 / 小工具 / 首页 / 文章底部
+require get_template_directory() . '/inc/theme-on-this-day.php';
+
+// Now 页面 —— 我最近在做什么
+require get_template_directory() . '/inc/theme-now.php';
+
+// 年度回顾 / 博客生日长图
+require get_template_directory() . '/inc/theme-yearly-review.php';
+

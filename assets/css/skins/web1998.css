@@ -1178,7 +1178,8 @@ body.is-kratos-shuoshuo-page .k-main .details,
 body.is-kratos-topcommenters-page .k-main .details,
 body.is-kratos-friend-links-page .k-main .details,
 body.is-kratos-timeline-page .k-main .details,
-body.is-kratos-friend-feed-page .k-main .details {
+body.is-kratos-friend-feed-page .k-main .details,
+body.is-kratos-now-page .k-main .details {
     background-color: transparent !important;
     background-image: none !important;
     border: none !important;
@@ -1650,7 +1651,8 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-shuosh
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-topcommenters-page .k-main .details,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-friend-links-page .k-main .details,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-timeline-page .k-main .details,
-html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-friend-feed-page .k-main .details {
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-friend-feed-page .k-main .details,
+body.is-kratos-now-page .k-main .details {
     box-shadow: none !important;
     border: none !important;
 }

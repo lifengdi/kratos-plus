@@ -123,6 +123,9 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                             }
                             ?>
                         </div>
+                        <?php if (function_exists('kratos_otd_shortcode') && kratos_option('otd_enable', true) && kratos_option('otd_after_post', false)) {
+                            echo do_shortcode('[on_this_day]');
+                        } ?>
                         <?php if (kratos_option('g_cc_fieldset')['g_cc_switch'] ?? false) {
                             $cc_array = array(
                                 'one' => __('知识共享署名 4.0 国际许可协议', 'kratos'),
