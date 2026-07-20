@@ -858,6 +858,7 @@ html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-main .details .a
 }
 
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,

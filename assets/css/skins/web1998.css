@@ -1033,6 +1033,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .art
 
 /* ===== 底部工具盒图标 ===== */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,

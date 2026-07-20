@@ -610,6 +610,37 @@ CSF::createSection($prefix, array(
 
 CSF::createSection($prefix, array(
     'parent' => 'global_fields',
+    'title' => __('随机漫步', 'kratos'),
+    'icon' => 'fas fa-random',
+    'fields' => array(
+        array(
+            'id' => 'g_stumble',
+            'type' => 'switcher',
+            'title' => __('随机漫步按钮', 'kratos'),
+            'subtitle' => __('在页脚右下角(搜索按钮上方)显示「随机漫步」按钮，点击随机跳到一篇被埋没的老文章', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_stumble_min_age',
+            'type' => 'text',
+            'title' => __('老文章阈值(天)', 'kratos'),
+            'subtitle' => __('只在发布时间早于该天数的文章里随机；填 0 表示不限制文章年龄。默认 180', 'kratos'),
+            'default' => '180',
+            'dependency' => array('g_stumble', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_stumble_pool_size',
+            'type' => 'text',
+            'title' => __('候选池大小', 'kratos'),
+            'subtitle' => __('每天从「评论最少、发布最早」的老文章里取前 N 篇组成候选池，再随机命中。值越大随机面越广、越偏冷门。默认 200', 'kratos'),
+            'default' => '200',
+            'dependency' => array('g_stumble', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'global_fields',
     'title' => __('代码高亮', 'kratos'),
     'icon' => 'fas fa-code',
     'fields' => array(

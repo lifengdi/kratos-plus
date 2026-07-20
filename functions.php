@@ -162,3 +162,6 @@ require get_template_directory() . '/inc/theme-now.php';
 // 年度回顾 / 博客生日长图
 require get_template_directory() . '/inc/theme-yearly-review.php';
 
+// 随机漫步 Stumble —— 随机跳到一篇被埋没的老文章
+require get_template_directory() . '/inc/theme-stumble.php';
+

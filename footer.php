@@ -10,11 +10,20 @@
 ?>
 <div class="k-footer">
     <div class="f-toolbox">
-        <div class="gotop <?php echo kratos_option('g_wechat_fieldset')['g_wechat'] ? 'gotop-haswechat' : ''; ?>">
-            <div class="gotop-btn">
-                <span class="kicon i-up"></span>
-            </div>
+        <?php // flex column-reverse 堆叠：源码顺序自底向上（搜索在最底，回到顶部在最上） ?>
+        <div class="search">
+            <span class="kicon i-find"></span>
+            <form class="search-form" role="search" method="get" action="<?php echo home_url('/'); ?>">
+                <input type="text" name="s" id="search-footer" placeholder="<?php _e('搜点什么呢?', 'kratos'); ?>" style="display:none" />
+            </form>
         </div>
+        <?php if (kratos_option('g_stumble', true)) { ?>
+            <div class="stumble">
+                <a href="<?php echo kratos_stumble_url(); ?>" rel="nofollow" aria-label="<?php esc_attr_e('随机漫步 · 随机跳到一篇老文章', 'kratos'); ?>" title="<?php esc_attr_e('随机漫步 · 随机跳到一篇老文章', 'kratos'); ?>">
+                    <span class="kicon i-tabrandom"></span>
+                </a>
+            </div>
+        <?php } ?>
         <?php if (!empty(kratos_option('g_wechat_fieldset')['g_wechat'])) { ?>
             <div class="wechat">
                 <span class="kicon i-wechat"></span>
@@ -23,12 +32,6 @@
                 </div>
             </div>
         <?php } ?>
-        <div class="search">
-            <span class="kicon i-find"></span>
-            <form class="search-form" role="search" method="get" action="<?php echo home_url('/'); ?>">
-                <input type="text" name="s" id="search-footer" placeholder="<?php _e('搜点什么呢?', 'kratos'); ?>" style="display:none" />
-            </form>
-        </div>
         <?php if (kratos_option('g_darkmode', false) && kratos_option('g_darkmode_toggle', true)) { ?>
             <div class="darkmode" role="button" tabindex="0" aria-pressed="false" aria-label="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>" title="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>">
                 <span class="darkmode-ico" aria-hidden="true"></span>
@@ -39,6 +42,11 @@
                 <span class="skin-switcher-ico" aria-hidden="true"></span>
             </div>
         <?php } ?>
+        <div class="gotop">
+            <div class="gotop-btn">
+                <span class="kicon i-up"></span>
+            </div>
+        </div>
     </div>
     <div class="container">
         <div class="row">

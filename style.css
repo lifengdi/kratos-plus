@@ -4446,12 +4446,37 @@ p
 }
 
 .k-footer
-.f-toolbox
-> div {
+.f-toolbox {
     position: fixed;
     right: 20px;
+    bottom: 30px;
     z-index: 999;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* 所有工具栈按钮改为 flex 子项自动堆叠：
+ * 归零各自写死的 fixed 定位与 bottom（分散在 style.css / dark.css / skin-switcher.css，
+ * 用 !important 统一覆盖，避免逐文件维护 bottom 值、按钮相互遮挡） */
+.k-footer
+.f-toolbox
+> div,
+.k-footer
+.f-toolbox
+> .stumble {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
     text-align: center;
+}
+
+/* 回到顶部未激活时不占位（避免顶部留空槽），激活后自然加入堆叠 */
+.k-footer
+.f-toolbox
+> .gotop:not(.active) {
+    display: none;
 }
 
 .k-footer
@@ -4462,6 +4487,10 @@ span,
 .k-footer
 .f-toolbox
 .search
+span,
+.k-footer
+.f-toolbox
+.stumble
 span,
 .k-footer
 .f-toolbox
@@ -4478,15 +4507,8 @@ span {
 .k-footer
 .f-toolbox
 .gotop {
-    bottom: 80px;
     visibility: hidden;
     cursor: pointer;
-}
-
-.k-footer
-.f-toolbox
-.gotop.gotop-haswechat {
-    bottom: 130px;
 }
 
 .k-footer
@@ -4515,7 +4537,6 @@ span {
 .k-footer
 .f-toolbox
 .wechat {
-    bottom: 80px;
     background: rgba(
             132,
             132,
@@ -4543,6 +4564,43 @@ img {
     height: 150px;
     max-width: 150px;
     max-height: 150px;
+}
+
+.k-footer
+.f-toolbox
+.stumble {
+    display: table;
+    background: rgba(
+            132,
+            132,
+            132,
+            0.7
+    );
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.k-footer
+.f-toolbox
+.stumble:hover {
+    background: rgba(
+            132,
+            132,
+            132,
+            0.9
+    );
+}
+
+.k-footer
+.f-toolbox
+.stumble
+a {
+    display: table-cell;
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    text-align: center;
+    text-decoration: none;
 }
 
 .k-footer

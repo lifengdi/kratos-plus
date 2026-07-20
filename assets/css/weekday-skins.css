@@ -1209,6 +1209,7 @@ html[data-weekday-skin="sun"]:not([data-theme="dark"]) .kr-ico svg [stroke]:not(
 /* 浅色模式默认：用 color-mix 把强调色与白色按 55/45 调淡，得到柔和的"水洗"皮肤色。
  * 周六/周日 节日感 + 暗夜模式回退到原灰底由后面的规则单独处理。 */
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
@@ -1221,11 +1222,13 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.act
  * 半透明白底 + backdrop-filter，与卡片同一视觉语言；
  * 图标用皮肤 accent 描深以保证可读性 */
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
@@ -1238,11 +1241,13 @@ html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 }
 
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico,
@@ -1265,6 +1270,7 @@ html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .sea
 /* -------- 周二 · Bauhaus 浮动按钮 --------
  * 与卡片同款：原色背景 + 黑边 + 硬阴影方块 */
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
@@ -1276,6 +1282,7 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 }
 
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
@@ -1294,6 +1301,7 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .sea
 /* -------- 周三 · 新拟态浮动按钮 --------
  * 凸起药丸：与背景同色 + 双向阴影 */
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
@@ -1307,6 +1315,7 @@ html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 }
 
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
@@ -1325,6 +1334,7 @@ html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .sea
 /* -------- 周四 · 极简浮动按钮 --------
  * 纯白底 + 1px 细灰边 + 无阴影，icon 用黑色 */
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
@@ -1335,6 +1345,7 @@ html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
 }
 
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
