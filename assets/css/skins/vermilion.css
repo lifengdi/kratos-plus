@@ -308,13 +308,14 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main blockquote 
     background: var(--kr-skin-quote-bg);
     position: relative;
     border-radius: var(--kr-shape-radius-right);
+    padding: 10px 40px;
 }
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main blockquote::before {
-    content: "「";
+    content: "“";
     position: absolute;
-    top: 2px;
-    left: 6px;
-    font-size: 26px;
+    top: -6px;
+    left: 12px;
+    font-size: 44px;
     color: var(--kr-skin-accent);
     opacity: 0.4;
     font-family: "KaiTi", "STKaiti", serif;
@@ -521,6 +522,7 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .a
     background: var(--kr-skin-quote-bg);
     border-left-color: var(--kr-skin-accent);
     color: var(--kr-skin-muted);
+    padding: 10px 40px;
 }
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content hr {
     border-top-color: var(--kr-skin-card-line);
@@ -1466,6 +1468,7 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-featured-ti
     background: var(--kr-skin-quote-bg) !important;
     font-style: italic;
     border-radius: var(--kr-shape-radius-right) !important;
+    padding: 10px 40px;
 }
 
 /* ---------- 系列短码（文章内 .kratos-series） ---------- */
