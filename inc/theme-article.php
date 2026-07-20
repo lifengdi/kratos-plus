@@ -534,6 +534,12 @@ function get_wpsmiliestrans()
     return $output;
 }
 
+// 独立开关：屏蔽小工具区块编辑器（切回经典拖拽小工具界面）
+if (kratos_option('g_classic_widgets', true)) {
+    add_filter('gutenberg_use_widgets_block_editor', '__return_false');
+    add_filter('use_widgets_block_editor', '__return_false');
+}
+
 if (!kratos_option('g_gutenberg', false)) {
     // 禁用 Gutenberg 编辑器
     add_filter('use_block_editor_for_post', '__return_false');

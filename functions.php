@@ -144,6 +144,9 @@ require get_template_directory() . '/inc/theme-timeline.php';
 // 文章热力图（[post_heatmap] 短码）
 require get_template_directory() . '/inc/theme-post-heatmap.php';
 
+// 每日心情灯（[mood_log] / [mood_log_input] 短码）
+require get_template_directory() . '/inc/theme-mood-log.php';
+
 // 「Kratos+ 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
 require get_template_directory() . '/inc/theme-featured-title.php';
 

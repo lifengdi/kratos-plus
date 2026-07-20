@@ -60,7 +60,7 @@ add_action('init', 'kratos_now_register_cpt');
 function kratos_now_title_placeholder($placeholder, $post)
 {
     if ($post && $post->post_type === KRATOS_NOW_CPT) {
-        return __('一句话状态（例：正在写 Kratos+ v1.2 皮肤）', 'kratos');
+        return __('一句话状态', 'kratos');
     }
     return $placeholder;
 }
@@ -166,7 +166,12 @@ function kratos_now_render_hero($post)
     $mood     = trim((string) get_post_meta($post->ID, 'kratos_now_mood', true));
     $location = trim((string) get_post_meta($post->ID, 'kratos_now_location', true));
     $title    = get_the_title($post);
-    $content  = apply_filters('the_content', $post->post_content);
+    $parts    = function_exists('kratos_shuoshuo_split_content')
+        ? kratos_shuoshuo_split_content((string) $post->post_content)
+        : array('images' => array(), 'videos' => array(), 'text_html' => apply_filters('the_content', $post->post_content));
+    $content  = $parts['text_html'];
+    $images   = $parts['images'];
+    $videos   = isset($parts['videos']) ? $parts['videos'] : array();
     $time_full = get_the_date(get_option('date_format') . ' ' . get_option('time_format'), $post);
     $time_ago  = human_time_diff(get_post_time('U', true, $post), current_time('timestamp', true)) . __('前', 'kratos');
     $mood_display = $mood !== '' ? $mood : '🌤';
@@ -187,6 +192,7 @@ function kratos_now_render_hero($post)
         <?php if (trim(wp_strip_all_tags($content)) !== '') { ?>
             <div class="knw-hero-content"><?php echo $content; ?></div>
         <?php } ?>
+        <?php kratos_now_render_media($images, $videos, $post->ID, 'hero'); ?>
         <footer class="knw-hero-meta">
             <?php if ($location !== '') { ?>
                 <span class="knw-hero-loc">📍 <?php echo esc_html($location); ?></span>
@@ -203,7 +209,12 @@ function kratos_now_render_timeline_item($post)
     $mood     = trim((string) get_post_meta($post->ID, 'kratos_now_mood', true));
     $location = trim((string) get_post_meta($post->ID, 'kratos_now_location', true));
     $title    = get_the_title($post);
-    $content  = apply_filters('the_content', $post->post_content);
+    $parts    = function_exists('kratos_shuoshuo_split_content')
+        ? kratos_shuoshuo_split_content((string) $post->post_content)
+        : array('images' => array(), 'videos' => array(), 'text_html' => apply_filters('the_content', $post->post_content));
+    $content  = $parts['text_html'];
+    $images   = $parts['images'];
+    $videos   = isset($parts['videos']) ? $parts['videos'] : array();
     $date_short = get_the_date('Y-m-d', $post);
     $time_short = get_the_date(get_option('time_format'), $post);
     $time_full  = get_the_date(get_option('date_format') . ' ' . get_option('time_format'), $post);
@@ -228,6 +239,7 @@ function kratos_now_render_timeline_item($post)
             <?php if (trim(wp_strip_all_tags($content)) !== '') { ?>
                 <div class="knw-item-content"><?php echo $content; ?></div>
             <?php } ?>
+            <?php kratos_now_render_media($images, $videos, $post->ID, 'item'); ?>
             <?php if ($location !== '') { ?>
                 <footer class="knw-item-meta">
                     <span class="knw-item-loc">📍 <?php echo esc_html($location); ?></span>
@@ -235,6 +247,69 @@ function kratos_now_render_timeline_item($post)
             <?php } ?>
         </div>
     </article>
+    <?php
+}
+
+/**
+ * 复用说说的九宫格 / 单图 / 视频显示逻辑。
+ * 输出结构挂在 `.kratos-shuoshuo` 命名空间下，直接吃 kratos_shuoshuo_assets() 的 CSS 与 lightGallery 初始化。
+ */
+function kratos_now_render_media($images, $videos, $post_id, $variant = 'hero')
+{
+    $images = is_array($images) ? array_values(array_filter($images)) : array();
+    $videos = is_array($videos) ? array_values(array_filter($videos)) : array();
+    $img_count = count($images);
+    $video_count = count($videos);
+    if ($img_count === 0 && $video_count === 0) return;
+
+    $is_single_image = ($img_count === 1 && $video_count === 0);
+    $is_single_video = ($video_count === 1 && $img_count === 0);
+
+    if ($img_count === 1)      $grid_class = 'kss-grid-1';
+    elseif ($img_count === 2)  $grid_class = 'kss-grid-2';
+    elseif ($img_count === 3)  $grid_class = 'kss-grid-3';
+    elseif ($img_count === 4)  $grid_class = 'kss-grid-4';
+    else                       $grid_class = 'kss-grid-9';
+
+    $wrap_class = 'kratos-shuoshuo knw-media knw-media-' . esc_attr($variant);
+    ?>
+    <div class="<?php echo $wrap_class; ?>" data-lightbox-host="1">
+        <?php if ($is_single_video) { ?>
+            <div class="kss-single-media kss-single-video">
+                <video class="kss-video" src="<?php echo esc_url($videos[0]); ?>" controls preload="metadata" playsinline></video>
+            </div>
+        <?php } elseif ($is_single_image) { ?>
+            <div class="kss-single-media kss-single-image">
+                <a class="kss-img-single" href="<?php echo esc_url($images[0]); ?>" data-src="<?php echo esc_url($images[0]); ?>">
+                    <img src="<?php echo esc_url($images[0]); ?>" alt="" loading="lazy">
+                </a>
+            </div>
+        <?php } else {
+            $extra = $img_count > 9 ? ($img_count - 9) : 0;
+            if ($img_count > 0) { ?>
+                <div class="kss-images <?php echo esc_attr($grid_class); ?>" id="knw-gallery-<?php echo (int) $post_id; ?>-<?php echo esc_attr($variant); ?>">
+                    <?php foreach ($images as $i => $src) {
+                        $is_hidden = ($i >= 9);
+                        $is_last_visible_with_more = ($extra > 0 && $i === 8);
+                    ?>
+                        <a class="kss-img-cell<?php echo $is_hidden ? ' kss-img-hidden' : ''; ?><?php echo $is_last_visible_with_more ? ' kss-img-more' : ''; ?>" href="<?php echo esc_url($src); ?>" data-src="<?php echo esc_url($src); ?>"<?php echo $is_hidden ? ' aria-hidden="true"' : ''; ?>>
+                            <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
+                            <?php if ($is_last_visible_with_more) { ?>
+                                <span class="kss-img-more-mask">+<?php echo (int) $extra; ?></span>
+                            <?php } ?>
+                        </a>
+                    <?php } ?>
+                </div>
+            <?php }
+            if ($video_count > 0) { ?>
+                <div class="kss-single-media kss-single-video" style="margin-top:10px;">
+                    <?php foreach ($videos as $vsrc) { ?>
+                        <video class="kss-video" src="<?php echo esc_url($vsrc); ?>" controls preload="metadata" playsinline style="margin-top:6px;"></video>
+                    <?php } ?>
+                </div>
+            <?php }
+        } ?>
+    </div>
     <?php
 }
 
@@ -285,6 +360,7 @@ function kratos_now_inline_assets()
     static $printed = false;
     if ($printed) return '';
     $printed = true;
+    $shuoshuo = function_exists('kratos_shuoshuo_assets') ? kratos_shuoshuo_assets() : '';
     ob_start(); ?>
     <style>
         /* Now 页面骨架（对齐 page-now.php 当前布局）:
@@ -395,5 +471,7 @@ function kratos_now_inline_assets()
         html[data-theme="dark"]:not([data-weekday-skin]) .kratos-now-history .knw-item-head,
         html[data-theme="dark"]:not([data-weekday-skin]) .kratos-now-history .knw-item-meta{border-color:rgba(255,255,255,.08);}
     </style>
-    <?php return ob_get_clean();
+    <?php
+    $out = ob_get_clean();
+    return $shuoshuo . $out;
 }

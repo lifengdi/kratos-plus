@@ -417,6 +417,20 @@ CSF::createSection($prefix, array(
             'default' => false,
         ),
         array(
+            'id' => 'g_classic_widgets',
+            'type' => 'switcher',
+            'title' => __('经典小工具编辑器', 'kratos'),
+            'subtitle' => __('屏蔽外观 → 小工具的区块编辑器（Block Widgets Editor），切换回 WordPress 5.7 以前的经典拖拽界面', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_disable_emoji',
+            'type' => 'switcher',
+            'title' => __('禁用 WP Emoji', 'kratos'),
+            'subtitle' => __('禁用 WordPress 内置的 wp-emoji-release.min.js（twemoji 图片替换）。现代浏览器都原生支持 emoji，禁用后不再请求 s.w.org / jsDelivr 的 SVG 图片，页面更快、国内访问更稳', 'kratos'),
+            'default' => true,
+        ),
+        array(
             'id' => 'g_page_lightgallery',
             'type' => 'switcher',
             'title' => __('页面图片灯箱', 'kratos'),
@@ -2904,7 +2918,73 @@ CSF::createSection($prefix, array(
                 . '• <code>year</code>：指定年份（如 <code>2024</code>），留空显示最近 <code>time_range</code> 天<br>'
                 . '• <code>time_range</code>：最近多少天（默认 <code>365</code>）<br>'
                 . '• <code>width</code>：容器宽度（默认 <code>100%</code>）<br><br>'
-                . '<b>皮肤适配：</b>颜色跟随「主题设置 → 皮肤」自动切换，暗夜模式自动反色。'
+                . '</div>',
+                'kratos'
+            ),
+        ),
+
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'title' => __('每日心情灯', 'kratos'),
+    'icon' => 'fas fa-smile-beam',
+    'fields' => array(
+        array(
+            'id' => 'mood_log_enabled',
+            'type' => 'switcher',
+            'title' => __('启用心情灯', 'kratos'),
+            'subtitle' => __('启用后可通过 [mood_log] 短码展示情绪热力图；仅站长可录入，每天一格 + 一句话', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'mood_log_public_notes',
+            'type' => 'switcher',
+            'title' => __('公开显示一句话', 'kratos'),
+            'subtitle' => __('关闭后访客悬浮只显示心情等级、不显示当天写下的一句话（心情格子仍可见）', 'kratos'),
+            'text_on' => __('公开', 'kratos'),
+            'text_off' => __('仅自己可见', 'kratos'),
+            'dependency' => array('mood_log_enabled', '==', 'true'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'mood_log_sc_title',
+            'type' => 'text',
+            'title' => __('默认标题', 'kratos'),
+            'subtitle' => __('[mood_log] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'dependency' => array('mood_log_enabled', '==', 'true'),
+            'default' => __('情绪热力图', 'kratos'),
+        ),
+        array(
+            'id' => 'mood_log_sc_time_range',
+            'type' => 'number',
+            'title' => __('默认时间范围（天）', 'kratos'),
+            'subtitle' => __('未选择年份时展示的最近天数；短码可通过 time_range 覆盖', 'kratos'),
+            'dependency' => array('mood_log_enabled', '==', 'true'),
+            'default' => 365,
+            'attributes' => array('min' => 30, 'step' => 1),
+        ),
+        array(
+            'id' => 'mood_log_years_max',
+            'type' => 'number',
+            'title' => __('年份标签最多显示', 'kratos'),
+            'subtitle' => __('心情图右侧年份标签最多展示多少年（除"最近一年"外，按年份倒序）；填 0 表示显示全部年份', 'kratos'),
+            'dependency' => array('mood_log_enabled', '==', 'true'),
+            'default' => 5,
+            'attributes' => array('min' => 0, 'step' => 1),
+        ),
+        array(
+            'type' => 'content',
+            'content' => __(
+                '<div style="padding:12px 14px;background:#f6f8fa;border:1px solid #e1e4e8;border-radius:6px;line-height:1.8;">'
+                . '<b>短码使用说明：</b><br>'
+                . '<code>[mood_log]</code>  情绪热力图；登录站长会自动附带今日录入卡<br>'
+                . '<code>[mood_log year="2025"]</code>  指定年份<br>'
+                . '<code>[mood_log show_input="no"]</code>  强制不显示录入卡（仅展示热力图）<br>'
+                . '<code>[mood_log_input]</code>  仅显示录入卡（非站长返回空）<br><br>'
+                . '<b>心情等级：</b>1 低落 / 2 平淡 / 3 尚可 / 4 愉悦 / 5 高光。每天覆盖式保存，同日多次提交只保留最后一次。<br>'
                 . '</div>',
                 'kratos'
             ),

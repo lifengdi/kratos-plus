@@ -268,18 +268,38 @@ foreach ($qmr_work_tags as $qmr_work_tag) {
 remove_filter('the_content', 'wptexturize');
 add_filter('run_wptexturize', '__return_false');
 
-// 禁用 Emoji
-add_filter('emoji_svg_url', '__return_false');
-remove_action('admin_print_scripts', 'print_emoji_detection_script');
-remove_action('admin_print_styles', 'print_emoji_styles');
-remove_filter('the_content', 'wptexturize');
-remove_filter('comment_text', 'wptexturize');
-remove_action('wp_head', 'print_emoji_detection_script', 7);
-remove_action('wp_print_styles', 'print_emoji_styles');
-remove_action('embed_head', 'print_emoji_detection_script');
-remove_filter('the_content_feed', 'wp_staticize_emoji');
-remove_filter('comment_text_rss', 'wp_staticize_emoji');
-remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
+// 禁用 Emoji（不加载 wp-emoji-release.min.js，不请求 s.w.org twemoji SVG）
+// 必须在 init/admin_init 里 remove——WP 的默认 emoji hook 在 default-filters.php 阶段才注册
+if (kratos_option('g_disable_emoji', true)) {
+    add_action('init', function () {
+        foreach ([
+            ['wp_head',                 'print_emoji_detection_script', 7],
+            ['embed_head',              'print_emoji_detection_script'],
+            ['wp_print_footer_scripts', '_print_emoji_detection_script'],  // 真正输出 <script src=wp-emoji-release.min.js> 的源头
+            ['wp_enqueue_scripts',      'wp_enqueue_emoji_styles'],        // WP 6.2+
+            ['enqueue_embed_scripts',   'wp_enqueue_emoji_styles'],
+            ['wp_print_styles',         'print_emoji_styles'],
+            ['admin_print_styles',      'print_emoji_styles'],
+        ] as $h) remove_action($h[0], $h[1], $h[2] ?? 10);
+
+        foreach ([
+            ['the_content_feed', 'wp_staticize_emoji'],
+            ['comment_text_rss', 'wp_staticize_emoji'],
+            ['wp_mail',          'wp_staticize_emoji_for_email'],
+        ] as $h) remove_filter($h[0], $h[1]);
+
+        add_filter('emoji_svg_url', '__return_false');
+        add_filter('tiny_mce_plugins', fn($p) => is_array($p) ? array_diff($p, ['wpemoji']) : []);
+        add_filter('wp_resource_hints', fn($urls, $rel) => $rel === 'dns-prefetch'
+            ? array_diff($urls, [apply_filters('emoji_svg_url', 'https://s.w.org/images/core/emoji/')])
+            : $urls, 10, 2);
+    });
+
+    add_action('admin_init', function () {
+        remove_action('admin_print_scripts',        'print_emoji_detection_script');
+        remove_action('admin_print_footer_scripts', '_print_emoji_detection_script');
+    });
+}
 
 // 禁用 Trackbacks
 add_filter('xmlrpc_methods', function ($methods) {
