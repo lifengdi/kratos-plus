@@ -130,19 +130,23 @@ function theme_autoload()
         if (kratos_option('g_adminbar', true)) {
             $admin_bar_css = "
             @media screen and (min-width: 782px) {
-                .k-nav {
-                    padding-top: 40px;
-                }
+                .k-nav { padding-top: 40px; }
+                .k-nav.nav-sticky { padding-top: 40px !important; }
             }
             @media screen and (max-width: 782px) {
-                .k-nav {
-                    padding-top: 54px;
-                }
+                .k-nav { padding-top: 46px; }
+                .k-nav.nav-sticky { padding-top: 46px !important; }
             }
             @media screen and (min-width: 992px) {
-                .k-nav {
-                    height: 102px;
-                }
+                .k-nav { height: 110px; }
+            }
+            /* 让 .k-header 跟随 nav 抬高，避免固定高度把 nav 内容压出边界 */
+            .k-header { height: auto; }
+            @media screen and (max-width: 991.98px) {
+                .k-header { min-height: calc(59px + 46px); }
+            }
+            @media screen and (max-width: 767.98px) {
+                .k-header { min-height: calc(50px + 46px); }
             }";
             if (current_user_can('level_10')) {
                 wp_add_inline_style('kratos', $admin_bar_css);

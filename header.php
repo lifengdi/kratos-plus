@@ -34,6 +34,13 @@
 
 <body>
     <?php wp_body_open(); ?>
+    <style id="k-header-stack">
+        /* 全局锁定 .k-header 层级：
+           部分皮肤（silk 等）会给 .k-header/.k-main/.k-footer 都设 z-index:1，
+           导致手机端 .banner（290px）从 50/59px 高的 .k-header 溢出后被 .k-main 覆盖，
+           出现「banner 图片仅顶部一小条可见，下方只剩纯色」。 */
+        .k-header { position: relative !important; z-index: 5 !important; }
+    </style>
     <?php
     $nav_sticky_pc = kratos_option('nav_sticky_pc', false);
     $nav_sticky_pad = kratos_option('nav_sticky_pad', false);
@@ -48,8 +55,9 @@
     <style id="k-nav-sticky-style">
         /* 抬高 .k-header 层级，避免某些皮肤（如 silk）给 .k-header/.k-main
            都设 z-index:1 造成的堆叠上下文天花板把 fixed 导航压在下面。
-           用 !important 覆盖 weekday-skins.css 里高特异性的皮肤规则。 */
-        .k-header {
+           只在 nav 真正吸顶时应用，避免非吸顶状态下改变 .k-header 的定位上下文
+           导致 nav 初始位置偏移。 */
+        .k-header.k-has-sticky-nav {
             position: relative !important;
             z-index: 1030 !important;
         }
@@ -67,11 +75,6 @@
             /* 每日皮肤（浅色模式）：跟随皮肤主标题色 */
             html[data-weekday-skin]:not([data-theme="dark"]) .k-nav.nav-sticky {
                 background: var(--kr-skin-heading, <?php echo esc_attr($nav_sticky_bg); ?>) !important;
-            }
-            /* 莫兰迪：吸顶用浅暖底 */
-            html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky {
-                background: var(--kr-skin-card-bg, #F0EDEA) !important;
-                box-shadow: 0 2px 16px rgba(90, 80, 70, 0.07);
             }
             /* 朱砂：吸顶用朱红渐变 + 顶部金线 */
             html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-nav.nav-sticky {
@@ -114,11 +117,14 @@
         }
         function onScroll() {
             var nav = document.querySelector('.k-nav');
+            var header = document.querySelector('.k-header');
             if (!nav) return;
             if (activeForViewport() && window.pageYOffset > 100) {
                 nav.classList.add('nav-sticky');
+                if (header) header.classList.add('k-has-sticky-nav');
             } else {
                 nav.classList.remove('nav-sticky');
+                if (header) header.classList.remove('k-has-sticky-nav');
             }
         }
         window.addEventListener('scroll', onScroll, { passive: true });
@@ -129,12 +135,50 @@
     <?php endif; ?>
     <?php if (!kratos_option('top_img_switch', true)) : ?>
     <style id="k-nav-noimg-style">
+        /* 图片导航关闭：无 banner 兜底，nav 进入正常流，.k-header 自适应高度 */
+        .k-header {
+            height: auto !important;
+        }
+        .k-nav:not(.nav-sticky) {
+            position: relative !important;
+        }
+        /* 桌面：navbar 内容高 70px；管理员条开启时由 theme-core.php 的 admin_bar_css 再叠 padding-top */
+        .k-main.color {
+            padding-top: 20px !important;
+        }
         /* 图片导航关闭时，导航跟随皮肤 / 暗夜模式 */
         html[data-weekday-skin]:not([data-theme="dark"]) .k-nav:not(.nav-sticky) {
             background: var(--kr-skin-heading, <?php echo esc_attr(kratos_option('top_color', '#24292e')); ?>) !important;
         }
         html[data-theme="dark"] .k-nav:not(.nav-sticky) {
             background: var(--kr-bg-elev, #1a1d22) !important;
+        }
+        /* 手机端：确保 logo 图片与汉堡按钮不被 .k-header 硬限高压扁 */
+        @media (max-width: 991.98px) {
+            .k-nav .navbar {
+                min-height: 56px;
+            }
+            .k-nav .navbar-brand {
+                display: inline-flex;
+                align-items: center;
+                line-height: 1.2;
+            }
+            .k-nav .navbar-brand img {
+                max-height: 32px;
+                width: auto;
+                height: auto;
+                object-fit: contain;
+            }
+            .k-nav .navbar-toggler {
+                padding: 10px;
+            }
+            /* 菜单展开面板：给一个可读背景，避免手机端菜单浮在页面上无底色 */
+            .k-nav .navbar-collapse {
+                margin-top: 4px;
+                padding: 8px 12px;
+                background: inherit;
+                border-radius: 4px;
+            }
         }
     </style>
     <?php endif; ?>

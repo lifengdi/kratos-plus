@@ -43,7 +43,7 @@ html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky {
 }
 html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand,
 html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand h1 {
-    color: var(--kr-skin-heading) !important;
+    color: var(--kr-skin-muted) !important
 }
 html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link,
 html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:focus {
