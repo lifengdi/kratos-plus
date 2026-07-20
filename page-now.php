@@ -61,7 +61,7 @@ if ($current) {
                             kratos_now_render_item($current, true);
                         } else { ?>
                             <div class="kratos-now-empty">
-                                <?php esc_html_e('还没有 Now 记录，去后台「Now」写第一条吧。', 'kratos'); ?>
+                                <?php esc_html_e('还没有 Now 记录', 'kratos'); ?>
                             </div>
                         <?php } ?>
                     </div>
