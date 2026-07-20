@@ -3557,6 +3557,28 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'subheading',
+            'content' => __('自定义登录 URL', 'kratos'),
+        ),
+        array(
+            'id' => 'g_login_custom_url_enabled',
+            'type' => 'switcher',
+            'title' => __('启用自定义登录 URL', 'kratos'),
+            'subtitle' => __('启用后，只能通过下方 slug 访问登录页；直接访问 /wp-login.php 或未登录访问 /wp-admin 会返回 404', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_login_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_login_custom_url_slug',
+            'type' => 'text',
+            'title' => __('登录 slug', 'kratos'),
+            'subtitle' => __('访问路径为 <code>' . esc_html(home_url('/')) . '{slug}/</code>；只能包含小写字母、数字、连字符', 'kratos'),
+            'default' => 'sign-in',
+            'dependency' => array('g_login_enable|g_login_custom_url_enabled', '==|==', 'true|true'),
+        ),
+        array(
+            'type' => 'subheading',
             'content' => __('反机器人（登录 / 注册 / 找回密码）', 'kratos'),
         ),
         array(

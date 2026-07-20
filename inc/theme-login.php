@@ -133,17 +133,38 @@ add_action('login_footer', 'kratos_login_close_panel', 9999);
 function kratos_login_inject_tabs($message) {
     if (!kratos_login_enabled()) return $message;
 
-    global $action;
-    $current = in_array($action, array('register', 'lostpassword', 'retrievepassword'), true) ? $action : 'login';
+    // 注意：wp-login.php 里的 $action 是文件作用域局部变量，不是 global；
+    // 从 $_REQUEST 直接读，兼容 GET/POST 两种请求。
+    $act = '';
+    if (isset($_REQUEST['action'])) {
+        $act = sanitize_key(wp_unslash($_REQUEST['action']));
+    }
+    // 兼容 checkemail：/wp-login.php?checkemail=confirm|registered|newpass 无 action 但语义属找回/注册回执
+    if ($act === '' && isset($_REQUEST['checkemail'])) {
+        $act = 'checkemail';
+    }
+    // 归一化 action → 三个大流程之一：login / register / lostpassword
+    // rp/resetpass/checkemail 属于找回密码后续步骤；空 action 或 login 视为登录
+    $lost_actions = array('lostpassword', 'retrievepassword', 'rp', 'resetpass', 'checkemail');
+    if (in_array($act, $lost_actions, true)) {
+        $current = 'lostpassword';
+    } elseif ($act === 'register') {
+        $current = 'register';
+    } elseif ($act === '' || $act === 'login') {
+        $current = 'login';
+    } else {
+        $current = ''; // 未知 action（如 confirm_admin_email、logout 回执等）不高亮任何 tab
+    }
     $show_reg = (bool) kratos_option('g_login_register_show', true) && get_option('users_can_register');
 
     $subs = array(
-        'login'            => __('使用你的账号继续访问', 'kratos'),
-        'register'         => __('创建账号，加入社区', 'kratos'),
-        'lostpassword'     => __('输入邮箱，我们会发送重置链接', 'kratos'),
-        'retrievepassword' => __('输入邮箱，我们会发送重置链接', 'kratos'),
+        'login'        => __('使用你的账号继续访问', 'kratos'),
+        'register'     => __('创建账号，加入社区', 'kratos'),
+        'lostpassword' => __('输入邮箱，我们会发送重置链接', 'kratos'),
     );
     $sub = isset($subs[$current]) ? $subs[$current] : $subs['login'];
+
+    $is_lost = ($current === 'lostpassword');
 
     $html  = '<div class="kratos-login-head">';
     $html .= '<div class="kratos-login-tabs">';
@@ -151,7 +172,7 @@ function kratos_login_inject_tabs($message) {
     if ($show_reg) {
         $html .= '<a class="kratos-login-tab' . ($current === 'register' ? ' is-active' : '') . '" href="' . esc_url(wp_registration_url()) . '">' . esc_html__('注册', 'kratos') . '</a>';
     }
-    if (in_array($current, array('lostpassword', 'retrievepassword'), true)) {
+    if ($is_lost) {
         $html .= '<span class="kratos-login-tab is-active">' . esc_html__('找回密码', 'kratos') . '</span>';
     }
     $html .= '</div>';
@@ -161,6 +182,116 @@ function kratos_login_inject_tabs($message) {
     return $html . $message;
 }
 add_filter('login_message', 'kratos_login_inject_tabs');
+
+/** ============ 自定义登录 URL ============ */
+function kratos_login_custom_url_enabled() {
+    return kratos_login_enabled() && (bool) kratos_option('g_login_custom_url_enabled', false);
+}
+function kratos_login_custom_slug() {
+    $slug = (string) kratos_option('g_login_custom_url_slug', 'sign-in');
+    $slug = strtolower(trim($slug, "/ \t\n\r\0\x0B"));
+    $slug = preg_replace('/[^a-z0-9\-]/', '', $slug);
+    return $slug !== '' ? $slug : 'sign-in';
+}
+
+/** 让 wp_login_url() / wp_registration_url() / wp_lostpassword_url() 输出自定义 URL */
+function kratos_login_filter_url($url) {
+    if (!kratos_login_custom_url_enabled()) return $url;
+    $slug = kratos_login_custom_slug();
+    $url  = str_replace(site_url('wp-login.php'), home_url('/' . $slug . '/'), $url);
+    return $url;
+}
+add_filter('login_url',          'kratos_login_filter_url', 10, 1);
+add_filter('logout_url',         'kratos_login_filter_url', 10, 1);
+
+/** 退出后跳到首页，避免 wp-login.php?loggedout=true 被 404 拦截 */
+add_filter('logout_redirect', function ($redirect_to, $requested, $user) {
+    if (!kratos_login_custom_url_enabled()) return $redirect_to;
+    if (empty($redirect_to) || strpos($redirect_to, 'wp-login.php') !== false) {
+        return home_url('/');
+    }
+    return $redirect_to;
+}, 10, 3);
+add_filter('lostpassword_url',   'kratos_login_filter_url', 10, 1);
+add_filter('register_url',       'kratos_login_filter_url', 10, 1);
+add_filter('site_url', 'kratos_login_filter_scheme_url', 10, 3);
+add_filter('network_site_url', 'kratos_login_filter_scheme_url', 10, 3);
+function kratos_login_filter_scheme_url($url, $path, $scheme) {
+    if (!kratos_login_custom_url_enabled()) return $url;
+    if ($scheme !== 'login' && $scheme !== 'login_post') return $url;
+    if (strpos($url, 'wp-login.php') === false) return $url;
+    $slug = kratos_login_custom_slug();
+    return str_replace('wp-login.php', $slug, $url);
+}
+
+/** 拦截：命中自定义 slug → 走 wp-login.php；直连 wp-login.php GET → 404 */
+function kratos_login_intercept() {
+    if (!kratos_login_custom_url_enabled()) return;
+
+    global $pagenow;
+    $slug = kratos_login_custom_slug();
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+    $path = trim((string) parse_url($request_uri, PHP_URL_PATH), '/');
+    $path_parts = explode('/', $path);
+    $last = end($path_parts);
+
+    // 命中自定义 slug → 重写为 wp-login.php 内部继续处理（无论是否已登录，logout/resetpass 都要能走通）
+    if ($last === $slug || $path === $slug) {
+        $qs = $_SERVER['QUERY_STRING'] ?? '';
+        $target = ABSPATH . 'wp-login.php';
+        if (file_exists($target)) {
+            $_SERVER['REQUEST_URI']  = '/wp-login.php' . ($qs ? ('?' . $qs) : '');
+            $_SERVER['SCRIPT_NAME']  = '/wp-login.php';
+            $_SERVER['PHP_SELF']     = '/wp-login.php';
+            require $target;
+            exit;
+        }
+    }
+
+    // 已登录用户不再 404 wp-login.php（避免自锁）
+    if (is_user_logged_in()) return;
+
+    // 直连 wp-login.php → 404
+    if ($pagenow === 'wp-login.php') {
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') return;
+
+        $action = isset($_GET['action']) ? $_GET['action'] : '';
+        $allow_actions = array('logout', 'postpass', 'rp', 'resetpass', 'confirm_admin_email', 'lostpassword', 'retrievepassword', 'register');
+        if (in_array($action, $allow_actions, true)) return;
+        if (!empty($_GET['loggedout'])) return;
+        if (!empty($_GET['key']) && !empty($_GET['login'])) return;
+
+        kratos_login_send_404();
+    }
+}
+add_action('init', 'kratos_login_intercept', 1);
+
+/** 未登录访问 /wp-admin → 404（放行 admin-ajax / admin-post） */
+function kratos_login_block_admin() {
+    if (!kratos_login_custom_url_enabled()) return;
+    if (is_user_logged_in()) return;
+    if (!is_admin()) return;
+    if (defined('DOING_AJAX') && DOING_AJAX) return;
+    $script = basename($_SERVER['SCRIPT_FILENAME'] ?? '');
+    if (in_array($script, array('admin-ajax.php', 'admin-post.php'), true)) return;
+    kratos_login_send_404();
+}
+add_action('admin_init', 'kratos_login_block_admin', 0);
+
+/** 发送 404 并渲染主题 404 模板 */
+function kratos_login_send_404() {
+    global $wp_query;
+    status_header(404);
+    nocache_headers();
+    if ($wp_query) { $wp_query->set_404(); }
+    $tpl = get_query_template('404');
+    if ($tpl) {
+        include $tpl;
+    } else {
+        echo '<h1>404 Not Found</h1>';
+    }
+    exit;
+}
 
 /** ============ 数字验证码 ============ */
 function kratos_login_captcha_enabled() {

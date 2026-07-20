@@ -228,6 +228,7 @@ body.kratos-login #login h1 { display: none; }
   margin-bottom: 22px;
 }
 .kratos-login-tab {
+  display: inline-block;
   font-family: var(--kl-font-display);
   font-size: 22px;
   color: var(--kl-muted);
@@ -235,14 +236,13 @@ body.kratos-login #login h1 { display: none; }
   position: relative;
   letter-spacing: .02em;
   text-decoration: none;
+  line-height: 1.2;
   transition: color .2s;
 }
 .kratos-login-tab:hover { color: var(--kl-heading); }
-.kratos-login-tab.is-active { color: var(--kl-heading); }
-.kratos-login-tab.is-active::after {
-  content: "";
-  position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 2px; background: var(--kl-accent);
+.kratos-login-tab.is-active {
+  color: var(--kl-heading);
+  box-shadow: inset 0 -2px 0 0 var(--kl-accent);
 }
 .kratos-login-sub { color: var(--kl-muted); font-size: 13px; }
 
