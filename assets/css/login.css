@@ -1,0 +1,505 @@
+/* Kratos+ 自定义登录页 —— 视觉基准：demo/login.html
+ * 通过 login_enqueue_scripts 加载，覆盖 wp-login.php 默认样式。
+ * body 直接作 grid 容器，注入 .kratos-login-brand（左）+ .kratos-login-panel（右）。
+ * WordPress 原生 #login 落入右栏容器，通过样式重塑成 demo 的 card。
+ */
+
+:root {
+  --kl-bg:#F6F5F2;
+  --kl-panel:#FFFFFF;
+  --kl-line:#E7E4DE;
+  --kl-line-strong:#D8D3C9;
+  --kl-heading:#26221E;
+  --kl-text:#4A4640;
+  --kl-muted:#8E8A83;
+  --kl-accent:#2F3A2E;
+  --kl-accent-hover:#1E2A1F;
+  --kl-accent-soft:#EAE7E0;
+  --kl-danger:#B8503A;
+  --kl-radius:14px;
+  --kl-radius-sm:8px;
+  --kl-font-display:"Playfair Display", Georgia, "Noto Serif SC", "Songti SC", serif;
+  --kl-font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  --kl-brand-l:#EFECE4;
+  --kl-brand-l2:#E4E0D5;
+  --kl-brand-l3:#D3CDBD;
+}
+html[data-theme="dark"] {
+  --kl-bg:#1A1815;
+  --kl-panel:#221F1B;
+  --kl-line:#312D28;
+  --kl-line-strong:#403B34;
+  --kl-heading:#E8E4DB;
+  --kl-text:#B4AFA6;
+  --kl-muted:#7A756D;
+  --kl-accent:#CDD3C6;
+  --kl-accent-hover:#EDEFE6;
+  --kl-accent-soft:#2A2823;
+  --kl-brand-l:#2A2723;
+  --kl-brand-l2:#332F2A;
+  --kl-brand-l3:#403A32;
+}
+
+/* ============ 全局重置 ============ */
+html, body.kratos-login { height: 100%; }
+body.kratos-login {
+  background: var(--kl-bg) !important;
+  color: var(--kl-text);
+  font-family: var(--kl-font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+body.kratos-login .kratos-login-brand,
+body.kratos-login .kratos-login-brand *,
+body.kratos-login .kratos-login-panel,
+body.kratos-login #login,
+body.kratos-login #login * { text-align: left; }
+body.kratos-login .kratos-login-foot-note {
+  display: block;
+  width: 100%;
+  text-align: center;
+  clear: both;
+}
+body.kratos-login a { color: var(--kl-accent); text-decoration: none; transition: color .2s; }
+body.kratos-login a:hover { color: var(--kl-accent-hover); }
+
+/* WP 默认的 #login_error / .message 卡片化 */
+body.kratos-login #login_error,
+body.kratos-login .message,
+body.kratos-login .success {
+  border-left: 3px solid var(--kl-accent);
+  background: var(--kl-panel);
+  color: var(--kl-text);
+  box-shadow: none;
+  border-radius: var(--kl-radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+body.kratos-login #login_error { border-left-color: var(--kl-danger); color: var(--kl-danger); }
+
+/* WP 默认底部链接 */
+body.kratos-login #backtoblog { display: none; }
+body.kratos-login #nav { display: none; }
+body.kratos-login .kratos-login-lost a {
+  font-size: 13px;
+  color: var(--kl-muted);
+}
+body.kratos-login .kratos-login-lost a:hover { color: var(--kl-accent); }
+body.kratos-login .privacy-policy-page-link,
+body.kratos-login .language-switcher,
+body.kratos-login .screen-reader-text { display: none !important; }
+body.kratos-login .user-pass-wrap { margin: 0; }
+
+/* ============ 双栏 grid 容器 ============ */
+body.kratos-login.kratos-login-has-brand {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+body.kratos-login:not(.kratos-login-has-brand) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+/* ============ 左侧品牌栏（对应 demo .brand） ============ */
+.kratos-login-brand {
+  position: relative;
+  background:
+    radial-gradient(1200px 600px at 20% 0%, var(--kl-brand-l3) 0%, transparent 55%),
+    radial-gradient(900px 500px at 80% 100%, var(--kl-brand-l2) 0%, transparent 60%),
+    var(--kl-brand-l);
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+  height: 100vh;
+  box-sizing: border-box;
+}
+.kratos-login-brand::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--kl-line-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--kl-line-strong) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: .18;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+.kratos-login-brand-logo {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--kl-font-display);
+  font-size: 22px; color: var(--kl-heading);
+  letter-spacing: .02em;
+  text-decoration: none;
+  transition: opacity .2s;
+}
+.kratos-login-brand-logo:hover { color: var(--kl-heading); opacity: .8; }
+.kratos-login-brand-logo .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--kl-accent);
+}
+.kratos-login-brand-hero { position: relative; max-width: 520px; }
+.kratos-login-brand-eyebrow {
+  font-size: 12px; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--kl-muted); margin-bottom: 18px;
+}
+.kratos-login-brand-title {
+  font-family: var(--kl-font-display);
+  color: var(--kl-heading);
+  font-size: 36px; line-height: 1.25;
+  font-weight: 600; letter-spacing: .01em;
+  margin: 0;
+}
+.kratos-login-brand-title em { font-style: italic; color: var(--kl-accent); }
+.kratos-login-brand-desc {
+  margin: 16px 0 0;
+  font-size: 14px; color: var(--kl-text);
+  max-width: 440px; line-height: 1.65;
+}
+.kratos-login-brand-meta {
+  position: relative;
+  display: flex; gap: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--kl-line-strong);
+}
+.kratos-login-brand-meta > div { display: flex; flex-direction: column; gap: 4px; }
+.kratos-login-brand-meta strong {
+  font-family: var(--kl-font-display);
+  font-size: 24px; color: var(--kl-heading); font-weight: 600;
+}
+.kratos-login-brand-meta span {
+  font-size: 12px; color: var(--kl-muted); letter-spacing: .06em;
+}
+
+/* 有背景图时反白 */
+.kratos-login-brand[style*="background-image"] { color: #F6F5F2; }
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-logo,
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-title,
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-meta strong { color: #FFF; }
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-title em { color: #F1E6D6; }
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-eyebrow,
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-desc,
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-meta span { color: rgba(255,255,255,.82); }
+.kratos-login-brand[style*="background-image"]::before { display: none; }
+.kratos-login-brand[style*="background-image"] .kratos-login-brand-meta { border-top-color: rgba(255,255,255,.25); }
+
+/* ============ 右侧表单栏（对应 demo .panel） ============ */
+.kratos-login-panel {
+  background: var(--kl-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 40px;
+  position: relative;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* WP 默认 #login 容器 → demo .card */
+body.kratos-login #login {
+  width: 100%;
+  max-width: 400px;
+  padding: 0;
+  margin: 0;
+}
+body.kratos-login #login h1 { display: none; }
+
+/* Tabs + 副标题（PHP 通过 login_message 注入到 form 之前） */
+.kratos-login-head { margin-bottom: 20px; }
+.kratos-login-tabs {
+  display: inline-flex;
+  gap: 28px;
+  border-bottom: 1px solid var(--kl-line);
+  margin-bottom: 22px;
+}
+.kratos-login-tab {
+  font-family: var(--kl-font-display);
+  font-size: 22px;
+  color: var(--kl-muted);
+  padding: 6px 0 14px;
+  position: relative;
+  letter-spacing: .02em;
+  text-decoration: none;
+  transition: color .2s;
+}
+.kratos-login-tab:hover { color: var(--kl-heading); }
+.kratos-login-tab.is-active { color: var(--kl-heading); }
+.kratos-login-tab.is-active::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px; background: var(--kl-accent);
+}
+.kratos-login-sub { color: var(--kl-muted); font-size: 13px; }
+
+/* ============ 表单 ============ */
+body.kratos-login form {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+body.kratos-login form p { margin: 0; }
+body.kratos-login form label {
+  display: block;
+  font-size: 12px;
+  color: var(--kl-muted);
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+body.kratos-login input[type="text"],
+body.kratos-login input[type="email"],
+body.kratos-login input[type="password"] {
+  width: 100%;
+  background: var(--kl-panel);
+  border: 1px solid var(--kl-line);
+  border-radius: var(--kl-radius-sm);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--kl-heading);
+  font-family: inherit;
+  box-shadow: none;
+  min-height: 42px;
+  transition: border-color .2s, box-shadow .2s;
+}
+body.kratos-login input[type="text"]:focus,
+body.kratos-login input[type="email"]:focus,
+body.kratos-login input[type="password"]:focus {
+  outline: none;
+  border-color: var(--kl-accent);
+  box-shadow: 0 0 0 3px var(--kl-accent-soft);
+}
+body.kratos-login .input.password-input { padding-right: 44px; }
+body.kratos-login .wp-pwd { position: relative; display: block; }
+body.kratos-login .wp-pwd input.password-input { display: block; width: 100%; }
+body.kratos-login .wp-hide-pw {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: 42px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  color: var(--kl-muted) !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  vertical-align: middle;
+}
+body.kratos-login .wp-hide-pw:hover,
+body.kratos-login .wp-hide-pw:focus { color: var(--kl-heading) !important; outline: none; }
+body.kratos-login .wp-hide-pw .dashicons {
+  line-height: 1 !important;
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  vertical-align: middle;
+}
+body.kratos-login .wp-hide-pw .text { display: none !important; }
+
+/* Remember me + 忘记密码 同行（把 #nav 上移到 forgetmenot 右侧） */
+body.kratos-login p.forgetmenot {
+  font-size: 13px;
+  color: var(--kl-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+body.kratos-login p.forgetmenot label {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: var(--kl-text);
+  letter-spacing: 0;
+  cursor: pointer;
+}
+body.kratos-login .kratos-login-lost { margin-left: auto; }
+body.kratos-login p.forgetmenot input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  border: 1px solid var(--kl-line-strong);
+  border-radius: 4px;
+  background: var(--kl-panel);
+  margin: 0;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex: 0 0 auto;
+}
+body.kratos-login p.forgetmenot input[type="checkbox"]:checked {
+  background-color: var(--kl-accent);
+  border-color: var(--kl-accent);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M3 8.5l3.2 3.2L13 4.8'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 11px 11px;
+}
+body.kratos-login p.forgetmenot input[type="checkbox"]:checked::before { display: none; }
+
+/* 主按钮 */
+body.kratos-login .button-primary,
+body.kratos-login .wp-core-ui .button-primary {
+  width: 100%;
+  text-align: center !important;
+  padding: 12px 18px;
+  border-radius: var(--kl-radius-sm) !important;
+  background: var(--kl-accent) !important;
+  color: var(--kl-panel) !important;
+  border: none !important;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px !important;
+  font-weight: 600;
+  letter-spacing: .06em;
+  height: auto !important;
+  line-height: 1.5 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transition: background .2s, transform .1s;
+  margin-top: 8px;
+}
+body.kratos-login .button-primary:hover { background: var(--kl-accent-hover) !important; }
+body.kratos-login .button-primary:active { transform: translateY(1px); }
+body.kratos-login .submit { text-align: center; margin: 0; }
+body.kratos-login .kratos-login-captcha { margin: 0; }
+body.kratos-login .kratos-login-captcha-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+body.kratos-login .kratos-login-captcha-q {
+  font-family: var(--kl-font-display);
+  font-size: 15px;
+  color: var(--kl-heading);
+  background: var(--kl-accent-soft);
+  border: 1px solid var(--kl-line);
+  border-radius: var(--kl-radius-sm);
+  white-space: nowrap;
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
+}
+body.kratos-login .kratos-login-captcha input {
+  flex: 1 1 auto;
+  height: 44px;
+  min-height: 44px;
+  box-sizing: border-box;
+  margin: 0;
+}
+body.kratos-login .submit input.button-primary { text-align: center !important; }
+
+/* ============ 顶栏：返回首页 + 主题切换 ============ */
+.kratos-login-back {
+  position: fixed;
+  top: 24px; left: 32px;
+  z-index: 100;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--kl-muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.kratos-login-back:hover { color: var(--kl-heading); }
+.kratos-login-back svg { width: 14px; height: 14px; }
+
+.kratos-login-theme-toggle {
+  position: fixed;
+  top: 24px; right: 32px;
+  z-index: 100;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--kl-line);
+  background: var(--kl-panel);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--kl-heading); cursor: pointer;
+  transition: transform .2s, border-color .2s;
+}
+.kratos-login-theme-toggle:hover { transform: rotate(15deg); border-color: var(--kl-line-strong); }
+
+/* ============ 版权页脚（跟随 #login 之下） ============ */
+.kratos-login-foot-note {
+  width: 100%;
+  max-width: 400px;
+  margin: 24px auto 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--kl-muted);
+  flex: 0 0 auto;
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 900px) {
+  body.kratos-login.kratos-login-has-brand {
+    display: block;
+    grid-template-columns: 1fr;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+  .kratos-login-brand {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    height: auto;
+    min-height: 0;
+    padding: 16px 20px;
+    background: transparent;
+    justify-content: flex-start;
+    gap: 0;
+    z-index: 10;
+  }
+  .kratos-login-brand::before,
+  .kratos-login-brand-hero,
+  .kratos-login-brand-desc,
+  .kratos-login-brand-eyebrow,
+  .kratos-login-brand-title,
+  .kratos-login-brand-meta { display: none; }
+  .kratos-login-brand-logo {
+    font-size: 20px;
+    padding: 4px 0;
+  }
+  .kratos-login-theme-toggle { top: 12px; right: 16px; }
+  .kratos-login-panel {
+    padding: 24px;
+    height: 100vh;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

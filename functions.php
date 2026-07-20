@@ -168,3 +168,6 @@ require get_template_directory() . '/inc/theme-yearly-review.php';
 // 随机漫步 Stumble —— 随机跳到一篇被埋没的老文章
 require get_template_directory() . '/inc/theme-stumble.php';
 
+// 自定义登录页（接管 wp-login.php）
+require get_template_directory() . '/inc/theme-login.php';
+

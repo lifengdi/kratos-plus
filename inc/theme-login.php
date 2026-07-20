@@ -1,0 +1,299 @@
+<?php
+/**
+ * 自定义登录页（wp-login.php 接管）
+ * 通过 login_enqueue_scripts / login_header / login_footer / login_message / login_headerurl
+ * 等钩子重塑 wp-login.php 的视觉与结构，保留 WordPress 原生的表单处理、nonce、错误提示流程。
+ *
+ * @package Kratos+
+ */
+
+if (!defined('ABSPATH')) exit;
+
+/** 是否启用自定义登录页 */
+function kratos_login_enabled() {
+    return (bool) kratos_option('g_login_enable', true);
+}
+
+/** 令牌替换：{posts}/{tags}/{comments}/{users} */
+function kratos_login_replace_tokens($text) {
+    if ($text === '' || strpos($text, '{') === false) return $text;
+    $posts    = wp_count_posts()->publish ?? 0;
+    $tags     = wp_count_terms(array('taxonomy' => 'post_tag', 'hide_empty' => false));
+    if (is_wp_error($tags)) $tags = 0;
+    $comments = wp_count_comments()->approved ?? 0;
+    $users    = count_users();
+    $users    = isset($users['total_users']) ? $users['total_users'] : 0;
+    $map = array(
+        '{posts}'    => number_format_i18n($posts),
+        '{tags}'     => number_format_i18n((int) $tags),
+        '{comments}' => number_format_i18n($comments),
+        '{users}'    => number_format_i18n($users),
+    );
+    return strtr($text, $map);
+}
+
+/** 入队登录页 CSS/JS */
+function kratos_login_enqueue() {
+    if (!kratos_login_enabled()) return;
+    wp_enqueue_style('kratos-login', get_template_directory_uri() . '/assets/css/login.css', array(), THEME_VERSION);
+    wp_enqueue_script('kratos-login', get_template_directory_uri() . '/assets/js/login.js', array(), THEME_VERSION, true);
+
+    // 主题色跟随全站皮肤：把当前主题的 accent/heading 等注入到登录页
+    $accent = '#2F3A2E';
+    $inline = ":root{--kr-login-accent:{$accent};}";
+    wp_add_inline_style('kratos-login', $inline);
+}
+add_action('login_enqueue_scripts', 'kratos_login_enqueue');
+
+/** 登录页 Logo 链接改为首页 */
+function kratos_login_headerurl() {
+    return home_url('/');
+}
+add_filter('login_headerurl', 'kratos_login_headerurl');
+
+/** 登录页 Logo alt 文本改为站点名 */
+function kratos_login_headertext() {
+    return get_bloginfo('name');
+}
+add_filter('login_headertext', 'kratos_login_headertext');
+
+/** 在 <body> 起始处（login_header 早期）注入品牌栏 + 顶部返回首页按钮 */
+function kratos_login_render_brand() {
+    if (!kratos_login_enabled()) return;
+
+    $show_brand = (bool) kratos_option('g_login_brand_show', true);
+
+    echo '<button type="button" class="kratos-login-theme-toggle" id="kratosLoginThemeToggle" aria-label="' . esc_attr__('切换主题', 'kratos') . '">'
+        . '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+        . '</button>';
+
+    if (!$show_brand) return;
+
+    $bg_img   = trim((string) kratos_option('g_login_brand_bg', ''));
+    $eyebrow  = (string) kratos_option('g_login_brand_eyebrow', 'WELCOME · 欢迎回来');
+    $title    = (string) kratos_option('g_login_brand_title', '在这里，<em>写下</em><br>属于你的每日思绪。');
+    $desc     = (string) kratos_option('g_login_brand_desc', 'Kratos+ 是一款为写作者打造的 WordPress 主题，简洁、有序、可自定义。登录后开始你的创作之旅。');
+
+    $stat_defaults = array(
+        1 => array('v' => '{posts}',    'l' => 'ARTICLES'),
+        2 => array('v' => '{tags}',     'l' => 'TAGS'),
+        3 => array('v' => '{comments}', 'l' => 'COMMENTS'),
+    );
+    $stats = array();
+    for ($i = 1; $i <= 3; $i++) {
+        if (!kratos_option('g_login_stat_' . $i . '_show', true)) continue;
+        $val = kratos_login_replace_tokens((string) kratos_option('g_login_stat_' . $i . '_value', $stat_defaults[$i]['v']));
+        $lab = (string) kratos_option('g_login_stat_' . $i . '_label', $stat_defaults[$i]['l']);
+        if ($val === '' && $lab === '') continue;
+        $stats[] = array('v' => $val, 'l' => $lab);
+    }
+
+    $style = '';
+    if ($bg_img !== '') {
+        $style = ' style="background-image:linear-gradient(rgba(30,26,20,.35),rgba(30,26,20,.35)),url(' . esc_url($bg_img) . ');background-size:cover;background-position:center;"';
+    }
+
+    echo '<aside class="kratos-login-brand"' . $style . '>';
+    echo '<a class="kratos-login-brand-logo" href="' . esc_url(home_url('/')) . '" title="' . esc_attr__('返回首页', 'kratos') . '"><span class="dot"></span>' . esc_html(get_bloginfo('name')) . '</a>';
+    echo '<div class="kratos-login-brand-hero">';
+    if ($eyebrow !== '') echo '<div class="kratos-login-brand-eyebrow">' . esc_html($eyebrow) . '</div>';
+    if ($title !== '')   echo '<h1 class="kratos-login-brand-title">' . wp_kses_post($title) . '</h1>';
+    if ($desc !== '')    echo '<p class="kratos-login-brand-desc">' . esc_html($desc) . '</p>';
+    echo '</div>';
+    if ($stats) {
+        echo '<div class="kratos-login-brand-meta">';
+        foreach ($stats as $s) {
+            echo '<div><strong>' . esc_html($s['v']) . '</strong><span>' . esc_html($s['l']) . '</span></div>';
+        }
+        echo '</div>';
+    }
+    echo '</aside>';
+
+    echo '<section class="kratos-login-panel">';
+}
+add_action('login_header', 'kratos_login_render_brand', 1);
+
+/** 版权小字：紧跟在提交按钮之后（在 #login 内部） */
+function kratos_login_render_foot_note() {
+    if (!kratos_login_enabled()) return;
+    $note = (string) kratos_option('g_login_footer_note', '© Kratos+ · 由 Dylan Li 二次开发');
+    if ($note === '') return;
+    echo '<div class="kratos-login-foot-note">' . esc_html($note) . '</div>';
+}
+add_action('login_footer', 'kratos_login_render_foot_note', 5);
+
+/** 关闭 panel 容器（放到最晚，确保在 </div id=login> 之后） */
+function kratos_login_close_panel() {
+    if (!kratos_login_enabled()) return;
+    echo '</section>';
+}
+add_action('login_footer', 'kratos_login_close_panel', 9999);
+
+/** 在表单顶部注入 Tabs（登录 / 注册）与副标题 */
+function kratos_login_inject_tabs($message) {
+    if (!kratos_login_enabled()) return $message;
+
+    global $action;
+    $current = in_array($action, array('register', 'lostpassword', 'retrievepassword'), true) ? $action : 'login';
+    $show_reg = (bool) kratos_option('g_login_register_show', true) && get_option('users_can_register');
+
+    $subs = array(
+        'login'            => __('使用你的账号继续访问', 'kratos'),
+        'register'         => __('创建账号，加入社区', 'kratos'),
+        'lostpassword'     => __('输入邮箱，我们会发送重置链接', 'kratos'),
+        'retrievepassword' => __('输入邮箱，我们会发送重置链接', 'kratos'),
+    );
+    $sub = isset($subs[$current]) ? $subs[$current] : $subs['login'];
+
+    $html  = '<div class="kratos-login-head">';
+    $html .= '<div class="kratos-login-tabs">';
+    $html .= '<a class="kratos-login-tab' . ($current === 'login' ? ' is-active' : '') . '" href="' . esc_url(wp_login_url()) . '">' . esc_html__('登录', 'kratos') . '</a>';
+    if ($show_reg) {
+        $html .= '<a class="kratos-login-tab' . ($current === 'register' ? ' is-active' : '') . '" href="' . esc_url(wp_registration_url()) . '">' . esc_html__('注册', 'kratos') . '</a>';
+    }
+    if (in_array($current, array('lostpassword', 'retrievepassword'), true)) {
+        $html .= '<span class="kratos-login-tab is-active">' . esc_html__('找回密码', 'kratos') . '</span>';
+    }
+    $html .= '</div>';
+    $html .= '<div class="kratos-login-sub">' . esc_html($sub) . '</div>';
+    $html .= '</div>';
+
+    return $html . $message;
+}
+add_filter('login_message', 'kratos_login_inject_tabs');
+
+/** ============ 数字验证码 ============ */
+function kratos_login_captcha_enabled() {
+    return kratos_login_enabled() && (bool) kratos_option('g_login_captcha_enabled', false);
+}
+function kratos_login_captcha_max() {
+    return max(5, (int) kratos_option('g_login_captcha_max', 20));
+}
+function kratos_login_captcha_new() {
+    $max = kratos_login_captcha_max();
+    $x = wp_rand(1, $max);
+    $y = wp_rand(1, $max);
+    $ops = array('+', '-');
+    $op = $ops[array_rand($ops)];
+    if ($op === '-' && $y > $x) { list($x, $y) = array($y, $x); }
+    $answer = ($op === '+') ? $x + $y : $x - $y;
+    $token  = wp_generate_password(16, false, false);
+    set_transient('kratos_login_captcha_' . $token, (string) $answer, 10 * MINUTE_IN_SECONDS);
+    return array($token, $x, $y, $op);
+}
+
+/** 在表单末尾追加验证码 + 蜜罐字段 */
+function kratos_login_form_extra() {
+    if (!kratos_login_enabled()) return;
+
+    // 蜜罐
+    if ((bool) kratos_option('g_login_honeypot_enabled', true)) {
+        echo '<div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">';
+        echo '<label for="kratos_login_hp_email">Email (leave empty)</label>';
+        echo '<input type="text" id="kratos_login_hp_email" name="kratos_login_hp_email" value="" autocomplete="off" tabindex="-1">';
+        echo '<input type="hidden" name="kratos_login_hp_ts" value="' . esc_attr(time()) . '">';
+        echo '</div>';
+    }
+
+    // 数字验证码
+    if (kratos_login_captcha_enabled()) {
+        list($token, $x, $y, $op) = kratos_login_captcha_new();
+        $sym = $op === '+' ? '+' : '−';
+        ?>
+        <p class="kratos-login-captcha">
+            <label for="kratos_login_captcha"><?php esc_html_e('数字验证', 'kratos'); ?></label>
+            <span class="kratos-login-captcha-row">
+                <span class="kratos-login-captcha-q"><?php echo (int)$x . ' ' . esc_html($sym) . ' ' . (int)$y; ?> =</span>
+                <input type="text" inputmode="numeric" pattern="-?[0-9]*" name="kratos_login_captcha" id="kratos_login_captcha" class="input" autocomplete="off" required />
+                <input type="hidden" name="kratos_login_captcha_token" value="<?php echo esc_attr($token); ?>">
+            </span>
+        </p>
+        <?php
+    }
+}
+add_action('login_form',          'kratos_login_form_extra');
+add_action('register_form',       'kratos_login_form_extra');
+add_action('lostpassword_form',   'kratos_login_form_extra');
+
+/** 校验：登录 */
+function kratos_login_authenticate($user, $username, $password) {
+    if (!kratos_login_enabled()) return $user;
+    // 只在有实际登录请求时校验
+    if (empty($_POST) || empty($username) && empty($password)) return $user;
+    $err = kratos_login_check_bot_and_captcha();
+    if ($err) return $err;
+    return $user;
+}
+add_filter('authenticate', 'kratos_login_authenticate', 30, 3);
+
+/** 校验：注册 */
+function kratos_login_register_check($errors, $sanitized_user_login, $user_email) {
+    if (!kratos_login_enabled()) return $errors;
+    $err = kratos_login_check_bot_and_captcha();
+    if (is_wp_error($err)) {
+        foreach ($err->get_error_codes() as $code) {
+            $errors->add($code, $err->get_error_message($code));
+        }
+    }
+    return $errors;
+}
+add_filter('registration_errors', 'kratos_login_register_check', 10, 3);
+
+/** 校验：找回密码 */
+function kratos_login_lostpw_check($errors) {
+    if (!kratos_login_enabled()) return $errors;
+    if (empty($_POST['user_login'])) return $errors;
+    $err = kratos_login_check_bot_and_captcha();
+    if (is_wp_error($err)) {
+        foreach ($err->get_error_codes() as $code) {
+            $errors->add($code, $err->get_error_message($code));
+        }
+    }
+    return $errors;
+}
+add_action('lostpassword_post', 'kratos_login_lostpw_check');
+
+/** 蜜罐 + 验证码统一校验 */
+function kratos_login_check_bot_and_captcha() {
+    // 蜜罐
+    if ((bool) kratos_option('g_login_honeypot_enabled', true)) {
+        $trap = isset($_POST['kratos_login_hp_email']) ? trim(wp_unslash($_POST['kratos_login_hp_email'])) : '';
+        if ($trap !== '') {
+            return new WP_Error('kratos_login_bot', __('<strong>错误</strong>：请求异常，请刷新页面重试。', 'kratos'));
+        }
+        $min = max(1, (int) kratos_option('g_login_honeypot_min_seconds', 2));
+        $ts  = isset($_POST['kratos_login_hp_ts']) ? (int) $_POST['kratos_login_hp_ts'] : 0;
+        if ($ts > 0 && (time() - $ts) < $min) {
+            return new WP_Error('kratos_login_too_fast', __('<strong>错误</strong>：提交过快，请稍候再试。', 'kratos'));
+        }
+    }
+
+    // 数字验证码
+    if (kratos_login_captcha_enabled()) {
+        $token  = isset($_POST['kratos_login_captcha_token']) ? sanitize_text_field(wp_unslash($_POST['kratos_login_captcha_token'])) : '';
+        $answer = isset($_POST['kratos_login_captcha']) ? trim(wp_unslash($_POST['kratos_login_captcha'])) : '';
+        if ($token === '' || $answer === '') {
+            return new WP_Error('kratos_login_captcha_empty', __('<strong>错误</strong>：请填写数字验证结果。', 'kratos'));
+        }
+        $expected = get_transient('kratos_login_captcha_' . $token);
+        delete_transient('kratos_login_captcha_' . $token);
+        if ($expected === false) {
+            return new WP_Error('kratos_login_captcha_expired', __('<strong>错误</strong>：验证码已过期，请刷新页面重试。', 'kratos'));
+        }
+        if ((string) $answer !== (string) $expected) {
+            return new WP_Error('kratos_login_captcha_wrong', __('<strong>错误</strong>：数字验证结果不正确。', 'kratos'));
+        }
+    }
+    return null;
+}
+
+/** 给 body 添加自定义 class 便于 CSS 命中 */
+function kratos_login_body_class($classes) {
+    if (!kratos_login_enabled()) return $classes;
+    $classes[] = 'kratos-login';
+    if ((bool) kratos_option('g_login_brand_show', true)) {
+        $classes[] = 'kratos-login-has-brand';
+    }
+    return $classes;
+}
+add_filter('login_body_class', 'kratos_login_body_class');
