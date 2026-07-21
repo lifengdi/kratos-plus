@@ -255,6 +255,11 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .widget {
     border-radius: var(--kr-shape-radius);
     position: relative;
 }
+/* 文章目录小工具需保持吸顶：上面的 .widget position:relative 会盖掉
+ * style.css 里 .w-toc 的 position:sticky，这里用更高特异性(加 .sidebar)恢复。 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .sidebar .w-toc {
+    position: sticky;
+}
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .board .article-panel::before {
     content: "福";
     position: absolute;
