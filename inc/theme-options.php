@@ -1670,6 +1670,118 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'title' => __('关键词自动内链', 'kratos'),
+    'icon' => 'fas fa-link',
+    'fields' => array(
+        array(
+            'type' => 'content',
+            'content' => '<div style="line-height:1.8;">'
+                . __('在文章正文中扫描站点已有的<strong>标签 / 分类</strong>名称，命中则自动替换为对应归档页链接。渲染结果按 <code>文章 + 修改时间 + terms 版本</code> 缓存到 object cache，标签/分类增删改会自动整体失效。', 'kratos')
+                . '<br>'
+                . __('仅在单篇文章正文（<code>the_content</code>）中生效，列表页摘要 / 归档页 / RSS 不受影响。', 'kratos')
+                . '</div>',
+        ),
+        array(
+            'id' => 'g_autolink_enabled',
+            'type' => 'switcher',
+            'title' => __('功能开关', 'kratos'),
+            'subtitle' => __('启用关键词自动内链', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_autolink_include_tag',
+            'type' => 'switcher',
+            'title' => __('包含标签', 'kratos'),
+            'subtitle' => __('用 post_tag 名称作为关键词', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_include_cat',
+            'type' => 'switcher',
+            'title' => __('包含分类', 'kratos'),
+            'subtitle' => __('用 category 名称作为关键词', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_min_length',
+            'type' => 'number',
+            'title' => __('关键词最小长度', 'kratos'),
+            'subtitle' => __('短于此长度的关键词不参与匹配', 'kratos'),
+            'min' => 1,
+            'max' => 20,
+            'default' => 2,
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_max_per_kw',
+            'type' => 'number',
+            'title' => __('每关键词最大替换次数', 'kratos'),
+            'subtitle' => __('同一关键词在同一篇文章内最多替换几次（推荐 1，SEO 友好）', 'kratos'),
+            'min' => 1,
+            'max' => 10,
+            'default' => 1,
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_max_total',
+            'type' => 'number',
+            'title' => __('每篇最大链接总数', 'kratos'),
+            'subtitle' => __('单篇文章内所有自动内链的总上限，避免链接海', 'kratos'),
+            'min' => 1,
+            'max' => 50,
+            'default' => 6,
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_new_window',
+            'type' => 'switcher',
+            'title' => __('新窗口打开', 'kratos'),
+            'subtitle' => __('自动内链是否在新标签页打开', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_nofollow',
+            'type' => 'switcher',
+            'title' => __('添加 nofollow', 'kratos'),
+            'subtitle' => __('给自动内链加 rel="nofollow"', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_exclude_ids',
+            'type' => 'text',
+            'title' => __('排除的 term ID', 'kratos'),
+            'subtitle' => __('不参与匹配的标签/分类 ID，多个用英文逗号或空格分隔', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_autolink_custom_map',
+            'type' => 'textarea',
+            'title' => __('自定义关键词映射', 'kratos'),
+            'subtitle' => __('每行一条，格式：<code>关键词 =&gt; URL</code>；用于给非 term 关键词指定链接（例如作品页、外部资源）', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_autolink_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'content',
+            'content' => '<div style="line-height:1.8;color:#666;">'
+                . '<strong>' . __('小贴士：', 'kratos') . '</strong>'
+                . '<ul style="margin:6px 0 0 18px;padding:0;">'
+                . '<li>' . __('可以在标签/分类的<strong>描述</strong>里写 <code>别名: 关键词1, 关键词2</code>，这些别名也会参与匹配', 'kratos') . '</li>'
+                . '<li>' . __('长关键词优先匹配（例如"机器学习"优先于"学习"）', 'kratos') . '</li>'
+                . '<li>' . __('当前文章自身所属的标签/分类不会被自链', 'kratos') . '</li>'
+                . '<li>' . __('位于 <code>&lt;a&gt; / &lt;code&gt; / &lt;pre&gt; / &lt;h1-h6&gt;</code> 内的文字不会被替换', 'kratos') . '</li>'
+                . '</ul>'
+                . '</div>',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'comment_fields',
     'title' => __('评论配置', 'kratos'),
     'icon' => 'fas fa-comments',
