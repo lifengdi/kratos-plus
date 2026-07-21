@@ -243,6 +243,11 @@ function kratos_login_intercept() {
             $_SERVER['REQUEST_URI']  = '/wp-login.php' . ($qs ? ('?' . $qs) : '');
             $_SERVER['SCRIPT_NAME']  = '/wp-login.php';
             $_SERVER['PHP_SELF']     = '/wp-login.php';
+            // require 会把 wp-login.php 的文件级变量落到本函数作用域；
+            // PHP 8+ 下部分渲染分支未先赋值即使用 $user_login / $error 会告警，
+            // 这里预置为空，wp-login.php 自身的赋值会覆盖，不影响行为。
+            $user_login = '';
+            $error = '';
             require $target;
             exit;
         }
