@@ -474,18 +474,24 @@ function kratos_series_get_posts($term_id)
 
 /**
  * 保存文章时：如果挂了系列且未设置 kratos_series_order，自动置为该系列内 MAX(order)+1
+ *
+ * 用 wp_after_insert_post 而不是 save_post_post：
+ * 块编辑器（Gutenberg）通过 REST API 分两步提交文章正文与分类关系，save_post 触发时
+ * taxonomy 尚未写入，get_the_terms() 拿不到系列 term 会导致 order 回填被跳过。
+ * wp_after_insert_post（WP 5.6+）在文章、meta、term 全部落库后统一触发，两种编辑器一致。
  */
-add_action('save_post_post', 'kratos_series_ensure_order', 20, 3);
-function kratos_series_ensure_order($post_id, $post, $update)
+add_action('wp_after_insert_post', 'kratos_series_ensure_order', 20, 4);
+function kratos_series_ensure_order($post_id, $post, $update, $post_before)
 {
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!$post instanceof WP_Post || $post->post_type !== 'post') return;
     if (wp_is_post_revision($post_id) || wp_is_post_autosave($post_id)) return;
     if ($post->post_status === 'auto-draft' || $post->post_status === 'trash') return;
+    // 清一次 term cache，避免 REST 二段提交后此处仍读到旧的空缓存
+    clean_object_term_cache($post_id, 'post');
     $terms = get_the_terms($post_id, 'kratos_series');
     if (empty($terms) || is_wp_error($terms)) return;
     $existing = get_post_meta($post_id, 'kratos_series_order', true);
     if ($existing !== '' && $existing !== null && $existing !== false) return;
-    // 以第一个系列作为参照
     $tid = (int) $terms[0]->term_id;
     $next = kratos_series_next_order($tid);
     update_post_meta($post_id, 'kratos_series_order', $next);

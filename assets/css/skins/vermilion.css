@@ -1771,6 +1771,10 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kr-ico svg [stroke
     stroke: var(--kr-skin-icon-fg) !important;
     fill: none !important;
 }
+/* 走心评论心形图标：默认 fill 与朱红底同色不可见，改用胶囊前景金 */
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-heart-shortcode { --khs-heart-fill: var(--kr-skin-icon-fg) !important; }
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .khs-heart-icon svg,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .khs-heart-icon svg path { fill: var(--kr-skin-icon-fg) !important; }
 
 /* 时间轴小圆点：朱红圆点 + 金环（用 outline 避免 border-box 偏移） */
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-dot {

@@ -191,6 +191,73 @@ function kratos_friend_feed_sources()
 }
 
 /**
+ * 兜底抓取：手动 HTTP 拉原文，补齐常见但漏声明的 XML 命名空间
+ * （wfw / content / dc / atom / sy / slash / media / georss），再让
+ * SimplePie 从字符串解析。仅在 fetch_feed() 直接失败时被调用。
+ *
+ * 返回 SimplePie 对象，失败返回 WP_Error。
+ */
+function kratos_friend_feed_fetch_sanitized($url)
+{
+    $resp = wp_safe_remote_get($url, array(
+        'timeout'     => 15,
+        'redirection' => 5,
+        'user-agent'  => 'WordPress/' . get_bloginfo('version') . '; ' . home_url('/'),
+        'headers'     => array('Accept' => 'application/rss+xml, application/atom+xml, application/xml;q=0.9, */*;q=0.8'),
+    ));
+    if (is_wp_error($resp)) return $resp;
+    $code = (int) wp_remote_retrieve_response_code($resp);
+    if ($code < 200 || $code >= 300) {
+        return new WP_Error('http_error', 'HTTP ' . $code);
+    }
+    $body = (string) wp_remote_retrieve_body($resp);
+    if ($body === '') return new WP_Error('empty_body', 'empty feed body');
+
+    $ns_map = array(
+        'wfw'     => 'http://wellformedweb.org/CommentAPI/',
+        'content' => 'http://purl.org/rss/1.0/modules/content/',
+        'dc'      => 'http://purl.org/dc/elements/1.1/',
+        'atom'    => 'http://www.w3.org/2005/Atom',
+        'sy'      => 'http://purl.org/rss/1.0/modules/syndication/',
+        'slash'   => 'http://purl.org/rss/1.0/modules/slash/',
+        'media'   => 'http://search.yahoo.com/mrss/',
+        'georss'  => 'http://www.georss.org/georss',
+    );
+
+    if (preg_match('/<rss\b[^>]*>/i', $body, $m, PREG_OFFSET_CAPTURE)) {
+        $tag = $m[0][0];
+        $pos = $m[0][1];
+        $add = '';
+        foreach ($ns_map as $prefix => $uri) {
+            if (preg_match('/\bxmlns:' . preg_quote($prefix, '/') . '\s*=/i', $tag)) continue;
+            if (!preg_match('/<[a-z0-9_.-]*' . preg_quote($prefix, '/') . ':/i', $body)) continue;
+            $add .= ' xmlns:' . $prefix . '="' . $uri . '"';
+        }
+        if ($add !== '') {
+            $new_tag = rtrim($tag, '>') . $add . '>';
+            $body = substr_replace($body, $new_tag, $pos, strlen($tag));
+        }
+    }
+
+    if (!class_exists('SimplePie', false)) {
+        require_once ABSPATH . WPINC . '/class-simplepie.php';
+    }
+    if (!function_exists('wp_feed_cache_transient_lifetime')) {
+        require_once ABSPATH . WPINC . '/feed.php';
+    }
+    $sp = new SimplePie();
+    $sp->set_raw_data($body);
+    $sp->set_cache_duration(apply_filters('wp_feed_cache_transient_lifetime', 12 * HOUR_IN_SECONDS, $url));
+    do_action_ref_array('wp_feed_options', array(&$sp, $url));
+    $sp->init();
+    $sp->handle_content_type();
+    if ($sp->error()) {
+        return new WP_Error('simplepie-error', $sp->error());
+    }
+    return $sp;
+}
+
+/**
  * 拉取单个 link_id 对应的 Feed 并写入数据库。
  * 返回 array{fetched:int, inserted:int, error:string|null}
  */
@@ -206,8 +273,15 @@ function kratos_friend_feed_fetch_one($link)
     }
     $feed = fetch_feed($link->link_rss);
     if (is_wp_error($feed)) {
-        $out['error'] = $feed->get_error_message();
-        return $out;
+        // 兜底：部分站点（如老张博客）的 RSS 输出缺少 wfw/content 等 xmlns
+        // 声明，libxml 严格解析会直接失败。这里手动拉原文、补齐命名空间后
+        // 交给 SimplePie 重新解析一次。
+        $feed2 = kratos_friend_feed_fetch_sanitized($link->link_rss);
+        if (is_wp_error($feed2)) {
+            $out['error'] = $feed->get_error_message();
+            return $out;
+        }
+        $feed = $feed2;
     }
     $max = (int) apply_filters('kratos_friend_feed_max_items_per_source', KRATOS_FRIEND_FEED_MAX_ITEMS, $link);
     $items = $feed->get_items(0, $max);
