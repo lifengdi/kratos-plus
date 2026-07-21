@@ -245,11 +245,14 @@ function kratos_top_commenters_shortcode($atts)
     $medal_colors = array('#f5b942', '#c0c0c0', '#cd7f32');
 
     // 汇总统计（用于三张总览卡）：参与用户 / 总评论数 / 走心评论数
+    // 累计评论 = 全站已审核的普通评论总数（不含 trackback/pingback），与榜单 TopN 无关。
+    global $wpdb;
     $total_users    = count($items);
-    $total_comments = 0;
-    foreach ($items as $it) {
-        $total_comments += (int) $it['count'];
-    }
+    $total_comments = (int) $wpdb->get_var(
+        "SELECT COUNT(*) FROM {$wpdb->comments}
+         WHERE comment_approved = '1'
+           AND (comment_type = '' OR comment_type = 'comment')"
+    );
     // 走心评论：优先复用 [heart_comments] 短码的统计接口
     $heart_count = 0;
     if (function_exists('kratos_heart_get_stats')) {
