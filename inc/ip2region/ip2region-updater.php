@@ -27,9 +27,53 @@ if (!class_exists('\\ip2region\\xdb\\Searcher', false)) {
 
 const KRATOS_IP2REGION_OPT       = 'kratos_ip2region_runtime';   // 运行时状态：上次更新时间、状态文案
 const KRATOS_IP2REGION_CRON_HOOK = 'kratos_ip2region_update_cron';
-const KRATOS_IP2REGION_V4_URL    = 'https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v4.xdb';
-const KRATOS_IP2REGION_V6_URL    = 'https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb';
 const KRATOS_IP2REGION_MIN_BYTES = 600000;
+
+/**
+ * 按主题「更新下载源」选项返回 ip2region xdb 的下载源候选列表（按优先级排序，依次尝试）。
+ *
+ * 复用 kratos_plus_should_use_gitee()（inc/theme-core.php），与主题自身升级源逻辑一致：
+ *   auto   ：Asia/Shanghai 等国内时区走加速源，其他走 GitHub
+ *   github ：强制 GitHub raw（仅一个候选）
+ *   gitee  ：走加速源候选链（Gitee 官方仓库不允许匿名 raw；名称保留兼容既有选项）
+ *
+ * 加速源候选（IPv4）：
+ *   1) jsDelivr CDN 镜像 GitHub（~11MB，jsDelivr 单文件 20MB 上限内）
+ *   2) ghproxy.com 反代
+ *   3) ghfast.top 反代（备用）
+ *   4) 直连 GitHub raw（兜底）
+ *
+ * 加速源候选（IPv6，~36MB 超 jsDelivr 上限，跳过 jsDelivr）：
+ *   1) mirror.ghproxy.com 反代
+ *   2) ghfast.top 反代
+ *   3) gh-proxy.com 反代
+ *   4) 直连 GitHub raw（兜底）
+ */
+function kratos_ip2region_v4_urls() {
+    $github = 'https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v4.xdb';
+    if (function_exists('kratos_plus_should_use_gitee') && kratos_plus_should_use_gitee()) {
+        return [
+            'https://cdn.jsdelivr.net/gh/lionsoul2014/ip2region@master/data/ip2region_v4.xdb',
+            'https://mirror.ghproxy.com/https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v4.xdb',
+            'https://ghfast.top/https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v4.xdb',
+            $github,
+        ];
+    }
+    return [$github];
+}
+
+function kratos_ip2region_v6_urls() {
+    $github = 'https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb';
+    if (function_exists('kratos_plus_should_use_gitee') && kratos_plus_should_use_gitee()) {
+        return [
+            'https://mirror.ghproxy.com/https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb',
+            'https://ghfast.top/https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb',
+            'https://gh-proxy.com/https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb',
+            $github,
+        ];
+    }
+    return [$github];
+}
 
 function kratos_ip2region_dir() {
     $upload = wp_upload_dir();
@@ -85,8 +129,10 @@ function kratos_ip2region_update_runtime(array $patch) {
 function kratos_ip2region_download_xdb($url, $target_path) {
     $tmp_path = $target_path . '.tmp';
 
+    // 大文件下载给足 timeout（IPv6 xdb ~36MB，慢线路可能超过 30s）；
+    // 反代不通时依赖上层 kratos_ip2region_download_xdb_multi 切换到下一个候选，无需在此单点缩短。
     $response = wp_remote_get($url, [
-        'timeout'     => 120,
+        'timeout'     => 60,
         'redirection' => 5,
         'stream'      => true,
         'filename'    => $tmp_path,
@@ -125,6 +171,23 @@ function kratos_ip2region_download_xdb($url, $target_path) {
 }
 
 /**
+ * 依次尝试多个候选源下载，命中第一个成功的即返回。
+ * 返回：成功时 true；全部失败时返回携带聚合错误信息的 WP_Error。
+ */
+function kratos_ip2region_download_xdb_multi(array $urls, $target_path) {
+    $errors = [];
+    foreach ($urls as $url) {
+        $r = kratos_ip2region_download_xdb($url, $target_path);
+        if (!is_wp_error($r)) {
+            return true;
+        }
+        $host = parse_url($url, PHP_URL_HOST) ?: $url;
+        $errors[] = $host . ': ' . $r->get_error_message();
+    }
+    return new WP_Error('all_sources_failed', '全部源均失败 — ' . implode(' | ', $errors));
+}
+
+/**
  * 执行一次更新
  * @return array {ok:bool, message:string}
  */
@@ -133,7 +196,7 @@ function kratos_ip2region_run_update() {
     $patch    = [];
     $any_fail = false;
 
-    $r4 = kratos_ip2region_download_xdb(KRATOS_IP2REGION_V4_URL, kratos_ip2region_v4_path());
+    $r4 = kratos_ip2region_download_xdb_multi(kratos_ip2region_v4_urls(), kratos_ip2region_v4_path());
     if (is_wp_error($r4)) {
         $any_fail   = true;
         $messages[] = 'IPv4 ' . $r4->get_error_message();
@@ -143,7 +206,7 @@ function kratos_ip2region_run_update() {
     }
 
     if (kratos_ip2region_ipv6_enabled()) {
-        $r6 = kratos_ip2region_download_xdb(KRATOS_IP2REGION_V6_URL, kratos_ip2region_v6_path());
+        $r6 = kratos_ip2region_download_xdb_multi(kratos_ip2region_v6_urls(), kratos_ip2region_v6_path());
         if (is_wp_error($r6)) {
             $any_fail   = true;
             $messages[] = 'IPv6 ' . $r6->get_error_message();
@@ -372,7 +435,12 @@ function kratos_ip2region_render_status() {
             <a href="<?php echo esc_url($update_url); ?>"
                class="button button-primary"
                onclick="return confirm('确定立即更新数据库？IPv4 约 10MB，IPv6 约 36MB。');">立即更新</a>
-            <span style="color:#888;margin-left:10px">数据来源：<a href="https://github.com/lionsoul2014/ip2region" target="_blank" rel="noopener">lionsoul2014/ip2region</a>（Apache-2.0）</span>
+            <?php
+            $use_cn    = function_exists('kratos_plus_should_use_gitee') && kratos_plus_should_use_gitee();
+            $src_url   = 'https://github.com/lionsoul2014/ip2region';
+            $src_label = $use_cn ? 'lionsoul2014/ip2region（国内加速：jsDelivr / ghproxy 镜像候选链）' : 'lionsoul2014/ip2region @ GitHub';
+            ?>
+            <span style="color:#888;margin-left:10px">数据来源：<a href="<?php echo esc_url($src_url); ?>" target="_blank" rel="noopener"><?php echo esc_html($src_label); ?></a>（Apache-2.0）</span>
         </div>
     </div>
     <?php
