@@ -237,6 +237,16 @@ function kratos_login_intercept() {
 
     // 命中自定义 slug → 重写为 wp-login.php 内部继续处理（无论是否已登录，logout/resetpass 都要能走通）
     if ($last === $slug || $path === $slug) {
+        // 已登录用户访问登录页（无 action 或 action=login 且未要求 reauth）→ 直接跳到管理后台，
+        // 避免登录成功后再次访问自定义登录 URL 仍显示登录表单
+        if (is_user_logged_in() && empty($_REQUEST['reauth'])) {
+            $action = isset($_REQUEST['action']) ? sanitize_key(wp_unslash($_REQUEST['action'])) : '';
+            if ($action === '' || $action === 'login') {
+                $redirect_to = !empty($_REQUEST['redirect_to']) ? esc_url_raw(wp_unslash($_REQUEST['redirect_to'])) : admin_url();
+                wp_safe_redirect($redirect_to);
+                exit;
+            }
+        }
         $qs = $_SERVER['QUERY_STRING'] ?? '';
         $target = ABSPATH . 'wp-login.php';
         if (file_exists($target)) {
@@ -261,7 +271,13 @@ function kratos_login_intercept() {
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') return;
 
         $action = isset($_GET['action']) ? $_GET['action'] : '';
-        $allow_actions = array('logout', 'postpass', 'rp', 'resetpass', 'confirm_admin_email', 'lostpassword', 'retrievepassword', 'register');
+        // 仅放行"必须直连 wp-login.php"的 action：
+        // - logout / postpass：POST 之外的 GET 回执
+        // - rp / resetpass：邮件里的密码重置一次性链接（带 nonce）
+        // - confirm_admin_email：管理员邮箱确认链接
+        // register / lostpassword / retrievepassword 走自定义 slug（/{slug}/?action=...），
+        // 直连 wp-login.php 时统一 404，避免自定义 URL 的隐藏被这两个 action 旁路。
+        $allow_actions = array('logout', 'postpass', 'rp', 'resetpass', 'confirm_admin_email');
         if (in_array($action, $allow_actions, true)) return;
         if (!empty($_GET['loggedout'])) return;
         if (!empty($_GET['key']) && !empty($_GET['login'])) return;
@@ -283,18 +299,12 @@ function kratos_login_block_admin() {
 }
 add_action('admin_init', 'kratos_login_block_admin', 0);
 
-/** 发送 404 并渲染主题 404 模板 */
+/** 重定向到一个 WordPress 天然 404 的路径，让浏览器地址栏切换并走标准 404 渲染流程
+ *  （避免 init 阶段 inline include 404.php 时主查询未执行导致模板异常，
+ *  同时让地址栏不再停留在原始被拦截的 URL，如 /wp-login.php） */
 function kratos_login_send_404() {
-    global $wp_query;
-    status_header(404);
     nocache_headers();
-    if ($wp_query) { $wp_query->set_404(); }
-    $tpl = get_query_template('404');
-    if ($tpl) {
-        include $tpl;
-    } else {
-        echo '<h1>404 Not Found</h1>';
-    }
+    wp_safe_redirect(home_url('/404'), 302);
     exit;
 }
 
@@ -416,7 +426,7 @@ function kratos_login_check_bot_and_captcha() {
         if ($expected === false) {
             return new WP_Error('kratos_login_captcha_expired', __('<strong>错误</strong>：验证码已过期，请刷新页面重试。', 'kratos'));
         }
-        if ((string) $answer !== (string) $expected) {
+        if (!hash_equals((string) $expected, (string) $answer)) {
             return new WP_Error('kratos_login_captcha_wrong', __('<strong>错误</strong>：数字验证结果不正确。', 'kratos'));
         }
     }
