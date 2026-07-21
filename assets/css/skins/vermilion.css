@@ -1458,7 +1458,7 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-timeline .k
 
 /* ---------- 特色标题页 kft ---------- */
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-featured-title .kft-content {
-    padding: 28px 32px;
+    padding: 24px 28px;
     position: relative;
 }
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h1,
