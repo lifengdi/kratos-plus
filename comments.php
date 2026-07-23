@@ -46,7 +46,7 @@ if (comments_open()) { ?>
 										<div class="input-group-prepend">
 											<span class="input-group-text"><i class="kicon i-url"></i></span>
 										</div>
-										<input class="form-control" id="author" placeholder="<?php _e('网址', 'kratos'); ?>" name="url" type="url" value="<?php echo esc_attr($commenter['comment_author_url']); ?>">
+										<input class="form-control" id="url" placeholder="<?php _e('网址', 'kratos'); ?>" name="url" type="url" value="<?php echo esc_attr($commenter['comment_author_url']); ?>">
 									</div>
 								</div>
 							</div>
