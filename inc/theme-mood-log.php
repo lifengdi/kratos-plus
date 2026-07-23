@@ -882,7 +882,26 @@ function kratos_mood_js()
                 data:{action:'kratos_mood_save',nonce:kratosMoodLog.nonce,mood:mood,note:note},
                 success:function(r){
                     \$btn.prop('disabled',false);
-                    if(r&&r.success){\$msg.addClass('is-ok').text(I18N.saveOk);}
+                    if(r&&r.success){
+                        \$msg.addClass('is-ok').text(I18N.saveOk);
+                        if(\$('.kratos-mood-admin').length){
+                            setTimeout(function(){ window.location.reload(); }, 100);
+                            return;
+                        }
+                        // 前台：刷新热力图画布
+                        var \$box=\$('.kratos-heatmap.is-mood'),
+                            \$c=\$box.find('.kml-canvas'),
+                            tr=\$box.data('time-range'),
+                            labels=\$box.data('labels')||{},
+                            \$active=\$box.find('.kph-year-tag.is-active'),
+                            y=(\$active.data('year'))||null;
+                        if(\$c.length){
+                            \$.ajax({url:kratosMoodLog.ajaxUrl,type:'GET',dataType:'json',
+                                data:{action:'kratos_mood_get',year:y,time_range:tr},
+                                success:function(rr){render(\$c,rr.data||{},rr.stats||{},rr.year,rr.time_range,labels);}
+                            });
+                        }
+                    }
                     else {\$msg.removeClass('is-ok').text((r&&r.data&&r.data.msg)||I18N.saveFail);}
                 },
                 error:function(){\$btn.prop('disabled',false);\$msg.removeClass('is-ok').text(I18N.saveFail);}

@@ -209,7 +209,11 @@ function kratos_autolink_filter_content($content)
         return $content;
     }
 
-    $cache_key = 'c_' . $post->ID . '_' . md5('v6|' . $post->post_modified_gmt . '|' . kratos_autolink_terms_version() . '|' . kratos_autolink_options_signature());
+    // cache key 必须含 $content 指纹：同一篇文章在一次请求内，the_content 会被多次调用
+    // 且输入不同——尤其 wp_trim_excerpt()（SEO 描述取 get_the_excerpt 时触发）会先
+    // excerpt_remove_blocks() 剥掉动态区块再跑 the_content。若 key 不含内容，剥块版本会
+    // 先占坑，正文渲染命中该缓存 → 区块整体消失。加入 md5($content) 让不同输入各自缓存。
+    $cache_key = 'c_' . $post->ID . '_' . md5('v7|' . $post->post_modified_gmt . '|' . kratos_autolink_terms_version() . '|' . kratos_autolink_options_signature() . '|' . md5($content));
     $cached = wp_cache_get($cache_key, 'kratos_autolink');
     if (is_string($cached)) {
         return $cached;

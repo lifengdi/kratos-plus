@@ -854,6 +854,7 @@ CSF::createSection($prefix, array(
                 'lavender'  => __('柔美 · 莫兰迪薰衣草', 'kratos'),
                 'retro'     => __('复古 · 牛皮纸', 'kratos'),
                 'web1998'   => __('复古 · 千禧网页', 'kratos'),
+                'ebook'     => __('电子书 · 纸墨', 'kratos'),
             ),
             'default' => 'mon',
             'dependency' => array('g_weekday_skin_mode', '==', 'locked'),

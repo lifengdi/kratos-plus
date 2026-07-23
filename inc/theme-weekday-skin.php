@@ -57,6 +57,7 @@ function kratos_weekday_options()
         'lavender'  => __('莫兰迪 · 薰衣草', 'kratos'),
         'retro'     => __('复古 · 牛皮纸', 'kratos'),
         'web1998'   => __('复古 · 千禧网页', 'kratos'),
+        'ebook'     => __('电子书 · 纸墨', 'kratos'),
     );
 }
 
@@ -83,6 +84,7 @@ function kratos_weekday_variant_files()
         'morandi'   => 'morandi.css',
         'retro'     => 'retro.css',
         'web1998'   => 'web1998.css',
+        'ebook'     => 'ebook.css',
     );
 }
 
