@@ -1618,7 +1618,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl
 
 /* ---------- 特色标题页（page-featured-title） ---------- */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content {
-    padding: 28px 32px;
+    padding: 24px 28px;
     position: relative;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content::before {
