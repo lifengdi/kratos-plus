@@ -75,6 +75,10 @@ if (!empty($kratos_ss_back_pages)) {
                     elseif ($img_count === 3)  $grid_class = 'kss-grid-3';
                     elseif ($img_count === 4)  $grid_class = 'kss-grid-4';
                     else                       $grid_class = 'kss-grid-9';
+
+                    $love          = (int) get_post_meta($post_id, 'love', true);
+                    $comment_count = (int) get_comments_number($post_id);
+                    $has_loved     = isset($_COOKIE['love_' . $post_id]);
                 ?>
                     <a class="kratos-shuoshuo-back" href="<?php echo esc_url($kratos_ss_back_url); ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -118,6 +122,16 @@ if (!empty($kratos_ss_back_pages)) {
                                     <?php } ?>
                                     <div class="kss-meta">
                                         <span class="kss-time" title="<?php echo esc_attr($time_full); ?>"><?php echo esc_html($time_full); ?> · <?php echo esc_html($time_human); ?></span>
+                                        <span class="kss-actions">
+                                            <a class="kss-action kss-like <?php echo $has_loved ? 'done' : ''; ?>" href="javascript:;" data-id="<?php echo (int) $post_id; ?>" title="<?php esc_attr_e('点赞', 'kratos'); ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
+                                                <em><?php echo (int) $love; ?></em>
+                                            </a>
+                                            <a class="kss-action" href="#respond" title="<?php esc_attr_e('评论', 'kratos'); ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                                <em><?php echo (int) $comment_count; ?></em>
+                                            </a>
+                                        </span>
                                     </div>
                                 </div>
                             </li>
