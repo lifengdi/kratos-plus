@@ -164,6 +164,8 @@ function post_thumbnail()
         }
         if (!empty($img_val)) {
             echo '<img src="' . $img_val . '" />';
+        } elseif (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
+            echo kratos_default_thumb_html($post);
         } else {
             echo '<img src="' . kratos_option('g_postthumbnail', ASSET_PATH . '/assets/img/default.jpg') . '" />';
         }

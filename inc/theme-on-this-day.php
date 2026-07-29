@@ -89,7 +89,11 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
                 $thumb = $mm[1];
             }
             if ($thumb === '') {
-                $thumb = (string) kratos_option('g_postthumbnail', ASSET_PATH . '/assets/img/default.jpg');
+                if (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
+                    $thumb = kratos_default_thumb_url($p, 512, 288);
+                } else {
+                    $thumb = (string) kratos_option('g_postthumbnail', ASSET_PATH . '/assets/img/default.jpg');
+                }
             }
             $items[] = array(
                 'id'        => (int) $p->ID,
@@ -205,7 +209,7 @@ function kratos_otd_shortcode($atts)
                     <li class="kotd-item">
                         <?php if ($show_thumb && !empty($it['thumb'])) { ?>
                             <a class="kotd-thumb" href="<?php echo esc_url($it['permalink']); ?>" aria-hidden="true" tabindex="-1">
-                                <span class="kotd-thumb-bg" style="background-image:url('<?php echo esc_url($it['thumb']); ?>');"></span>
+                                <span class="kotd-thumb-bg" style="background-image:url('<?php echo esc_attr((strpos($it['thumb'], 'data:') === 0) ? $it['thumb'] : esc_url($it['thumb'])); ?>');"></span>
                             </a>
                         <?php } ?>
                         <div class="kotd-main">

@@ -75,6 +75,8 @@ require get_template_directory() . '/inc/theme-seo.php';
 // 文章配置
 require get_template_directory() . '/inc/theme-article.php';
 
+require get_template_directory() . '/inc/theme-thumb-placeholder.php';
+
 // 小工具配置
 require get_template_directory() . '/inc/theme-widgets.php';
 

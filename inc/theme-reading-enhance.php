@@ -222,9 +222,14 @@ function kratos_read_render_related()
         if ($show_thumb) {
             $thumb = get_the_post_thumbnail_url($p->ID, 'medium');
             if (!$thumb) {
-                $thumb = kratos_option('g_postthumbnail', get_template_directory_uri() . '/assets/img/default.jpg');
+                if (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
+                    $thumb = kratos_default_thumb_url($p, 512, 288);
+                } else {
+                    $thumb = kratos_option('g_postthumbnail', get_template_directory_uri() . '/assets/img/default.jpg');
+                }
             }
-            echo '<span class="kratos-related-thumb" style="background-image:url(' . esc_url($thumb) . ')"></span>';
+            $thumb_url = (strpos($thumb, 'data:') === 0) ? $thumb : esc_url($thumb);
+            echo '<span class="kratos-related-thumb" style="background-image:url(' . esc_attr($thumb_url) . ')"></span>';
         }
         echo '<span class="kratos-related-name">' . esc_html($p->post_title) . '</span>';
         echo '<span class="kratos-related-date">' . esc_html(get_the_date('', $p)) . '</span>';
