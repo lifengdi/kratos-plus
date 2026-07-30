@@ -43,6 +43,10 @@ function kratos_thumb_ph_text($post)
             $cats = is_object($post) ? get_the_category($post->ID) : array();
             $text = (!empty($cats) && isset($cats[0]->name)) ? $cats[0]->name : $title;
             break;
+        case 'title_full':
+            // 完整标题，交由前端 CSS 自然折行；SVG 端会另行截断
+            $text = $title;
+            break;
         case 'title_two':
             // 英文（首字符是 ASCII 字母/数字）取首个空白分隔单词；中文取前两字
             if (preg_match('/^[A-Za-z0-9]/', $title)) {
@@ -108,9 +112,6 @@ function kratos_thumb_ph_bg($post)
     if ($mode === 'fixed') {
         return kratos_option('g_postthumbnail_bg_fixed', '#5B8DEF');
     }
-    if ($mode === 'skin') {
-        return kratos_thumb_ph_skin_accent();
-    }
     $palette = kratos_thumb_ph_palette(kratos_option('g_postthumbnail_palette', 'material'));
     $seed = is_object($post) ? ($post->post_name ?: (string)$post->ID) : 'kratos';
     $idx = abs(crc32($seed)) % count($palette);
@@ -171,12 +172,15 @@ function kratos_thumb_ph_font_family($font)
 function kratos_thumb_ph_svg($post, $w = 512, $h = 288)
 {
     $preset = kratos_option('g_postthumbnail_preset', 'solid');
+    // 兼容旧数据：数据库里若仍存 skin 值（已下线），回退到 solid
     if ($preset === 'skin') {
-        // skin 预设需要读 CSS 变量，SVG 无法访问，改为强制 solid + 皮肤 fallback 色
-        // 若走 URL 场景（如 og:image），SVG 也必须落地一个色，因此用第一张调色板色
         $preset = 'solid';
     }
     $text = kratos_thumb_ph_text($post);
+    $is_full = kratos_option('g_postthumbnail_text_source', 'title_initial') === 'title_full';
+    if ($is_full && mb_strlen($text, 'UTF-8') > 60) {
+        $text = mb_substr($text, 0, 60, 'UTF-8');
+    }
     $bg   = kratos_thumb_ph_bg($post);
     if (!$bg) $bg = '#5B8DEF';
     $fg   = kratos_thumb_ph_fg($bg);
@@ -186,8 +190,14 @@ function kratos_thumb_ph_svg($post, $w = 512, $h = 288)
     $font_e = htmlspecialchars($font, ENT_QUOTES | ENT_XML1, 'UTF-8');
     $short  = min($w, $h);
     $len    = mb_strlen($text, 'UTF-8');
-    $ratio  = kratos_thumb_ph_ratio($len);
-    $fs     = (int) round($short * $ratio);
+    // 完整标题模式走多行折行，字号由 short 直接给一个饱满起始值（后面会按行数迭代缩），
+    // 不再吃 ratio 表（表是给单行短文本设计的，长文本会被压得极小）。
+    if ($is_full && $len > 6) {
+        $fs = (int) round($short * 0.22);
+    } else {
+        $ratio  = kratos_thumb_ph_ratio($len);
+        $fs     = (int) round($short * $ratio);
+    }
 
     $cx = $w / 2;
     $cy = $h / 2;
@@ -236,12 +246,18 @@ function kratos_thumb_ph_svg($post, $w = 512, $h = 288)
             $seed = is_object($post) ? ($post->post_name ?: (string)$post->ID) : 'kratos';
             $accent = $palette[abs(crc32($seed)) % count($palette)];
             $bg_el = '<rect width="' . $w . '" height="' . $h . '" fill="#F1EEE8"/>';
-            $sq = (int)($short * 0.5);
+            // 完整标题模式：中央方块放大到 0.8*short，几乎铺满画布，给多行文字留空间
+            $sq_ratio = ($is_full && $len > 6) ? 0.85 : 0.5;
+            $sq = (int)($short * $sq_ratio);
             $rx = (int)($sq * 0.22);
             $sx = ($w - $sq) / 2; $sy = ($h - $sq) / 2;
             $bg_el .= '<rect x="' . $sx . '" y="' . $sy . '" width="' . $sq . '" height="' . $sq . '" rx="' . $rx . '" fill="' . $accent . '"/>';
             $fg = '#ffffff';
-            $fs = (int)($sq * 0.5);
+            if (!($is_full && $len > 6)) {
+                $fs = (int)($sq * 0.5);
+            }
+            // 完整标题模式下把 usable 宽度限制到方块内，wrap 才不会溢出方块
+            $notion_usable_w = $sq;
             break;
 
         case 'solid':
@@ -250,15 +266,134 @@ function kratos_thumb_ph_svg($post, $w = 512, $h = 288)
             break;
     }
 
-    // 居中方案：dominant-baseline="central" 走几何中心对齐（现代浏览器一致支持）；
-    // CJK 字形有轻微下沉（em box 0.88↑ / 0.12↓），叠加 -0.05em 微调补偿。
+    // 完整标题模式：估算字宽 + 贪心分行 + 多 tspan 输出。
+    // CJK/全角按 1.0em、ASCII 按 0.55em 估宽；总行数超上限则整体缩字号后重排。
+    $text_svg = '';
+    if ($is_full && $len > 6) {
+        $pad_ratio = 0.05;
+        // notion 预设文字画在中央方块内，用方块宽度作为可用宽度
+        // 5% 安全余量抵消字宽估算误差
+        $usable = (isset($notion_usable_w) ? $notion_usable_w * 0.9 : $w * (1 - $pad_ratio * 2)) * 0.95;
+        $max_lines = 5;
+        $line_gap = 1.2;
+        $cur_fs = $fs;
+        // 迭代缩字号：行数超上限，或任一行的估宽超过 usable（防英文/混排溢出）
+        for ($try = 0; $try < 10; $try++) {
+            $lines = kratos_thumb_ph_wrap_lines($text, $cur_fs, $usable);
+            $overflow = false;
+            foreach ($lines as $ln) {
+                if (kratos_thumb_ph_measure_em($ln) * $cur_fs > $usable) { $overflow = true; break; }
+            }
+            if (!$overflow && count($lines) <= $max_lines) break;
+            $cur_fs = (int) max(10, round($cur_fs * 0.9));
+            if ($cur_fs <= 10) break;
+        }
+        // 若仍超行，截尾并在末行加省略号
+        if (count($lines) > $max_lines) {
+            $lines = array_slice($lines, 0, $max_lines);
+            $lines[$max_lines - 1] = mb_substr($lines[$max_lines - 1], 0, max(1, mb_strlen($lines[$max_lines - 1], 'UTF-8') - 1), 'UTF-8') . '…';
+        }
+        $n = count($lines);
+        // 首行 y 偏移：让整块文本视觉居中。行高 = cur_fs * line_gap。
+        $total_h = ($n - 1) * $cur_fs * $line_gap;
+        $y0 = $cy - $total_h / 2;
+        $tspans = '';
+        foreach ($lines as $i => $ln) {
+            $ln_e = htmlspecialchars($ln, ENT_QUOTES | ENT_XML1, 'UTF-8');
+            $ty = $y0 + $i * $cur_fs * $line_gap;
+            $tspans .= '<tspan x="' . $cx . '" y="' . $ty . '" dy="-0.05em">' . $ln_e . '</tspan>';
+        }
+        $text_svg = '<text font-family="' . $font_e . '" font-size="' . $cur_fs . '" font-weight="700" fill="' . $fg . '" text-anchor="middle" dominant-baseline="central">' . $tspans . '</text>';
+    } else {
+        $text_svg = '<text x="' . $cx . '" y="' . $cy . '" dy="-0.05em" font-family="' . $font_e . '" font-size="' . $fs . '" font-weight="700" fill="' . $fg . '" text-anchor="middle" dominant-baseline="central">' . $text_e . '</text>';
+    }
+
     $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $w . ' ' . $h . '" preserveAspectRatio="' . $ratio_mode . '" width="' . $w . '" height="' . $h . '">'
          . $bg_el
-         . '<text x="' . $cx . '" y="' . $cy . '" dy="-0.05em" font-family="' . $font_e . '" font-size="' . $fs . '" font-weight="700" fill="' . $fg . '" text-anchor="middle" dominant-baseline="central">'
-         . $text_e
-         . '</text>'
+         . $text_svg
          . '</svg>';
     return $svg;
+}
+
+/**
+ * 按估算字宽贪心分行。返回若干行字符串。
+ * 规则：CJK/全角 = 1.0em，ASCII/半角 = 0.55em。ASCII 单词尽量整体成行，超长强制截。
+ */
+function kratos_thumb_ph_wrap_lines($text, $fs, $usable_px)
+{
+    // 字宽估算（bold 700 sans-serif，含安全余量）：
+    // - 大写字母/数字 ≈ 0.72em，小写字母 ≈ 0.58em，CJK 全角 ≈ 1.0em，ASCII 标点/空格 ≈ 0.35em
+    $max_em = $usable_px / max(1, $fs);
+    $lines = array();
+    $line = '';
+    $line_em = 0;
+    $len = mb_strlen($text, 'UTF-8');
+    $i = 0;
+    while ($i < $len) {
+        $ch = mb_substr($text, $i, 1, 'UTF-8');
+        if (preg_match('/^[A-Za-z0-9]$/', $ch)) {
+            // 抓整个 ASCII 词（含数字）
+            $word = '';
+            while ($i < $len) {
+                $c = mb_substr($text, $i, 1, 'UTF-8');
+                if (!preg_match('/^[A-Za-z0-9]$/', $c)) break;
+                $word .= $c;
+                $i++;
+            }
+            $w_em = kratos_thumb_ph_measure_em($word);
+            if ($line_em + $w_em > $max_em && $line !== '') {
+                $lines[] = $line;
+                $line = ''; $line_em = 0;
+            }
+            // 单词本身超行宽：按字符逐个塞，塞不下就换行
+            if ($w_em > $max_em) {
+                $wlen = strlen($word);
+                for ($k = 0; $k < $wlen; $k++) {
+                    $cc = $word[$k];
+                    $c_em = kratos_thumb_ph_measure_em($cc);
+                    if ($line_em + $c_em > $max_em && $line !== '') {
+                        $lines[] = $line; $line = ''; $line_em = 0;
+                    }
+                    $line .= $cc; $line_em += $c_em;
+                }
+            } else {
+                $line .= $word; $line_em += $w_em;
+            }
+        } else {
+            $em = kratos_thumb_ph_measure_em($ch);
+            if ($line_em + $em > $max_em && $line !== '') {
+                $lines[] = $line;
+                $line = ''; $line_em = 0;
+            }
+            if (!($line === '' && $ch === ' ')) {
+                $line .= $ch;
+                $line_em += $em;
+            }
+            $i++;
+        }
+    }
+    if ($line !== '') $lines[] = $line;
+    return $lines;
+}
+
+/**
+ * 估算字符串在 bold 700 sans-serif 下的宽度（单位 em）。
+ */
+function kratos_thumb_ph_measure_em($s)
+{
+    $em = 0.0;
+    $n = mb_strlen($s, 'UTF-8');
+    for ($i = 0; $i < $n; $i++) {
+        $ch = mb_substr($s, $i, 1, 'UTF-8');
+        if (preg_match('/^[MW]$/', $ch))              $em += 0.95;
+        elseif (preg_match('/^[A-Z]$/', $ch))         $em += 0.80;
+        elseif (preg_match('/^[0-9]$/', $ch))         $em += 0.70;
+        elseif (preg_match('/^[mw]$/', $ch))          $em += 0.85;
+        elseif (preg_match('/^[a-z]$/', $ch))         $em += 0.60;
+        elseif (preg_match('/^[\x20-\x7E]$/', $ch))   $em += 0.40;
+        else                                          $em += 1.0;
+    }
+    return $em;
 }
 
 /**
@@ -276,25 +411,6 @@ function kratos_default_thumb_url($post, $w = 512, $h = 288)
  */
 function kratos_default_thumb_html($post, $w = 512, $h = 288)
 {
-    $preset = kratos_option('g_postthumbnail_preset', 'solid');
-    $bg_mode = kratos_option('g_postthumbnail_bg_mode', 'hash');
-
-    // skin 预设，或 Solid 预设 + bg_mode=skin → HTML/CSS 版
-    // 其他预设（retro/grid/gradient/notion）的配色由预设自身控制，bg_mode 不生效
-    if ($preset === 'skin' || ($preset === 'solid' && $bg_mode === 'skin')) {
-        $text = kratos_thumb_ph_text($post);
-        // 病态超长兜底：截断到 24 字符
-        if (mb_strlen($text, 'UTF-8') > 24) {
-            $text = mb_substr($text, 0, 24, 'UTF-8');
-        }
-        $font_class = 'kt-ph-font-' . kratos_option('g_postthumbnail_font', 'sans');
-        // CSS 命中范围 1~14，超出统一按 14 档
-        $len_class = min(14, max(1, mb_strlen($text, 'UTF-8')));
-        return '<span class="kratos-thumb-ph is-skin ' . esc_attr($font_class) . '"'
-             . ' data-len="' . esc_attr($len_class) . '" aria-hidden="true">'
-             . esc_html($text) . '</span>';
-    }
-
     $url = kratos_default_thumb_url($post, $w, $h);
     $alt = is_object($post) ? esc_attr(get_the_title($post)) : '';
     return '<img src="' . $url . '" alt="' . $alt . '" loading="lazy" />';
@@ -399,6 +515,28 @@ add_action('wp_head', function () {
 }
 .kratos-thumb-ph.kt-ph-font-serif{font-family:Georgia,"Songti SC",serif}
 .kratos-thumb-ph.kt-ph-font-mono{font-family:"JetBrains Mono",Consolas,monospace}
+/* 完整标题模式：允许折行，最多 3 行，超出省略。
+   用高特异性 + !important 兜住 .a-thumb 后代选择器与移动端媒体查询覆盖。 */
+.kratos-thumb-ph.is-wrap,
+.a-thumb .kratos-thumb-ph.is-wrap,
+.k-main .board .article-panel .a-thumb .kratos-thumb-ph.is-wrap{
+  white-space:normal !important;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+  line-height:1.2 !important;
+  letter-spacing:0 !important;
+  padding:3% 5% !important;
+  font-size:min(16cqw,60px) !important;
+  display:-webkit-box !important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:5;
+  line-clamp:5;
+  place-items:unset;
+  text-align:center;
+}
+@supports not (font-size: 1cqw){
+  .kratos-thumb-ph.is-wrap{font-size:clamp(18px,6vw,48px) !important}
+}
 </style>
     <?php
 }, 20);

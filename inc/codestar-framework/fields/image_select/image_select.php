@@ -46,10 +46,22 @@ if (!class_exists('CSF_Field_image_select')) {
           $active  = (in_array($key, $value)) ? ' csf--active' : '';
           $checked = (in_array($key, $value)) ? ' checked' : '';
 
+          // 支持 array('image' => url, 'label' => name) 结构以在图片下方显示名称；旧结构（纯 url 字符串）保持兼容
+          if (is_array($option)) {
+            $img_src = isset($option['image']) ? $option['image'] : '';
+            $img_label = isset($option['label']) ? $option['label'] : '';
+          } else {
+            $img_src = $option;
+            $img_label = '';
+          }
+
           echo '<div class="csf--sibling csf--image' . esc_attr($active) . '">';
           echo '<figure>';
-          echo '<img src="' . esc_url($option) . '" alt="img-' . esc_attr($num++) . '" />';
+          echo '<img src="' . esc_url($img_src) . '" alt="img-' . esc_attr($num++) . '" />';
           echo '<input type="' . esc_attr($type) . '" name="' . esc_attr($this->field_name($extra)) . '" value="' . esc_attr($key) . '"' . $this->field_attributes() . esc_attr($checked) . '/>';
+          if ($img_label !== '') {
+            echo '<figcaption class="csf--image-label" style="display:block;text-align:center;margin-top:6px;font-size:12px;line-height:1.3;color:#555;">' . esc_html($img_label) . '</figcaption>';
+          }
           echo '</figure>';
           echo '</div>';
         }

@@ -965,12 +965,11 @@ CSF::createSection($prefix, array(
             'title' => __('渲染预设', 'kratos'),
             'subtitle' => __('选择占位图的视觉风格', 'kratos'),
             'options' => array(
-                'solid'    => get_template_directory_uri() . '/assets/img/thumb-ph/solid.svg',
-                'gradient' => get_template_directory_uri() . '/assets/img/thumb-ph/gradient.svg',
-                'retro'    => get_template_directory_uri() . '/assets/img/thumb-ph/retro.svg',
-                'skin'     => get_template_directory_uri() . '/assets/img/thumb-ph/skin.svg',
-                'grid'     => get_template_directory_uri() . '/assets/img/thumb-ph/grid.svg',
-                'notion'   => get_template_directory_uri() . '/assets/img/thumb-ph/notion.svg',
+                'solid'    => array('image' => get_template_directory_uri() . '/assets/img/thumb-ph/solid.svg',    'label' => __('纯色', 'kratos')),
+                'gradient' => array('image' => get_template_directory_uri() . '/assets/img/thumb-ph/gradient.svg', 'label' => __('渐变', 'kratos')),
+                'retro'    => array('image' => get_template_directory_uri() . '/assets/img/thumb-ph/retro.svg',    'label' => __('复古', 'kratos')),
+                'grid'     => array('image' => get_template_directory_uri() . '/assets/img/thumb-ph/grid.svg',     'label' => __('暗黑网格', 'kratos')),
+                'notion'   => array('image' => get_template_directory_uri() . '/assets/img/thumb-ph/notion.svg',   'label' => __('Notion 风', 'kratos')),
             ),
             'default' => 'solid',
             'dependency' => array('g_postthumbnail_mode', '==', 'text'),
@@ -982,6 +981,7 @@ CSF::createSection($prefix, array(
             'options' => array(
                 'title_initial'   => __('标题首字（默认）', 'kratos'),
                 'title_two'       => __('标题前两字/首词', 'kratos'),
+                'title_full'      => __('完整标题（长标题自动折行）', 'kratos'),
                 'category'        => __('分类名', 'kratos'),
                 'custom'          => __('自定义固定字符', 'kratos'),
             ),
@@ -1004,7 +1004,6 @@ CSF::createSection($prefix, array(
             'options' => array(
                 'hash'  => __('哈希调色板（按文章稳定生成）', 'kratos'),
                 'fixed' => __('固定色', 'kratos'),
-                'skin'  => __('跟随皮肤主色', 'kratos'),
             ),
             'default' => 'hash',
             'dependency' => array('g_postthumbnail_mode|g_postthumbnail_preset', '==|==', 'text|solid'),
