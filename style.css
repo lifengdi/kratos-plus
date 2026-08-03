@@ -4781,7 +4781,7 @@ a
     height: auto;
 }
 .k-main .board .post-list.layout-magazine .article-panel .a-post .header {
-    display: -webkit-box;
+    /*display: -webkit-box;*/
     overflow: hidden;
     max-height: 66px;
     line-height: 1.35;
@@ -4850,7 +4850,7 @@ a
     flex: 1 1 auto;
 }
 .k-main .board .post-list.layout-grid .article-panel .a-post .header {
-    display: -webkit-box;
+    /*display: -webkit-box;*/
     overflow: hidden;
     max-height: 51px;
     line-height: 1.4;
@@ -4931,7 +4931,7 @@ a
     height: auto;
 }
 .k-main .board .post-list.layout-minimal .article-panel .a-post .header {
-    display: -webkit-box;
+    /*display: -webkit-box;*/
     overflow: hidden;
     max-height: 72px;
     line-height: 1.5;
