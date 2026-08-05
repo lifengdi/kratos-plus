@@ -153,7 +153,9 @@ function post_thumbnail()
         $img_url = $img_url[0];
     }
     if (has_post_thumbnail()) {
-        echo '<img src="' . $img_url . '" />';
+        // 走 wp_get_attachment_image 而不是手写 <img>，以便 wp_get_attachment_image_attributes
+        // filter 能命中（LQIP 模糊占位、后续任何 <img> 属性注入都靠这个 filter）。
+        echo wp_get_attachment_image($img_id, 'kratos-thumbnail');
     } else {
         $content = $post->post_content;
         $img_preg = "/<img (.*?)src=\"(.+?)\".*?>/";

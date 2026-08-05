@@ -77,6 +77,9 @@ require get_template_directory() . '/inc/theme-article.php';
 
 require get_template_directory() . '/inc/theme-thumb-placeholder.php';
 
+// LQIP 模糊占位 —— 图片加载态渐显
+require get_template_directory() . '/inc/theme-lqip.php';
+
 // 小工具配置
 require get_template_directory() . '/inc/theme-widgets.php';
 

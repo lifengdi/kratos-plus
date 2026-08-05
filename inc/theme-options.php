@@ -1678,6 +1678,36 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'subheading',
+            'content' => __('LQIP 模糊占位（图片加载态渐显）', 'kratos'),
+        ),
+        array(
+            'id' => 'g_lqip_enabled',
+            'type' => 'switcher',
+            'title' => __('功能开关', 'kratos'),
+            'subtitle' => __('为图片附件生成 base64 缩略图，加载完成前显示模糊占位、加载后淡入。需在「工具 → LQIP 回填」中一次性回填已有图片。', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_lqip_width',
+            'type' => 'number',
+            'title' => __('占位图宽度 (px)', 'kratos'),
+            'subtitle' => __('越大越清晰但体积也越大。推荐 20~32，默认 24。', 'kratos'),
+            'min' => 8,
+            'max' => 64,
+            'default' => 24,
+            'dependency' => array('g_lqip_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_lqip_transition',
+            'type' => 'number',
+            'title' => __('淡入时长 (ms)', 'kratos'),
+            'min' => 100,
+            'max' => 2000,
+            'default' => 400,
+            'dependency' => array('g_lqip_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
             'content' => __('系列文章（连载教程 · 上下篇串联）', 'kratos'),
         ),
         array(
