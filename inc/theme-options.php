@@ -4417,6 +4417,24 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'subheading',
+            'content' => __('主题论坛', 'kratos'),
+        ),
+        array(
+            'type' => 'content',
+            'content' => '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:20px 24px;background:linear-gradient(135deg,#f2f8ff 0%,#e6f1ff 100%);border-radius:14px;border:1px solid #cfe3fb;">'
+                . '<div style="flex:1 1 240px;min-width:240px;color:#2f4a66;line-height:1.7;">'
+                . '<p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#2874d0;">' . __('Kratos+ 主题论坛', 'kratos') . '</p>'
+                . '<p style="margin:0 0 4px;font-size:13px;">' . __('遇到使用问题、想反馈 Bug 或提交功能建议，都欢迎到论坛发帖交流。', 'kratos') . '</p>'
+                . '<p style="margin:0;font-size:13px;color:#5b7799;">' . __('也可以在论坛里分享你的建站配置与皮肤搭配，和其他站长互相取经。', 'kratos') . '</p>'
+                . '</div>'
+                . '<div style="flex:0 0 auto;">'
+                . '<a href="https://bbs.lifengdi.com/" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:10px 22px;background:#2874d0;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;box-shadow:0 4px 14px rgba(40,116,208,0.24);">' . __('前往主题论坛', 'kratos') . ' &rarr;</a>'
+                . '<p style="margin:8px 0 0;font-size:12px;color:#5b7799;text-align:center;">bbs.lifengdi.com</p>'
+                . '</div>'
+                . '</div>',
+        ),
+        array(
+            'type' => 'subheading',
             'content' => __('微信赞赏', 'kratos'),
         ),
         array(
