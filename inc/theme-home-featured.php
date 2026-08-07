@@ -151,12 +151,30 @@ function kratos_home_icon_html($icon)
 }
 
 /**
+ * 特色首页专用的两档大图尺寸。
+ *
+ * 主题原有的 kratos-thumbnail 只有 512×288，用来渲染焦点区大图（渲染宽度可达
+ * ~700px，2x 屏 ~1400px）必然被放大到糊；三档缩略图此前都取这一个尺寸，所以
+ * 越大的位置越模糊。这里补两档，小图（列表 mini 78×56）继续复用 512 的那档。
+ *
+ * 注意：新注册的尺寸只对「注册之后上传」的图片自动生成。升级前已入库的图片没有
+ * 对应文件，wp_get_attachment_image() 会回落到原图 —— 视觉上不糊（反而更清晰），
+ * 只是体积偏大；站长可用「Regenerate Thumbnails」类插件补齐后恢复最优体积。
+ */
+function kratos_home_register_image_sizes()
+{
+    add_image_size('kratos-home-lg', 1280, 720, true); // 焦点区主推大图（16:9）
+    add_image_size('kratos-home-md', 760, 475, true);  // 推荐位卡片 / 分类专区特色文（16:10）
+}
+add_action('after_setup_theme', 'kratos_home_register_image_sizes');
+
+/**
  * 缩略图 HTML。
  * 优先特色图（走 wp_get_attachment_image 以命中 LQIP / attributes filter），
  * 其次正文首图，再次文字占位图 / 默认图 —— 与 post_thumbnail() 的回落顺序一致。
  *
  * @param WP_Post $post
- * @param string  $size
+ * @param string  $size 注册过的图片尺寸名，见 kratos_home_register_image_sizes()
  * @return string
  */
 function kratos_home_thumb_html($post, $size = 'kratos-thumbnail')
@@ -183,12 +201,18 @@ function kratos_home_thumb_html($post, $size = 'kratos-thumbnail')
         . '" alt="' . esc_attr(get_the_title($post)) . '" loading="lazy" />';
 }
 
-/** 缩略图链接块（<a> 包 <span class="khf-thumb">）。 */
-function kratos_home_thumb_link($post, $extra_class = '')
+/**
+ * 缩略图链接块（<a> 包 <span class="khf-thumb">）。
+ *
+ * @param WP_Post $post
+ * @param string  $extra_class 追加到 .khf-thumb 上的类（如 khf-thumb-mini）
+ * @param string  $size        图片尺寸档：kratos-home-lg / -md / kratos-thumbnail
+ */
+function kratos_home_thumb_link($post, $extra_class = '', $size = 'kratos-thumbnail')
 {
     $cls = 'khf-thumb' . ($extra_class !== '' ? ' ' . $extra_class : '');
     return '<a class="khf-thumb-link" href="' . esc_url(get_permalink($post)) . '" title="' . esc_attr(get_the_title($post)) . '">'
-        . '<span class="' . esc_attr($cls) . '">' . kratos_home_thumb_html($post) . '</span></a>';
+        . '<span class="' . esc_attr($cls) . '">' . kratos_home_thumb_html($post, $size) . '</span></a>';
 }
 
 /** 摘要（去短码 / 去 HTML，按字数截断）。 */
@@ -329,7 +353,8 @@ function kratos_home_render_hero()
     $html .= '<div class="khf-hero">';
 
     $html .= '<article class="khf-hero-main kr-card">';
-    $html .= kratos_home_thumb_link($main);
+    // 焦点区主推：整站最大的图位（16:9，宽度可达容器的 ~60%），必须走 lg 档
+    $html .= kratos_home_thumb_link($main, '', 'kratos-home-lg');
     $html .= '<div class="khf-hero-body">';
     if (is_sticky($main->ID)) {
         $html .= '<div class="khf-meta"><span class="khf-pill kr-pill">' . esc_html__('置顶', 'kratos') . '</span></div>';
@@ -405,7 +430,7 @@ function kratos_home_render_recommend()
     $html .= '<div class="khf-grid3">';
     foreach ($posts as $p) {
         $html .= '<article class="khf-rec kr-card">';
-        $html .= kratos_home_thumb_link($p);
+        $html .= kratos_home_thumb_link($p, '', 'kratos-home-md');
         $html .= '<div class="khf-rec-body">';
         $html .= kratos_home_meta_html($p, array('cat', 'short_date'));
         $html .= '<a href="' . esc_url(get_permalink($p)) . '"><h3 class="khf-rec-title">' . esc_html(get_the_title($p)) . '</h3></a>';
@@ -472,7 +497,7 @@ function kratos_home_render_category()
         if ($feature) {
             $lead  = array_shift($posts);
             $pane .= '<article class="khf-cat-feature">';
-            $pane .= kratos_home_thumb_link($lead);
+            $pane .= kratos_home_thumb_link($lead, '', 'kratos-home-md');
             $pane .= kratos_home_meta_html($lead, array('short_date', 'views'));
             $pane .= '<a href="' . esc_url(get_permalink($lead)) . '"><h3 class="khf-cat-feature-title">' . esc_html(get_the_title($lead)) . '</h3></a>';
             $pane .= '<p class="khf-cat-feature-excerpt">' . esc_html(kratos_home_excerpt($lead, 50)) . '</p>';
