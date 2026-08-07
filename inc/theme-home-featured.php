@@ -5,12 +5,13 @@
  *
  * 提供:
  *   - [home_featured] 短码：按后台编排的模块顺序渲染杂志式首页。
- *     六个模块：
+ *     七个模块：
  *       hero      焦点区   —— 1 篇大图主推 + 右侧若干次推
  *       recommend 推荐位   —— 三列图上文下卡片（置顶 / 指定分类 / 指定标签 / 手选 ID）
  *       category  分类专区 —— tab 切分类，每个 panel = 左侧特色文 + 右侧列表
  *       hot       热门榜   —— 按 views meta 排序，带序号徽章
  *       latest    最新文章 —— 缩略图 + 标题的紧凑列表
+ *       comment   最近评论 —— 头像 + 评论摘要 + 所属文章的二/三列卡片
  *       stat      数据条   —— 文章 / 分类 / 标签 / 评论四项总数
  *     每个模块的标题、副标题、图标、数据来源、条数均可在后台配置；
  *     模块顺序与开关由 sorter 字段 hf_modules 决定。
@@ -41,9 +42,48 @@ function kratos_home_module_labels()
         'category'  => __('分类专区', 'kratos'),
         'hot'       => __('热门榜', 'kratos'),
         'latest'    => __('最新文章', 'kratos'),
+        'comment'   => __('最近评论', 'kratos'),
         'stat'      => __('数据条', 'kratos'),
     );
 }
+
+/**
+ * 把新增模块补进已保存的 hf_modules。
+ *
+ * sorter 字段只渲染数据库里已存在的条目（见 codestar-framework/fields/sorter），
+ * 所以主题升级后新增的模块 slug 若不写回选项，后台「模块编排」里根本看不到它、
+ * 也就无法启用。这里在进后台时把缺失的 slug 追加到「已启用」末尾（与全新安装
+ * 默认全部启用保持一致），已有模块的顺序与启用状态不动。
+ */
+function kratos_home_sync_modules_option()
+{
+    $labels = kratos_home_module_labels();
+    $opts   = get_option('kratos_options');
+    if (!is_array($opts) || !isset($opts['hf_modules']) || !is_array($opts['hf_modules'])) {
+        return; // 从未保存过 → kratos_home_enabled_modules() 会走 default，无需补
+    }
+
+    $value    = $opts['hf_modules'];
+    $enabled  = isset($value['enabled']) && is_array($value['enabled']) ? $value['enabled'] : array();
+    $disabled = isset($value['disabled']) && is_array($value['disabled']) ? $value['disabled'] : array();
+    $known    = array_merge(array_keys($enabled), array_keys($disabled));
+
+    $added = false;
+    foreach ($labels as $slug => $label) {
+        if (!in_array($slug, $known, true)) {
+            $enabled[$slug] = $label;
+            $added = true;
+        }
+    }
+    if (!$added) {
+        return;
+    }
+
+    $opts['hf_modules'] = array('enabled' => $enabled, 'disabled' => $disabled);
+    update_option('kratos_options', $opts);
+    kratos_home_flush_cache();
+}
+add_action('admin_init', 'kratos_home_sync_modules_option');
 
 /**
  * 取当前启用的模块 slug 列表（按后台拖拽顺序）。
@@ -598,7 +638,105 @@ function kratos_home_render_latest()
 }
 
 /* =========================================================================
- * 模块 6：stat 数据条
+ * 模块 6：comment 最近评论
+ * ========================================================================= */
+
+/**
+ * 最近的已通过评论。
+ * 排除 pingback / trackback，排除挂在非公开文章下的评论（避免泄露草稿/私密内容）。
+ *
+ * @param int  $count
+ * @param bool $skip_admin 是否排除具备 manage_options 权限用户（博主）的评论
+ * @return WP_Comment[]
+ */
+function kratos_home_recent_comments($count, $skip_admin = false)
+{
+    $args = array(
+        'status'      => 'approve',
+        'type'        => 'comment',
+        'post_status' => 'publish',
+        'post_type'   => 'post',
+        'orderby'     => 'comment_date_gmt',
+        'order'       => 'DESC',
+        'number'      => $count,
+    );
+
+    if ($skip_admin) {
+        // 博主可能有多个管理员账号，全部排除；匿名评论（user_id = 0）不受影响
+        $admins = get_users(array('role' => 'administrator', 'fields' => 'ID'));
+        if (!empty($admins)) {
+            $args['author__not_in'] = array_map('intval', $admins);
+        }
+    }
+
+    $comments = get_comments($args);
+    return is_array($comments) ? $comments : array();
+}
+
+function kratos_home_render_comment()
+{
+    $count   = max(1, (int) kratos_option('hf_cmt_count', 6));
+    $words   = max(5, (int) kratos_option('hf_cmt_words', 20));
+    $cols    = (int) kratos_option('hf_cmt_cols', 2) === 3 ? 3 : 2;
+    $avatar  = (bool) kratos_option('hf_cmt_avatar', true);
+    $comments = kratos_home_recent_comments($count, (bool) kratos_option('hf_cmt_skip_admin', false));
+
+    $html  = '<section class="khf-module khf-module-comment">';
+    $html .= kratos_home_header_html(
+        kratos_option('hf_cmt_title', __('最近评论', 'kratos')),
+        kratos_option('hf_cmt_sub', __('大家正在聊', 'kratos')),
+        kratos_option('hf_cmt_icon', 'fas fa-comment-dots'),
+        (string) kratos_option('hf_cmt_more_url', ''),
+        __('全部评论', 'kratos')
+    );
+
+    if (empty($comments)) {
+        return $html . '<div class="khf-empty kr-card">' . esc_html__('暂无评论', 'kratos') . '</div></section>';
+    }
+
+    $html .= '<div class="khf-cmts khf-cmts-' . $cols . '">';
+    foreach ($comments as $c) {
+        // 表情是 WP smilies 形式的 :name: 文本码（见 inc/theme-article.php 的
+        // smilies_reset()），评论列表靠 comment_text 上的 convert_smilies() 渲染，
+        // 这里读的是原始 comment_content，必须自己转一次否则只剩字面量 :smile:。
+        // 顺序：先截断纯文本 → 再 esc_html → 最后 convert_smilies 输出 <img>，
+        // 所以 $text 已是安全 HTML，下面直接拼接不能再 esc_html。
+        // （shortcode 只含 `:`/字母数字/`_`/`-`，不会被 esc_html 破坏匹配。）
+        $text = wp_trim_words(wp_strip_all_tags(strip_shortcodes((string) $c->comment_content)), $words, '…');
+        $text = convert_smilies(esc_html($text));
+        $link = get_comment_link($c);
+
+        $html .= '<article class="khf-cmt kr-card">';
+        if ($avatar) {
+            $html .= '<span class="khf-cmt-avatar">' . get_avatar($c, 80, '', esc_attr($c->comment_author)) . '</span>';
+        }
+        $html .= '<div class="khf-cmt-main">';
+        $html .= '<div class="khf-cmt-head">';
+        // 用 get_comment_author_link() 而非 get_comment_author()：等级徽章、走心徽章、
+        // 友链徽章都挂在 get_comment_author_link filter 上（优先级 10 / 11 / 12，
+        // 见 theme-comment-rank / -heart / -link.php），取纯文本作者名就全丢了。
+        // 该函数把 comment_ID 作为第三个参数传给 filter，无需依赖 $GLOBALS['comment']。
+        // 返回值是 WP 已转义的 HTML，不能再 esc_html。
+        $html .= '<span class="khf-cmt-author">' . get_comment_author_link($c) . '</span>';
+        // 两端都用 GMT 时间戳做差，避免站点时区与 UTC 混算出现「0 分钟前」或负值
+        $html .= '<span class="khf-cmt-time">' . esc_html(sprintf(
+            /* translators: %s: 人类可读的时间差，如「3 天」 */
+            __('%s前', 'kratos'),
+            human_time_diff((int) strtotime($c->comment_date_gmt . ' GMT'), time())
+        )) . '</span>';
+        $html .= '</div>';
+        $html .= '<a class="khf-cmt-text" href="' . esc_url($link) . '">' . $text . '</a>';
+        $html .= '<div class="khf-meta"><a href="' . esc_url($link) . '">'
+            . esc_html(sprintf(__('评论于《%s》', 'kratos'), get_the_title((int) $c->comment_post_ID)))
+            . '</a></div>';
+        $html .= '</div></article>';
+    }
+    $html .= '</div></section>';
+    return $html;
+}
+
+/* =========================================================================
+ * 模块 7：stat 数据条
  * ========================================================================= */
 
 function kratos_home_render_stat()
@@ -663,6 +801,8 @@ function kratos_home_render_module($slug)
             return kratos_home_render_hot();
         case 'latest':
             return kratos_home_render_latest();
+        case 'comment':
+            return kratos_home_render_comment();
         case 'stat':
             return kratos_home_render_stat();
     }
