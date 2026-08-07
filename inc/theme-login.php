@@ -287,16 +287,28 @@ function kratos_login_intercept() {
 }
 add_action('init', 'kratos_login_intercept', 1);
 
-/** 未登录访问 /wp-admin → 404（放行 admin-ajax / admin-post） */
+/** 未登录访问 /wp-admin → 404（放行 admin-ajax / admin-post 等无需登录的入口）
+ *
+ *  必须挂在 init：wp-admin/admin.php 的顺序是
+ *  require wp-load.php（内部 do_action('init')）→ auth_redirect() → do_action('admin_init')，
+ *  未登录用户在 auth_redirect() 就被重定向走了，admin_init 永远不会触发。
+ *  admin_init 上再挂一次仅作兜底（例如某些直接进入的 wp-admin 脚本不走 admin.php 的鉴权分支）。 */
 function kratos_login_block_admin() {
     if (!kratos_login_custom_url_enabled()) return;
     if (is_user_logged_in()) return;
     if (!is_admin()) return;
     if (defined('DOING_AJAX') && DOING_AJAX) return;
+    if (defined('DOING_CRON') && DOING_CRON) return;
+    if (defined('WP_INSTALLING') && WP_INSTALLING) return;
+
+    // 这些入口设计上允许未登录访问（AJAX / 表单回调 / 安装升级），不能 404
     $script = basename($_SERVER['SCRIPT_FILENAME'] ?? '');
-    if (in_array($script, array('admin-ajax.php', 'admin-post.php'), true)) return;
+    $allow  = array('admin-ajax.php', 'admin-post.php', 'install.php', 'upgrade.php', 'load-scripts.php', 'load-styles.php');
+    if (in_array($script, $allow, true)) return;
+
     kratos_login_send_404();
 }
+add_action('init', 'kratos_login_block_admin', 1);
 add_action('admin_init', 'kratos_login_block_admin', 0);
 
 /** 重定向到一个 WordPress 天然 404 的路径，让浏览器地址栏切换并走标准 404 渲染流程

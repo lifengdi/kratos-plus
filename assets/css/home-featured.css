@@ -1,0 +1,651 @@
+@charset "UTF-8";
+
+/*
+ * Kratos+ 特色首页（Featured Home）
+ *
+ * 作用域: .kratos-home（由 [home_featured] 短码输出，page-home-featured.php 调用）
+ *
+ * 分工约定（见 CLAUDE.md「公共组件层」）：
+ *   - 形态语言（卡片圆角/边框/阴影、图标胶囊、药丸、按钮、圆点）全部由 markup 上的
+ *     公共类 kr-hd / kr-hd-title / kr-hd-sub / kr-hd-divider / kr-body / kr-card /
+ *     kr-ico / kr-pill / kr-btn / kr-dot 承担 —— components.css 给关闭态兜底，
+ *     各皮肤自行接管。本文件不重复定义这些形态，只写「布局」。
+ *   - 私有 .khf-* 只负责 grid / 间距 / 字号 / line-clamp / 缩略图比例。
+ *   - 配色一律走 --khf-* 局部令牌，令牌本身从 --khs-*（皮肤开启时由 components.css
+ *     映射到 --kr-skin-*）取值，回落到浅色字面值；暗夜态另有一段重映射。
+ *
+ * @author Dylan Li
+ * @license GPL-3.0 License
+ */
+
+/* ===================== 1. 局部配色令牌 ===================== */
+
+.kratos-home {
+    --khf-card: var(--khs-card-bg, #ffffff);
+    --khf-line: var(--khs-line, rgba(0, 0, 0, .08));
+    --khf-heading: var(--khs-fg, #2a2620);
+    --khf-text: var(--khs-fg-soft, #3b342c);
+    --khf-muted: var(--khs-fg-mute, #8a8073);
+    --khf-accent: var(--khs-accent, #d68c4e);
+    --khf-soft: color-mix(in srgb, var(--khf-accent) 8%, transparent);
+    --khf-soft-line: color-mix(in srgb, var(--khf-accent) 26%, transparent);
+}
+
+/* 暗夜态：卡片/文字回到 dark.css 的中性灰白，accent 跟随皮肤或暗夜默认蓝 */
+html[data-theme="dark"] .kratos-home {
+    --khf-card: var(--kr-bg-elev, #1c1f24);
+    --khf-line: var(--kr-border, #2a2f37);
+    --khf-heading: var(--kr-fg-strong, #ececed);
+    --khf-text: var(--kr-fg, #d6d8db);
+    --khf-muted: var(--kr-fg-muted, #8b919a);
+    --khf-accent: var(--khs-accent, var(--kr-accent, #4f86c6));
+}
+
+/* ===================== 2. 骨架与公共块 ===================== */
+
+.kratos-home {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    color: var(--khf-text);
+}
+
+.kratos-home a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.kratos-home .khf-module {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 标题卡：形态由 .kr-hd 决定，这里只排版 */
+.kratos-home .kr-hd {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 16px 20px;
+}
+
+.kratos-home .kr-hd-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--khf-heading);
+    letter-spacing: .02em;
+}
+
+.kratos-home .kr-hd-sub {
+    font-size: 13px;
+    color: var(--khf-muted);
+}
+
+.kratos-home .kr-hd-divider {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--khf-line), transparent);
+    margin-left: 6px;
+}
+
+.kratos-home .kr-ico {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    line-height: 1;
+    border-radius: 10px;
+    background: var(--khf-soft);
+    color: var(--khf-accent);
+    border: 1px solid var(--khf-soft-line);
+}
+
+.kratos-home .kr-card {
+    background: var(--khf-card);
+    border: 1px solid var(--khf-line);
+    border-radius: 12px;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.kratos-home .kr-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .07);
+}
+
+.kratos-home .kr-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    line-height: 1;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--khf-soft);
+    color: var(--khf-accent);
+    border: 1px solid var(--khf-soft-line);
+}
+
+.kratos-home .kr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--khf-line);
+    background: var(--khf-card);
+    color: var(--khf-heading);
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.kratos-home .kr-btn:hover {
+    border-color: var(--khf-accent);
+    color: var(--khf-accent);
+}
+
+.kratos-home .kr-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: var(--khf-accent);
+}
+
+.kratos-home .khf-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--khf-muted);
+    flex-wrap: wrap;
+}
+
+.kratos-home .khf-meta .khf-sep {
+    font-style: normal;
+    opacity: .7;
+}
+
+/* 缩略图：真实 <img> 由 wp_get_attachment_image 输出（吃 LQIP filter），
+ * 外层 .khf-thumb 负责比例裁切。 */
+.kratos-home .khf-thumb {
+    display: block;
+    overflow: hidden;
+    background: var(--khf-soft);
+    position: relative;
+}
+
+.kratos-home .khf-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ===================== 3. hero 焦点区 ===================== */
+
+.kratos-home .khf-hero {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 18px;
+}
+
+.kratos-home .khf-hero-main {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.kratos-home .khf-hero-main .khf-thumb {
+    aspect-ratio: 16 / 9;
+}
+
+.kratos-home .khf-hero-body {
+    padding: 20px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.kratos-home .khf-hero-title {
+    font-size: 24px;
+    line-height: 1.45;
+    font-weight: 600;
+    color: var(--khf-heading);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.kratos-home .khf-hero-excerpt {
+    font-size: 14px;
+    color: var(--khf-muted);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.kratos-home .khf-hero-side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.kratos-home .khf-hero-sub {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    align-items: center;
+    flex: 1;
+}
+
+.kratos-home .khf-hero-sub .khf-thumb {
+    width: 104px;
+    height: 74px;
+    flex: 0 0 104px;
+    border-radius: 8px;
+}
+
+.kratos-home .khf-hero-sub-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--khf-heading);
+    line-height: 1.5;
+    margin: 0 0 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ===================== 4. recommend 推荐位 ===================== */
+
+.kratos-home .khf-grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.kratos-home .khf-rec {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.kratos-home .khf-rec .khf-thumb {
+    aspect-ratio: 16 / 10;
+}
+
+.kratos-home .khf-rec-body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    flex: 1;
+}
+
+.kratos-home .khf-rec-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--khf-heading);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.kratos-home .khf-rec-excerpt {
+    font-size: 13px;
+    color: var(--khf-muted);
+    flex: 1;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ===================== 5. category 分类专区 ===================== */
+
+.kratos-home .khf-cat {
+    padding: 0;
+    overflow: hidden;
+}
+
+/* 分类专区自带头部，卡片顶部不再需要外层 .kr-hd 的下外边距 */
+.kratos-home .khf-module-category .kr-hd {
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--khf-line);
+}
+
+.kratos-home .khf-cat-tabs {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* tab 与序号徽章是本模块私有形态，用皮肤的形状令牌（带回落）自动跟随
+ * 直角 / 圆角语言，避免逐皮肤补覆盖。 */
+.kratos-home .khf-tab {
+    font-size: 12.5px;
+    padding: 5px 12px;
+    border-radius: var(--kr-shape-radius, 999px);
+    cursor: pointer;
+    color: var(--khf-muted);
+    border: 1px solid transparent;
+    background: transparent;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.kratos-home .khf-tab:hover {
+    color: var(--khf-accent);
+}
+
+.kratos-home .khf-tab.is-active {
+    color: var(--khf-accent);
+    border-color: var(--khf-soft-line);
+    background: var(--khf-soft);
+}
+
+.kratos-home .khf-cat-panel {
+    display: none;
+    padding: 18px 20px 20px;
+}
+
+.kratos-home .khf-cat-panel.is-active {
+    display: block;
+}
+
+/* 轨道必须写成 minmax(0, …)：右列列表标题是 nowrap + ellipsis，其 min-content
+ * 宽度等于最长标题的完整宽度，用裸 fr 会把轨道顶开，导致每个 tab 的左右比例
+ * 都不一样（切 tab 时左侧大图忽宽忽窄）。 */
+.kratos-home .khf-cat-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.kratos-home .khf-cat-feature {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.kratos-home .khf-cat-feature .khf-thumb {
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+}
+
+.kratos-home .khf-cat-feature-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--khf-heading);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.kratos-home .khf-cat-feature-excerpt {
+    font-size: 13px;
+    color: var(--khf-muted);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.kratos-home .khf-cat-foot {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.kratos-home .khf-list {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* 按「每个分类列表条数」（PHP 以内联 --khf-cat-rows 传入）预留高度：
+ * 单行 = 上下 11px 内边距 + 14.5px × 1.5 行高 ≈ 44px。文章数不足的分类
+ * 也占满同样高度，切 tab 时面板不会忽高忽低。 */
+.kratos-home .khf-cat-panel .khf-list {
+    min-height: calc(var(--khf-cat-rows, 5) * 44px);
+}
+
+.kratos-home .khf-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px dashed var(--khf-line);
+}
+
+.kratos-home .khf-list-item:last-child {
+    border-bottom: none;
+}
+
+.kratos-home .khf-list-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 14.5px;
+    color: var(--khf-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color .16s ease;
+}
+
+.kratos-home .khf-list-item:hover .khf-list-title {
+    color: var(--khf-accent);
+}
+
+.kratos-home .khf-list-date {
+    font-size: 12px;
+    color: var(--khf-muted);
+    flex: 0 0 auto;
+}
+
+/* ===================== 6. hot / latest 双栏 ===================== */
+
+/* 与分类专区同理：两栏标题都是 nowrap + 省略号，裸 fr 会被 min-content 顶开，
+ * 标题更长的一侧把另一侧挤窄。minmax(0, 1fr) 把轨道下限归零，锁死 1:1。 */
+.kratos-home .khf-two {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+/* 热门榜 / 最新文章只启用其中之一时占满整行 */
+.kratos-home .khf-two-single {
+    grid-template-columns: 1fr;
+}
+
+.kratos-home .khf-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.kratos-home .khf-col .kr-hd {
+    margin-bottom: 0;
+}
+
+.kratos-home .khf-hot-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px 16px;
+}
+
+.kratos-home .khf-rank {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+    border-radius: var(--kr-shape-radius-sm, 7px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    background: color-mix(in srgb, var(--khf-muted) 12%, transparent);
+    color: var(--khf-muted);
+    border: 1px solid var(--khf-line);
+}
+
+.kratos-home .khf-hot-item.is-top .khf-rank {
+    background: var(--khf-soft);
+    color: var(--khf-accent);
+    border-color: var(--khf-soft-line);
+}
+
+.kratos-home .khf-hot-main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 列表型小缩略图（热门榜标题右侧 / 最新文章标题左侧），尺寸统一 */
+.kratos-home .khf-thumb-mini {
+    width: 78px;
+    height: 56px;
+    flex: 0 0 78px;
+    border-radius: var(--kr-shape-radius-sm, 7px);
+}
+
+.kratos-home .khf-hot-item .khf-thumb-link {
+    flex: 0 0 auto;
+}
+
+.kratos-home .khf-hot-title {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--khf-heading);
+    line-height: 1.5;
+    margin: 0 0 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kratos-home .khf-latest-item {
+    display: flex;
+    gap: 13px;
+    padding: 13px 16px;
+    align-items: center;
+}
+
+.kratos-home .khf-latest-item .khf-thumb-link {
+    flex: 0 0 auto;
+}
+
+.kratos-home .khf-latest-main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 与热门榜标题保持一致：单行 + 省略号（父级 .khf-latest-main 已 min-width:0，
+ * 否则 nowrap 的 min-content 会撑破 flex 行） */
+.kratos-home .khf-latest-title {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--khf-heading);
+    line-height: 1.5;
+    margin: 0 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kratos-home .khf-more {
+    align-self: flex-end;
+}
+
+/* ===================== 7. stat 数据条 ===================== */
+
+.kratos-home .khf-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.kratos-home .khf-stat {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px 18px;
+}
+
+.kratos-home .khf-stat-num {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--khf-heading);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+}
+
+.kratos-home .khf-stat-label {
+    font-size: 12.5px;
+    color: var(--khf-muted);
+}
+
+/* ===================== 8. 空态 ===================== */
+
+.kratos-home .khf-empty {
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--khf-muted);
+}
+
+/* ===================== 9. 响应式 ===================== */
+
+@media (max-width: 900px) {
+
+    .kratos-home .khf-hero,
+    .kratos-home .khf-grid3,
+    .kratos-home .khf-cat-layout,
+    .kratos-home .khf-two {
+        grid-template-columns: 1fr;
+    }
+
+    .kratos-home .khf-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+
+    .kratos-home .khf-module-category .kr-hd {
+        flex-wrap: wrap;
+    }
+
+    .kratos-home .khf-cat-tabs {
+        margin-left: 0;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .kratos-home .khf-hero-title {
+        font-size: 20px;
+    }
+}
