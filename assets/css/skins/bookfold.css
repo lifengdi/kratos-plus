@@ -1222,6 +1222,7 @@ body.is-kratos-heart-page .k-main .details,
 body.is-kratos-shuoshuo-page .k-main .details,
 body.is-kratos-topcommenters-page .k-main .details,
 body.is-kratos-friend-links-page .k-main .details,
+body.is-kratos-home-page .k-main .details,
 body.is-kratos-timeline-page .k-main .details,
 body.is-kratos-friend-feed-page .k-main .details,
 body.is-kratos-featured-title-page .k-main .details,
@@ -1240,6 +1241,7 @@ body.is-kratos-heart-page .k-main .details::after,
 body.is-kratos-shuoshuo-page .k-main .details::after,
 body.is-kratos-topcommenters-page .k-main .details::after,
 body.is-kratos-friend-links-page .k-main .details::after,
+body.is-kratos-home-page .k-main .details::after,
 body.is-kratos-timeline-page .k-main .details::after,
 body.is-kratos-friend-feed-page .k-main .details::after,
 body.is-kratos-featured-title-page .k-main .details::after {
@@ -1265,9 +1267,9 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main {
 
 /* —— 两页纸的纸面（普通正文/列表/页面；.board=列表左页, .details=正文左页, .sidebar=右页；
  *    排除全部特色短代码页）—— */
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details,
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board,
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar {
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar {
     position: relative;
     background: var(--kr-paper-noise), var(--kr-skin-card) !important;
     background-clip: padding-box;
@@ -1276,7 +1278,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-
 }
 
 /* 窄屏（侧栏堆到下方，无并排）：正文/列表单页居中，四角柔圆 + 一道整体投影 */
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details,
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
     border: 1px solid var(--kr-skin-line);
     border-radius: var(--kr-shape-radius-lg);
@@ -1286,7 +1288,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
 @media (min-width: 992px) {
     /* 左页（正文 .details / 列表 .board）：右缘平齐书脊；只往左/下投影；
      * 右侧一大段由平入弯的圆柱内阴影（宽 60px 浅 + 窄 22px 深两层叠加），做出弧度 */
-    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details,
+    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details,
     html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
         border: 1px solid var(--kr-skin-line);
         border-right: none;
@@ -1307,7 +1309,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
             -14px 18px 34px -18px rgba(30, 20, 10, 0.55) !important;  /* 整本书投桌面：左/下 */
     }
     /* 右页（侧栏）：镜像卷边 */
-    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar {
+    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar {
         border: 1px solid var(--kr-skin-line);
         border-left: none;
         border-radius: 0 var(--kr-shape-radius-lg) var(--kr-shape-radius-lg) 0;
@@ -1328,7 +1330,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
     }
     /* 书口页叠厚度：两页外缘挂一条带横向页纹的窄条，模拟一叠纸页的书口。
      * 左页在左缘、右页在右缘（书脊侧不做，那是装订边）。 */
-    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details::after,
+    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details::after,
     html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board::after {
         content: "";
         position: absolute;
@@ -1345,7 +1347,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
                 rgba(120, 96, 62, 0.38) 1px 2.4px);
         box-shadow: -3px 2px 6px -2px rgba(30, 20, 10, 0.45);
     }
-    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar::after {
+    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar::after {
         content: "";
         position: absolute;
         top: var(--kr-shape-radius-lg);      /* 起点缩进到书页外角圆角，贴合 radius */
@@ -1363,7 +1365,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
     }
     /* 左页装订侧「圆柱卷边」叠层：透明 → 受光脊(高光) → 弯下阴影谷 → 书脊深线，
      * 让纸看得出从平面卷进装订处的弧度（尤其列表页原先完全没弧度） */
-    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details::before,
+    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .details::before,
     html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board::before {
         content: "";
         position: absolute;
@@ -1380,7 +1382,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
             rgba(60, 42, 24, 0.50) 100%);     /* 书脊阴影线 */
     }
     /* 右页镜像卷边叠层 */
-    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar::before {
+    html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body:not(.is-kratos-archives-page):not(.is-kratos-heart-page):not(.is-kratos-shuoshuo-page):not(.is-kratos-topcommenters-page):not(.is-kratos-friend-links-page):not(.is-kratos-timeline-page):not(.is-kratos-home-page):not(.is-kratos-friend-feed-page):not(.is-kratos-featured-title-page):not(.is-kratos-now-page) .k-main .sidebar::before {
         content: "";
         position: absolute;
         top: 0;
@@ -1876,6 +1878,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-heart
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-shuoshuo-page .k-main .details,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-topcommenters-page .k-main .details,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-friend-links-page .k-main .details,
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-home-page .k-main .details,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-timeline-page .k-main .details,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-friend-feed-page .k-main .details,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) body.is-kratos-featured-title-page .k-main .details,

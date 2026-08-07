@@ -966,6 +966,7 @@ html[data-weekday-skin="vermilion"] body.is-kratos-heart-page .k-main .details,
 html[data-weekday-skin="vermilion"] body.is-kratos-shuoshuo-page .k-main .details,
 html[data-weekday-skin="vermilion"] body.is-kratos-topcommenters-page .k-main .details,
 html[data-weekday-skin="vermilion"] body.is-kratos-friend-links-page .k-main .details,
+html[data-weekday-skin="vermilion"] body.is-kratos-home-page .k-main .details,
 html[data-weekday-skin="vermilion"] body.is-kratos-timeline-page .k-main .details,
 html[data-weekday-skin="vermilion"] body.is-kratos-friend-feed-page .k-main .details,
 html[data-weekday-skin="vermilion"] body.is-kratos-now-page .k-main .details,
@@ -984,6 +985,7 @@ html[data-weekday-skin="vermilion"] body.is-kratos-heart-page .k-main .details::
 html[data-weekday-skin="vermilion"] body.is-kratos-shuoshuo-page .k-main .details::after,
 html[data-weekday-skin="vermilion"] body.is-kratos-topcommenters-page .k-main .details::after,
 html[data-weekday-skin="vermilion"] body.is-kratos-friend-links-page .k-main .details::after,
+html[data-weekday-skin="vermilion"] body.is-kratos-home-page .k-main .details::after,
 html[data-weekday-skin="vermilion"] body.is-kratos-timeline-page .k-main .details::after,
 html[data-weekday-skin="vermilion"] body.is-kratos-friend-feed-page .k-main .details::after {
     display: none !important;

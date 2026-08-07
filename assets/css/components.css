@@ -79,7 +79,8 @@ html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode {
 html[data-weekday-skin]:not([data-theme="dark"]) :is(
     .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
-    .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget) {
+    .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
+    .kratos-home) {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -105,7 +106,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) :is(
 html[data-theme="dark"][data-weekday-skin] :is(
     .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
-    .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget) {
+    .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
+    .kratos-home) {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;

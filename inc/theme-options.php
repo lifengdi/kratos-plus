@@ -3177,6 +3177,383 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'title' => __('特色首页', 'kratos'),
+    'icon' => 'fas fa-home',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('杂志式首页。新建页面并选择「特色首页」模板，再在「设置 → 阅读」里把它设为主页即可。模块顺序拖拽调整，各模块的标题 / 副标题 / 图标留空即隐藏对应元素。', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_enabled',
+            'type' => 'switcher',
+            'title' => __('启用特色首页', 'kratos'),
+            'subtitle' => __('关闭后 [home_featured] 短码不输出内容，模板页面只显示页面正文', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'hf_modules',
+            'type' => 'sorter',
+            'title' => __('模块编排', 'kratos'),
+            'subtitle' => __('拖拽调整模块顺序；拖到「已停用」即不展示。热门榜与最新文章相邻启用时会自动合并成左右双栏', 'kratos'),
+            'enabled_title' => __('已启用', 'kratos'),
+            'disabled_title' => __('已停用', 'kratos'),
+            'default' => array(
+                'enabled' => array(
+                    'hero'      => __('焦点区', 'kratos'),
+                    'recommend' => __('推荐位', 'kratos'),
+                    'category'  => __('分类专区', 'kratos'),
+                    'hot'       => __('热门榜', 'kratos'),
+                    'latest'    => __('最新文章', 'kratos'),
+                    'stat'      => __('数据条', 'kratos'),
+                ),
+                'disabled' => array(),
+            ),
+            'dependency' => array('hf_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'hf_sidebar',
+            'type' => 'switcher',
+            'title' => __('显示侧边栏', 'kratos'),
+            'subtitle' => __('默认关闭（全宽）—— 各模块自带双栏 / 三列网格，再挂侧栏会把焦点区大图压窄。开启后使用「页面侧边栏」小工具区与主题统一的主/侧栏比例', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('全宽', 'kratos'),
+            'default' => false,
+            'dependency' => array('hf_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'hf_cache_minutes',
+            'type' => 'number',
+            'title' => __('缓存时长（分钟）', 'kratos'),
+            'subtitle' => __('首页模块 HTML 的缓存时长，0 为不缓存；发布文章 / 改分类 / 新评论 / 保存主题选项时会自动失效，登录用户始终看实时内容', 'kratos'),
+            'min' => 0,
+            'default' => 10,
+            'dependency' => array('hf_enabled', '==', 'true'),
+        ),
+
+        array(
+            'type' => 'subheading',
+            'content' => __('模块一 · 焦点区', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_hero_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'subtitle' => __('留空则焦点区不显示标题卡（大图直接开场，推荐留空）', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'id' => 'hf_hero_sub',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'id' => 'hf_hero_icon',
+            'type' => 'icon',
+            'title' => __('图标', 'kratos'),
+            'subtitle' => __('从 Font Awesome 图标库中选择，显示在标题左侧的图标胶囊里', 'kratos'),
+            'default' => 'fas fa-star',
+        ),
+        array(
+            'id' => 'hf_hero_source',
+            'type' => 'button_set',
+            'title' => __('文章来源', 'kratos'),
+            'subtitle' => __('置顶模式下若置顶文章不足，会自动用最新文章补齐', 'kratos'),
+            'options' => array(
+                'sticky' => __('置顶文章', 'kratos'),
+                'latest' => __('最新文章', 'kratos'),
+            ),
+            'default' => 'sticky',
+        ),
+        array(
+            'id' => 'hf_hero_side_count',
+            'type' => 'number',
+            'title' => __('右侧次推条数', 'kratos'),
+            'subtitle' => __('大图右侧的小卡数量，0 表示只显示一张大图', 'kratos'),
+            'min' => 0,
+            'max' => 4,
+            'default' => 2,
+        ),
+
+        array(
+            'type' => 'subheading',
+            'content' => __('模块二 · 推荐位', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_rec_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'default' => __('编辑推荐', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_rec_sub',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => __('值得一读的长文', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_rec_icon',
+            'type' => 'icon',
+            'title' => __('图标', 'kratos'),
+            'default' => 'fas fa-thumbtack',
+        ),
+        array(
+            'id' => 'hf_rec_source',
+            'type' => 'button_set',
+            'title' => __('文章来源', 'kratos'),
+            'options' => array(
+                'sticky' => __('置顶文章', 'kratos'),
+                'tag'    => __('指定标签', 'kratos'),
+                'ids'    => __('手选文章 ID', 'kratos'),
+            ),
+            'default' => 'sticky',
+        ),
+        array(
+            'id' => 'hf_rec_tag',
+            'type' => 'text',
+            'title' => __('标签别名', 'kratos'),
+            'subtitle' => __('填标签的别名（slug），例如 featured；该标签下的最新文章会进入推荐位', 'kratos'),
+            'dependency' => array('hf_rec_source', '==', 'tag'),
+        ),
+        array(
+            'id' => 'hf_rec_ids',
+            'type' => 'text',
+            'title' => __('文章 ID', 'kratos'),
+            'subtitle' => __('逗号分隔，例如 128,96,73；展示顺序与填写顺序一致', 'kratos'),
+            'dependency' => array('hf_rec_source', '==', 'ids'),
+        ),
+        array(
+            'id' => 'hf_rec_count',
+            'type' => 'number',
+            'title' => __('展示条数', 'kratos'),
+            'subtitle' => __('建议 3 或 6，与三列网格对齐', 'kratos'),
+            'min' => 1,
+            'default' => 3,
+        ),
+        array(
+            'id' => 'hf_rec_more_url',
+            'type' => 'text',
+            'title' => __('「全部推荐」链接', 'kratos'),
+            'subtitle' => __('留空则标题卡右侧不显示按钮', 'kratos'),
+            'default' => '',
+        ),
+
+        array(
+            'type' => 'subheading',
+            'content' => __('模块三 · 分类专区', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_cat_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'default' => __('分类专区', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_cat_sub',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'id' => 'hf_cat_icon',
+            'type' => 'icon',
+            'title' => __('图标', 'kratos'),
+            'default' => 'fas fa-layer-group',
+        ),
+        array(
+            'id' => 'hf_cat_terms',
+            'type' => 'checkbox',
+            'title' => __('参与的分类', 'kratos'),
+            'subtitle' => __('每个勾选的分类是一个 tab，顺序按分类列表顺序；留空则自动取文章数最多的前 3 个分类', 'kratos'),
+            'options' => (function () {
+                $out = array();
+                $terms = function_exists('get_terms') ? get_terms(array(
+                    'taxonomy'   => 'category',
+                    'hide_empty' => false,
+                )) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) {
+                        $out[(int) $t->term_id] = $t->name;
+                    }
+                }
+                return $out;
+            })(),
+            'inline' => true,
+            'default' => array(),
+        ),
+        array(
+            'id' => 'hf_cat_feature',
+            'type' => 'switcher',
+            'title' => __('展示分类特色文章', 'kratos'),
+            'subtitle' => __('开启后每个 tab 左侧展示该分类最新一篇（大图 + 摘要），右侧为标题列表；关闭则只有列表', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'hf_cat_count',
+            'type' => 'number',
+            'title' => __('每个分类列表条数', 'kratos'),
+            'subtitle' => __('不含左侧特色文章', 'kratos'),
+            'min' => 1,
+            'default' => 5,
+        ),
+
+        array(
+            'type' => 'subheading',
+            'content' => __('模块四 · 热门榜', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_hot_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'default' => __('热门榜', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_hot_sub',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => __('近 30 天热度', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_hot_icon',
+            'type' => 'icon',
+            'title' => __('图标', 'kratos'),
+            'default' => 'fas fa-fire',
+        ),
+        array(
+            'id' => 'hf_hot_days',
+            'type' => 'number',
+            'title' => __('统计窗口（天）', 'kratos'),
+            'subtitle' => __('只统计最近 N 天发布的文章，0 表示不限时间（全站热度）', 'kratos'),
+            'min' => 0,
+            'default' => 30,
+        ),
+        array(
+            'id' => 'hf_hot_count',
+            'type' => 'number',
+            'title' => __('展示条数', 'kratos'),
+            'min' => 1,
+            'default' => 5,
+        ),
+        array(
+            'id' => 'hf_hot_thumb',
+            'type' => 'switcher',
+            'title' => __('展示缩略图', 'kratos'),
+            'subtitle' => __('开启后在每条标题右侧展示文章缩略图（无特色图时按主题的默认缩略图规则回落）', 'kratos'),
+            'text_on' => __('展示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'hf_hot_more_url',
+            'type' => 'text',
+            'title' => __('「查看完整热榜」链接', 'kratos'),
+            'subtitle' => __('留空则不显示按钮；可指向插了 [post_heatmap] 或自建排行的页面', 'kratos'),
+            'default' => '',
+        ),
+
+        array(
+            'type' => 'subheading',
+            'content' => __('模块五 · 最新文章', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_latest_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'default' => __('最新文章', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_latest_sub',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => __('刚刚更新', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_latest_icon',
+            'type' => 'icon',
+            'title' => __('图标', 'kratos'),
+            'default' => 'fas fa-pen-nib',
+        ),
+        array(
+            'id' => 'hf_latest_count',
+            'type' => 'number',
+            'title' => __('展示条数', 'kratos'),
+            'min' => 1,
+            'default' => 5,
+        ),
+        array(
+            'id' => 'hf_latest_thumb',
+            'type' => 'switcher',
+            'title' => __('展示缩略图', 'kratos'),
+            'subtitle' => __('关闭后只剩标题与元信息，列表更紧凑', 'kratos'),
+            'text_on' => __('展示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'hf_latest_more_url',
+            'type' => 'text',
+            'title' => __('「进入文章列表」链接', 'kratos'),
+            'subtitle' => __('留空则自动指向「设置 → 阅读」里指定的文章页，未指定时指向站点首页', 'kratos'),
+            'default' => '',
+        ),
+
+        array(
+            'type' => 'subheading',
+            'content' => __('模块六 · 数据条', 'kratos'),
+        ),
+        array(
+            'id' => 'hf_stat_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'subtitle' => __('留空则数据条不显示标题卡（推荐留空，四张小卡直接铺开）', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'id' => 'hf_stat_sub',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'id' => 'hf_stat_icon',
+            'type' => 'icon',
+            'title' => __('标题图标', 'kratos'),
+            'default' => 'fas fa-chart-simple',
+        ),
+        array(
+            'id' => 'hf_stat_icon_post',
+            'type' => 'icon',
+            'title' => __('文章数图标', 'kratos'),
+            'default' => 'fas fa-pen-fancy',
+        ),
+        array(
+            'id' => 'hf_stat_icon_cat',
+            'type' => 'icon',
+            'title' => __('分类数图标', 'kratos'),
+            'default' => 'fas fa-folder-open',
+        ),
+        array(
+            'id' => 'hf_stat_icon_tag',
+            'type' => 'icon',
+            'title' => __('标签数图标', 'kratos'),
+            'default' => 'fas fa-tags',
+        ),
+        array(
+            'id' => 'hf_stat_icon_comment',
+            'type' => 'icon',
+            'title' => __('评论数图标', 'kratos'),
+            'default' => 'fas fa-comments',
+        ),
+    ),
+));
+
+
+CSF::createSection($prefix, array(
     'title' => __('每日心情灯', 'kratos'),
     'icon' => 'fas fa-smile-beam',
     'fields' => array(

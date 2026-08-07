@@ -167,6 +167,9 @@ require get_template_directory() . '/inc/theme-series.php';
 // 「岁月同一天」On This Day —— 短代码 / 小工具 / 首页 / 文章底部
 require get_template_directory() . '/inc/theme-on-this-day.php';
 
+// 特色首页（page-home-featured.php + [home_featured] 短码）
+require get_template_directory() . '/inc/theme-home-featured.php';
+
 // Now 页面 —— 我最近在做什么
 require get_template_directory() . '/inc/theme-now.php';
 
