@@ -325,7 +325,14 @@ function kratos_home_render_recommend()
     $count  = max(1, (int) kratos_option('hf_rec_count', 3));
     $source = (string) kratos_option('hf_rec_source', 'sticky');
 
-    if ($source === 'tag') {
+    if ($source === 'cat') {
+        // 'cat' 传逗号串时 WP_Query 走 OR 且默认含子分类，与模块三的取文方式一致
+        $cats  = kratos_home_parse_ids(kratos_option('hf_rec_cats', array()));
+        $posts = empty($cats) ? array() : kratos_home_query(array(
+            'cat'            => implode(',', $cats),
+            'posts_per_page' => $count,
+        ));
+    } elseif ($source === 'tag') {
         $tag = trim((string) kratos_option('hf_rec_tag', ''));
         $posts = $tag === '' ? array() : kratos_home_query(array(
             'tag'            => $tag,

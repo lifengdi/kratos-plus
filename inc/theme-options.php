@@ -3306,10 +3306,33 @@ CSF::createSection($prefix, array(
             'title' => __('文章来源', 'kratos'),
             'options' => array(
                 'sticky' => __('置顶文章', 'kratos'),
+                'cat'    => __('指定分类', 'kratos'),
                 'tag'    => __('指定标签', 'kratos'),
                 'ids'    => __('手选文章 ID', 'kratos'),
             ),
             'default' => 'sticky',
+        ),
+        array(
+            'id' => 'hf_rec_cats',
+            'type' => 'checkbox',
+            'title' => __('推荐分类', 'kratos'),
+            'subtitle' => __('可多选，取这些分类下的最新文章（含子分类）；留空则不展示内容', 'kratos'),
+            'options' => (function () {
+                $out = array();
+                $terms = function_exists('get_terms') ? get_terms(array(
+                    'taxonomy'   => 'category',
+                    'hide_empty' => false,
+                )) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) {
+                        $out[(int) $t->term_id] = $t->name;
+                    }
+                }
+                return $out;
+            })(),
+            'inline' => true,
+            'default' => array(),
+            'dependency' => array('hf_rec_source', '==', 'cat'),
         ),
         array(
             'id' => 'hf_rec_tag',
