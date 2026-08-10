@@ -34,8 +34,12 @@ function kratos_captcha_new_question()
     $op = (mt_rand(0, 1) === 0) ? '+' : '-';
     $x = mt_rand(1, $max);
     $y = mt_rand(1, $max);
-    if ($op === '-' && $y > $x) {
-        $tmp = $x; $x = $y; $y = $tmp;
+    if ($op === '-') {
+        // 保证 x > y：避免出现 x == y（答案 0）——校验用 intval() 会把任意非数字输入转成 0，从而误判通过
+        if ($y >= $x) {
+            $tmp = $x; $x = $y + 1; $y = $tmp;
+            if ($x > $max) { $x = $max; $y = max(1, $max - 1); }
+        }
     }
     $answer = ($op === '+') ? ($x + $y) : ($x - $y);
     $token = wp_generate_password(16, false, false);
@@ -147,7 +151,10 @@ function kratos_captcha_validate($commentdata)
     if ($type !== '' && $type !== 'comment') {
         return $commentdata;
     }
-    if (is_admin() && current_user_can('moderate_comments')) {
+    // is_admin() 对所有 admin-ajax.php 请求都为 true，包括前台 AJAX 发评论（action=ajax_comment）。
+    // 只有真正的后台操作（replyto-comment / 编辑评论保存等）才应跳过验证码；前台 ajax_comment 必须校验。
+    $current_action = isset($_REQUEST['action']) ? sanitize_key(wp_unslash($_REQUEST['action'])) : '';
+    if (is_admin() && current_user_can('moderate_comments') && $current_action !== 'ajax_comment') {
         return $commentdata;
     }
     $token = isset($_POST['kratos_captcha_token']) ? sanitize_text_field(wp_unslash($_POST['kratos_captcha_token'])) : '';
@@ -168,7 +175,8 @@ function kratos_captcha_validate($commentdata)
             array('response' => 403, 'back_link' => true)
         );
     }
-    if ((string) intval($answer) !== (string) $expected) {
+    // 必须是纯整数字符串（可选前导 -），避免 intval("abc")==0 之类的隐式转换导致误判通过
+    if (!preg_match('/^-?\d+$/', $answer) || (string) intval($answer) !== (string) $expected) {
         wp_die(
             esc_html__('验证码答案错误，请重新输入。', 'kratos'),
             esc_html__('验证码错误', 'kratos'),
