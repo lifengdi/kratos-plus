@@ -359,7 +359,7 @@ function kratos_home_render_hero()
     if (is_sticky($main->ID)) {
         $html .= '<div class="khf-meta"><span class="khf-pill kr-pill">' . esc_html__('置顶', 'kratos') . '</span></div>';
     }
-    $html .= kratos_home_meta_html($main, array('cat', 'date', 'views'));
+    $html .= kratos_home_meta_html($main, array('cat', 'date', 'views', 'comments'));
     $html .= '<a href="' . esc_url(get_permalink($main)) . '"><h2 class="khf-hero-title">' . esc_html(get_the_title($main)) . '</h2></a>';
     $html .= '<p class="khf-hero-excerpt">' . esc_html(kratos_home_excerpt($main, 70)) . '</p>';
     $html .= '</div></article>';
@@ -371,7 +371,7 @@ function kratos_home_render_hero()
             $html .= kratos_home_thumb_link($p);
             $html .= '<div class="khf-hero-sub-main">';
             $html .= '<a href="' . esc_url(get_permalink($p)) . '"><h3 class="khf-hero-sub-title">' . esc_html(get_the_title($p)) . '</h3></a>';
-            $html .= kratos_home_meta_html($p, array('cat', 'short_date'));
+            $html .= kratos_home_meta_html($p, array('short_date', 'views', 'comments'));
             $html .= '</div></article>';
         }
         $html .= '</div>';
@@ -432,7 +432,7 @@ function kratos_home_render_recommend()
         $html .= '<article class="khf-rec kr-card">';
         $html .= kratos_home_thumb_link($p, '', 'kratos-home-md');
         $html .= '<div class="khf-rec-body">';
-        $html .= kratos_home_meta_html($p, array('cat', 'short_date'));
+        $html .= kratos_home_meta_html($p, array('cat', 'date'));
         $html .= '<a href="' . esc_url(get_permalink($p)) . '"><h3 class="khf-rec-title">' . esc_html(get_the_title($p)) . '</h3></a>';
         $html .= '<p class="khf-rec-excerpt">' . esc_html(kratos_home_excerpt($p, 50)) . '</p>';
         $html .= kratos_home_meta_html($p, array('views', 'comments'));
@@ -498,7 +498,7 @@ function kratos_home_render_category()
             $lead  = array_shift($posts);
             $pane .= '<article class="khf-cat-feature">';
             $pane .= kratos_home_thumb_link($lead, '', 'kratos-home-md');
-            $pane .= kratos_home_meta_html($lead, array('short_date', 'views'));
+            $pane .= kratos_home_meta_html($lead, array('short_date', 'views', 'comments'));
             $pane .= '<a href="' . esc_url(get_permalink($lead)) . '"><h3 class="khf-cat-feature-title">' . esc_html(get_the_title($lead)) . '</h3></a>';
             $pane .= '<p class="khf-cat-feature-excerpt">' . esc_html(kratos_home_excerpt($lead, 50)) . '</p>';
             $pane .= '</article>';
@@ -601,7 +601,7 @@ function kratos_home_render_hot()
         $html .= '<span class="khf-rank">' . esc_html(number_format_i18n($rank)) . '</span>';
         $html .= '<div class="khf-hot-main">';
         $html .= '<a href="' . esc_url(get_permalink($p)) . '"><div class="khf-hot-title">' . esc_html(get_the_title($p)) . '</div></a>';
-        $html .= kratos_home_meta_html($p, array('cat', 'views', 'comments'));
+        $html .= kratos_home_meta_html($p, array('cat', 'short_date', 'views', 'comments'));
         $html .= '</div>';
         // 缩略图排在标题右侧（DOM 顺序即视觉顺序，无需 order 反转）
         if ($show_thumb) {
@@ -647,7 +647,7 @@ function kratos_home_render_latest()
         }
         $html .= '<div class="khf-latest-main">';
         $html .= '<a href="' . esc_url(get_permalink($p)) . '"><div class="khf-latest-title">' . esc_html(get_the_title($p)) . '</div></a>';
-        $html .= kratos_home_meta_html($p, array('cat', 'short_date'));
+        $html .= kratos_home_meta_html($p, array('cat', 'short_date', 'views', 'comments'));
         $html .= '</div></article>';
     }
 
