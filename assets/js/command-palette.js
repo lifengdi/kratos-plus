@@ -95,13 +95,15 @@
                 label: i18n.toggleDark,
                 icon: ICONS.moon,
                 run: function () {
-                    // 优先点页脚原生开关，让 dark.js 保持唯一的模式来源
-                    var btn = document.querySelector('.f-toolbox .darkmode');
-                    if (btn) {
-                        close();
-                        btn.click();
+                    close();
+                    // dark.js 暴露的正式入口：它统一负责写 localStorage、
+                    // 写 data-theme、同步页脚按钮图标。页脚按钮被关掉
+                    // （g_darkmode_toggle=off）时这个入口依然可用。
+                    if (window.kratosDark && typeof window.kratosDark.toggle === 'function') {
+                        window.kratosDark.toggle();
                         return;
                     }
+                    // 兜底：dark.js 因故未加载时，至少让当前页面视觉切过去
                     var html = document.documentElement;
                     var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
                     html.setAttribute('data-theme', next);
@@ -109,7 +111,6 @@
                         localStorage.setItem('kratos_theme_mode', next);
                         localStorage.setItem('kratos_theme_mode_ts', String(Date.now()));
                     } catch (e) {}
-                    close();
                 }
             });
         }

@@ -62,10 +62,35 @@ function kratos_weekday_options()
     );
 }
 
-/** 前端皮肤切换器（开发版）是否开启。独立于皮肤模式，off 时也可用。 */
+/** 前端皮肤切换器（开发版）是否开启。独立于皮肤模式，off 时也可用。
+ *  注意：这个开关只管**页脚那个弹出面板按钮**，不代表「访客能否覆盖皮肤」。
+ *  后者见 kratos_weekday_override_enabled()。 */
 function kratos_weekday_switcher_enabled()
 {
     return (bool) kratos_option('g_weekday_skin_switcher', false);
+}
+
+/**
+ * 「访客本地皮肤覆盖」能力是否开启。
+ *
+ * 皮肤覆盖的持久化并不依赖 skin-switcher.js —— 真正生效的是 wp_head 里的
+ * inline 脚本（读 localStorage → 写 data-weekday-skin → 注入皮肤 CSS，
+ * 见 kratos_weekday_head_inline / kratos_weekday_switcher_head_css）。
+ * skin-switcher.js 只是页脚那个弹出面板的 UI。
+ *
+ * 因此凡是「能让访客选皮肤」的入口，都要让这段 inline 脚本生效。目前有两个：
+ *   1. 页脚皮肤切换器按钮（g_weekday_skin_switcher）
+ *   2. 命令面板的皮肤分组（g_cmdk + g_cmdk_show_skins）
+ * 两者相互独立，任一开启即需要覆盖能力。
+ *
+ * 这里直接读选项而不调用命令面板模块的函数，避免两个模块间产生加载顺序依赖。
+ */
+function kratos_weekday_override_enabled()
+{
+    if (kratos_weekday_switcher_enabled()) {
+        return true;
+    }
+    return (bool) kratos_option('g_cmdk', true) && (bool) kratos_option('g_cmdk_show_skins', false);
 }
 
 /**
@@ -154,8 +179,10 @@ function kratos_weekday_settings()
 function kratos_weekday_head_inline()
 {
     $s = kratos_weekday_settings();
-    $switcher = kratos_weekday_switcher_enabled();
-    // 模式为 off 且切换器也没开：无需注入任何早期脚本。
+    // 用「覆盖能力」而不是「页脚按钮」判定：命令面板的皮肤分组也需要这段脚本
+    // 在下次加载时还原访客选择，它与页脚按钮相互独立。
+    $switcher = kratos_weekday_override_enabled();
+    // 模式为 off 且访客也不能覆盖：无需注入任何早期脚本。
     if ($s['mode'] === 'off' && !$switcher) {
         return;
     }
@@ -187,12 +214,13 @@ function kratos_weekday_head_inline()
 
 /**
  * 在 wp_head 末尾（components.css 已打印后）按需注入被 localStorage 覆盖的皮肤 CSS。
- * 只在切换器开启时输出；无覆盖或该 CSS 已由服务端入队时跳过。仍在 <head> 内、
- * body 渲染前完成，故不会出现可见的样式闪烁。
+ * 只在访客可覆盖皮肤时输出（页脚切换器或命令面板皮肤分组任一开启）；
+ * 无覆盖或该 CSS 已由服务端入队时跳过。仍在 <head> 内、body 渲染前完成，
+ * 故不会出现可见的样式闪烁。
  */
 function kratos_weekday_switcher_head_css()
 {
-    if (!kratos_weekday_switcher_enabled()) {
+    if (!kratos_weekday_override_enabled()) {
         return;
     }
     echo "<script>(function(){try{var s=window.__kratosSkin;if(!s||!s.url)return;"

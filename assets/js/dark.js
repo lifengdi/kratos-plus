@@ -125,4 +125,21 @@
     } else {
         mountToggle();
     }
+
+    /* --- 对外入口 ---
+     * 供命令面板等其它组件切换明暗，不必各自重抄一遍
+     * 「写 localStorage + 写 data-theme + 同步按钮图标」这套逻辑。
+     * 注意页脚切换按钮可以被单独关掉（g_darkmode_toggle），
+     * 那种情况下本文件依旧加载、切换依旧可用，只是没有按钮可点，
+     * 所以这个入口不能依赖按钮存在。 */
+    window.kratosDark = {
+        current: currentMode,
+        set: function (mode) {
+            if (mode !== 'dark' && mode !== 'light') return;
+            setManual(mode);
+        },
+        toggle: function () {
+            setManual(currentMode() === 'dark' ? 'light' : 'dark');
+        }
+    };
 })();

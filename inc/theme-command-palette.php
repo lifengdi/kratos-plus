@@ -221,16 +221,12 @@ function kratos_cmdk_enqueue()
     wp_enqueue_style('kratos-command-palette', ASSET_PATH . '/assets/css/command-palette.css', array('kratos-components'), THEME_VERSION);
     wp_enqueue_script('kratos-command-palette', ASSET_PATH . '/assets/js/command-palette.js', array(), THEME_VERSION, true);
 
-    // 皮肤命令有两道前置条件：
-    //   1. 后台「命令面板 → 展示皮肤切换」打开（默认关闭 —— 皮肤条目数量多，
-    //      默认列出来会把面板刷满，多数站点也不需要让访客换皮肤）
-    //   2.「前端皮肤切换器」开着 —— 皮肤选择靠 localStorage 覆盖生效，需要
-    //      skin-switcher.js 在下次加载时还原并注入对应皮肤 CSS；切换器关闭时
-    //      那段还原逻辑根本不在页面上，写了也不会生效
+    // 皮肤命令只看本模块自己的开关（默认关闭 —— 皮肤条目多，列出来会把面板刷满）。
+    // 与页脚「前端皮肤切换器」按钮完全独立：皮肤覆盖的还原由 wp_head 的 inline
+    // 脚本负责，而 kratos_weekday_override_enabled() 已把本开关纳入判定，
+    // 所以只开命令面板、不开页脚按钮时，选皮肤照样能持久生效。
     $skins = array();
-    if (kratos_option('g_cmdk_show_skins', false)
-        && function_exists('kratos_weekday_switcher_enabled')
-        && kratos_weekday_switcher_enabled()) {
+    if (kratos_option('g_cmdk_show_skins', false) && function_exists('kratos_weekday_options')) {
         foreach (kratos_weekday_options() as $slug => $label) {
             $skins[] = array('slug' => $slug, 'label' => $label);
         }
@@ -241,14 +237,22 @@ function kratos_cmdk_enqueue()
         'searchUrl'      => esc_url_raw(home_url('/')),
         'home'           => esc_url_raw(home_url('/')),
         'pages'          => kratos_option('g_cmdk_show_pages', true) ? kratos_cmdk_pages() : array(),
-        'stumble'        => (function_exists('kratos_stumble_url') && kratos_option('g_stumble', true))
+        // 随机漫步入口：随机漫步总开关 + 本模块的展示开关（与页脚按钮开关独立）
+        'stumble'        => (function_exists('kratos_stumble_url')
+            && kratos_option('g_stumble', true)
+            && kratos_option('g_cmdk_show_stumble', true))
             ? kratos_stumble_url() : '',
         'skins'          => $skins,
         'skinStorage'    => function_exists('kratos_weekday_switcher_storage_key')
             ? kratos_weekday_switcher_storage_key() : '',
         'skinSentinel'   => function_exists('kratos_weekday_switcher_default_sentinel')
             ? kratos_weekday_switcher_default_sentinel() : '',
-        'darkEnabled'    => (bool) (kratos_option('g_darkmode', false) && kratos_option('g_darkmode_toggle', true)),
+        // 暗夜入口：暗夜总开关 + 本模块的展示开关。
+        // 刻意不看 g_darkmode_toggle —— 后者仅决定页脚是否挂切换按钮；
+        // dark.css / dark.js 在总开关打开时就已加载，切换能力始终在，
+        // 所以「开了暗夜但关了页脚按钮」时，命令面板正是唯一的切换入口。
+        'darkEnabled'    => (bool) kratos_option('g_darkmode', false)
+            && (bool) kratos_option('g_cmdk_show_dark', true),
         'showButton'     => (bool) kratos_option('g_cmdk_button', true),
         'debounce'       => max(80, (int) kratos_option('g_cmdk_debounce', 220)),
         'i18n'           => array(

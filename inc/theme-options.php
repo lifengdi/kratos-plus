@@ -630,9 +630,25 @@ CSF::createSection($prefix, array(
         array(
             'id' => 'g_stumble',
             'type' => 'switcher',
-            'title' => __('随机漫步按钮', 'kratos'),
-            'subtitle' => __('在页脚右下角(搜索按钮上方)显示「随机漫步」按钮，点击随机跳到一篇被埋没的老文章', 'kratos'),
+            'title' => __('随机漫步', 'kratos'),
+            'subtitle' => __('随机跳到一篇被埋没的老文章。关闭后隐藏下面所有入口；跳转端点与 [stumble] 短码不受此开关影响，始终可用', 'kratos'),
             'default' => true,
+        ),
+        array(
+            'id' => 'g_stumble_button',
+            'type' => 'switcher',
+            'title' => __('展示页脚按钮', 'kratos'),
+            'subtitle' => __('在页脚右下角工具栈显示「随机漫步」按钮', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_stumble', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_stumble_cmdk_hint',
+            'type' => 'content',
+            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
+                . __('命令面板里的「随机漫步」入口在 <strong>全站配置 → 命令面板 → 展示随机漫步</strong>，与这里的页脚按钮相互独立。', 'kratos')
+                . '</div>',
+            'dependency' => array('g_stumble', '==', 'true'),
         ),
         array(
             'id' => 'g_stumble_min_age',
@@ -690,6 +706,10 @@ CSF::createSection($prefix, array(
             'dependency' => array('g_cmdk', '==', 'true'),
         ),
         array(
+            'type' => 'subheading',
+            'content' => __('面板内容 —— 决定面板里出现哪些分组。这些开关只影响命令面板，与各功能自己的页脚按钮开关相互独立。', 'kratos'),
+        ),
+        array(
             'id' => 'g_cmdk_show_pages',
             'type' => 'switcher',
             'title' => __('展示页面跳转', 'kratos'),
@@ -706,12 +726,32 @@ CSF::createSection($prefix, array(
             'dependency' => array('g_cmdk|g_cmdk_show_pages', '==|==', 'true|true'),
         ),
         array(
+            'id' => 'g_cmdk_show_dark',
+            'type' => 'switcher',
+            'title' => __('展示暗色切换', 'kratos'),
+            'subtitle' => __('需要「功能配置 → 暗夜模式」总开关已开启。与页脚暗色按钮相互独立 —— 关掉页脚按钮时，这里就是唯一的切换入口', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_show_stumble',
+            'type' => 'switcher',
+            'title' => __('展示随机漫步', 'kratos'),
+            'subtitle' => __('需要「全站配置 → 随机漫步」总开关已开启。与随机漫步的页脚按钮相互独立', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
             'id' => 'g_cmdk_show_skins',
             'type' => 'switcher',
             'title' => __('展示皮肤切换', 'kratos'),
-            'subtitle' => __('默认关闭。皮肤条目较多，列出来会占满面板；另外皮肤切换依赖「每日皮肤 → 前端皮肤切换器」开启才会生效，两者都开才会出现', 'kratos'),
+            'subtitle' => __('默认关闭 —— 皮肤条目较多，列出来会占满面板。与「每日皮肤 → 前端皮肤切换器」按钮相互独立：只开这一项也能让访客选皮肤并在下次访问时保持', 'kratos'),
             'default' => false,
             'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('搜索行为', 'kratos'),
         ),
         array(
             'id' => 'g_cmdk_search_max',
@@ -956,6 +996,14 @@ CSF::createSection($prefix, array(
             'dependency' => array('g_darkmode', '==', 'true'),
         ),
         array(
+            'id' => 'g_darkmode_cmdk_hint',
+            'type' => 'content',
+            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
+                . __('命令面板里的「切换暗色 / 亮色」入口在 <strong>全站配置 → 命令面板 → 展示暗色切换</strong>，与上面的页脚按钮相互独立 —— 隐藏了页脚按钮，命令面板依然可以切换。', 'kratos')
+                . '</div>',
+            'dependency' => array('g_darkmode', '==', 'true'),
+        ),
+        array(
             'id' => 'g_darkmode_remember_days',
             'type' => 'number',
             'title' => __('用户偏好记住天数', 'kratos'),
@@ -1020,6 +1068,13 @@ CSF::createSection($prefix, array(
             'title' => __('前端皮肤切换器', 'kratos'),
             'subtitle' => __('开启后，前台工具箱在暗夜按钮上方多出一个「皮肤」按钮，访客可自行切换皮肤预览。', 'kratos'),
             'default' => false,
+        ),
+        array(
+            'id' => 'g_weekday_skin_cmdk_hint',
+            'type' => 'content',
+            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
+                . __('命令面板里的皮肤分组在 <strong>全站配置 → 命令面板 → 展示皮肤切换</strong>，与上面的页脚按钮相互独立 —— 只开命令面板那一项，也能让访客选皮肤并在下次访问时保持。', 'kratos')
+                . '</div>',
         ),
     ),
 ));

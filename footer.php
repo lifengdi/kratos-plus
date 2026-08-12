@@ -17,7 +17,8 @@
                 <input type="text" name="s" id="search-footer" placeholder="<?php _e('搜点什么呢?', 'kratos'); ?>" style="display:none" />
             </form>
         </div>
-        <?php if (kratos_option('g_stumble', true)) { ?>
+        <?php // 总开关 + 页脚按钮开关都打开时才渲染（命令面板入口另有开关，见 inc/theme-command-palette.php） ?>
+        <?php if (kratos_option('g_stumble', true) && kratos_option('g_stumble_button', true)) { ?>
             <div class="stumble">
                 <a href="<?php echo kratos_stumble_url(); ?>" rel="nofollow" aria-label="<?php esc_attr_e('随机漫步 · 随机跳到一篇老文章', 'kratos'); ?>" title="<?php esc_attr_e('随机漫步 · 随机跳到一篇老文章', 'kratos'); ?>">
                     <span class="kicon i-tabrandom"></span>
