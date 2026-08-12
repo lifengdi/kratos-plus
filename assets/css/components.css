@@ -16,6 +16,11 @@
  *   .kr-pill        药丸/计数徽章（kas-pill/kfl-section-count/kfl-visitor-link/kph-year-tag）
  *   .kr-dot         小圆点（ktl-*-dot/ktc-dot/kfl-probe-dot）
  *
+ * 新增短代码/特色页只要：markup 挂 kr-* 公共类 + 私有变量走 --khs-* 命名空间 +
+ * 把根容器 class 加进下面两处 :is() 别名列表，即可自动继承全部皮肤，
+ * 无需改任何皮肤文件（.kratos-search / .kratos-comment-geo / .kratos-dashboard
+ * / .kratos-cmdk / .kratos-lpv 均按此方式接入）。
+ *
  * 加载顺序：style.css → components.css → 皮肤（kratos-weekday-skin，依赖 kratos-components）。
  * 详见 docs/css-refactor-plan.md。
  *
@@ -80,7 +85,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) :is(
     .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
     .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
-    .kratos-home) {
+    .kratos-home, .kratos-search, .kratos-comment-geo, .kratos-dashboard,
+    .kratos-cmdk, .kratos-lpv) {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -107,7 +113,8 @@ html[data-theme="dark"][data-weekday-skin] :is(
     .kratos-heart-shortcode, .kratos-topcommenters, .kratos-friend-links,
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
     .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
-    .kratos-home) {
+    .kratos-home, .kratos-search, .kratos-comment-geo, .kratos-dashboard,
+    .kratos-cmdk, .kratos-lpv) {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;

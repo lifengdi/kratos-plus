@@ -1,0 +1,223 @@
+/* ============================================================
+ * Kratos+ · 命令面板（⌘K / Ctrl+K）
+ * ------------------------------------------------------------
+ * 配色走 --khs-* 命名空间，皮肤由 components.css 的别名层统一接管
+ * （`.kratos-cmdk` 已列入其 :is() 作用域），新增皮肤无需为此文件写覆盖。
+ * 形态类挂了 kr-card / kr-ico，跟着皮肤的卡片与图标胶囊语言走。
+ * ============================================================ */
+
+.kratos-cmdk {
+    --khs-fg: #333;
+    --khs-fg-soft: #555;
+    --khs-fg-dim: #777;
+    --khs-accent: #336699;
+    --khs-line: rgba(0, 0, 0, .08);
+    --khs-line-strong: rgba(0, 0, 0, .16);
+    --khs-card-bg: #ffffff;
+    --khs-bg-2: #f0f0f0;
+    --khs-bg-3: #ebebeb;
+
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 12vh 16px 16px;
+}
+
+.kratos-cmdk[hidden] { display: none; }
+
+.kratos-cmdk .cmdk-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .38);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity .18s ease;
+}
+.kratos-cmdk.is-open .cmdk-backdrop { opacity: 1; }
+
+.kratos-cmdk .cmdk-panel {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--khs-card-bg);
+    border: 1px solid var(--khs-line);
+    border-radius: 14px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .28);
+    color: var(--khs-fg);
+    opacity: 0;
+    transform: translateY(-8px) scale(.985);
+    transition: opacity .18s ease, transform .18s ease;
+}
+.kratos-cmdk.is-open .cmdk-panel {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* 输入行 */
+.kratos-cmdk .cmdk-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--khs-line);
+}
+.kratos-cmdk .cmdk-head-ico {
+    display: inline-flex;
+    color: var(--khs-fg-dim);
+}
+.kratos-cmdk .cmdk-input {
+    flex: 1;
+    min-width: 0;
+    padding: 4px 0;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--khs-fg);
+    background: transparent;
+    border: none;
+    outline: none;
+}
+.kratos-cmdk .cmdk-input::placeholder { color: var(--khs-fg-dim); }
+.kratos-cmdk .cmdk-kbd {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: inherit;
+    line-height: 1.7;
+    color: var(--khs-fg-dim);
+    background: var(--khs-bg-2);
+    border: 1px solid var(--khs-line);
+    border-radius: 6px;
+}
+
+/* 结果列表 */
+.kratos-cmdk .cmdk-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8px;
+}
+.kratos-cmdk .cmdk-group {
+    padding: 8px 10px 4px;
+    font-size: 11px;
+    letter-spacing: .04em;
+    color: var(--khs-fg-dim);
+    text-transform: uppercase;
+}
+.kratos-cmdk .cmdk-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--khs-fg-soft);
+}
+.kratos-cmdk .cmdk-item.is-active {
+    background: color-mix(in srgb, var(--khs-accent) 12%, transparent);
+    color: var(--khs-fg);
+}
+.kratos-cmdk .cmdk-item-ico {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--khs-bg-2) 0%, var(--khs-bg-3) 100%);
+    color: var(--khs-accent);
+}
+/* 列内是单行省略号文本，轨道必须 minmax(0,...) 语义：这里用 flex + min-width:0 等效 */
+.kratos-cmdk .cmdk-item-label {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.kratos-cmdk .cmdk-item-sub {
+    flex-shrink: 0;
+    max-width: 40%;
+    font-size: 12px;
+    color: var(--khs-fg-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.kratos-cmdk .cmdk-empty {
+    padding: 26px 10px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--khs-fg-dim);
+}
+
+/* 底部提示 */
+.kratos-cmdk .cmdk-foot {
+    padding: 9px 16px;
+    font-size: 12px;
+    color: var(--khs-fg-dim);
+    border-top: 1px solid var(--khs-line);
+}
+
+/* 打开时锁滚动 */
+html.cmdk-lock, html.cmdk-lock body { overflow: hidden; }
+
+/* 页脚唤出按钮：与 .f-toolbox 内既有按钮（搜索 / 随机漫步 / 微信）完全同规格
+ * —— 40×40、半透明灰底、白色图标，见 style.css `.k-footer .f-toolbox` 段 */
+.k-footer .f-toolbox .cmdk-launch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    background: rgba(132, 132, 132, .7);
+    cursor: pointer;
+    transition: background .2s ease;
+}
+.k-footer .f-toolbox .cmdk-launch:hover {
+    background: rgba(132, 132, 132, .9);
+}
+.k-footer .f-toolbox .cmdk-launch .cmdk-launch-ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.k-footer .f-toolbox .cmdk-launch svg {
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 560px) {
+    .kratos-cmdk { padding: 8vh 12px 12px; }
+    .kratos-cmdk .cmdk-panel { max-height: 78vh; }
+    .kratos-cmdk .cmdk-input { font-size: 15px; }
+    .kratos-cmdk .cmdk-item-sub { display: none; }
+}
+
+/* 暗夜模式 */
+html[data-theme="dark"] .kratos-cmdk {
+    --khs-fg: #d6d8db;
+    --khs-fg-soft: #b8bbc0;
+    --khs-fg-dim: #8b919a;
+    --khs-accent: #6ea8ff;
+    --khs-line: rgba(255, 255, 255, .08);
+    --khs-line-strong: rgba(255, 255, 255, .16);
+    --khs-card-bg: #1c1f24;
+    --khs-bg-2: #2a2e35;
+    --khs-bg-3: #333842;
+}
+html[data-theme="dark"] .kratos-cmdk .cmdk-panel {
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .7);
+}
+html[data-theme="dark"] .kratos-cmdk .cmdk-backdrop {
+    background: rgba(0, 0, 0, .58);
+}

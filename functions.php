@@ -8,7 +8,7 @@
  * @version 2025.02.08
  */
 
-define('THEME_VERSION', '1.1.15');
+define('THEME_VERSION', '1.1.16');
 
 if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;
@@ -178,6 +178,21 @@ require get_template_directory() . '/inc/theme-yearly-review.php';
 
 // 随机漫步 Stumble —— 随机跳到一篇被埋没的老文章
 require get_template_directory() . '/inc/theme-stumble.php';
+
+// 搜索结果页增强（search.php 的数据层与渲染函数）
+require get_template_directory() . '/inc/theme-search.php';
+
+// 评论者地域分布（[comment_geo] 短码，复用 inc/ip2region 离线库）
+require get_template_directory() . '/inc/theme-comment-geo.php';
+
+// 内链悬浮预览卡（正文站内链接 hover 预览）
+require get_template_directory() . '/inc/theme-link-preview.php';
+
+// 命令面板（⌘K / Ctrl+K 快速搜索与跳转）
+require get_template_directory() . '/inc/theme-command-palette.php';
+
+// 站点数据看板（[site_dashboard] 短码 + page-site-dashboard.php）
+require get_template_directory() . '/inc/theme-site-dashboard.php';
 
 // 自定义登录页（接管 wp-login.php）
 require get_template_directory() . '/inc/theme-login.php';

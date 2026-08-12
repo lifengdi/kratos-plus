@@ -655,6 +655,160 @@ CSF::createSection($prefix, array(
 
 CSF::createSection($prefix, array(
     'parent' => 'global_fields',
+    'title' => __('命令面板', 'kratos'),
+    'icon' => 'fas fa-terminal',
+    'fields' => array(
+        array(
+            'id' => 'g_cmdk_notice',
+            'type' => 'content',
+            'content' => '<div style="padding:12px 14px;background:#f7f3ea;border:1px solid #e3d9c4;border-radius:8px;line-height:1.8;">'
+                . '<p style="margin:0 0 6px;"><strong>' . __('唤出方式：', 'kratos') . '</strong>'
+                . __('macOS 按 <code>⌘K</code>，Windows / Linux 按 <code>Ctrl+K</code>；非输入状态下按 <code>/</code> 也可唤出。快捷键提示会按访客的操作系统自动切换。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 面板聚合了：站内搜索、页面跳转（只列出你实际建了的页面）、暗色切换、随机漫步，以及可选的皮肤切换。', 'kratos') . '</p>'
+                . '</div>',
+        ),
+        array(
+            'id' => 'g_cmdk',
+            'type' => 'switcher',
+            'title' => __('命令面板', 'kratos'),
+            'subtitle' => __('启用 ⌘K / Ctrl+K 命令面板', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_cmdk_button',
+            'type' => 'switcher',
+            'title' => __('页脚唤出按钮', 'kratos'),
+            'subtitle' => __('在页脚右下角工具栈顶部显示一个入口按钮，便于不知道快捷键的访客发现', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_placeholder',
+            'type' => 'text',
+            'title' => __('输入框占位文案', 'kratos'),
+            'default' => __('搜索文章，或输入命令…', 'kratos'),
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_show_pages',
+            'type' => 'switcher',
+            'title' => __('展示页面跳转', 'kratos'),
+            'subtitle' => __('在面板里列出站内页面（特色页用固定中文名与图标，其余页面用页面标题）。单个页面可在「编辑页面 → Kratos+ 命令面板」里单独排除', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_pages_max',
+            'type' => 'text',
+            'title' => __('普通页面条数上限', 'kratos'),
+            'subtitle' => __('除特色页之外，最多列出多少个普通页面（按菜单顺序、标题排序）；填 0 表示只列特色页。默认 30', 'kratos'),
+            'default' => '30',
+            'dependency' => array('g_cmdk|g_cmdk_show_pages', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_cmdk_show_skins',
+            'type' => 'switcher',
+            'title' => __('展示皮肤切换', 'kratos'),
+            'subtitle' => __('默认关闭。皮肤条目较多，列出来会占满面板；另外皮肤切换依赖「每日皮肤 → 前端皮肤切换器」开启才会生效，两者都开才会出现', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_search_max',
+            'type' => 'text',
+            'title' => __('增量搜索结果条数', 'kratos'),
+            'subtitle' => __('面板内实时展示的文章条数，最大 20。默认 8', 'kratos'),
+            'default' => '8',
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_debounce',
+            'type' => 'text',
+            'title' => __('搜索去抖延时(毫秒)', 'kratos'),
+            'subtitle' => __('停止输入多久后才发请求，避免每敲一个字都查库。最小 80，默认 220', 'kratos'),
+            'default' => '220',
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'global_fields',
+    'title' => __('搜索结果页', 'kratos'),
+    'icon' => 'fas fa-search',
+    'fields' => array(
+        array(
+            'id' => 'g_search_enhance',
+            'type' => 'switcher',
+            'title' => __('增强搜索结果页', 'kratos'),
+            'subtitle' => __('启用独立的 search.php 结果页（页头卡 + 关键词高亮 + 结果分组 + 零结果推荐）。关闭后回落到经典列表样式', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_search_title',
+            'type' => 'text',
+            'title' => __('结果页标题', 'kratos'),
+            'default' => __('搜索结果', 'kratos'),
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_placeholder',
+            'type' => 'text',
+            'title' => __('搜索框占位文案', 'kratos'),
+            'default' => __('换个词再试试…', 'kratos'),
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_highlight',
+            'type' => 'switcher',
+            'title' => __('关键词高亮', 'kratos'),
+            'subtitle' => __('在标题与摘要中用高亮底色标出命中的关键词', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_shuoshuo',
+            'type' => 'switcher',
+            'title' => __('搜索结果包含说说', 'kratos'),
+            'subtitle' => __('说说是独立文章类型且默认不进 WordPress 搜索，开启后单独查询并作为「说说」分组展示', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_shuoshuo_max',
+            'type' => 'text',
+            'title' => __('说说结果条数', 'kratos'),
+            'default' => '5',
+            'dependency' => array('g_search_shuoshuo|g_search_enhance', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_search_series',
+            'type' => 'switcher',
+            'title' => __('搜索结果包含系列', 'kratos'),
+            'subtitle' => __('匹配系列名称与描述，作为「系列」分组展示', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_series_max',
+            'type' => 'text',
+            'title' => __('系列结果条数', 'kratos'),
+            'default' => '6',
+            'dependency' => array('g_search_series|g_search_enhance', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_search_empty_tags',
+            'type' => 'text',
+            'title' => __('零结果推荐标签数', 'kratos'),
+            'subtitle' => __('没有搜到内容时，在兜底区展示的热门标签个数；填 0 表示不展示', 'kratos'),
+            'default' => '12',
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'global_fields',
     'title' => __('代码高亮', 'kratos'),
     'icon' => 'fas fa-code',
     'fields' => array(
@@ -1629,6 +1783,73 @@ CSF::createSection($prefix, array(
         ),
         array(
             'type' => 'subheading',
+            'content' => __('内链悬浮预览卡', 'kratos'),
+        ),
+        array(
+            'id' => 'g_link_preview',
+            'type' => 'switcher',
+            'title' => __('功能开关', 'kratos'),
+            'subtitle' => __('正文里指向本站的链接，鼠标悬停后弹出预览卡：文章/页面显示缩略图 / 摘要 / 日期 / 阅读时长 / 评论数；分类/标签/系列显示归档名 / 描述 / 文章数 / 最近几篇。请求期间静默加载，不显示「加载中」占位。触屏设备自动不启用', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_link_preview_delay',
+            'type' => 'text',
+            'title' => __('悬停触发延时(毫秒)', 'kratos'),
+            'subtitle' => __('鼠标在链接上停留多久才请求并弹卡，避免划过就触发。最小 80，默认 320', 'kratos'),
+            'default' => '320',
+            'dependency' => array('g_link_preview', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_link_preview_terms',
+            'type' => 'switcher',
+            'title' => __('预览分类 / 标签 / 系列归档', 'kratos'),
+            'subtitle' => __('指向归档页的链接也弹预览卡（归档名 / 描述 / 文章数 / 最近几篇）。「关键词自动内链」生成的正是这类链接，建议一起开', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_link_preview', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_link_preview_term_posts',
+            'type' => 'text',
+            'title' => __('归档卡展示最近几篇', 'kratos'),
+            'subtitle' => __('在归档预览卡里列出该归档下最近的 N 篇文章；填 0 只显示文章总数。默认 3', 'kratos'),
+            'default' => '3',
+            'dependency' => array('g_link_preview|g_link_preview_terms', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_link_preview_term_max',
+            'type' => 'text',
+            'title' => __('归档映射表容量', 'kratos'),
+            'subtitle' => __('WordPress 没有「链接反查归档」的接口，主题会建一份「归档链接 → 分类/标签」映射表并缓存。此项限制入表的分类/标签总数，默认 3000，通常无需调整', 'kratos'),
+            'default' => '3000',
+            'dependency' => array('g_link_preview|g_link_preview_terms', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_link_preview_excerpt',
+            'type' => 'text',
+            'title' => __('摘要字数', 'kratos'),
+            'subtitle' => __('预览卡里摘要截断长度，默认 110', 'kratos'),
+            'default' => '110',
+            'dependency' => array('g_link_preview', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_link_preview_wpm',
+            'type' => 'text',
+            'title' => __('阅读速度(字/分钟)', 'kratos'),
+            'subtitle' => __('用于计算预览卡里的预计阅读时长，默认 400', 'kratos'),
+            'default' => '400',
+            'dependency' => array('g_link_preview', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_link_preview_cache_min',
+            'type' => 'text',
+            'title' => __('预览缓存时长(分钟)', 'kratos'),
+            'subtitle' => __('每篇文章的预览数据缓存多久；文章保存时会自动失效。最小 5，默认 360', 'kratos'),
+            'default' => '360',
+            'dependency' => array('g_link_preview', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
             'content' => __('相关文章推荐', 'kratos'),
         ),
         array(
@@ -2330,6 +2551,76 @@ CSF::createSection($prefix, array(
 
 CSF::createSection($prefix, array(
     'parent' => 'comment_fields',
+    'title' => __('评论地域分布', 'kratos'),
+    'icon' => 'fas fa-map-marked-alt',
+    'fields' => array(
+        array(
+            'id' => 'g_comment_geo_notice',
+            'type' => 'content',
+            'content' => '<div style="padding:12px 14px;background:#f7f3ea;border:1px solid #e3d9c4;border-radius:8px;line-height:1.8;">'
+                . '<p style="margin:0 0 6px;"><strong>' . __('短码：', 'kratos') . '</strong><code>[comment_geo]</code></p>'
+                . '<p style="margin:0 0 6px;">' . __('归属地解析完全走主题内置的 ip2region 离线库（「评论配置 → 通用配置」里可下载/更新），不请求任何外部 API。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 统计结果按 IP 聚合后缓存，新评论通过审核时自动失效重算。', 'kratos') . '</p>'
+                . '</div>',
+        ),
+        array(
+            'id' => 'g_comment_geo_title',
+            'type' => 'text',
+            'title' => __('短码默认标题', 'kratos'),
+            'default' => __('评论者地域分布', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_geo_subtitle',
+            'type' => 'text',
+            'title' => __('短码默认副标题', 'kratos'),
+            'default' => __('看看这些留言是从哪些地方寄来的 🗺', 'kratos'),
+        ),
+        array(
+            'id' => 'g_comment_geo_regions_max',
+            'type' => 'text',
+            'title' => __('省份榜条数', 'kratos'),
+            'subtitle' => __('只统计中国大陆及港澳台的省级行政区；填 0 不展示该榜', 'kratos'),
+            'default' => '12',
+        ),
+        array(
+            'id' => 'g_comment_geo_countries_max',
+            'type' => 'text',
+            'title' => __('国家/地区榜条数', 'kratos'),
+            'subtitle' => __('填 0 不展示该榜', 'kratos'),
+            'default' => '8',
+        ),
+        array(
+            'id' => 'g_comment_geo_cities_max',
+            'type' => 'text',
+            'title' => __('城市榜条数', 'kratos'),
+            'subtitle' => __('默认 0（不展示）。城市粒度依赖数据库精度，小站样本少时参考价值有限', 'kratos'),
+            'default' => '0',
+        ),
+        array(
+            'id' => 'g_comment_geo_ip_max',
+            'type' => 'text',
+            'title' => __('参与统计的唯一 IP 上限', 'kratos'),
+            'subtitle' => __('按评论数从多到少取前 N 个唯一 IP 解析。值越大越准，但缓存失效后的首次重算越慢。默认 2000', 'kratos'),
+            'default' => '2000',
+        ),
+        array(
+            'id' => 'g_comment_geo_cache_min',
+            'type' => 'text',
+            'title' => __('缓存时长(分钟)', 'kratos'),
+            'subtitle' => __('聚合结果缓存多久；最小 5 分钟。默认 720（12 小时）', 'kratos'),
+            'default' => '720',
+        ),
+        array(
+            'id' => 'g_comment_geo_show_updated',
+            'type' => 'switcher',
+            'title' => __('展示统计更新时间', 'kratos'),
+            'default' => true,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'comment_fields',
     'title' => __('评论排行榜', 'kratos'),
     'icon' => 'fas fa-trophy',
     'fields' => array(
@@ -2892,6 +3183,94 @@ CSF::createSection($prefix, array(
                 'min' => 0,
                 'step' => 1,
             ),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'dash_fields',
+    'title' => __('数据看板', 'kratos'),
+    'icon' => 'fas fa-chart-bar',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('站点数据看板：新建页面并选择「站点数据看板」模板即可访问，也可用短码 [site_dashboard] 嵌入任意页面。数据全部复用归档统计 / 评论排行 / 阅读增强 / 地域分布已有的数据层。', 'kratos'),
+        ),
+        array(
+            'id' => 'g_dash_title',
+            'type' => 'text',
+            'title' => __('页头标题', 'kratos'),
+            'default' => __('站点数据看板', 'kratos'),
+        ),
+        array(
+            'id' => 'g_dash_subtitle',
+            'type' => 'text',
+            'title' => __('页头副标题', 'kratos'),
+            'default' => __('这个博客到今天为止，长成了什么样子 📊', 'kratos'),
+        ),
+        array(
+            'id' => 'g_dash_days',
+            'type' => 'text',
+            'title' => __('发布节奏天数', 'kratos'),
+            'subtitle' => __('柱状图展示最近多少天的发文数，范围 7~120。默认 30', 'kratos'),
+            'default' => '30',
+        ),
+        array(
+            'id' => 'g_dash_words',
+            'type' => 'switcher',
+            'title' => __('统计累计字数', 'kratos'),
+            'subtitle' => __('需要读取全部已发布文章正文逐篇计数。文章上千篇的站点若觉得缓存重算偏慢，可以关掉这一项', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_dash_years_max',
+            'type' => 'text',
+            'title' => __('年度产出条数', 'kratos'),
+            'subtitle' => __('填 0 不展示该区块', 'kratos'),
+            'default' => '8',
+        ),
+        array(
+            'id' => 'g_dash_cats_max',
+            'type' => 'text',
+            'title' => __('分类占比条数', 'kratos'),
+            'subtitle' => __('填 0 不展示该区块', 'kratos'),
+            'default' => '10',
+        ),
+        array(
+            'id' => 'g_dash_commenters_max',
+            'type' => 'text',
+            'title' => __('最勤评论者条数', 'kratos'),
+            'subtitle' => __('复用「评论排行榜」的数据层；填 0 不展示该区块', 'kratos'),
+            'default' => '5',
+        ),
+        array(
+            'id' => 'g_dash_geo',
+            'type' => 'switcher',
+            'title' => __('内嵌评论地域分布', 'kratos'),
+            'subtitle' => __('在看板底部嵌入 [comment_geo]（不重复输出它自己的页头卡）', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_dash_cache_min',
+            'type' => 'text',
+            'title' => __('缓存时长(分钟)', 'kratos'),
+            'subtitle' => __('聚合结果缓存多久；发文、删文、评论变动会自动失效。最小 5，默认 180', 'kratos'),
+            'default' => '180',
+        ),
+        array(
+            'id' => 'g_dash_show_updated',
+            'type' => 'switcher',
+            'title' => __('展示数据更新时间', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_dash_notice',
+            'type' => 'content',
+            'content' => '<div style="padding:12px 14px;background:#f7f3ea;border:1px solid #e3d9c4;border-radius:8px;line-height:1.8;">'
+                . '<p style="margin:0 0 6px;"><strong>' . __('建站天数取自：', 'kratos') . '</strong>'
+                . __('「年度回顾 → 建站日期」（<code>site_birthday</code>）；没填时自动回落到最早一篇文章的发布时间。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 平均更新间隔 = 首篇到末篇的天数跨度 ÷ 间隔数，只有两篇以上才会展示。', 'kratos') . '</p>'
+                . '</div>',
         ),
     ),
 ));

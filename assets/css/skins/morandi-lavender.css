@@ -865,6 +865,7 @@ html[data-weekday-skin="lavender"]:not([data-theme="dark"]) .k-main .details .ar
 }
 
 html[data-weekday-skin="lavender"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="lavender"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch,
 html[data-weekday-skin="lavender"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="lavender"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="lavender"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
@@ -990,6 +991,7 @@ html[data-theme="dark"][data-weekday-skin="lavender"] .kratos-archives-shortcode
 }
 
 body.is-kratos-archives-page .k-main .details,
+body.is-kratos-dashboard-page .k-main .details,
 body.is-kratos-heart-page .k-main .details,
 body.is-kratos-shuoshuo-page .k-main .details,
 body.is-kratos-topcommenters-page .k-main .details,
@@ -1009,6 +1011,7 @@ body.is-kratos-now-page .k-main .details {
 }
 
 body.is-kratos-archives-page .k-main .details::after,
+body.is-kratos-dashboard-page .k-main .details::after,
 body.is-kratos-heart-page .k-main .details::after,
 body.is-kratos-shuoshuo-page .k-main .details::after,
 body.is-kratos-topcommenters-page .k-main .details::after,

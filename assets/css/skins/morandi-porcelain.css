@@ -858,6 +858,7 @@ html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-main .details .a
 }
 
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch,
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
@@ -1030,6 +1031,7 @@ html[data-theme="dark"][data-weekday-skin="porcelain"] .kratos-otd-compact .kotd
 html[data-theme="dark"][data-weekday-skin="porcelain"] .kratos-otd-compact .kotd-c-title-link { color: #e8e4ec !important; }
 
 body.is-kratos-archives-page .k-main .details,
+body.is-kratos-dashboard-page .k-main .details,
 body.is-kratos-heart-page .k-main .details,
 body.is-kratos-shuoshuo-page .k-main .details,
 body.is-kratos-topcommenters-page .k-main .details,
@@ -1049,6 +1051,7 @@ body.is-kratos-now-page .k-main .details {
 }
 
 body.is-kratos-archives-page .k-main .details::after,
+body.is-kratos-dashboard-page .k-main .details::after,
 body.is-kratos-heart-page .k-main .details::after,
 body.is-kratos-shuoshuo-page .k-main .details::after,
 body.is-kratos-topcommenters-page .k-main .details::after,

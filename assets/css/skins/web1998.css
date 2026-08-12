@@ -1033,6 +1033,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .art
 
 /* ===== 底部工具盒图标 ===== */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
@@ -1174,6 +1175,7 @@ html[data-theme="dark"][data-weekday-skin="web1998"] .kratos-archives-shortcode.
 
 /* ===== 特殊页面（归档/心情等）关闭卡片装饰 ===== */
 body.is-kratos-archives-page .k-main .details,
+body.is-kratos-dashboard-page .k-main .details,
 body.is-kratos-heart-page .k-main .details,
 body.is-kratos-shuoshuo-page .k-main .details,
 body.is-kratos-topcommenters-page .k-main .details,
@@ -1192,6 +1194,7 @@ body.is-kratos-now-page .k-main .details {
     padding: 0 !important;
 }
 body.is-kratos-archives-page .k-main .details::after,
+body.is-kratos-dashboard-page .k-main .details::after,
 body.is-kratos-heart-page .k-main .details::after,
 body.is-kratos-shuoshuo-page .k-main .details::after,
 body.is-kratos-topcommenters-page .k-main .details::after,
@@ -1649,6 +1652,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-titl
 
 /* ---------- 特殊页面主容器背景兜底（透明化） ---------- */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-archives-page .k-main .details,
+html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-dashboard-page .k-main .details,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-heart-page .k-main .details,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-shuoshuo-page .k-main .details,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body.is-kratos-topcommenters-page .k-main .details,
