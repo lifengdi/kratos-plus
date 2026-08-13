@@ -306,7 +306,12 @@ function kratos_ip2region_lookup($ip) {
         return $empty;
     }
 
-    // 返回格式：国家|区域|省份|城市|ISP
+    // xdb 记录有两种字段布局，必须先判定再取字段，否则会把「城市」当成「省份」：
+    //   新版（ip2region 3.x，本主题下载的 ip2region_v4/v6.xdb 即此格式）：
+    //       国家|省份|城市|ISP|国家码   例：中国|江苏省|南京市|电信|CN
+    //   旧版（ip2region 2.x 的 ip2region.xdb）：
+    //       国家|区域|省份|城市|ISP     例：中国|0|江苏省|南京市|电信
+    // 判定依据：新版最后一段是两位字母国家码，旧版该段是 ISP（中文或较长英文）。
     // 无效值：'0'、空串、'Reserved'（保留段）、'Unknown'、'未知'
     $parts = explode('|', $region);
     $invalid = ['', '0', 'reserved', 'unknown', '未知', 'n/a'];
@@ -315,10 +320,14 @@ function kratos_ip2region_lookup($ip) {
         return in_array(strtolower($v), $invalid, true) ? '' : $v;
     };
 
+    $is_new_layout = isset($parts[4]) && preg_match('/^[A-Za-z]{2}$/', trim((string) $parts[4]));
+    $region_idx = $is_new_layout ? 1 : 2;
+    $city_idx   = $is_new_layout ? 2 : 3;
+
     return [
         'country' => $clean($parts[0] ?? ''),
-        'region'  => $clean($parts[2] ?? ''),
-        'city'    => $clean($parts[3] ?? ''),
+        'region'  => $clean($parts[$region_idx] ?? ''),
+        'city'    => $clean($parts[$city_idx] ?? ''),
     ];
 }
 

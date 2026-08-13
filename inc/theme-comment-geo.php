@@ -5,7 +5,7 @@
  *
  * 把已通过审核的评论按 IP 归属地聚合，输出「省份 / 国家地区」两张 TOP 榜 +
  * 三张总览卡。归属地解析复用 inc/ip2region 离线库（已内置，无需外部 API），
- * 走 wpcdi_get_comment_info()（inc/theme-comment-extends.php）以复用其中
+ * 走 kratos_comment_geo_localize()（inc/theme-comment-extends.php）复用其中
  * 国家/省份/城市的中英映射表，避免在本文件重抄一份 200 行字典。
  *
  * 性能：
@@ -23,7 +23,7 @@ defined('ABSPATH') || exit;
 /** transient key（改聚合逻辑时手动 bump 版本号即可整体失效）。 */
 function kratos_comment_geo_cache_key()
 {
-    return 'kratos_comment_geo_agg_v1';
+    return 'kratos_comment_geo_agg_v2';
 }
 
 /** 清空聚合缓存。 */
@@ -38,8 +38,11 @@ add_action('deleted_comment', 'kratos_comment_geo_flush_cache');
 /**
  * 把一个 IP 解析成 ['country' => .., 'region' => .., 'city' => ..]（中文优先）。
  *
- * 复用 wpcdi_get_comment_info() 的 location 串（形如「中国-广东-深圳」），
- * 它内部已经做了 ip2region 查询 + 国家/省/市中英映射 + 无效值清洗。
+ * 直接取 kratos_ip2region_lookup() 的结构化字段，再交给
+ * kratos_comment_geo_localize()（inc/theme-comment-extends.php）做中英映射。
+ *
+ * 注意：不要反解 wpcdi_get_comment_info() 的 location 展示串（形如「中国-广东-深圳」）——
+ * 该串会在省份缺失时塌缩成「中国-深圳」，按位置取第 2 段就会把城市当成省份。
  *
  * @param string $ip
  * @return array{country:string, region:string, city:string}
@@ -48,31 +51,21 @@ function kratos_comment_geo_resolve_ip($ip)
 {
     $empty = array('country' => '', 'region' => '', 'city' => '');
 
-    if (!function_exists('wpcdi_get_comment_info')) {
+    if (!function_exists('kratos_ip2region_lookup') || !function_exists('kratos_comment_geo_localize')) {
         return $empty;
     }
 
-    // 第二个参数是 User-Agent，这里只关心地理位置，传空串即可
-    $info = wpcdi_get_comment_info($ip, '');
-    $loc  = isset($info['location']) ? trim((string) $info['location']) : '';
-
-    // 默认值 / 失败态一律视为未知
-    if ($loc === '' || $loc === '未知' || $loc === '定位失败' || $loc === '未知位置' || $loc === '本地') {
+    $raw = kratos_ip2region_lookup($ip);
+    if (!is_array($raw) || (string) ($raw['country'] ?? '') === '' || $raw['country'] === '本地') {
         return $empty;
     }
 
-    $parts = array_values(array_filter(array_map('trim', explode('-', $loc)), function ($v) {
-        return $v !== '' && $v !== '未知';
-    }));
-    if (empty($parts)) {
+    $geo = kratos_comment_geo_localize($raw);
+    if ($geo['country'] === '') {
         return $empty;
     }
 
-    return array(
-        'country' => $parts[0],
-        'region'  => isset($parts[1]) ? $parts[1] : '',
-        'city'    => isset($parts[2]) ? $parts[2] : '',
-    );
+    return $geo;
 }
 
 /**

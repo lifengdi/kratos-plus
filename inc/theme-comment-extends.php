@@ -263,64 +263,19 @@ function wpcdi_get_svg_icon($type, $name) {
 }
 
 /**
- * 核心功能：获取评论者的设备/地理信息
- * @param string $comment_ip 评论者IP
- * @param string $user_agent 评论者UA
- * @return array 信息数组
+ * 把 ip2region 的原始地名（英文或中文，含「省/市/自治区」后缀）本地化成中文短名。
+ *
+ * 入参就是 kratos_ip2region_lookup() 的返回值；出参三个字段都用 '' 表示未知，
+ * 供评论信息条（wpcdi_get_comment_info）与地域统计（inc/theme-comment-geo.php）
+ * 共用，避免任何一方再去反解「中国-江苏-南京」这种展示串导致省市错位。
+ *
+ * @param array $raw ['country' => .., 'region' => .., 'city' => ..]
+ * @return array{country:string, region:string, city:string}
  */
-function wpcdi_get_comment_info($comment_ip, $user_agent) {
-    $info = array(
-        'browser' => '未知浏览器',
-        'os'      => '未知系统',
-        'location'=> '未知位置'
-    );
+function kratos_comment_geo_localize($raw)
+{
+    $raw = is_array($raw) ? $raw : array();
 
-    // 1. 使用新的parse_user_agent解析UA
-    try {
-        $parsed = parse_user_agent($user_agent);
-
-        // 拼接浏览器信息
-        if (!empty($parsed['browser'])) {
-            $info['browser'] = $parsed['browser'] . (empty($parsed['version']) ? '' : ' ' . $parsed['version']);
-        }
-
-        // 拼接系统信息
-        if (!empty($parsed['platform'])) {
-            // 优化系统名称显示
-            $os_map = array(
-                'Windows Phone' => 'Windows Phone',
-                'Windows' => 'Windows',
-                'Macintosh' => 'macOS',
-                'Chrome OS' => 'Chrome OS',
-                'Linux' => 'Linux',
-                'Android' => 'Android',
-                'iPhone' => 'iOS',
-                'iPad' => 'iOS',
-                'iPod' => 'iOS',
-                'BlackBerry' => 'BlackBerry',
-                'Kindle Fire' => 'Kindle Fire',
-                'Tizen' => 'Tizen',
-                'PlayStation Vita' => 'PlayStation Vita',
-                'PlayStation 4' => 'PlayStation 4',
-                'PlayStation 5' => 'PlayStation 5'
-            );
-            $info['os'] = isset($os_map[$parsed['platform']]) ? $os_map[$parsed['platform']] : $parsed['platform'];
-        }
-    } catch (Exception $e) {
-        // 解析失败时保留默认值
-        $info['browser'] = '未知浏览器';
-        $info['os'] = '未知系统';
-    }
-
-    // 2. 解析地理位置（基于 ip2region 离线数据库，由 inc/ip2region/ip2region-updater.php 维护）
-    try {
-        $location_data = function_exists('kratos_ip2region_lookup')
-            ? kratos_ip2region_lookup($comment_ip)
-            : ['country' => '', 'region' => '', 'city' => ''];
-
-        if (!empty($location_data['country']) || !empty($location_data['region']) || !empty($location_data['city'])) {
-
-            // 提取关键信息（按需使用）
 				$country_map = [
 					// 亚洲
 					'China' => '中国',
@@ -489,9 +444,95 @@ function wpcdi_get_comment_info($comment_ip, $user_agent) {
 					'Hong Kong' => '香港', 'Macao' => '澳门', 'Taipei' => '台北', 'Kaohsiung' => '高雄', 'Taichung' => '台中'
 				];
 
-				$country = $country_map[$location_data['country'] ?? ''] ?? ($location_data['country'] ?? '未知');
-				$region = $province_map[$location_data['region'] ?? ''] ?? ($location_data['region'] ?? '未知');
-				$city = $city_map[$location_data['city'] ?? ''] ?? '未知';
+    // 中文原始值不在映射表里时直接沿用，只去掉行政区划后缀，保证与表内短名同形
+    // （否则「北京」与「北京市」会被当成两个地名，省份榜里也会出现重复条目）
+    $trim_suffix = function ($v) {
+        $v = trim((string) $v);
+        if ($v === '' || $v === '未知' || $v === '0') {
+            return '';
+        }
+        return preg_replace('/(省|市|特别行政区|(?:壮族|回族|维吾尔|)自治区)$/u', '', $v);
+    };
+
+    $pick = function ($map, $value) use ($trim_suffix) {
+        $value = trim((string) $value);
+        if (isset($map[$value])) {
+            return $map[$value];
+        }
+        $short = $trim_suffix($value);
+        return isset($map[$short]) ? $map[$short] : $short;
+    };
+
+    return array(
+        'country' => $pick($country_map, isset($raw['country']) ? $raw['country'] : ''),
+        'region'  => $pick($province_map, isset($raw['region']) ? $raw['region'] : ''),
+        'city'    => $pick($city_map, isset($raw['city']) ? $raw['city'] : ''),
+    );
+}
+
+
+/**
+ * 核心功能：获取评论者的设备/地理信息
+ * @param string $comment_ip 评论者IP
+ * @param string $user_agent 评论者UA
+ * @return array 信息数组
+ */
+function wpcdi_get_comment_info($comment_ip, $user_agent) {
+    $info = array(
+        'browser' => '未知浏览器',
+        'os'      => '未知系统',
+        'location'=> '未知位置'
+    );
+
+    // 1. 使用新的parse_user_agent解析UA
+    try {
+        $parsed = parse_user_agent($user_agent);
+
+        // 拼接浏览器信息
+        if (!empty($parsed['browser'])) {
+            $info['browser'] = $parsed['browser'] . (empty($parsed['version']) ? '' : ' ' . $parsed['version']);
+        }
+
+        // 拼接系统信息
+        if (!empty($parsed['platform'])) {
+            // 优化系统名称显示
+            $os_map = array(
+                'Windows Phone' => 'Windows Phone',
+                'Windows' => 'Windows',
+                'Macintosh' => 'macOS',
+                'Chrome OS' => 'Chrome OS',
+                'Linux' => 'Linux',
+                'Android' => 'Android',
+                'iPhone' => 'iOS',
+                'iPad' => 'iOS',
+                'iPod' => 'iOS',
+                'BlackBerry' => 'BlackBerry',
+                'Kindle Fire' => 'Kindle Fire',
+                'Tizen' => 'Tizen',
+                'PlayStation Vita' => 'PlayStation Vita',
+                'PlayStation 4' => 'PlayStation 4',
+                'PlayStation 5' => 'PlayStation 5'
+            );
+            $info['os'] = isset($os_map[$parsed['platform']]) ? $os_map[$parsed['platform']] : $parsed['platform'];
+        }
+    } catch (Exception $e) {
+        // 解析失败时保留默认值
+        $info['browser'] = '未知浏览器';
+        $info['os'] = '未知系统';
+    }
+
+    // 2. 解析地理位置（基于 ip2region 离线数据库，由 inc/ip2region/ip2region-updater.php 维护）
+    try {
+        $location_data = function_exists('kratos_ip2region_lookup')
+            ? kratos_ip2region_lookup($comment_ip)
+            : ['country' => '', 'region' => '', 'city' => ''];
+
+        if (!empty($location_data['country']) || !empty($location_data['region']) || !empty($location_data['city'])) {
+
+            $localized = kratos_comment_geo_localize($location_data);
+            $country = $localized['country'] !== '' ? $localized['country'] : '未知';
+            $region  = $localized['region']  !== '' ? $localized['region']  : '未知';
+            $city    = $localized['city']    !== '' ? $localized['city']    : '未知';
 
             $location_parts = [];
             if (!empty($country) && $country !== '未知') {
