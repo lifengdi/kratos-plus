@@ -139,7 +139,7 @@ function kratos_comment_reactions_enqueue_assets()
     if (!is_singular() || !comments_open()) return;
     if (!kratos_option('g_comment_reactions_enabled', true)) return;
     if (!wp_style_is('fontawesome', 'enqueued') && !wp_style_is('fontawesome', 'registered')) {
-        wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+        wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
     }
 }
 add_action('wp_enqueue_scripts', 'kratos_comment_reactions_enqueue_assets', 20);

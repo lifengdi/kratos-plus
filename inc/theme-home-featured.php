@@ -251,16 +251,20 @@ function kratos_home_meta_html($post, $show = array('cat', 'date', 'views'))
         }
     }
     if (in_array('date', $show, true)) {
-        $parts[] = '<span>' . esc_html(get_the_date(get_option('date_format'), $post)) . '</span>';
+        $parts[] = '<span>' . kratos_meta_icon('date', __('发布日期', 'kratos'))
+            . esc_html(get_the_date(get_option('date_format'), $post)) . '</span>';
     }
     if (in_array('short_date', $show, true)) {
-        $parts[] = '<span>' . esc_html(get_the_date('m-d', $post)) . '</span>';
+        $parts[] = '<span>' . kratos_meta_icon('date', __('发布日期', 'kratos'))
+            . esc_html(get_the_date('m-d', $post)) . '</span>';
     }
     if (in_array('views', $show, true)) {
-        $parts[] = '<span>' . sprintf(esc_html__('热度 %s', 'kratos'), number_format_i18n(kratos_home_views($post->ID))) . '</span>';
+        $parts[] = '<span>' . kratos_meta_icon('views', __('热度', 'kratos'))
+            . esc_html(number_format_i18n(kratos_home_views($post->ID))) . '</span>';
     }
     if (in_array('comments', $show, true)) {
-        $parts[] = '<span>' . sprintf(esc_html__('%s 评论', 'kratos'), number_format_i18n((int) $post->comment_count)) . '</span>';
+        $parts[] = '<span>' . kratos_meta_icon('comments', __('评论', 'kratos'))
+            . esc_html(number_format_i18n((int) $post->comment_count)) . '</span>';
     }
 
     if (empty($parts)) {
@@ -933,7 +937,7 @@ function kratos_home_enqueue_assets()
 
     // 模块图标用 Font Awesome；主题「Font Awesome」开关未开时也要保证图标可见。
     // 句柄与 theme-core.php 一致，重复入队会被 WP 去重。
-    wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+    wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
 
     wp_enqueue_style('kratos-home-featured', ASSET_PATH . '/assets/css/home-featured.css', array('kratos-components'), THEME_VERSION);
     wp_enqueue_script('kratos-home-featured', ASSET_PATH . '/assets/js/home-featured.js', array(), THEME_VERSION, true);

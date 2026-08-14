@@ -4,7 +4,7 @@
  * 系列文章分类归档模板 —— /series/<slug>/
  *
  * 视觉复用 Kratos+特色标题（page-featured-title.php）的头部与卡片体系：
- *  - 图标：term meta kratos_series_icon（未设置回退默认星形 SVG）
+ *  - 图标：term meta kratos_series_icon（未设置时由 kratos_series_get_icon() 回落 fa-solid fa-layer-group）
  *  - 标题：系列名
  *  - 描述：term description（未填不展示副标题及分隔线）
  * 文章列表按 kratos_series_get_posts() 顺序（order meta + 发布时间）渲染。
@@ -20,9 +20,6 @@ $term = get_queried_object();
 $series_title    = $term ? $term->name : '';
 $series_desc     = $term ? trim(strip_tags(term_description($term->term_id, 'kratos_series'))) : '';
 $series_icon     = ($term && function_exists('kratos_series_get_icon')) ? kratos_series_get_icon($term->term_id) : '';
-$series_icon_raw = $term ? get_term_meta($term->term_id, 'kratos_series_icon', true) : '';
-// 若用户未设置图标，展示与特色标题一致的默认星形 SVG
-$has_custom_icon = is_string($series_icon_raw) && trim($series_icon_raw) !== '';
 
 global $wp_query;
 $total   = (int) $wp_query->found_posts;
@@ -67,13 +64,11 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                         <span class="ksa-current"><?php echo esc_html($series_title); ?></span>
                     </nav>
                     <header class="kfl-header kr-hd">
-                        <span class="kfl-title-icon kr-ico" aria-hidden="true">
-                            <?php if ($has_custom_icon) { ?>
+                        <?php if ($series_icon !== '') { ?>
+                            <span class="kfl-title-icon kr-ico" aria-hidden="true">
                                 <i class="<?php echo esc_attr($series_icon); ?>"></i>
-                            <?php } else { ?>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.9 7.06 17.4 8 11.9 4 8l5.61-1.16L12 2z"/></svg>
-                            <?php } ?>
-                        </span>
+                            </span>
+                        <?php } ?>
                         <span class="kfl-title kr-hd-title"><?php echo esc_html($series_title); ?></span>
                         <?php if ($series_desc !== '') { ?>
                             <span class="kfl-header-divider kr-hd-divider" aria-hidden="true"></span>
@@ -86,19 +81,13 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                             <h3 class="ksa-children-title"><?php _e('子系列', 'kratos'); ?></h3>
                             <ul class="ksa-children-list">
                                 <?php foreach ($ksa_children as $c) :
-                                    $c_icon_raw = get_term_meta($c->term_id, 'kratos_series_icon', true);
-                                    $c_has_icon = is_string($c_icon_raw) && trim($c_icon_raw) !== '';
-                                    $c_icon = function_exists('kratos_series_get_icon') ? kratos_series_get_icon($c->term_id) : 'fas fa-layer-group';
+                                    $c_icon = kratos_series_get_icon($c->term_id);
                                     $c_desc = trim(strip_tags(term_description($c->term_id, 'kratos_series')));
                                 ?>
                                     <li class="ksa-child-item">
                                         <a href="<?php echo esc_url(get_term_link($c)); ?>">
                                             <span class="ksa-child-icon" aria-hidden="true">
-                                                <?php if ($c_has_icon) { ?>
-                                                    <i class="<?php echo esc_attr($c_icon); ?>"></i>
-                                                <?php } else { ?>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.9 7.06 17.4 8 11.9 4 8l5.61-1.16L12 2z"/></svg>
-                                                <?php } ?>
+                                                <i class="<?php echo esc_attr($c_icon); ?>"></i>
                                             </span>
                                             <span class="ksa-child-body">
                                                 <span class="ksa-child-name">
@@ -134,9 +123,9 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                                                 if ($excerpt !== '') { ?>
                                                     <span class="ksa-excerpt"><?php echo esc_html($excerpt); ?></span>
                                                 <?php } ?>
-                                                <span class="ksa-meta">
-                                                    <i class="fas fa-clock"></i>
-                                                    <?php echo esc_html(get_the_date()); ?>
+                                                <span class="ksa-meta kr-meta">
+                                                    <?php // 与文章列表 meta 区完全一致（同一个 helper）；整条已被 <a> 包住，分类不能再嵌链接
+                                                    echo kratos_post_meta_items_html($p->ID, array('link' => false)); ?>
                                                 </span>
                                             </span>
                                         </a>
@@ -223,7 +212,7 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                         font-size:13px;line-height:1.6;color:var(--khs-fg-soft);
                         display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;max-height:3.2em;
                     }
-                    .ksa-meta{font-size:12px;color:var(--khs-fg-soft);display:inline-flex;align-items:center;gap:6px;}
+                    .ksa-meta{font-size:12px;color:var(--khs-fg-soft);display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;}
                     .ksa-meta i{font-size:11px;opacity:.7;}
                     /* 面包屑 */
                     .ksa-breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:0 0 12px;padding:0 4px;font-size:13px;color:var(--khs-fg-soft);}

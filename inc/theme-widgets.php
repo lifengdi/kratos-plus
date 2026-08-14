@@ -327,7 +327,7 @@ class widget_about extends WP_Widget
             if (empty($instance['socials']) || !is_array($instance['socials'])) continue;
             foreach ($instance['socials'] as $s) {
                 if (!empty($s['icon']) && stripos($s['icon'], 'fa') !== false && stripos($s['icon'], ' ') !== false) {
-                    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+                    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
                     return;
                 }
             }

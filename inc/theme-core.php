@@ -88,20 +88,12 @@ function theme_autoload()
         if (kratos_option('g_animate', false)) {
             wp_enqueue_style('animate', ASSET_PATH . '/assets/css/animate.min.css', array(), '4.1.1');
         }
-        if (kratos_option('g_fontawesome', false)) {
-            wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), '5.15.2');
-        } else {
-            // 页脚自定义社交图标使用 Font Awesome 时，按需加载 FA CSS
-            $s_social_custom = kratos_option('s_social_custom', array());
-            if (!empty($s_social_custom) && is_array($s_social_custom)) {
-                foreach ($s_social_custom as $item) {
-                    if (($item['icon_type'] ?? 'fontawesome') === 'fontawesome' && trim((string)($item['icon'] ?? '')) !== '' && trim((string)($item['url'] ?? '')) !== '') {
-                        wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), '5.15.2');
-                        break;
-                    }
-                }
-            }
-        }
+        // Font Awesome 无条件加载：列表页 / 文章详情页 / 特色首页的元信息图标
+        // （热度、评论数、点赞数、作者、日期、字数、阅读时长，见 kratos_meta_icon()）
+        // 已经属于主题核心 UI，不能再由「g_fontawesome」开关决定有无，否则关掉开关
+        // 这些图标会全部消失。g_fontawesome 保留为「是否在自己的内容里使用 FA」的语义，
+        // 页脚自定义社交图标同理无需再单独按需入队。
+        wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
         wp_enqueue_style('kratos', ASSET_PATH . '/style.css', array(), THEME_VERSION);
         // 短代码/特色页公共组件样式（kr-* 统一类的默认外观层）。
         // 必须在 style.css 之后、任何皮肤（kratos-weekday-skin）之前加载，

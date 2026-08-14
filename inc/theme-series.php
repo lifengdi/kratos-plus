@@ -381,7 +381,7 @@ function kratos_series_get_icon($term_id)
 {
     $icon = get_term_meta($term_id, 'kratos_series_icon', true);
     $icon = is_string($icon) ? trim($icon) : '';
-    return $icon !== '' ? $icon : 'fas fa-layer-group';
+    return $icon !== '' ? $icon : 'fa-solid fa-layer-group';
 }
 
 /**
@@ -406,7 +406,7 @@ add_action('wp_enqueue_scripts', function () {
     }
     if (!$need_fa) return;
     if (wp_style_is('fontawesome', 'enqueued') || wp_style_is('fontawesome', 'registered')) return;
-    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
 }, 25);
 
 /**
@@ -917,7 +917,7 @@ function kratos_series_list_shortcode($atts = array())
         $ic = get_term_meta($t->term_id, 'kratos_series_icon', true);
         if ($ic && strpos($ic, 'fa') !== false) {
             if (!wp_style_is('fontawesome', 'enqueued') && !wp_style_is('fontawesome', 'registered')) {
-                wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+                wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
             }
             break;
         }
@@ -938,22 +938,14 @@ function kratos_series_list_render_branch($tree, $parent_id, $level, $max_depth)
     $tag = $level === 0 ? 'ul' : 'ul';
     echo '<' . $tag . ' class="ksl-list ksl-level-' . (int)$level . '">';
     foreach ($tree[$parent_id] as $term) {
-        $icon = function_exists('kratos_series_get_icon') ? kratos_series_get_icon($term->term_id) : 'fas fa-layer-group';
-        $icon_raw = get_term_meta($term->term_id, 'kratos_series_icon', true);
-        $has_icon = is_string($icon_raw) && trim($icon_raw) !== '';
+        $icon = kratos_series_get_icon($term->term_id);
         $desc = trim(strip_tags(term_description($term->term_id, 'kratos_series')));
         $count = (int) $term->count;
         $has_children = !empty($tree[$term->term_id]);
 
         echo '<li class="ksl-item' . ($has_children ? ' has-children' : '') . '">';
         echo '<a class="ksl-card kr-card" href="' . esc_url(get_term_link($term)) . '">';
-        echo '<span class="ksl-icon" aria-hidden="true">';
-        if ($has_icon) {
-            echo '<i class="' . esc_attr($icon) . '"></i>';
-        } else {
-            echo '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.9 7.06 17.4 8 11.9 4 8l5.61-1.16L12 2z"/></svg>';
-        }
-        echo '</span>';
+        echo '<span class="ksl-icon" aria-hidden="true"><i class="' . esc_attr($icon) . '"></i></span>';
         echo '<span class="ksl-body">';
         echo '<span class="ksl-name">' . esc_html($term->name);
         echo ' <span class="ksl-count">' . (int)$count . '</span>';

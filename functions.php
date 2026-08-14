@@ -9,6 +9,8 @@
  */
 
 define('THEME_VERSION', '1.1.17');
+// 内置 Font Awesome Free 版本（assets/css/fontawesome.min.css + assets/fonts/webfonts/）
+define('FA_VERSION', '7.3.1');
 
 if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;

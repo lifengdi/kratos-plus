@@ -5344,3 +5344,102 @@ html[data-theme="dark"] .w-about-plus a.w-about-cta-btn.is-ghost:hover {
 html[data-theme="dark"] .w-about-plus .about-toggle {
     color: var(--kr-link-hover, var(--kr-accent));
 }
+
+/* ==========================================================================
+   元信息图标（列表页 / 文章详情页 / 特色首页）
+   「热度 / 评论数 / 点赞数 / 作者 / 日期 / 字数 / 阅读时长」的文字标签改成图标，
+   图标由 kratos_meta_icon() 输出，取自内置 Font Awesome Free（solid 风格）。
+   ========================================================================== */
+.kratos-meta-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    height: 1em;
+    margin-right: .34em;
+    /* FA 的 solid 字形墨迹几乎占满 em 盒，和正文字号 1:1 会显得偏大 */
+    font-size: .92em;
+    line-height: 1;
+    vertical-align: -.1em;
+    opacity: .8;
+}
+
+/* 每个元信息项：图标与数值按盒子中线对齐 */
+.k-main .details .article .header .meta > span,
+.kratos-home .khf-meta > span,
+.kratos-home .khf-meta > a,
+.k-main .board .article-panel .a-meta .a-meta-item {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* 整行也走 flex 居中：inline-flex 项的基线取自首个子元素，
+ * 图标项与纯文字项混排时按基线排会整体错开半行。 */
+.k-main .details .article .header .meta,
+.kratos-home .khf-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* 列表页 meta：一行信息组，间距靠 gap 统一控制，
+ * 图标与自己的数值贴紧（.34em），条目之间 14px，读起来成组不散。 */
+.k-main .board .article-panel .a-meta {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+}
+
+/* 覆盖旧的 .a-meta span > i{margin-right:3px}（特异性更高，会顶掉 .kratos-meta-icon） */
+.k-main .board .article-panel .a-meta .a-meta-item > i.kratos-meta-icon {
+    margin-right: .34em;
+}
+
+.k-main .board .article-panel .a-meta .a-meta-items {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    min-width: 0;
+}
+
+@media (max-width: 767px) {
+    .k-main .board .article-panel .a-meta .a-meta-sm-hide {
+        display: none;
+    }
+}
+
+/* 分类挪进 meta 区后：极简列表原本是靠标题前的 .label 色标显示分类的，
+ * 而它的 .a-meta 整行是 display:none —— 若不处理，极简布局会彻底看不到分类。
+ * 这里只把分类那一项放出来（其余项仍隐藏），保持极简的干净观感。 */
+.k-main .board .post-list.layout-minimal .article-panel .a-meta {
+    display: flex;
+}
+
+.k-main .board .post-list.layout-minimal .article-panel .a-meta .a-meta-item:not(.a-meta-cat) {
+    display: none;
+}
+
+/* 分类项：链接沿用 .a-meta span > a 的配色（dark.css / 各皮肤都已覆盖该选择器） */
+.k-main .board .article-panel .a-meta .a-meta-cat > a {
+    font-weight: 500;
+}
+
+/* 通用 meta 行：文章列表与系列归档共用同一套项目与间距，
+ * 由 kratos_post_meta_items_html() 输出，容器挂 .kr-meta，项挂 .kr-meta-item。 */
+.kr-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    min-width: 0;
+}
+
+.kr-meta .kr-meta-item {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+}

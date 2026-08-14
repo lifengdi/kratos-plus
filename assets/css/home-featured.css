@@ -167,7 +167,7 @@ html[data-theme="dark"] .kratos-home {
 .kratos-home .khf-meta {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     font-size: 12px;
     color: var(--khf-muted);
     flex-wrap: wrap;
@@ -177,6 +177,15 @@ html[data-theme="dark"] .kratos-home {
     font-style: normal;
     opacity: .7;
 }
+
+/* 元信息项：图标 + 数值（图标由 kratos_meta_icon() 输出，见 style.css） */
+.kratos-home .khf-meta > span,
+.kratos-home .khf-meta > a {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
 
 /* 缩略图：真实 <img> 由 wp_get_attachment_image 输出（吃 LQIP filter），
  * 外层 .khf-thumb 负责比例裁切。 */

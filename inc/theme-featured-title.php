@@ -107,7 +107,7 @@ add_action('wp_enqueue_scripts', function () {
     if ($icon === '') {
         return;
     }
-    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), '5.15.2');
+    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
 }, 20);
 
 /**

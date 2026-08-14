@@ -150,3 +150,123 @@ function kratos_csf_rewrite_dead_cdn($src, $handle = '')
 }
 add_filter('style_loader_src', 'kratos_csf_rewrite_dead_cdn', 10, 2);
 add_filter('script_loader_src', 'kratos_csf_rewrite_dead_cdn', 10, 2);
+
+/**
+ * 元信息图标：列表页 / 文章详情页 / 特色首页的「热度、评论数、点赞数、作者、
+ * 日期、字数、阅读时长」统一用图标代替文字标签。
+ *
+ * 图标取自主题内置的 Font Awesome Free（版本见 FA_VERSION，实体在
+ * assets/css/fontawesome.min.css + assets/fonts/webfonts/），全部用 solid 风格，
+ * 保证一行里的线条粗细一致。FA 由 theme_autoload() 无条件入队。
+ *
+ * 为什么不用主题自带的 iconfont（kicon）：它的字形墨迹没有在 em 方盒里居中，
+ * 且每个字形偏移量不同（i-comments 偏下 0.089em、i-calendar 0.031em），
+ * 混排时对不齐。FA solid 的墨迹中心基本落在行盒中心（实测最大偏差 0.031em），
+ * 配合 .kratos-meta-icon 的 flex 居中即可与文字严格对齐。
+ *
+ * @param string $name  语义名：category/date/comments/views/loves/author/words/time
+ * @param string $label 无障碍描述，同时作为 hover 提示（原来的文字标签放这里）
+ * @return string
+ */
+function kratos_meta_icon($name, $label = '')
+{
+    $icons = array(
+        'category' => 'fa-folder-open', // 分类
+        'date'     => 'fa-calendar-days',
+        'comments' => 'fa-comment-dots',
+        'views'    => 'fa-fire',      // 热度
+        'loves'    => 'fa-thumbs-up',
+        'author'   => 'fa-user',
+        'words'    => 'fa-file-lines', // 字数（文档 + 文字行；备选 fa-align-left / fa-paragraph / fa-font）
+        'time'     => 'fa-clock',     // 阅读时长
+    );
+
+    if (!isset($icons[$name])) {
+        return '';
+    }
+
+    $attr = $label !== ''
+        ? ' title="' . esc_attr($label) . '" aria-label="' . esc_attr($label) . '" role="img"'
+        : ' aria-hidden="true"';
+
+    return '<i class="fa-solid ' . $icons[$name] . ' kratos-meta-icon"' . $attr . '></i>';
+}
+
+/**
+ * 文章 meta 项集合（分类 / 日期 / 评论数 / 热度 / 点赞 / 作者）。
+ *
+ * 文章列表（pages/page-content.php）与系列归档（taxonomy-kratos_series.php）共用，
+ * 保证两处的项目、顺序、图标、开关（g_post_comments / g_post_views / g_post_loves /
+ * g_post_author）完全一致 —— 以后加减 meta 项只改这一处。
+ *
+ * @param int|null $post_id 默认当前循环文章
+ * @param array    $args    items：要输出的项及顺序；
+ *                          link：分类是否输出为链接。系列归档整条 <li> 已被一个 <a>
+ *                                包住，内部再嵌 <a> 是非法 HTML，那里必须传 false。
+ * @return string
+ */
+function kratos_post_meta_items_html($post_id = null, $args = array())
+{
+    $post = $post_id ? get_post($post_id) : get_post();
+    if (!$post) {
+        return '';
+    }
+
+    $args = array_merge(array(
+        'items' => array('category', 'date', 'comments', 'views', 'loves', 'author'),
+        'link'  => true,
+    ), $args);
+
+    $out = '';
+    foreach ($args['items'] as $item) {
+        switch ($item) {
+            case 'category':
+                $cats = get_the_category($post->ID);
+                $body = !empty($cats)
+                    ? ($args['link']
+                        ? '<a href="' . esc_url(get_category_link($cats[0]->term_id)) . '">' . esc_html($cats[0]->cat_name) . '</a>'
+                        : esc_html($cats[0]->cat_name))
+                    : esc_html__('页面', 'kratos');
+                $out .= '<span class="kr-meta-item a-meta-item a-meta-cat">'
+                    . kratos_meta_icon('category', __('分类', 'kratos')) . $body . '</span>';
+                break;
+
+            case 'date':
+                $out .= '<span class="kr-meta-item a-meta-item a-meta-sm-hide">'
+                    . kratos_meta_icon('date', __('发布日期', 'kratos'))
+                    . esc_html(get_the_date('', $post)) . '</span>';
+                break;
+
+            case 'comments':
+                if (!kratos_option('g_post_comments', true)) break;
+                $out .= '<span class="kr-meta-item a-meta-item a-meta-sm-hide">'
+                    . kratos_meta_icon('comments', __('条评论', 'kratos'))
+                    . esc_html(number_format_i18n((int) get_comments_number($post->ID))) . '</span>';
+                break;
+
+            case 'views':
+                if (!kratos_option('g_post_views', true)) break;
+                $views = (int) get_post_meta($post->ID, 'views', true);
+                $out .= '<span class="kr-meta-item a-meta-item">'
+                    . kratos_meta_icon('views', __('点热度', 'kratos'))
+                    . esc_html(number_format_i18n($views)) . '</span>';
+                break;
+
+            case 'loves':
+                if (!kratos_option('g_post_loves', true)) break;
+                $loves = (int) get_post_meta($post->ID, 'love', true);
+                $out .= '<span class="kr-meta-item a-meta-item">'
+                    . kratos_meta_icon('loves', __('人点赞', 'kratos'))
+                    . esc_html(number_format_i18n($loves)) . '</span>';
+                break;
+
+            case 'author':
+                if (!kratos_option('g_post_author', true)) break;
+                $out .= '<span class="kr-meta-item a-meta-item">'
+                    . kratos_meta_icon('author', __('作者', 'kratos'))
+                    . esc_html(get_the_author_meta('display_name', $post->post_author)) . '</span>';
+                break;
+        }
+    }
+    return $out;
+}

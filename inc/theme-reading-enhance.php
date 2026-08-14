@@ -159,8 +159,14 @@ function kratos_read_render_meta()
     $time_tpl  = kratos_option('g_read_time_text', __('%minutes% 分钟阅读', 'kratos'));
     $words_str = str_replace('%words%', number_format_i18n($words), $words_tpl);
     $time_str  = str_replace('%minutes%', (string) $minutes, $time_tpl);
-    echo '<span class="kratos-read-words">' . esc_html($words_str) . '</span>';
-    echo '<span class="kratos-read-time">' . esc_html($time_str) . '</span>';
+    // 图标只作为前缀，文案照后台「字数文案 / 阅读时间文案」原样展示；
+    // 文字已经把语义说清楚，图标标记为 aria-hidden，避免读屏重复播报。
+    echo '<span class="kratos-read-words">'
+        . kratos_meta_icon('words')
+        . esc_html($words_str) . '</span>';
+    echo '<span class="kratos-read-time">'
+        . kratos_meta_icon('time')
+        . esc_html($time_str) . '</span>';
 }
 
 /**
@@ -268,7 +274,6 @@ function kratos_read_enqueue()
         $css .= '.kratos-read-progress{position:fixed;top:0;left:0;height:' . $progress_height . 'px;width:0;background:' . $progress_bg . ';z-index:9999;transition:width .1s linear;pointer-events:none}';
     }
     if ($wordcount_enabled) {
-        $css .= '.details .meta .kratos-read-words,.details .meta .kratos-read-time{margin-right:.5em}';
     }
     if ($update_enabled) {
         $css .= '.kratos-update-notice{display:flex;align-items:center;gap:10px;padding:12px 16px;margin:0 0 20px;background:#fff8e1;border-left:4px solid #f0ad4e;border-radius:4px;color:#6b4a00;font-size:14px;line-height:1.6}';

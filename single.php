@@ -50,23 +50,24 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                         <div class="header">
                             <h1 class="title"><?php the_title(); ?></h1>
                             <div class="meta">
-                                <span><?php echo get_the_date(); ?></span>
+                                <span><?php echo kratos_meta_icon('date', __('发布日期', 'kratos'));
+                                        echo get_the_date(); ?></span>
                                 <?php if (function_exists('kratos_read_render_meta')) kratos_read_render_meta(); ?>
                                 <?php if (kratos_option('g_post_views', true)) { ?>
-                                    <span><?php echo get_post_views();
-                                            _e('点热度', 'kratos'); ?></span>
+                                    <span><?php echo kratos_meta_icon('views', __('点热度', 'kratos'));
+                                            echo get_post_views(); ?></span>
                                 <?php }
                                 if (kratos_option('g_post_loves', true)) { ?>
-                                    <span><?php if (get_post_meta($post->ID, 'love', true)) {
+                                    <span><?php echo kratos_meta_icon('loves', __('人点赞', 'kratos'));
+                                            if (get_post_meta($post->ID, 'love', true)) {
                                                 echo get_post_meta($post->ID, 'love', true);
                                             } else {
                                                 echo '0';
-                                            }
-                                            _e('人点赞', 'kratos'); ?></span>
+                                            } ?></span>
                                 <?php }
                                 if (kratos_option('g_post_comments', true)) { ?>
-                                    <span><?php comments_number('0', '1', '%');
-                                            _e('条评论', 'kratos'); ?></span>
+                                    <span><?php echo kratos_meta_icon('comments', __('条评论', 'kratos'));
+                                            comments_number('0', '1', '%'); ?></span>
                                 <?php } ?>
                                 <?php if (current_user_can('edit_posts')) {
                                     echo '<span>';
