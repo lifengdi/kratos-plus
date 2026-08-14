@@ -104,7 +104,12 @@
 
         var bits = [];
         if (d.date) bits.push('<span>' + esc(d.date) + '</span>');
-        if (d.cat) bits.push('<span class="lpv-cat">' + esc(d.cat) + '</span>');
+        if (d.cat) {
+            // 有分类链接就渲染成真链接，可以从卡片直接点进分类归档
+            bits.push(d.catUrl
+                ? '<a class="lpv-cat" href="' + esc(d.catUrl) + '">' + esc(d.cat) + '</a>'
+                : '<span class="lpv-cat">' + esc(d.cat) + '</span>');
+        }
         if (d.minutes) {
             bits.push('<span>' + esc(d.words) + ' ' + esc(i18n.words || '字')
                 + ' · ' + esc(d.minutes) + ' ' + esc(i18n.minutes || '分钟') + '</span>');

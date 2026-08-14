@@ -295,6 +295,63 @@ function kratos_friend_requirements_editor_render()
     <?php
 }
 
+/**
+ * 在「恢复全部」按钮后面插入「站长交流」入口（新窗口打开论坛，带上本站域名）。
+ *
+ * CSF 的 .csf-buttons 里没有任何 do_action 钩子，为了不改动 vendor 的
+ * codestar-framework，这里在 admin_footer 用 JS 把按钮插到 .csf-reset-all 之后
+ * （顶部工具条与页脚各一组，两处都插；没有 reset-all 时退化为追加到组末尾）。
+ */
+function kratos_options_bbs_button()
+{
+    if (!isset($_GET['page']) || $_GET['page'] !== 'kratos-options') {
+        return;
+    }
+
+    $host = (string) wp_parse_url(home_url(), PHP_URL_HOST);
+    $url  = add_query_arg('from', $host, 'https://bbs.lifengdi.com');
+    ?>
+    <script>
+    (function () {
+        var url = <?php echo wp_json_encode($url); ?>;
+        var label = <?php echo wp_json_encode(__('站长交流', 'kratos')); ?>;
+        var groups = document.querySelectorAll('.csf-buttons');
+        for (var i = 0; i < groups.length; i++) {
+            if (groups[i].querySelector('.kratos-bbs-link')) continue;
+            var reset = groups[i].querySelector('.csf-reset-all');
+            /* 不自己拼元素，而是克隆同组里的「恢复全部」input 再改写：
+             * 这一组按钮的观感来自 WP 后台的 input.button 规则 + 框架的
+             * .csf-buttons .button（line-height:26px），换成 <a> 或 <button>
+             * 元素都会因为默认 padding / 字号 / 盒模型不同而高低不齐。
+             * 克隆能保证节点类型与继承链完全一致，只需去掉红色警示类和
+             * submit 语义。没有 reset 按钮可克隆时才退回自建 input。 */
+            var a;
+            if (reset) {
+                a = reset.cloneNode(false);
+                a.removeAttribute('name');
+                a.removeAttribute('data-confirm');
+                a.className = 'button button-secondary kratos-bbs-link';
+            } else {
+                a = document.createElement('input');
+                a.className = 'button button-secondary kratos-bbs-link';
+            }
+            a.type = 'button';
+            a.value = label;
+            a.addEventListener('click', function () {
+                window.open(url, '_blank', 'noopener');
+            });
+            if (reset && reset.nextSibling) {
+                groups[i].insertBefore(a, reset.nextSibling);
+            } else {
+                groups[i].appendChild(a);
+            }
+        }
+    })();
+    </script>
+    <?php
+}
+add_action('admin_footer', 'kratos_options_bbs_button');
+
 CSF::createOptions($prefix, array(
     'menu_title' => __('主题设置', 'kratos'),
     'menu_slug' => 'kratos-options',

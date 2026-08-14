@@ -36,7 +36,8 @@ function kratos_lpv_enabled()
 /** 单篇预览载荷的 transient key。 */
 function kratos_lpv_cache_key($post_id)
 {
-    return 'kratos_lpv_' . (int) $post_id;
+    // 版本后缀：载荷结构变化（如 v2 加入 catUrl）时换 key，旧缓存自然失效
+    return 'kratos_lpv_v2_' . (int) $post_id;
 }
 
 /** 文章更新时清掉自己的预览缓存。 */
@@ -89,6 +90,14 @@ function kratos_lpv_build_payload($post_id)
     $minutes = $words > 0 ? max(1, (int) ceil($words / $wpm)) : 0;
 
     $cats = get_the_category($post_id);
+    // 分类名在卡片里要能点进归档，所以顺手带上链接（取不到时留空，前端退回纯文本）
+    $cat_url = '';
+    if (!empty($cats)) {
+        $link = get_category_link($cats[0]->term_id);
+        if (!is_wp_error($link)) {
+            $cat_url = (string) $link;
+        }
+    }
 
     $payload = array(
         'found'    => true,
@@ -103,6 +112,7 @@ function kratos_lpv_build_payload($post_id)
         'words'    => $words,
         'minutes'  => $minutes,
         'cat'      => !empty($cats) ? $cats[0]->name : '',
+        'catUrl'   => $cat_url,
     );
 
     $ttl = max(5, (int) kratos_option('g_link_preview_cache_min', 360)) * MINUTE_IN_SECONDS;
@@ -457,6 +467,18 @@ function kratos_lpv_inline_css()
     }
     .kratos-lpv .lpv-sep { opacity: .5; }
     .kratos-lpv .lpv-cat { color: var(--khs-accent); }
+    /* 分类是链接形态时用 a.lpv-cat（0,2,1）压过通用的 a 规则，保持强调色可点 */
+    .kratos-lpv a.lpv-cat {
+        color: var(--khs-accent);
+        text-decoration: none;
+        transition: opacity .18s ease;
+    }
+    .kratos-lpv a.lpv-cat:hover,
+    .kratos-lpv a.lpv-cat:focus-visible { text-decoration: underline; opacity: .85; }
+    .kratos-lpv a.lpv-cat:focus-visible {
+        outline: 2px solid var(--khs-accent);
+        outline-offset: 2px;
+    }
     /* 归档卡 */
     .kratos-lpv .lpv-term-head {
         display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
