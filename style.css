@@ -1687,6 +1687,9 @@ p {
 li
 p {
     margin-bottom: 10px;
+    /* 不吃 .content p 的固定 30px：列表项 marker 的垂直居中基准来自 li 自身行高，
+     * 段落若固定 30px，字号一放大就与 li 行高错位，marker 会偏上/偏下 */
+    line-height: inherit;
 }
 
 .k-main

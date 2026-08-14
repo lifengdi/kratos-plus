@@ -1,4 +1,10 @@
 @charset "UTF-8";
+@property --kra-marker-mid {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 0px;
+}
+
 /* Kratos+ 皮肤 · 复古 retro
  * 视觉参考：demo/skin-retro.html —— 牛皮纸底 / 铅字印刷 / 民国报刊。
  * 严格 1:1 复刻 demo 的调色、字体、装饰（硬阴影、双线边、网点、折痕、
@@ -355,7 +361,8 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .widget_block ul > li::
     font-weight: 700;
     width: auto !important;
     height: auto !important;
-    top: 0 !important;
+    top: var(--kra-marker-mid) !important;
+    transform: translateY(-50%) !important;
     left: -1em !important;
     border-radius: var(--kr-shape-radius) !important;
 }
@@ -1226,14 +1233,32 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .details .artic
 .widget_nav_menu ul > li,
 .widget_block ul > li {
     position: relative;
+    /* 半行高：marker 与首行文字垂直居中的基准（行高 1.8 → 0.9em） */
+    --kra-marker-mid: 0.9em;
     margin-bottom: 6px;
     padding-left: 0.4em;
 }
+/* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
+@supports (top: 0.5lh) {
+.k-main .details .article .content ul > li,
+.k-main .details .article .content ol > li,
+.widget_recent_entries ul > li,
+.widget_recent_comments ul > li,
+.widget_pages ul > li,
+.widget_meta ul > li,
+.widget_rss ul > li,
+.widget_nav_menu ul > li,
+.widget_block ul > li {
+    --kra-marker-mid: 0.5lh;
+}
+}
+
 .k-main .details .article .content ul > li::before {
     content: "";
     position: absolute;
     left: -1em;
-    top: 0.65em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -1246,7 +1271,8 @@ html[data-weekday-skin="retro"]:not([data-theme="dark"]) .k-main .details .artic
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
-    top: 0;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     min-width: 1.2em;
     text-align: right;
     color: var(--kr-skin-accent, currentColor);

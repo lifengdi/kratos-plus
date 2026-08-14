@@ -1,4 +1,10 @@
 @charset "UTF-8";
+@property --kra-marker-mid {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 0px;
+}
+
 /*
  * Kratos+ 每日皮肤（周一 ~ 周日）
  * 作用域: html[data-weekday-skin="mon|tue|wed|thu|fri|sat|sun"]
@@ -2325,9 +2331,26 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
 .widget_nav_menu ul > li,
 .widget_block ul > li {
     position: relative;
+    /* 半行高：marker 与首行文字垂直居中的基准（行高 1.8 → 0.9em） */
+    --kra-marker-mid: 0.9em;
     margin-bottom: 6px;
     padding-left: 0.4em;
 }
+/* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
+@supports (top: 0.5lh) {
+.k-main .details .article .content ul > li,
+.k-main .details .article .content ol > li,
+.widget_recent_entries ul > li,
+.widget_recent_comments ul > li,
+.widget_pages ul > li,
+.widget_meta ul > li,
+.widget_rss ul > li,
+.widget_nav_menu ul > li,
+.widget_block ul > li {
+    --kra-marker-mid: 0.5lh;
+}
+}
+
 .k-main .details .article .content ul > li::before,
 .widget_recent_entries ul > li::before,
 .widget_recent_comments ul > li::before,
@@ -2339,7 +2362,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
     content: "";
     position: absolute;
     left: -1em;
-    top: 0.65em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -2352,7 +2376,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
-    top: 0;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     min-width: 1.2em;
     text-align: right;
     color: var(--kr-skin-accent, currentColor);
@@ -2369,7 +2394,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
 .widget_block ul ul > li::before {
     background: transparent;
     border: 1px solid var(--kr-skin-accent, currentColor);
-    top: 0.6em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
 }
 .k-main .details .article .content ul ul ul > li::before,
 .widget_recent_entries ul ul,
@@ -2384,7 +2410,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
     border-radius: 0;
     width: 6px;
     height: 6px;
-    top: 0.7em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
 }
 
 /* ---- 周一 玻璃冷调：ol 前导零 01. 02. ---- */
@@ -2404,7 +2431,8 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_block ul > li::be
     border-radius: 0;
     width: 8px;
     height: 8px;
-    top: 0.55em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
 }
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content ul ul > li::before,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .widget_recent_entries ul ul > li::before,
@@ -2423,7 +2451,8 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
     content: counter(kra-ol);
     left: -2.2em;
-    top: 0.05em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     padding: 0 5px;
     min-width: 1.6em;
     border: 1.5px solid var(--kr-skin-card-line);
@@ -2431,7 +2460,7 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-main .details .article
     background: var(--kr-skin-card-bg);
     text-align: center;
     font-weight: 700;
-    line-height: 1.4;
+    line-height: 1;
 }
 
 /* ---- 周三 新拟态 Neumorphism：圆点带微阴影，ol 数字气泡 ---- */
@@ -2451,10 +2480,14 @@ html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
     content: counter(kra-ol);
     left: -2.2em;
-    top: 0.05em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     width: 1.7em;
     height: 1.7em;
-    line-height: 1.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
     min-width: 0;
     padding: 0;
     border-radius: 50%;
@@ -2478,7 +2511,8 @@ html[data-weekday-skin="thu"]:not([data-theme="dark"]) .widget_block ul > li::be
     border-radius: 0;
     background: transparent;
     border: 1.5px solid var(--kr-skin-heading);
-    top: 0.65em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     left: -1.3em;
 }
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-main .details .article .content ul ul > li::before,
@@ -2522,10 +2556,11 @@ html[data-weekday-skin="sat"]:not([data-theme="dark"]) .widget_block ul > li::be
     width: auto;
     height: auto;
     color: var(--kr-skin-accent);
-    top: 0;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     left: -1.2em;
     font-size: 12px;
-    line-height: 1.6;
+    line-height: 1;
 }
 html[data-weekday-skin="sat"]:not([data-theme="dark"]) .k-main .details .article .content ol {
     padding-left: 2.4em;
@@ -2533,10 +2568,14 @@ html[data-weekday-skin="sat"]:not([data-theme="dark"]) .k-main .details .article
 html[data-weekday-skin="sat"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
     content: counter(kra-ol);
     left: -2.2em;
-    top: 0.05em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     width: 1.7em;
     height: 1.7em;
-    line-height: calc(1.7em - 2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
     min-width: 0;
     padding: 0;
     border-radius: 50%;
@@ -2561,10 +2600,11 @@ html[data-weekday-skin="sun"]:not([data-theme="dark"]) .widget_block ul > li::be
     width: auto;
     height: auto;
     color: var(--kr-skin-decor);
-    top: 0;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     left: -1.2em;
     font-size: 12px;
-    line-height: 1.6;
+    line-height: 1;
 }
 html[data-weekday-skin="sun"]:not([data-theme="dark"]) .k-main .details .article .content ol {
     padding-left: 2.4em;

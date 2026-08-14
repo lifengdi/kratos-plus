@@ -1,3 +1,9 @@
+@property --kra-marker-mid {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 0px;
+}
+
 /**
  * Morandi Lavender · 莫兰迪薰衣草 皮肤（新架构：kr-* 公共类 + kr-shape 令牌）
  *
@@ -1076,9 +1082,26 @@ html[data-weekday-skin="lavender"]:not([data-theme="dark"]) ::-webkit-scrollbar-
 .widget_nav_menu ul > li,
 .widget_block ul > li {
     position: relative;
+    /* 半行高：marker 与首行文字垂直居中的基准（行高 1.8 → 0.9em） */
+    --kra-marker-mid: 0.9em;
     margin-bottom: 6px;
     padding-left: 0.4em;
 }
+/* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
+@supports (top: 0.5lh) {
+.k-main .details .article .content ul > li,
+.k-main .details .article .content ol > li,
+.widget_recent_entries ul > li,
+.widget_recent_comments ul > li,
+.widget_pages ul > li,
+.widget_meta ul > li,
+.widget_rss ul > li,
+.widget_nav_menu ul > li,
+.widget_block ul > li {
+    --kra-marker-mid: 0.5lh;
+}
+}
+
 
 .k-main .details .article .content ul > li::before,
 .widget_recent_entries ul > li::before,
@@ -1091,7 +1114,8 @@ html[data-weekday-skin="lavender"]:not([data-theme="dark"]) ::-webkit-scrollbar-
     content: "";
     position: absolute;
     left: -1em;
-    top: 0.65em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -1106,7 +1130,8 @@ html[data-weekday-skin="lavender"]:not([data-theme="dark"]) ::-webkit-scrollbar-
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
-    top: 0;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     min-width: 1.2em;
     text-align: right;
     color: var(--kr-skin-accent, currentColor);
@@ -1123,7 +1148,8 @@ html[data-weekday-skin="lavender"]:not([data-theme="dark"]) ::-webkit-scrollbar-
 .widget_block ul ul > li::before {
     background: transparent;
     border: 1px solid var(--kr-skin-accent, currentColor);
-    top: 0.6em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
 }
 
 .k-main .details .article .content ul ul ul > li::before,
@@ -1139,7 +1165,8 @@ html[data-weekday-skin="lavender"]:not([data-theme="dark"]) ::-webkit-scrollbar-
     border-radius: 0;
     width: 6px;
     height: 6px;
-    top: 0.7em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
 }
 /* ===== [END shared rules] ===== */
 

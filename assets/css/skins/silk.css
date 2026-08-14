@@ -1,4 +1,10 @@
 @charset "UTF-8";
+@property --kra-marker-mid {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 0px;
+}
+
 /* Kratos+ 皮肤 · 黄绢 silk（新架构：kr-* 公共类 + kr-shape 令牌） */
 /* 注：短代码命名空间变量（khs 与 kas）到 kr-skin 令牌的通用映射由 components.css 统一提供，本文件不再重复 */
 
@@ -266,10 +272,11 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_block ul > li::b
     width: auto;
     height: auto;
     color: var(--kr-skin-decor);
-    top: 0;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     left: -1.3em;
     font-size: 11px;
-    line-height: 1.8;
+    line-height: 1;
 }
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol {
     padding-left: 2.6em;
@@ -1186,9 +1193,26 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) ::-webkit-scrollbar-trac
 .widget_nav_menu ul > li,
 .widget_block ul > li {
     position: relative;
+    /* 半行高：marker 与首行文字垂直居中的基准（行高 1.8 → 0.9em） */
+    --kra-marker-mid: 0.9em;
     margin-bottom: 6px;
     padding-left: 0.4em;
 }
+/* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
+@supports (top: 0.5lh) {
+.k-main .details .article .content ul > li,
+.k-main .details .article .content ol > li,
+.widget_recent_entries ul > li,
+.widget_recent_comments ul > li,
+.widget_pages ul > li,
+.widget_meta ul > li,
+.widget_rss ul > li,
+.widget_nav_menu ul > li,
+.widget_block ul > li {
+    --kra-marker-mid: 0.5lh;
+}
+}
+
 .k-main .details .article .content ul > li::before,
 .widget_recent_entries ul > li::before,
 .widget_recent_comments ul > li::before,
@@ -1200,7 +1224,8 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) ::-webkit-scrollbar-trac
     content: "";
     position: absolute;
     left: -1em;
-    top: 0.65em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -1213,7 +1238,8 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) ::-webkit-scrollbar-trac
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
-    top: 0;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
     min-width: 1.2em;
     text-align: right;
     color: var(--kr-skin-accent, currentColor);
@@ -1229,7 +1255,8 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) ::-webkit-scrollbar-trac
 .widget_block ul ul > li::before {
     background: transparent;
     border: 1px solid var(--kr-skin-accent, currentColor);
-    top: 0.6em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
 }
 .k-main .details .article .content ul ul ul > li::before,
 .widget_recent_entries ul ul,
@@ -1244,7 +1271,8 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) ::-webkit-scrollbar-trac
     border-radius: 0;
     width: 6px;
     height: 6px;
-    top: 0.7em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
 }
 /* ===== [END shared rules] ===== */
 
