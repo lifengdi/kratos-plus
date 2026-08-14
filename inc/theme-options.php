@@ -365,15 +365,15 @@ CSF::createOptions($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
-    'id' => 'global_fields',
-    'title' => __('全站配置', 'kratos'),
+    'id' => 'kp_basic',
+    'title' => __('基础设置', 'kratos'),
     'icon' => 'fas fa-rocket',
 ));
 
 CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('功能配置', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
+    'parent' => 'kp_basic',
+    'title' => __('界面开关', 'kratos'),
+    'icon' => 'fas fa-toggle-on',
     'fields' => array(
         array(
             'id' => 'g_adminbar',
@@ -425,10 +425,70 @@ CSF::createSection($prefix, array(
             'default' => 'classic',
         ),
         array(
+            'id' => 'g_excerpt_length',
+            'type' => 'text',
+            'title' => __('文章简介缩略', 'kratos'),
+            'subtitle' => __('文章简介显示的字符数量', 'kratos'),
+            'default' => '260',
+        ),
+        array(
+            'id' => 'g_page_lightgallery',
+            'type' => 'switcher',
+            'title' => __('页面图片灯箱', 'kratos'),
+            'subtitle' => __('启用/禁用页面图片灯箱功能', 'kratos'),
+            'default' => true,
+        ),
+        array(
             'id' => 'g_rip',
             'type' => 'switcher',
             'title' => __('哀悼功能', 'kratos'),
             'subtitle' => __('启用/禁用全站黑白功能', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_wechat_fieldset',
+            'type' => 'fieldset',
+            'fields' => array(
+                array(
+                    'type' => 'subheading',
+                    'content' => __('微信二维码', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_wechat',
+                    'type' => 'switcher',
+                    'title' => __('功能开关', 'kratos'),
+                    'subtitle' => __('开启/关闭微信二维码', 'kratos'),
+                    'text_on' => __('开启', 'kratos'),
+                    'text_off' => __('关闭', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_wechat_img',
+                    'type' => 'upload',
+                    'title' =>  __('二维码图片', 'kratos'),
+                    'library' => 'image',
+                    'preview' => true,
+                    'subtitle' => __('浮动显示在页面右下角', 'kratos'),
+                ),
+            ),
+            'default' => array(
+                'g_wechat' => false,
+                'g_wechat_img' => get_template_directory_uri() . '/assets/img/200.png',
+            ),
+        ),
+    ),
+));
+
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_basic',
+    'title' => __('性能与资源', 'kratos'),
+    'icon' => 'fas fa-bolt',
+    'fields' => array(
+        array(
+            'id' => 'g_cdn',
+            'type' => 'switcher',
+            'title' => __('静态资源加速', 'kratos'),
+            'subtitle' => __('启用/禁用静态资源加速（jsDelivr）', 'kratos'),
             'default' => false,
         ),
         array(
@@ -446,60 +506,11 @@ CSF::createSection($prefix, array(
             'default' => false,
         ),
         array(
-            'id' => 'g_cdn',
-            'type' => 'switcher',
-            'title' => __('静态资源加速', 'kratos'),
-            'subtitle' => __('启用/禁用静态资源加速（jsDelivr）', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_renameimg',
-            'type' => 'switcher',
-            'title' => __('自定义图片类型的文件名', 'kratos'),
-            'subtitle' => __('启用/禁用 图片类型的文件名改为 MD5 值', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_removeimgsize',
-            'type' => 'switcher',
-            'title' => __('禁止生成缩略图', 'kratos'),
-            'subtitle' => __('启用/禁用生成多种尺寸图片资源', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_gutenberg',
-            'type' => 'switcher',
-            'title' => __('Gutenberg 编辑器', 'kratos'),
-            'subtitle' => __('启用/禁用 Gutenberg 编辑器', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_classic_widgets',
-            'type' => 'switcher',
-            'title' => __('经典小工具编辑器', 'kratos'),
-            'subtitle' => __('屏蔽外观 → 小工具的区块编辑器（Block Widgets Editor），切换回 WordPress 5.7 以前的经典拖拽界面', 'kratos'),
-            'default' => true,
-        ),
-        array(
             'id' => 'g_disable_emoji',
             'type' => 'switcher',
             'title' => __('禁用 WP Emoji', 'kratos'),
             'subtitle' => __('禁用 WordPress 内置的 wp-emoji-release.min.js（twemoji 图片替换）。现代浏览器都原生支持 emoji，禁用后不再请求 s.w.org / jsDelivr 的 SVG 图片，页面更快、国内访问更稳', 'kratos'),
             'default' => true,
-        ),
-        array(
-            'id' => 'g_page_lightgallery',
-            'type' => 'switcher',
-            'title' => __('页面图片灯箱', 'kratos'),
-            'subtitle' => __('启用/禁用页面图片灯箱功能', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_excerpt_length',
-            'type' => 'text',
-            'title' => __('文章简介缩略', 'kratos'),
-            'subtitle' => __('文章简介显示的字符数量', 'kratos'),
-            'default' => '260',
         ),
         array(
             'id' => 'g_replace_gravatar_url_fieldset',
@@ -544,71 +555,6 @@ CSF::createSection($prefix, array(
             )
         ),
         array(
-            'id' => 'g_renameother_fieldset',
-            'type' => 'fieldset',
-            'fields' => array(
-                array(
-                    'type' => 'subheading',
-                    'content' => __('附件重命名', 'kratos'),
-                ),
-                array(
-                    'id' => 'g_renameother',
-                    'type' => 'switcher',
-                    'title' => __('功能开关', 'kratos'),
-                    'subtitle' => __('开启/关闭附件重命名', 'kratos'),
-                    'text_on' => __('开启', 'kratos'),
-                    'text_off' => __('关闭', 'kratos'),
-                ),
-                array(
-                    'id' => 'g_renameother_prdfix',
-                    'type' => 'text',
-                    'title' => __('文件前缀', 'kratos'),
-                    'subtitle' => __('前缀与文件名之间会用 - 连接', 'kratos'),
-                ),
-                array(
-                    'id' => 'g_renameother_mime',
-                    'type' => 'text',
-                    'title' => __('文件类型', 'kratos'),
-                    'subtitle' => __('每个类型之间用 | 隔开', 'kratos'),
-                ),
-            ),
-            'default' => array(
-                'g_renameother' => false,
-                'g_renameother_prdfix' => 'kratos',
-                'g_renameother_mime' => 'tar|zip|gz|gzip|rar|7z',
-            ),
-        ),
-        array(
-            'id' => 'g_wechat_fieldset',
-            'type' => 'fieldset',
-            'fields' => array(
-                array(
-                    'type' => 'subheading',
-                    'content' => __('微信二维码', 'kratos'),
-                ),
-                array(
-                    'id' => 'g_wechat',
-                    'type' => 'switcher',
-                    'title' => __('功能开关', 'kratos'),
-                    'subtitle' => __('开启/关闭微信二维码', 'kratos'),
-                    'text_on' => __('开启', 'kratos'),
-                    'text_off' => __('关闭', 'kratos'),
-                ),
-                array(
-                    'id' => 'g_wechat_img',
-                    'type' => 'upload',
-                    'title' =>  __('二维码图片', 'kratos'),
-                    'library' => 'image',
-                    'preview' => true,
-                    'subtitle' => __('浮动显示在页面右下角', 'kratos'),
-                ),
-            ),
-            'default' => array(
-                'g_wechat' => false,
-                'g_wechat_img' => get_template_directory_uri() . '/assets/img/200.png',
-            ),
-        ),
-        array(
             'id' => 'g_font_fieldset',
             'type' => 'fieldset',
             'title' => __('自定义字体', 'kratos'),
@@ -648,6 +594,87 @@ CSF::createSection($prefix, array(
                 'g_font_fallback' => 'sans-serif',
             ),
         ),
+    ),
+));
+
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_basic',
+    'title' => __('后台与媒体', 'kratos'),
+    'icon' => 'fas fa-photo-video',
+    'fields' => array(
+        array(
+            'id' => 'g_gutenberg',
+            'type' => 'switcher',
+            'title' => __('Gutenberg 编辑器', 'kratos'),
+            'subtitle' => __('启用/禁用 Gutenberg 编辑器', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_classic_widgets',
+            'type' => 'switcher',
+            'title' => __('经典小工具编辑器', 'kratos'),
+            'subtitle' => __('屏蔽外观 → 小工具的区块编辑器（Block Widgets Editor），切换回 WordPress 5.7 以前的经典拖拽界面', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_renameimg',
+            'type' => 'switcher',
+            'title' => __('自定义图片类型的文件名', 'kratos'),
+            'subtitle' => __('启用/禁用 图片类型的文件名改为 MD5 值', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_removeimgsize',
+            'type' => 'switcher',
+            'title' => __('禁止生成缩略图', 'kratos'),
+            'subtitle' => __('启用/禁用生成多种尺寸图片资源', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_renameother_fieldset',
+            'type' => 'fieldset',
+            'fields' => array(
+                array(
+                    'type' => 'subheading',
+                    'content' => __('附件重命名', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_renameother',
+                    'type' => 'switcher',
+                    'title' => __('功能开关', 'kratos'),
+                    'subtitle' => __('开启/关闭附件重命名', 'kratos'),
+                    'text_on' => __('开启', 'kratos'),
+                    'text_off' => __('关闭', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_renameother_prdfix',
+                    'type' => 'text',
+                    'title' => __('文件前缀', 'kratos'),
+                    'subtitle' => __('前缀与文件名之间会用 - 连接', 'kratos'),
+                ),
+                array(
+                    'id' => 'g_renameother_mime',
+                    'type' => 'text',
+                    'title' => __('文件类型', 'kratos'),
+                    'subtitle' => __('每个类型之间用 | 隔开', 'kratos'),
+                ),
+            ),
+            'default' => array(
+                'g_renameother' => false,
+                'g_renameother_prdfix' => 'kratos',
+                'g_renameother_mime' => 'tar|zip|gz|gzip|rar|7z',
+            ),
+        ),
+    ),
+));
+
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_basic',
+    'title' => __('布局尺寸', 'kratos'),
+    'icon' => 'fas fa-ruler-combined',
+    'fields' => array(
         array(
             'id' => 'g_main_col',
             'type' => 'slider',
@@ -679,496 +706,11 @@ CSF::createSection($prefix, array(
     ),
 ));
 
-CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('随机漫步', 'kratos'),
-    'icon' => 'fas fa-random',
-    'fields' => array(
-        array(
-            'id' => 'g_stumble',
-            'type' => 'switcher',
-            'title' => __('随机漫步', 'kratos'),
-            'subtitle' => __('随机跳到一篇被埋没的老文章。关闭后隐藏下面所有入口；跳转端点与 [stumble] 短码不受此开关影响，始终可用', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_stumble_button',
-            'type' => 'switcher',
-            'title' => __('展示页脚按钮', 'kratos'),
-            'subtitle' => __('在页脚右下角工具栈显示「随机漫步」按钮', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_stumble', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_stumble_cmdk_hint',
-            'type' => 'content',
-            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
-                . __('命令面板里的「随机漫步」入口在 <strong>全站配置 → 命令面板 → 展示随机漫步</strong>，与这里的页脚按钮相互独立。', 'kratos')
-                . '</div>',
-            'dependency' => array('g_stumble', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_stumble_min_age',
-            'type' => 'text',
-            'title' => __('老文章阈值(天)', 'kratos'),
-            'subtitle' => __('只在发布时间早于该天数的文章里随机；填 0 表示不限制文章年龄。默认 180', 'kratos'),
-            'default' => '180',
-            'dependency' => array('g_stumble', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_stumble_pool_size',
-            'type' => 'text',
-            'title' => __('候选池大小', 'kratos'),
-            'subtitle' => __('每天从「评论最少、发布最早」的老文章里取前 N 篇组成候选池，再随机命中。值越大随机面越广、越偏冷门。默认 200', 'kratos'),
-            'default' => '200',
-            'dependency' => array('g_stumble', '==', 'true'),
-        ),
-    ),
-));
 
 CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('命令面板', 'kratos'),
-    'icon' => 'fas fa-terminal',
-    'fields' => array(
-        array(
-            'id' => 'g_cmdk_notice',
-            'type' => 'content',
-            'content' => '<div style="padding:12px 14px;background:#f7f3ea;border:1px solid #e3d9c4;border-radius:8px;line-height:1.8;">'
-                . '<p style="margin:0 0 6px;"><strong>' . __('唤出方式：', 'kratos') . '</strong>'
-                . __('macOS 按 <code>⌘K</code>，Windows / Linux 按 <code>Ctrl+K</code>；非输入状态下按 <code>/</code> 也可唤出。快捷键提示会按访客的操作系统自动切换。', 'kratos') . '</p>'
-                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 面板聚合了：站内搜索、页面跳转（只列出你实际建了的页面）、暗色切换、随机漫步，以及可选的皮肤切换。', 'kratos') . '</p>'
-                . '</div>',
-        ),
-        array(
-            'id' => 'g_cmdk',
-            'type' => 'switcher',
-            'title' => __('命令面板', 'kratos'),
-            'subtitle' => __('启用 ⌘K / Ctrl+K 命令面板', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_cmdk_button',
-            'type' => 'switcher',
-            'title' => __('页脚唤出按钮', 'kratos'),
-            'subtitle' => __('在页脚右下角工具栈顶部显示一个入口按钮，便于不知道快捷键的访客发现', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_cmdk_placeholder',
-            'type' => 'text',
-            'title' => __('输入框占位文案', 'kratos'),
-            'default' => __('搜索文章，或输入命令…', 'kratos'),
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('面板内容 —— 决定面板里出现哪些分组。这些开关只影响命令面板，与各功能自己的页脚按钮开关相互独立。', 'kratos'),
-        ),
-        array(
-            'id' => 'g_cmdk_show_pages',
-            'type' => 'switcher',
-            'title' => __('展示页面跳转', 'kratos'),
-            'subtitle' => __('在面板里列出站内页面（特色页用固定中文名与图标，其余页面用页面标题）。单个页面可在「编辑页面 → Kratos+ 命令面板」里单独排除', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_cmdk_pages_max',
-            'type' => 'text',
-            'title' => __('普通页面条数上限', 'kratos'),
-            'subtitle' => __('除特色页之外，最多列出多少个普通页面（按菜单顺序、标题排序）；填 0 表示只列特色页。默认 30', 'kratos'),
-            'default' => '30',
-            'dependency' => array('g_cmdk|g_cmdk_show_pages', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_cmdk_show_dark',
-            'type' => 'switcher',
-            'title' => __('展示暗色切换', 'kratos'),
-            'subtitle' => __('需要「功能配置 → 暗夜模式」总开关已开启。与页脚暗色按钮相互独立 —— 关掉页脚按钮时，这里就是唯一的切换入口', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_cmdk_show_stumble',
-            'type' => 'switcher',
-            'title' => __('展示随机漫步', 'kratos'),
-            'subtitle' => __('需要「全站配置 → 随机漫步」总开关已开启。与随机漫步的页脚按钮相互独立', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_cmdk_show_skins',
-            'type' => 'switcher',
-            'title' => __('展示皮肤切换', 'kratos'),
-            'subtitle' => __('默认关闭 —— 皮肤条目较多，列出来会占满面板。与「每日皮肤 → 前端皮肤切换器」按钮相互独立：只开这一项也能让访客选皮肤并在下次访问时保持', 'kratos'),
-            'default' => false,
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('搜索行为', 'kratos'),
-        ),
-        array(
-            'id' => 'g_cmdk_search_max',
-            'type' => 'text',
-            'title' => __('增量搜索结果条数', 'kratos'),
-            'subtitle' => __('面板内实时展示的文章条数，最大 20。默认 8', 'kratos'),
-            'default' => '8',
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_cmdk_debounce',
-            'type' => 'text',
-            'title' => __('搜索去抖延时(毫秒)', 'kratos'),
-            'subtitle' => __('停止输入多久后才发请求，避免每敲一个字都查库。最小 80，默认 220', 'kratos'),
-            'default' => '220',
-            'dependency' => array('g_cmdk', '==', 'true'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('搜索结果页', 'kratos'),
-    'icon' => 'fas fa-search',
-    'fields' => array(
-        array(
-            'id' => 'g_search_enhance',
-            'type' => 'switcher',
-            'title' => __('增强搜索结果页', 'kratos'),
-            'subtitle' => __('启用独立的 search.php 结果页（页头卡 + 关键词高亮 + 结果分组 + 零结果推荐）。关闭后回落到经典列表样式', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_search_title',
-            'type' => 'text',
-            'title' => __('结果页标题', 'kratos'),
-            'default' => __('搜索结果', 'kratos'),
-            'dependency' => array('g_search_enhance', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_search_placeholder',
-            'type' => 'text',
-            'title' => __('搜索框占位文案', 'kratos'),
-            'default' => __('换个词再试试…', 'kratos'),
-            'dependency' => array('g_search_enhance', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_search_highlight',
-            'type' => 'switcher',
-            'title' => __('关键词高亮', 'kratos'),
-            'subtitle' => __('在标题与摘要中用高亮底色标出命中的关键词', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_search_enhance', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_search_shuoshuo',
-            'type' => 'switcher',
-            'title' => __('搜索结果包含说说', 'kratos'),
-            'subtitle' => __('说说是独立文章类型且默认不进 WordPress 搜索，开启后单独查询并作为「说说」分组展示', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_search_enhance', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_search_shuoshuo_max',
-            'type' => 'text',
-            'title' => __('说说结果条数', 'kratos'),
-            'default' => '5',
-            'dependency' => array('g_search_shuoshuo|g_search_enhance', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_search_series',
-            'type' => 'switcher',
-            'title' => __('搜索结果包含系列', 'kratos'),
-            'subtitle' => __('匹配系列名称与描述，作为「系列」分组展示', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_search_enhance', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_search_series_max',
-            'type' => 'text',
-            'title' => __('系列结果条数', 'kratos'),
-            'default' => '6',
-            'dependency' => array('g_search_series|g_search_enhance', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_search_empty_tags',
-            'type' => 'text',
-            'title' => __('零结果推荐标签数', 'kratos'),
-            'subtitle' => __('没有搜到内容时，在兜底区展示的热门标签个数；填 0 表示不展示', 'kratos'),
-            'default' => '12',
-            'dependency' => array('g_search_enhance', '==', 'true'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('代码高亮', 'kratos'),
-    'icon' => 'fas fa-code',
-    'fields' => array(
-        array(
-            'id' => 'g_codehl',
-            'type' => 'switcher',
-            'title' => __('代码高亮', 'kratos'),
-            'subtitle' => __('启用/禁用文章代码块的语法高亮显示', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_codehl_engine',
-            'type' => 'select',
-            'title' => __('高亮方案', 'kratos'),
-            'subtitle' => __('Prism.js 与 highlight.js 为前端方案，highlight.php 为服务端渲染', 'kratos'),
-            'options' => array(
-                'prism' => 'Prism.js (推荐)',
-                'hljs' => 'highlight.js',
-                'highlight_php' => 'highlight.php (服务端)',
-            ),
-            'default' => 'prism',
-            'dependency' => array('g_codehl', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_codehl_source',
-            'type' => 'button_set',
-            'title' => __('资源加载方式', 'kratos'),
-            'subtitle' => __('CDN 加载速度更快；本地缓存切到本地后会一次性预下载所有 Prism 语言/主题与 hljs 主题（约 2MB），无需 .htaccess/Nginx 配置，跨服务器通用', 'kratos'),
-            'options' => array(
-                'cdn' => 'CDN',
-                'local' => __('本地缓存', 'kratos'),
-            ),
-            'default' => 'cdn',
-            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|prism,hljs'),
-        ),
-        array(
-            'type' => 'callback',
-            'title' => __('本地缓存状态', 'kratos'),
-            'function' => 'kratos_codehl_render_warmup_panel',
-            'dependency' => array('g_codehl|g_codehl_source', '==|==', 'true|local'),
-        ),
-        array(
-            'id' => 'g_codehl_cdn_base',
-            'type' => 'text',
-            'title' => __('CDN 根路径', 'kratos'),
-            'subtitle' => __('npm 风格 CDN 根 URL，留空使用默认 jsdelivr。可换成 unpkg 或国内镜像', 'kratos'),
-            'default' => 'https://cdn.jsdelivr.net/npm',
-            'dependency' => array('g_codehl|g_codehl_source', '==|==', 'true|cdn'),
-        ),
-        array(
-            'id' => 'g_codehl_theme_prism',
-            'type' => 'select',
-            'title' => __('Prism 主题', 'kratos'),
-            'subtitle' => __('Prism 官方核心主题 + prism-themes 社区扩展，共 45 款', 'kratos'),
-            'options' => kratos_codehl_prism_options(),
-            'default' => 'core/prism-tomorrow',
-            'dependency' => array('g_codehl|g_codehl_engine', '==|==', 'true|prism'),
-        ),
-        array(
-            'id' => 'g_codehl_theme_hljs',
-            'type' => 'select',
-            'title' => __('highlight 主题', 'kratos'),
-            'subtitle' => __('highlight.js 官方主题（73 款），highlight.js 与 highlight.php 共享配色', 'kratos'),
-            'options' => kratos_codehl_hljs_options(),
-            'default' => 'github-dark',
-            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|hljs,highlight_php'),
-        ),
-        array(
-            'type' => 'callback',
-            'title' => __('主题预览', 'kratos'),
-            'function' => 'kratos_codehl_render_preview',
-            'dependency' => array('g_codehl', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_codehl_linenum',
-            'type' => 'switcher',
-            'title' => __('显示行号', 'kratos'),
-            'subtitle' => __('仅 Prism.js 与 highlight.js 方案生效', 'kratos'),
-            'default' => false,
-            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|prism,hljs'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('暗夜模式', 'kratos'),
-    'icon' => 'fas fa-moon',
-    'fields' => array(
-        array(
-            'id' => 'g_darkmode',
-            'type' => 'switcher',
-            'title' => __('功能开关', 'kratos'),
-            'subtitle' => __('启用/关闭暗夜模式（含时间段自动切换、跟随系统、手动切换按钮）', 'kratos'),
-            'text_on' => __('开启', 'kratos'),
-            'text_off' => __('关闭', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_darkmode_default',
-            'type' => 'button_set',
-            'title' => __('默认模式', 'kratos'),
-            'subtitle' => __('用户首次访问且未手动切换时的默认呈现', 'kratos'),
-            'options' => array(
-                'light'    => __('浅色', 'kratos'),
-                'dark'     => __('暗色', 'kratos'),
-                'auto'     => __('跟随系统', 'kratos'),
-                'schedule' => __('按时间段', 'kratos'),
-            ),
-            'default' => 'light',
-            'dependency' => array('g_darkmode', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_darkmode_start',
-            'type' => 'text',
-            'title' => __('暗色开始时间', 'kratos'),
-            'subtitle' => __('24 小时制 HH:MM，例如 19:00', 'kratos'),
-            'default' => '19:00',
-            'placeholder' => '19:00',
-            'attributes' => array(
-                'type' => 'time',
-            ),
-            'dependency' => array('g_darkmode|g_darkmode_default', '==|==', 'true|schedule'),
-        ),
-        array(
-            'id' => 'g_darkmode_end',
-            'type' => 'text',
-            'title' => __('暗色结束时间', 'kratos'),
-            'subtitle' => __('24 小时制 HH:MM，例如 07:00；当结束时间小于开始时间时表示跨午夜', 'kratos'),
-            'default' => '07:00',
-            'placeholder' => '07:00',
-            'attributes' => array(
-                'type' => 'time',
-            ),
-            'dependency' => array('g_darkmode|g_darkmode_default', '==|==', 'true|schedule'),
-        ),
-        array(
-            'id' => 'g_darkmode_toggle',
-            'type' => 'switcher',
-            'title' => __('前台切换按钮', 'kratos'),
-            'subtitle' => __('在页面右下角显示浮动的明/暗切换按钮，访客手动切换会覆盖默认模式（保存在浏览器本地）', 'kratos'),
-            'text_on' => __('显示', 'kratos'),
-            'text_off' => __('隐藏', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_darkmode', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_darkmode_cmdk_hint',
-            'type' => 'content',
-            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
-                . __('命令面板里的「切换暗色 / 亮色」入口在 <strong>全站配置 → 命令面板 → 展示暗色切换</strong>，与上面的页脚按钮相互独立 —— 隐藏了页脚按钮，命令面板依然可以切换。', 'kratos')
-                . '</div>',
-            'dependency' => array('g_darkmode', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_darkmode_remember_days',
-            'type' => 'number',
-            'title' => __('用户偏好记住天数', 'kratos'),
-            'subtitle' => __('访客手动切换的偏好保留天数，0 表示永久保留', 'kratos'),
-            'min' => 0,
-            'max' => 365,
-            'default' => 30,
-            'dependency' => array('g_darkmode|g_darkmode_toggle', '==|==', 'true|true'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('每日皮肤', 'kratos'),
-    'icon' => 'fas fa-palette',
-    'fields' => array(
-        array(
-            'id' => 'g_weekday_skin_mode',
-            'type' => 'button_set',
-            'title' => __('皮肤模式', 'kratos'),
-            'subtitle' => __('off：使用默认外观；auto：按访客本地时区每天自动切换；locked：全站锁定为某一套皮肤。auto 模式与暗夜模式共存，暗夜模式优先级更高。', 'kratos'),
-            'options' => array(
-                'off'    => __('关闭', 'kratos'),
-                'auto'   => __('按星期自动切换', 'kratos'),
-                'locked' => __('锁定单一皮肤', 'kratos'),
-            ),
-            'default' => 'off',
-        ),
-        array(
-            'id' => 'g_weekday_skin_locked',
-            'type' => 'select',
-            'title' => __('锁定皮肤', 'kratos'),
-            'subtitle' => __('仅在「锁定单一皮肤」模式下生效', 'kratos'),
-            'options' => array(
-                'mon'       => __('周一 · 清玻', 'kratos'),
-                'tue'       => __('周二 · 拼贴', 'kratos'),
-                'wed'       => __('周三 · 凝脂', 'kratos'),
-                'thu'       => __('周四 · 素白', 'kratos'),
-                'fri'       => __('周五 · 琥珀', 'kratos'),
-                'sat'       => __('周六 · 海滨', 'kratos'),
-                'sun'       => __('周日 · 金辉', 'kratos'),
-                'parchment' => __('温色 · 羊皮', 'kratos'),
-                'silk'      => __('笺页 · 黄绢', 'kratos'),
-                'vermilion' => __('喜庆 · 朱砂', 'kratos'),
-                'morandi'   => __('柔和 · 莫兰迪', 'kratos'),
-                'mist'      => __('清新 · 莫兰迪雾霭', 'kratos'),
-                'linen'     => __('暖调 · 莫兰迪亚麻', 'kratos'),
-                'porcelain' => __('清雅 · 莫兰迪青瓷', 'kratos'),
-                'lavender'  => __('柔美 · 莫兰迪薰衣草', 'kratos'),
-                'retro'     => __('复古 · 牛皮纸', 'kratos'),
-                'web1998'   => __('复古 · 千禧网页', 'kratos'),
-                'ebook'     => __('电子书 · 纸墨', 'kratos'),
-                'bookfold'  => __('书卷 · 半开卷', 'kratos'),
-            ),
-            'default' => 'mon',
-            'dependency' => array('g_weekday_skin_mode', '==', 'locked'),
-        ),
-        array(
-            'id' => 'g_weekday_skin_switcher',
-            'type' => 'switcher',
-            'title' => __('前端皮肤切换器', 'kratos'),
-            'subtitle' => __('开启后，前台工具箱在暗夜按钮上方多出一个「皮肤」按钮，访客可自行切换皮肤预览。', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_weekday_skin_cmdk_hint',
-            'type' => 'content',
-            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
-                . __('命令面板里的皮肤分组在 <strong>全站配置 → 命令面板 → 展示皮肤切换</strong>，与上面的页脚按钮相互独立 —— 只开命令面板那一项，也能让访客选皮肤并在下次访问时保持。', 'kratos')
-                . '</div>',
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('颜色配置', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
-    'fields' => array(
-        array(
-            'id' => 'g_background',
-            'type' => 'color',
-            'default' => '#f5f5f5',
-            'title' =>  __('全站背景颜色', 'kratos'),
-            'subtitle' => __('全站页面的背景颜色', 'kratos'),
-        ),
-        array(
-            'id' => 'g_nav',
-            'type' => 'color',
-            'default' => '#ffffff',
-            'title' =>  __('导航栏文字颜色', 'kratos'),
-            'subtitle' => __('导航栏中站点标题以及一级导航的颜色', 'kratos'),
-        ),
-        array(
-            'id' => 'g_chrome',
-            'type' => 'color',
-            'default' => '#282a2c',
-            'title' =>  __('Chrome 导航栏颜色', 'kratos'),
-            'subtitle' => __('移动端 Chrome 浏览器导航栏颜色', 'kratos'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
+    'parent' => 'kp_basic',
     'title' => __('图片配置', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
+    'icon' => 'fas fa-image',
     'fields' => array(
         array(
             'id' => 'g_logo',
@@ -1323,9 +865,9 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
+    'parent' => 'kp_basic',
     'title' => __('首页轮播', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
+    'icon' => 'fas fa-images',
     'fields' => array(
         array(
             'id' => 'g_carousel',
@@ -1389,9 +931,9 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
-    'parent' => 'global_fields',
-    'title' => __('第三方配置', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
+    'parent' => 'kp_basic',
+    'title' => __('对象存储加速', 'kratos'),
+    'icon' => 'fas fa-cloud',
     'fields' => array(
         array(
             'type' => 'notice',
@@ -1405,11 +947,6 @@ CSF::createSection($prefix, array(
                 array(
                     'type' => 'subheading',
                     'content' => __('DogeCloud 云存储', 'kratos'),
-                ),
-                array(
-                    'type' => 'submessage',
-                    'style' => 'info',
-                    'content' => 'DogeCloud 云存储提供<strong> 10 GB </strong>的免费存储额度，<strong> 20 GB </strong>每月的免费 CDN 额度，<a target="_blank" href="https://console.dogecloud.com/register.html?iuid=614">立即注册</a>',
                 ),
                 array(
                     'id' => 'g_cos',
@@ -1466,11 +1003,6 @@ CSF::createSection($prefix, array(
                 array(
                     'type' => 'subheading',
                     'content' => __('火山引擎 ImageX', 'kratos'),
-                ),
-                array(
-                    'type' => 'submessage',
-                    'style' => 'info',
-                    'content' => '火山引擎 ImageX 提供<strong> 10 GB </strong>的免费存储额度，<strong> 10 GB </strong>每月的免费 CDN 额度，<strong> 20 TB </strong>每月的图像处理额度，<a target="_blank" href="https://www.volcengine.com/products/imagex?utm_content=ImageX&utm_medium=i4vj9y&utm_source=u7g4zk&utm_term=ImageX-kratos">立即注册</a>',
                 ),
                 array(
                     'id' => 'g_imgx',
@@ -1545,6 +1077,7 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_basic',
     'title' => __('收录配置', 'kratos'),
     'icon' => 'fas fa-camera',
     'fields' => array(
@@ -1612,6 +1145,789 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_basic',
+    'title' => __('邮件配置', 'kratos'),
+    'icon' => 'fas fa-envelope',
+    'fields' => array(
+        array(
+            'id' => 'm_smtp',
+            'type' => 'switcher',
+            'title' => __('SMTP 服务', 'kratos'),
+            'subtitle' => __('启用/禁用 SMTP 服务', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'm_host',
+            'type' => 'text',
+            'title' => __('邮件服务器', 'kratos'),
+            'subtitle' => __('填写发件服务器地址', 'kratos'),
+            'placeholder' => __('smtp.example.com', 'kratos'),
+        ),
+        array(
+            'id' => 'm_port',
+            'type' => 'text',
+            'title' => __('服务器端口', 'kratos'),
+            'subtitle' => __('填写发件服务器端口', 'kratos'),
+            'placeholder' => __('465', 'kratos'),
+        ),
+        array(
+            'id' => 'm_sec',
+            'type' => 'text',
+            'title' => __('授权方式', 'kratos'),
+            'subtitle' => __('填写登录鉴权的方式', 'kratos'),
+            'placeholder' => __('ssl', 'kratos'),
+        ),
+        array(
+            'id' => 'm_username',
+            'type' => 'text',
+            'title' => __('邮箱帐号', 'kratos'),
+            'subtitle' => __('填写邮箱账号', 'kratos'),
+            'placeholder' => __('user@example.com', 'kratos'),
+        ),
+        array(
+            'id' => 'm_passwd',
+            'type' => 'text',
+            'title' => __('邮箱密码', 'kratos'),
+            'subtitle' => __('填写邮箱密码', 'kratos'),
+            'attributes' => array(
+                'type' => 'password',
+            ),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'kp_skin',
+    'title' => __('皮肤与配色', 'kratos'),
+    'icon' => 'fas fa-palette',
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_skin',
+    'title' => __('每日皮肤', 'kratos'),
+    'icon' => 'fas fa-palette',
+    'fields' => array(
+        array(
+            'id' => 'g_weekday_skin_mode',
+            'type' => 'button_set',
+            'title' => __('皮肤模式', 'kratos'),
+            'subtitle' => __('off：使用默认外观；auto：按访客本地时区每天自动切换；locked：全站锁定为某一套皮肤。auto 模式与暗夜模式共存，暗夜模式优先级更高。', 'kratos'),
+            'options' => array(
+                'off'    => __('关闭', 'kratos'),
+                'auto'   => __('按星期自动切换', 'kratos'),
+                'locked' => __('锁定单一皮肤', 'kratos'),
+            ),
+            'default' => 'off',
+        ),
+        array(
+            'id' => 'g_weekday_skin_locked',
+            'type' => 'select',
+            'title' => __('锁定皮肤', 'kratos'),
+            'subtitle' => __('仅在「锁定单一皮肤」模式下生效', 'kratos'),
+            'options' => array(
+                'mon'       => __('周一 · 清玻', 'kratos'),
+                'tue'       => __('周二 · 拼贴', 'kratos'),
+                'wed'       => __('周三 · 凝脂', 'kratos'),
+                'thu'       => __('周四 · 素白', 'kratos'),
+                'fri'       => __('周五 · 琥珀', 'kratos'),
+                'sat'       => __('周六 · 海滨', 'kratos'),
+                'sun'       => __('周日 · 金辉', 'kratos'),
+                'parchment' => __('温色 · 羊皮', 'kratos'),
+                'silk'      => __('笺页 · 黄绢', 'kratos'),
+                'vermilion' => __('喜庆 · 朱砂', 'kratos'),
+                'morandi'   => __('柔和 · 莫兰迪', 'kratos'),
+                'mist'      => __('清新 · 莫兰迪雾霭', 'kratos'),
+                'linen'     => __('暖调 · 莫兰迪亚麻', 'kratos'),
+                'porcelain' => __('清雅 · 莫兰迪青瓷', 'kratos'),
+                'lavender'  => __('柔美 · 莫兰迪薰衣草', 'kratos'),
+                'retro'     => __('复古 · 牛皮纸', 'kratos'),
+                'web1998'   => __('复古 · 千禧网页', 'kratos'),
+                'ebook'     => __('电子书 · 纸墨', 'kratos'),
+                'bookfold'  => __('书卷 · 半开卷', 'kratos'),
+            ),
+            'default' => 'mon',
+            'dependency' => array('g_weekday_skin_mode', '==', 'locked'),
+        ),
+        array(
+            'id' => 'g_weekday_skin_switcher',
+            'type' => 'switcher',
+            'title' => __('前端皮肤切换器', 'kratos'),
+            'subtitle' => __('开启后，前台工具箱在暗夜按钮上方多出一个「皮肤」按钮，访客可自行切换皮肤预览。', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_weekday_skin_cmdk_hint',
+            'type' => 'content',
+            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
+                . __('命令面板里的皮肤分组在 <strong>全站配置 → 命令面板 → 展示皮肤切换</strong>，与上面的页脚按钮相互独立 —— 只开命令面板那一项，也能让访客选皮肤并在下次访问时保持。', 'kratos')
+                . '</div>',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_skin',
+    'title' => __('暗夜模式', 'kratos'),
+    'icon' => 'fas fa-moon',
+    'fields' => array(
+        array(
+            'id' => 'g_darkmode',
+            'type' => 'switcher',
+            'title' => __('功能开关', 'kratos'),
+            'subtitle' => __('启用/关闭暗夜模式（含时间段自动切换、跟随系统、手动切换按钮）', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_darkmode_default',
+            'type' => 'button_set',
+            'title' => __('默认模式', 'kratos'),
+            'subtitle' => __('用户首次访问且未手动切换时的默认呈现', 'kratos'),
+            'options' => array(
+                'light'    => __('浅色', 'kratos'),
+                'dark'     => __('暗色', 'kratos'),
+                'auto'     => __('跟随系统', 'kratos'),
+                'schedule' => __('按时间段', 'kratos'),
+            ),
+            'default' => 'light',
+            'dependency' => array('g_darkmode', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_darkmode_start',
+            'type' => 'text',
+            'title' => __('暗色开始时间', 'kratos'),
+            'subtitle' => __('24 小时制 HH:MM，例如 19:00', 'kratos'),
+            'default' => '19:00',
+            'placeholder' => '19:00',
+            'attributes' => array(
+                'type' => 'time',
+            ),
+            'dependency' => array('g_darkmode|g_darkmode_default', '==|==', 'true|schedule'),
+        ),
+        array(
+            'id' => 'g_darkmode_end',
+            'type' => 'text',
+            'title' => __('暗色结束时间', 'kratos'),
+            'subtitle' => __('24 小时制 HH:MM，例如 07:00；当结束时间小于开始时间时表示跨午夜', 'kratos'),
+            'default' => '07:00',
+            'placeholder' => '07:00',
+            'attributes' => array(
+                'type' => 'time',
+            ),
+            'dependency' => array('g_darkmode|g_darkmode_default', '==|==', 'true|schedule'),
+        ),
+        array(
+            'id' => 'g_darkmode_toggle',
+            'type' => 'switcher',
+            'title' => __('前台切换按钮', 'kratos'),
+            'subtitle' => __('在页面右下角显示浮动的明/暗切换按钮，访客手动切换会覆盖默认模式（保存在浏览器本地）', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_darkmode', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_darkmode_cmdk_hint',
+            'type' => 'content',
+            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
+                . __('命令面板里的「切换暗色 / 亮色」入口在 <strong>全站配置 → 命令面板 → 展示暗色切换</strong>，与上面的页脚按钮相互独立 —— 隐藏了页脚按钮，命令面板依然可以切换。', 'kratos')
+                . '</div>',
+            'dependency' => array('g_darkmode', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_darkmode_remember_days',
+            'type' => 'number',
+            'title' => __('用户偏好记住天数', 'kratos'),
+            'subtitle' => __('访客手动切换的偏好保留天数，0 表示永久保留', 'kratos'),
+            'min' => 0,
+            'max' => 365,
+            'default' => 30,
+            'dependency' => array('g_darkmode|g_darkmode_toggle', '==|==', 'true|true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_skin',
+    'title' => __('颜色配置', 'kratos'),
+    'icon' => 'fas fa-fill-drip',
+    'fields' => array(
+        array(
+            'id' => 'g_background',
+            'type' => 'color',
+            'default' => '#f5f5f5',
+            'title' =>  __('全站背景颜色', 'kratos'),
+            'subtitle' => __('全站页面的背景颜色', 'kratos'),
+        ),
+        array(
+            'id' => 'g_nav',
+            'type' => 'color',
+            'default' => '#ffffff',
+            'title' =>  __('导航栏文字颜色', 'kratos'),
+            'subtitle' => __('导航栏中站点标题以及一级导航的颜色', 'kratos'),
+        ),
+        array(
+            'id' => 'g_chrome',
+            'type' => 'color',
+            'default' => '#282a2c',
+            'title' =>  __('Chrome 导航栏颜色', 'kratos'),
+            'subtitle' => __('移动端 Chrome 浏览器导航栏颜色', 'kratos'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'kp_chrome',
+    'title' => __('顶部与页脚', 'kratos'),
+    'icon' => 'fas fa-window-maximize',
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('顶部 · 图片导航', 'kratos'),
+    'icon' => 'fas fa-file-image',
+    'fields' => array(
+        array(
+            'id' => 'top_img_switch',
+            'type' => 'switcher',
+            'title' => __('图片导航', 'kratos'),
+            'subtitle' => __('启用/禁用 图片导航', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'top_img',
+            'type' => 'upload',
+            'title' =>  __('顶部图片', 'kratos'),
+            'library' => 'image',
+            'preview' => true,
+            'default' => get_template_directory_uri() . '/assets/img/background.jpg',
+        ),
+        array(
+            'id' => 'top_title',
+            'type' => 'text',
+            'title' => __('图片标题', 'kratos'),
+            'default' => __('Kratos+', 'kratos'),
+        ),
+        array(
+            'id' => 'top_describe',
+            'type' => 'text',
+            'title' => __('标题描述', 'kratos'),
+            'default' => __('专注于用户阅读体验的响应式博客主题', 'kratos'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('顶部 · 颜色导航', 'kratos'),
+    'icon' => 'fas fa-swatchbook',
+    'fields' => array(
+        array(
+            'id' => 'top_color',
+            'type' => 'color',
+            'default' => '#24292e',
+            'title' =>  __('颜色导航', 'kratos'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('顶部 · 导航吸顶', 'kratos'),
+    'icon' => 'fas fa-thumbtack',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面向下滚动时，导航自动固定在浏览器顶部。可分别设置 PC、平板、手机端是否启用。', 'kratos'),
+        ),
+        array(
+            'id' => 'nav_sticky_pc',
+            'type' => 'switcher',
+            'title' => __('PC 端吸顶', 'kratos'),
+            'subtitle' => __('屏幕宽度 ≥ 992px', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'nav_sticky_pad',
+            'type' => 'switcher',
+            'title' => __('平板端吸顶', 'kratos'),
+            'subtitle' => __('屏幕宽度 768px ~ 991px', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'nav_sticky_mobile',
+            'type' => 'switcher',
+            'title' => __('手机端吸顶', 'kratos'),
+            'subtitle' => __('屏幕宽度 < 768px', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'nav_sticky_bg',
+            'type' => 'color',
+            'title' => __('吸顶背景色（默认主题）', 'kratos'),
+            'subtitle' => __('仅对未启用每日皮肤 / 非暗夜模式的默认主题生效。其他皮肤下背景色跟随皮肤自动配色。', 'kratos'),
+            'default' => '#24292e',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('页脚 · 社交图标', 'kratos'),
+    'icon' => 'fas fa-share-alt',
+    'fields' => array(
+        array(
+            'id' => 's_social_fieldset',
+            'type' => 'fieldset',
+            'fields' => array(
+                array(
+                    'type' => 'subheading',
+                    'content' => __('国内平台', 'kratos'),
+                ),
+                array(
+                    'id' => 's_sina_url',
+                    'type' => 'text',
+                    'title' => __('新浪微博', 'kratos'),
+                    'placeholder' => __('https://weibo.com/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_bilibili_url',
+                    'type' => 'text',
+                    'title' => __('哔哩哔哩', 'kratos'),
+                    'placeholder' => __('https://space.bilibili.com/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_coding_url',
+                    'type' => 'text',
+                    'title' => __('CODING', 'kratos'),
+                    'placeholder' => __('https://xxxxx.coding.net/u/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_gitee_url',
+                    'type' => 'text',
+                    'title' => __('码云', 'kratos'),
+                    'placeholder' => __('https://gitee.com/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_douban_url',
+                    'type' => 'text',
+                    'title' => __('豆瓣', 'kratos'),
+                    'placeholder' => __('https://www.douban.com/people/xxxxx', 'kratos'),
+                ),
+            ),
+        ),
+        array(
+            'id' => 's_social_fieldset',
+            'type' => 'fieldset',
+            'fields' => array(
+                array(
+                    'type' => 'subheading',
+                    'content' => __('海外平台', 'kratos'),
+                ),
+                array(
+                    'id' => 's_twitter_url',
+                    'type' => 'text',
+                    'title' => __('Twitter', 'kratos'),
+                    'placeholder' => __('https://twitter.com/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_telegram_url',
+                    'type' => 'text',
+                    'title' => __('Telegram', 'kratos'),
+                    'placeholder' => __('https://t.me/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_linkedin_url',
+                    'type' => 'text',
+                    'title' => __('LinkedIn', 'kratos'),
+                    'placeholder' => __('https://www.linkedin.com/in/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_youtube_url',
+                    'type' => 'text',
+                    'title' => __('YouTube', 'kratos'),
+                    'placeholder' => __('https://www.youtube.com/channel/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_github_url',
+                    'type' => 'text',
+                    'title' => __('Github', 'kratos'),
+                    'placeholder' => __('https://github.com/xxxxx', 'kratos'),
+                ),
+                array(
+                    'id' => 's_stackflow_url',
+                    'type' => 'text',
+                    'title' => __('Stack Overflow', 'kratos'),
+                    'placeholder' => __('https://stackoverflow.com/users/xxxxx', 'kratos'),
+                ),
+            ),
+        ),
+        array(
+            'id' => 's_social_fieldset',
+            'type' => 'fieldset',
+            'fields' => array(
+                array(
+                    'type' => 'subheading',
+                    'content' => __('其他', 'kratos'),
+                ),
+                array(
+                    'id' => 's_email_url',
+                    'type' => 'text',
+                    'title' => __('电子邮箱', 'kratos'),
+                    'placeholder' => __('mailto:xxxxx@example.com', 'kratos'),
+                ),
+            ),
+            'default' => array(
+                "s_sina_url" => "",
+                "s_bilibili_url" => "",
+                "s_coding_url" => "",
+                "s_gitee_url" => "",
+                "s_douban_url" => "",
+                "s_twitter_url" => "",
+                "s_telegram_url" => "",
+                "s_linkedin_url" => "",
+                "s_youtube_url" => "",
+                "s_github_url" => "",
+                "s_stackflow_url" => "",
+                "s_email_url" => ""
+            ),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('自定义图标', 'kratos'),
+        ),
+        array(
+            'id' => 's_social_custom',
+            'type' => 'group',
+            'title' => __('自定义社交图标', 'kratos'),
+            'subtitle' => __('在上方预置平台之外，追加任意条目。渲染顺序：预置图标在前，自定义在后。', 'kratos'),
+            'button_title' => __('添加图标', 'kratos'),
+            'accordion_title_prefix' => __('图标', 'kratos'),
+            'accordion_title_number' => true,
+            'fields' => array(
+                array(
+                    'id' => 'title',
+                    'type' => 'text',
+                    'title' => __('名称', 'kratos'),
+                    'subtitle' => __('用于鼠标悬停提示与无障碍标签', 'kratos'),
+                ),
+                array(
+                    'id' => 'url',
+                    'type' => 'text',
+                    'title' => __('链接', 'kratos'),
+                    'placeholder' => 'https://example.com',
+                ),
+                array(
+                    'id' => 'icon_type',
+                    'type' => 'button_set',
+                    'title' => __('图标类型', 'kratos'),
+                    'options' => array(
+                        'fontawesome' => __('Font Awesome', 'kratos'),
+                        'image' => __('图片', 'kratos'),
+                    ),
+                    'default' => 'fontawesome',
+                ),
+                array(
+                    'id' => 'icon',
+                    'type' => 'icon',
+                    'title' => __('图标', 'kratos'),
+                    'subtitle' => __('从 Font Awesome 图标库中选择', 'kratos'),
+                    'dependency' => array('icon_type', '==', 'fontawesome'),
+                ),
+                array(
+                    'id' => 'icon_image',
+                    'type' => 'upload',
+                    'title' => __('图片', 'kratos'),
+                    'subtitle' => __('建议正方形透明背景 PNG/SVG，推荐 32×32 或更大', 'kratos'),
+                    'library' => 'image',
+                    'preview' => true,
+                    'dependency' => array('icon_type', '==', 'image'),
+                ),
+            ),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('页脚 · 备案信息', 'kratos'),
+    'icon' => 'fas fa-shield-alt',
+    'fields' => array(
+        array(
+            'id' => 's_icp',
+            'type' => 'text',
+            'title' => __('工信部备案信息', 'kratos'),
+            'subtitle' => __('由<a target="_blank" href="https://beian.miit.gov.cn/">工业和信息化部政务服务平台</a>提供', 'kratos'),
+            'placeholder' => __('冀ICP证XXXXXX号', 'kratos'),
+        ),
+        array(
+            'id' => 's_gov',
+            'type' => 'text',
+            'title' => __('公安备案信息', 'kratos'),
+            'subtitle' => __('由<a target="_blank" href="http://www.beian.gov.cn/">全国互联网安全管理服务平台</a>提供', 'kratos'),
+            'placeholder' => __('冀公网安备 XXXXXXXXXXXXX 号', 'kratos'),
+        ),
+        array(
+            'id' => 's_gov_link',
+            'type' => 'text',
+            'title' => __('公安备案链接', 'kratos'),
+            'subtitle' => __('由<a target="_blank" href="http://www.beian.gov.cn/">全国互联网安全管理服务平台</a>提供', 'kratos'),
+            'placeholder' => __('http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=xxxxx', 'kratos'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('页脚 · 版权信息', 'kratos'),
+    'icon' => 'fas fa-copyright',
+    'fields' => array(
+        array(
+            'id' => 's_copyright',
+            'type' => 'textarea',
+            'title' => __('版权信息', 'kratos'),
+            'default' => 'COPYRIGHT © ' . wp_date('Y') . ' ' . get_bloginfo('name') . '. ALL RIGHTS RESERVED.',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('登录页', 'kratos'),
+    'icon' => 'fas fa-sign-in-alt',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('功能开关', 'kratos'),
+        ),
+        array(
+            'id' => 'g_login_enable',
+            'type' => 'switcher',
+            'title' => __('启用自定义登录页', 'kratos'),
+            'subtitle' => __('接管 wp-login.php，使用双栏简洁风；关闭则走 WordPress 默认登录页', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_login_register_show',
+            'type' => 'switcher',
+            'title' => __('显示注册 Tab', 'kratos'),
+            'subtitle' => __('在登录卡片中显示「注册」入口（仍受 WordPress「任何人都可注册」全局设置约束）', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_login_enable', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('左侧品牌栏', 'kratos'),
+        ),
+        array(
+            'id' => 'g_login_brand_show',
+            'type' => 'switcher',
+            'title' => __('显示品牌栏', 'kratos'),
+            'subtitle' => __('关闭后登录页为单栏居中卡片', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_login_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_login_brand_eyebrow',
+            'type' => 'text',
+            'title' => __('眼眉小标', 'kratos'),
+            'subtitle' => __('标题上方的一行小字（全大写效果，自动加字距）', 'kratos'),
+            'default' => 'WELCOME · 欢迎回来',
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_brand_title',
+            'type' => 'textarea',
+            'title' => __('主标题', 'kratos'),
+            'subtitle' => __('允许 HTML；用 &lt;em&gt;文字&lt;/em&gt; 让文字变主色斜体强调', 'kratos'),
+            'default' => '在这里，<em>写下</em><br>属于你的每日思绪。',
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_brand_desc',
+            'type' => 'textarea',
+            'title' => __('描述段落', 'kratos'),
+            'default' => 'Kratos+ 是一款为写作者打造的 WordPress 主题，简洁、有序、可自定义。登录后开始你的创作之旅。',
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_brand_bg',
+            'type' => 'upload',
+            'title' => __('背景图（可选）', 'kratos'),
+            'subtitle' => __('留空则使用默认网格纹理 + 渐变；填入图片 URL 后作为品牌栏底图（自动覆盖网格）', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('底部数据条', 'kratos'),
+        ),
+        array(
+            'type' => 'content',
+            'content' => __('<p style="color:#8a8a8a;margin:0 0 12px;font-size:12px;">数值支持以下动态令牌，会在展示时自动替换：<code>{posts}</code> 文章数 · <code>{tags}</code> 标签数 · <code>{comments}</code> 评论数 · <code>{users}</code> 用户数。也可直接填写任意静态文本。</p>', 'kratos'),
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_1_show',
+            'type' => 'switcher',
+            'title' => __('数据 1 · 显示', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_1_value',
+            'type' => 'text',
+            'title' => __('数据 1 · 数值', 'kratos'),
+            'default' => '{posts}',
+            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_1_show', '==|==|==', 'true|true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_1_label',
+            'type' => 'text',
+            'title' => __('数据 1 · 说明', 'kratos'),
+            'default' => 'ARTICLES',
+            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_1_show', '==|==|==', 'true|true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_2_show',
+            'type' => 'switcher',
+            'title' => __('数据 2 · 显示', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_2_value',
+            'type' => 'text',
+            'title' => __('数据 2 · 数值', 'kratos'),
+            'default' => '{tags}',
+            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_2_show', '==|==|==', 'true|true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_2_label',
+            'type' => 'text',
+            'title' => __('数据 2 · 说明', 'kratos'),
+            'default' => 'TAGS',
+            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_2_show', '==|==|==', 'true|true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_3_show',
+            'type' => 'switcher',
+            'title' => __('数据 3 · 显示', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_3_value',
+            'type' => 'text',
+            'title' => __('数据 3 · 数值', 'kratos'),
+            'default' => '{comments}',
+            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_3_show', '==|==|==', 'true|true|true'),
+        ),
+        array(
+            'id' => 'g_login_stat_3_label',
+            'type' => 'text',
+            'title' => __('数据 3 · 说明', 'kratos'),
+            'default' => 'COMMENTS',
+            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_3_show', '==|==|==', 'true|true|true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('自定义登录 URL', 'kratos'),
+        ),
+        array(
+            'id' => 'g_login_custom_url_enabled',
+            'type' => 'switcher',
+            'title' => __('启用自定义登录 URL', 'kratos'),
+            'subtitle' => __('启用后，只能通过下方 slug 访问登录页；直接访问 /wp-login.php 或未登录访问 /wp-admin 会返回 404', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_login_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_login_custom_url_slug',
+            'type' => 'text',
+            'title' => __('登录 slug', 'kratos'),
+            'subtitle' => __('访问路径为 <code>' . esc_html(home_url('/')) . '{slug}/</code>；只能包含小写字母、数字、连字符', 'kratos'),
+            'default' => 'sign-in',
+            'dependency' => array('g_login_enable|g_login_custom_url_enabled', '==|==', 'true|true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('反机器人（登录 / 注册 / 找回密码）', 'kratos'),
+        ),
+        array(
+            'id' => 'g_login_honeypot_enabled',
+            'type' => 'switcher',
+            'title' => __('蜜罐', 'kratos'),
+            'subtitle' => __('通过隐藏字段 + 最短耗时判定机器人；用户无感知', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_login_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_login_honeypot_min_seconds',
+            'type' => 'number',
+            'title' => __('最短提交耗时（秒）', 'kratos'),
+            'subtitle' => __('从页面加载到点击提交，低于此秒数视为机器人', 'kratos'),
+            'default' => 2,
+            'dependency' => array('g_login_enable|g_login_honeypot_enabled', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_login_captcha_enabled',
+            'type' => 'switcher',
+            'title' => __('数字验证码', 'kratos'),
+            'subtitle' => __('要求用户填写形如「3 + 5 =」的算式结果，进一步防机器人', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_login_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_login_captcha_max',
+            'type' => 'number',
+            'title' => __('运算数上限', 'kratos'),
+            'subtitle' => __('两个加/减操作数的最大值', 'kratos'),
+            'default' => 20,
+            'dependency' => array('g_login_enable|g_login_captcha_enabled', '==|==', 'true|true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('底部小字', 'kratos'),
+        ),
+        array(
+            'id' => 'g_login_footer_note',
+            'type' => 'text',
+            'title' => __('页脚版权文本', 'kratos'),
+            'subtitle' => __('登录卡片底部的一行小字；留空则不显示', 'kratos'),
+            'default' => '© Kratos+ · 由 Dylan Li 二次开发',
+            'dependency' => array('g_login_enable', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'kp_post',
+    'title' => __('文章与阅读', 'kratos'),
+    'icon' => 'fas fa-file-alt',
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
     'title' => __('文章配置', 'kratos'),
     'icon' => 'fas fa-file-alt',
     'fields' => array(
@@ -1785,6 +2101,7 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
     'title' => __('阅读增强', 'kratos'),
     'icon' => 'fas fa-book-reader',
     'fields' => array(
@@ -2141,6 +2458,93 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
+    'title' => __('代码高亮', 'kratos'),
+    'icon' => 'fas fa-code',
+    'fields' => array(
+        array(
+            'id' => 'g_codehl',
+            'type' => 'switcher',
+            'title' => __('代码高亮', 'kratos'),
+            'subtitle' => __('启用/禁用文章代码块的语法高亮显示', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_codehl_engine',
+            'type' => 'select',
+            'title' => __('高亮方案', 'kratos'),
+            'subtitle' => __('Prism.js 与 highlight.js 为前端方案，highlight.php 为服务端渲染', 'kratos'),
+            'options' => array(
+                'prism' => 'Prism.js (推荐)',
+                'hljs' => 'highlight.js',
+                'highlight_php' => 'highlight.php (服务端)',
+            ),
+            'default' => 'prism',
+            'dependency' => array('g_codehl', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_codehl_source',
+            'type' => 'button_set',
+            'title' => __('资源加载方式', 'kratos'),
+            'subtitle' => __('CDN 加载速度更快；本地缓存切到本地后会一次性预下载所有 Prism 语言/主题与 hljs 主题（约 2MB），无需 .htaccess/Nginx 配置，跨服务器通用', 'kratos'),
+            'options' => array(
+                'cdn' => 'CDN',
+                'local' => __('本地缓存', 'kratos'),
+            ),
+            'default' => 'cdn',
+            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|prism,hljs'),
+        ),
+        array(
+            'type' => 'callback',
+            'title' => __('本地缓存状态', 'kratos'),
+            'function' => 'kratos_codehl_render_warmup_panel',
+            'dependency' => array('g_codehl|g_codehl_source', '==|==', 'true|local'),
+        ),
+        array(
+            'id' => 'g_codehl_cdn_base',
+            'type' => 'text',
+            'title' => __('CDN 根路径', 'kratos'),
+            'subtitle' => __('npm 风格 CDN 根 URL，留空使用默认 jsdelivr。可换成 unpkg 或国内镜像', 'kratos'),
+            'default' => 'https://cdn.jsdelivr.net/npm',
+            'dependency' => array('g_codehl|g_codehl_source', '==|==', 'true|cdn'),
+        ),
+        array(
+            'id' => 'g_codehl_theme_prism',
+            'type' => 'select',
+            'title' => __('Prism 主题', 'kratos'),
+            'subtitle' => __('Prism 官方核心主题 + prism-themes 社区扩展，共 45 款', 'kratos'),
+            'options' => kratos_codehl_prism_options(),
+            'default' => 'core/prism-tomorrow',
+            'dependency' => array('g_codehl|g_codehl_engine', '==|==', 'true|prism'),
+        ),
+        array(
+            'id' => 'g_codehl_theme_hljs',
+            'type' => 'select',
+            'title' => __('highlight 主题', 'kratos'),
+            'subtitle' => __('highlight.js 官方主题（73 款），highlight.js 与 highlight.php 共享配色', 'kratos'),
+            'options' => kratos_codehl_hljs_options(),
+            'default' => 'github-dark',
+            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|hljs,highlight_php'),
+        ),
+        array(
+            'type' => 'callback',
+            'title' => __('主题预览', 'kratos'),
+            'function' => 'kratos_codehl_render_preview',
+            'dependency' => array('g_codehl', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_codehl_linenum',
+            'type' => 'switcher',
+            'title' => __('显示行号', 'kratos'),
+            'subtitle' => __('仅 Prism.js 与 highlight.js 方案生效', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_codehl|g_codehl_engine', '==|any', 'true|prism,hljs'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
     'title' => __('关键词自动内链', 'kratos'),
     'icon' => 'fas fa-link',
     'fields' => array(
@@ -2253,8 +2657,34 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
+    'title' => __('文章广告', 'kratos'),
+    'icon' => 'fas fa-ad',
+    'fields' => array(
+        array(
+            'id' => 'single_ad_top_group',
+            'type' => 'group',
+            'title' => '文章顶部广告',
+            'subtitle' => '点击添加广告，最多添加 3 个顶部广告；无需展示时可全部删除',
+            'min' => 0,
+            'max' => 3,
+            'fields' => kratos_single_ad_fields(),
+        ),
+        array(
+            'id' => 'single_ad_bottom_group',
+            'type' => 'group',
+            'title' => '文章底部广告',
+            'subtitle' => '点击添加广告，最多添加 3 个底部广告；无需展示时可全部删除',
+            'min' => 0,
+            'max' => 3,
+            'fields' => kratos_single_ad_fields(),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'comment_fields',
-    'title' => __('评论配置', 'kratos'),
+    'title' => __('评论互动', 'kratos'),
     'icon' => 'fas fa-comments',
 ));
 
@@ -2811,863 +3241,13 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
-    'title' => __('友链配置', 'kratos'),
-    'icon' => 'fas fa-link',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('展示', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_sc_title',
-            'type' => 'text',
-            'title' => __('页面标题', 'kratos'),
-            'subtitle' => __('[friend_links] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
-            'default' => __('友情链接', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_sc_subtitle',
-            'type' => 'text',
-            'title' => __('页面副标题', 'kratos'),
-            'subtitle' => __('[friend_links] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
-            'default' => __('感谢各位朋友的关注与支持，欢迎申请交换友链 🤝', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_hide_empty',
-            'type' => 'switcher',
-            'title' => __('隐藏空分类', 'kratos'),
-            'subtitle' => __('开启后，没有已通过友链的分类不会显示在页面上', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('本站信息', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_siteinfo_enabled',
-            'type' => 'switcher',
-            'title' => __('展示本站信息', 'kratos'),
-            'subtitle' => __('在友链列表上方展示本站信息卡片，方便来访者快速获取交换友链所需信息', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_friend_siteinfo_name',
-            'type' => 'text',
-            'title' => __('站点名称', 'kratos'),
-            'subtitle' => __('留空则使用「设置 → 常规」中的站点标题', 'kratos'),
-            'default' => '',
-            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_friend_siteinfo_url',
-            'type' => 'text',
-            'title' => __('站点地址', 'kratos'),
-            'subtitle' => __('留空则使用当前站点首页地址', 'kratos'),
-            'default' => '',
-            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_friend_siteinfo_logo',
-            'type' => 'text',
-            'title' => __('Logo 地址', 'kratos'),
-            'subtitle' => __('站点 Logo / 头像的 URL；留空则不展示图片', 'kratos'),
-            'default' => '',
-            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_friend_siteinfo_desc',
-            'type' => 'text',
-            'title' => __('站点描述', 'kratos'),
-            'subtitle' => __('留空则使用「设置 → 常规」中的副标题', 'kratos'),
-            'default' => '',
-            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_friend_siteinfo_rss',
-            'type' => 'text',
-            'title' => __('RSS 订阅地址', 'kratos'),
-            'subtitle' => __('留空则使用站点默认 Feed 地址', 'kratos'),
-            'default' => '',
-            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('申请要求', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_requirements_enabled',
-            'type' => 'switcher',
-            'title' => __('展示申请要求', 'kratos'),
-            'subtitle' => __('在友链列表上方展示友链申请要求说明', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_friend_requirements_title',
-            'type' => 'text',
-            'title' => __('区块标题', 'kratos'),
-            'default' => __('友链申请要求', 'kratos'),
-            'dependency' => array('g_friend_requirements_enabled', '==', 'true'),
-        ),
-        array(
-            'type' => 'callback',
-            'title' => __('要求内容', 'kratos'),
-            'subtitle' => __('支持 HTML，可使用列表、加粗等格式；是否展示由上方"展示申请要求"开关控制', 'kratos'),
-            'function' => 'kratos_friend_requirements_editor_render',
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('探活检测', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_probe_enabled',
-            'type' => 'switcher',
-            'title' => __('启用探活检测', 'kratos'),
-            'subtitle' => __('定时检测友链 URL 是否可达，结果在前端卡片和后台列表中展示', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'g_friend_probe_interval',
-            'type' => 'select',
-            'title' => __('探测频率', 'kratos'),
-            'subtitle' => __('每隔多久对所有已通过的友链进行一次可达性检测', 'kratos'),
-            'options' => array(
-                'daily'      => __('每天一次', 'kratos'),
-                'twicedaily' => __('每天两次', 'kratos'),
-                'hourly'     => __('每小时', 'kratos'),
-            ),
-            'default' => 'daily',
-            'dependency' => array('g_friend_probe_enabled', '==', 'true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('最近访客', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_recent_enabled',
-            'type' => 'switcher',
-            'title' => __('展示最近访客', 'kratos'),
-            'subtitle' => __('在友链页面展示最近有评论的访客（按用户去重，仅取最新一条）', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_friend_recent_title',
-            'type' => 'text',
-            'title' => __('区块标题', 'kratos'),
-            'subtitle' => __('展示在最近访客区块顶部；留空则不展示标题', 'kratos'),
-            'default' => __('最近访客', 'kratos'),
-            'dependency' => array('g_friend_recent_enabled', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_friend_recent_limit',
-            'type' => 'number',
-            'title' => __('展示数量', 'kratos'),
-            'subtitle' => __('最多展示的访客数量，去重后不足会自动少展示', 'kratos'),
-            'min' => 1,
-            'max' => 100,
-            'default' => 20,
-            'dependency' => array('g_friend_recent_enabled', '==', 'true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('申请表单', 'kratos'),
-        ),
-        array(
-            'id' => 'g_friend_form_enabled',
-            'type' => 'switcher',
-            'title' => __('开启申请表单', 'kratos'),
-            'subtitle' => __('关闭后，友链页面末尾的申请表单会隐藏', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_friend_form_intro',
-            'type' => 'text',
-            'title' => __('表单引导文案', 'kratos'),
-            'subtitle' => __('展示在表单标题下方；留空则不展示', 'kratos'),
-            'default' => __('填写下方表单提交友链申请，站长审核通过后会自动上线。', 'kratos'),
-            'dependency' => array('g_friend_form_enabled', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_friend_default_category',
-            'type' => 'select',
-            'title' => __('默认分类', 'kratos'),
-            'subtitle' => __('新申请归入此分类；未选择时归入 link_category 中最早创建的一项（通常是 Blogroll）。分类在「链接 → 链接分类目录」中管理', 'kratos'),
-            'options' => (function () {
-                $out = array(0 => __('— 自动选择 —', 'kratos'));
-                $terms = function_exists('get_terms') ? get_terms(array('taxonomy' => 'link_category', 'hide_empty' => false)) : array();
-                if (!is_wp_error($terms) && !empty($terms)) {
-                    foreach ($terms as $t) $out[(int) $t->term_id] = $t->name;
-                }
-                return $out;
-            })(),
-            'default' => 0,
-            'dependency' => array('g_friend_form_enabled', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_friend_notify_admin',
-            'type' => 'switcher',
-            'title' => __('邮件通知管理员', 'kratos'),
-            'subtitle' => __('收到新申请时，发送邮件到「设置 → 常规」里的管理员邮箱', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_friend_form_enabled', '==', 'true'),
-        ),
-        array(
-            'type' => 'content',
-            'content' =>
-                '<div style="padding:16px 18px;background:linear-gradient(135deg,#f4f9ff 0%,#e6f1fe 100%);border:1px solid #c9dcf4;border-radius:12px;color:#243a5e;line-height:1.8;font-size:13px;">'
-                . '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#336699;">' . __('🔗 友链管理说明', 'kratos') . '</p>'
-                . '<p style="margin:0 0 6px;"><strong>' . __('1. 数据存储：', 'kratos') . '</strong>'
-                . sprintf(
-                    __('复用 WordPress 原生「链接」（wp_links）表，与「%s」共享数据。已通过的友链自动出现在「评论友链标识」的匹配列表中。', 'kratos'),
-                    '<a href="' . esc_url(admin_url('link-manager.php')) . '" target="_blank">' . esc_html__('链接管理', 'kratos') . '</a>'
-                )
-                . '</p>'
-                . '<p style="margin:0 0 6px;"><strong>' . __('2. 分类管理：', 'kratos') . '</strong>'
-                . sprintf(
-                    __('前台按 link_category 分组展示，请到 %s 里创建分类，然后手动新增或编辑链接时选择分类。', 'kratos'),
-                    '<a href="' . esc_url(admin_url('edit-tags.php?taxonomy=link_category')) . '" target="_blank">' . esc_html__('链接分类目录', 'kratos') . '</a>'
-                )
-                . '</p>'
-                . '<p style="margin:0 0 6px;"><strong>' . __('3. 审核流程：', 'kratos') . '</strong>'
-                . sprintf(
-                    __('新申请以 link_visible = "N" 保存；到 %s 页面顶部会显示「待审核」筛选，行内操作可以「通过」或「拒绝」（拒绝会直接删除该记录）。审核通过后自动清除评论友链缓存。', 'kratos'),
-                    '<a href="' . esc_url(admin_url('link-manager.php?kfl_filter=pending')) . '" target="_blank">' . esc_html__('链接管理', 'kratos') . '</a>'
-                )
-                . '</p>'
-                . '<p style="margin:0 0 4px;"><strong>' . __('4. 页面使用：', 'kratos') . '</strong>' . __('新建页面时模板选「友情链接」；或在任意页面 / 文章插入 <code style="background:#fff;padding:2px 8px;border-radius:4px;color:#336699;">[friend_links]</code>。', 'kratos') . '</p>'
-                . '<p style="margin:0;color:#5b6d8a;">' . __('💡 短码参数：', 'kratos') . '<code>title</code> ' . __('标题；', 'kratos') . '<code>subtitle</code> ' . __('副标题；', 'kratos') . '<code>hide_empty="0"</code> ' . __('展示空分类；', 'kratos') . '<code>form="0"</code> ' . __('隐藏表单。', 'kratos') . '</p>'
-                . '</div>',
-        ),
-    ),
+    'id' => 'kp_pages',
+    'title' => __('特色页面', 'kratos'),
+    'icon' => 'fas fa-star',
 ));
 
 CSF::createSection($prefix, array(
-    'title' =>  __('邮件配置', 'kratos'),
-    'icon' => 'fas fa-envelope',
-    'fields' => array(
-        array(
-            'id' => 'm_smtp',
-            'type' => 'switcher',
-            'title' => __('SMTP 服务', 'kratos'),
-            'subtitle' => __('启用/禁用 SMTP 服务', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'm_host',
-            'type' => 'text',
-            'title' => __('邮件服务器', 'kratos'),
-            'subtitle' => __('填写发件服务器地址', 'kratos'),
-            'placeholder' => __('smtp.example.com', 'kratos'),
-        ),
-        array(
-            'id' => 'm_port',
-            'type' => 'text',
-            'title' => __('服务器端口', 'kratos'),
-            'subtitle' => __('填写发件服务器端口', 'kratos'),
-            'placeholder' => __('465', 'kratos'),
-        ),
-        array(
-            'id' => 'm_sec',
-            'type' => 'text',
-            'title' => __('授权方式', 'kratos'),
-            'subtitle' => __('填写登录鉴权的方式', 'kratos'),
-            'placeholder' => __('ssl', 'kratos'),
-        ),
-        array(
-            'id' => 'm_username',
-            'type' => 'text',
-            'title' => __('邮箱帐号', 'kratos'),
-            'subtitle' => __('填写邮箱账号', 'kratos'),
-            'placeholder' => __('user@example.com', 'kratos'),
-        ),
-        array(
-            'id' => 'm_passwd',
-            'type' => 'text',
-            'title' => __('邮箱密码', 'kratos'),
-            'subtitle' => __('填写邮箱密码', 'kratos'),
-            'attributes' => array(
-                'type' => 'password',
-            ),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'top_fields',
-    'title' => __('顶部配置', 'kratos'),
-    'icon' => 'fas fa-window-maximize',
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'top_fields',
-    'title' => __('图片导航', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
-    'fields' => array(
-        array(
-            'id' => 'top_img_switch',
-            'type' => 'switcher',
-            'title' => __('图片导航', 'kratos'),
-            'subtitle' => __('启用/禁用 图片导航', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'top_img',
-            'type' => 'upload',
-            'title' =>  __('顶部图片', 'kratos'),
-            'library' => 'image',
-            'preview' => true,
-            'default' => get_template_directory_uri() . '/assets/img/background.jpg',
-        ),
-        array(
-            'id' => 'top_title',
-            'type' => 'text',
-            'title' => __('图片标题', 'kratos'),
-            'default' => __('Kratos+', 'kratos'),
-        ),
-        array(
-            'id' => 'top_describe',
-            'type' => 'text',
-            'title' => __('标题描述', 'kratos'),
-            'default' => __('专注于用户阅读体验的响应式博客主题', 'kratos'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'top_fields',
-    'title' => __('颜色导航', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
-    'fields' => array(
-        array(
-            'id' => 'top_color',
-            'type' => 'color',
-            'default' => '#24292e',
-            'title' =>  __('颜色导航', 'kratos'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'top_fields',
-    'title' => __('导航吸顶', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('页面向下滚动时，导航自动固定在浏览器顶部。可分别设置 PC、平板、手机端是否启用。', 'kratos'),
-        ),
-        array(
-            'id' => 'nav_sticky_pc',
-            'type' => 'switcher',
-            'title' => __('PC 端吸顶', 'kratos'),
-            'subtitle' => __('屏幕宽度 ≥ 992px', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'nav_sticky_pad',
-            'type' => 'switcher',
-            'title' => __('平板端吸顶', 'kratos'),
-            'subtitle' => __('屏幕宽度 768px ~ 991px', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'nav_sticky_mobile',
-            'type' => 'switcher',
-            'title' => __('手机端吸顶', 'kratos'),
-            'subtitle' => __('屏幕宽度 < 768px', 'kratos'),
-            'default' => false,
-        ),
-        array(
-            'id' => 'nav_sticky_bg',
-            'type' => 'color',
-            'title' => __('吸顶背景色（默认主题）', 'kratos'),
-            'subtitle' => __('仅对未启用每日皮肤 / 非暗夜模式的默认主题生效。其他皮肤下背景色跟随皮肤自动配色。', 'kratos'),
-            'default' => '#24292e',
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'shuoshuo_fields',
-    'title' => __('说说配置', 'kratos'),
-    'icon' => 'far fa-comment-dots',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('页面顶部展示在「说说」模板（page-shuoshuo.php）页面顶部，可留空隐藏。', 'kratos'),
-        ),
-        array(
-            'id' => 'shuoshuo_title',
-            'type' => 'text',
-            'title' => __('页面标题', 'kratos'),
-            'default' => __('我的说说', 'kratos'),
-        ),
-        array(
-            'id' => 'shuoshuo_subtitle',
-            'type' => 'text',
-            'title' => __('页面副标题', 'kratos'),
-            'default' => __('记录碎碎念，分享小确幸', 'kratos'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('列表展示', 'kratos'),
-        ),
-        array(
-            'id' => 'shuoshuo_per_page',
-            'type' => 'number',
-            'title' => __('每页条数', 'kratos'),
-            'subtitle' => __('「说说」模板（page-shuoshuo.php）每页显示多少条说说。', 'kratos'),
-            'default' => 10,
-            'attributes' => array(
-                'min' => 1,
-                'step' => 1,
-            ),
-        ),
-        array(
-            'id' => 'shuoshuo_collapse_limit',
-            'type' => 'number',
-            'title' => __('折叠字数阈值', 'kratos'),
-            'subtitle' => __('列表中说说正文超过该字数时折叠，并显示「展开」。设为 0 关闭折叠功能。', 'kratos'),
-            'default' => 300,
-            'attributes' => array(
-                'min' => 0,
-                'step' => 10,
-            ),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'archives_fields',
-    'title' => __('归档配置', 'kratos'),
-    'icon' => 'fas fa-archive',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('页面顶部展示在「文章归档」模板（page-archives.php）以及 [archives_stats] 短码的头部，可留空隐藏。短码同名参数会覆盖后台默认值。', 'kratos'),
-        ),
-        array(
-            'id' => 'archives_sc_title',
-            'type' => 'text',
-            'title' => __('页面标题', 'kratos'),
-            'subtitle' => __('[archives_stats] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
-            'default' => __('文章归档', 'kratos'),
-        ),
-        array(
-            'id' => 'archives_sc_subtitle',
-            'type' => 'text',
-            'title' => __('页面副标题', 'kratos'),
-            'subtitle' => __('[archives_stats] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
-            'default' => __('把写过的时间，安静收拢起来', 'kratos'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('列表展示', 'kratos'),
-        ),
-        array(
-            'id' => 'archives_sc_years_max',
-            'type' => 'number',
-            'title' => __('年份最多条数', 'kratos'),
-            'subtitle' => __('「时间归档 → 按年份」最多展示多少年；0 表示不限（全部展示）。短码可通过 years_max 覆盖', 'kratos'),
-            'default' => 0,
-            'attributes' => array(
-                'min' => 0,
-                'step' => 1,
-            ),
-        ),
-        array(
-            'id' => 'archives_sc_months_max',
-            'type' => 'number',
-            'title' => __('月份最多条数', 'kratos'),
-            'subtitle' => __('「时间归档 → 按月份」最多展示多少个月；0 表示不展示月份 Tab。短码可通过 months_max 覆盖', 'kratos'),
-            'default' => 24,
-            'attributes' => array(
-                'min' => 0,
-                'step' => 1,
-            ),
-        ),
-        array(
-            'id' => 'archives_sc_tags_max',
-            'type' => 'number',
-            'title' => __('标签最多条数', 'kratos'),
-            'subtitle' => __('「标签统计」区块最多展示多少个标签；0 表示不展示标签区块。短码可通过 tags_max 覆盖', 'kratos'),
-            'default' => 20,
-            'attributes' => array(
-                'min' => 0,
-                'step' => 1,
-            ),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'dash_fields',
-    'title' => __('数据看板', 'kratos'),
-    'icon' => 'fas fa-chart-bar',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('站点数据看板：新建页面并选择「站点数据看板」模板即可访问，也可用短码 [site_dashboard] 嵌入任意页面。数据全部复用归档统计 / 评论排行 / 阅读增强 / 地域分布已有的数据层。', 'kratos'),
-        ),
-        array(
-            'id' => 'g_dash_title',
-            'type' => 'text',
-            'title' => __('页头标题', 'kratos'),
-            'default' => __('站点数据看板', 'kratos'),
-        ),
-        array(
-            'id' => 'g_dash_subtitle',
-            'type' => 'text',
-            'title' => __('页头副标题', 'kratos'),
-            'default' => __('这个博客到今天为止，长成了什么样子 📊', 'kratos'),
-        ),
-        array(
-            'id' => 'g_dash_days',
-            'type' => 'text',
-            'title' => __('发布节奏天数', 'kratos'),
-            'subtitle' => __('柱状图展示最近多少天的发文数，范围 7~120。默认 30', 'kratos'),
-            'default' => '30',
-        ),
-        array(
-            'id' => 'g_dash_words',
-            'type' => 'switcher',
-            'title' => __('统计累计字数', 'kratos'),
-            'subtitle' => __('需要读取全部已发布文章正文逐篇计数。文章上千篇的站点若觉得缓存重算偏慢，可以关掉这一项', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_dash_years_max',
-            'type' => 'text',
-            'title' => __('年度产出条数', 'kratos'),
-            'subtitle' => __('填 0 不展示该区块', 'kratos'),
-            'default' => '8',
-        ),
-        array(
-            'id' => 'g_dash_cats_max',
-            'type' => 'text',
-            'title' => __('分类占比条数', 'kratos'),
-            'subtitle' => __('填 0 不展示该区块', 'kratos'),
-            'default' => '10',
-        ),
-        array(
-            'id' => 'g_dash_commenters_max',
-            'type' => 'text',
-            'title' => __('最勤评论者条数', 'kratos'),
-            'subtitle' => __('复用「评论排行榜」的数据层；填 0 不展示该区块', 'kratos'),
-            'default' => '5',
-        ),
-        array(
-            'id' => 'g_dash_geo',
-            'type' => 'switcher',
-            'title' => __('内嵌评论地域分布', 'kratos'),
-            'subtitle' => __('在看板底部嵌入 [comment_geo]（不重复输出它自己的页头卡）', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_dash_cache_min',
-            'type' => 'text',
-            'title' => __('缓存时长(分钟)', 'kratos'),
-            'subtitle' => __('聚合结果缓存多久；发文、删文、评论变动会自动失效。最小 5，默认 180', 'kratos'),
-            'default' => '180',
-        ),
-        array(
-            'id' => 'g_dash_show_updated',
-            'type' => 'switcher',
-            'title' => __('展示数据更新时间', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_dash_notice',
-            'type' => 'content',
-            'content' => '<div style="padding:12px 14px;background:#f7f3ea;border:1px solid #e3d9c4;border-radius:8px;line-height:1.8;">'
-                . '<p style="margin:0 0 6px;"><strong>' . __('建站天数取自：', 'kratos') . '</strong>'
-                . __('「年度回顾 → 建站日期」（<code>site_birthday</code>）；没填时自动回落到最早一篇文章的发布时间。', 'kratos') . '</p>'
-                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 平均更新间隔 = 首篇到末篇的天数跨度 ÷ 间隔数，只有两篇以上才会展示。', 'kratos') . '</p>'
-                . '</div>',
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'yr_fields',
-    'title' => __('年度回顾', 'kratos'),
-    'icon' => 'far fa-calendar-check',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('生成博客年度数据长图（新建页面并选择「年度回顾」模板即可访问），支持一键下载为 PNG。也可通过短代码 [yearly_review year="2026"] 嵌入任意页面。', 'kratos'),
-        ),
-        array(
-            'id' => 'site_birthday',
-            'type' => 'text',
-            'title' => __('建站日期', 'kratos'),
-            'subtitle' => __('格式 YYYY-MM-DD，用于计算「陪伴天数」和「生日提示条」', 'kratos'),
-            'default' => '',
-        ),
-        array(
-            'id' => 'yr_message',
-            'type' => 'textarea',
-            'title' => __('送给读者的一句话', 'kratos'),
-            'subtitle' => __('展示在年度长图底部', 'kratos'),
-            'default' => __('感谢每一位读者的陪伴，我们下一年见 🥂', 'kratos'),
-        ),
-        array(
-            'id' => 'yr_birthday_hint',
-            'type' => 'switcher',
-            'title' => __('生日当天首页提示', 'kratos'),
-            'subtitle' => __('生日当天在首页顶部显示彩色提示条，引导访客查看专属长图', 'kratos'),
-            'default' => false,
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'now_fields',
-    'title' => __('Now 页面', 'kratos'),
-    'icon' => 'far fa-clock',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('用于展示「我最近在做什么」。新建一个页面并选择「Now」模板，页面内容来自后台「Now」菜单里发布的条目。', 'kratos'),
-        ),
-        array(
-            'id' => 'now_page_title',
-            'type' => 'text',
-            'title' => __('页面标题', 'kratos'),
-            'default' => __('Now', 'kratos'),
-        ),
-        array(
-            'id' => 'now_page_subtitle',
-            'type' => 'textarea',
-            'title' => __('页面副标题', 'kratos'),
-            'subtitle' => __('展示在标题下方，介绍这是一张「此刻的我」的名片', 'kratos'),
-            'default' => __('这是我最近在做的事、在想的事、在学的事。', 'kratos'),
-        ),
-        array(
-            'id' => 'now_show_history',
-            'type' => 'switcher',
-            'title' => __('展示历史条目', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'now_history_limit',
-            'type' => 'number',
-            'title' => __('历史条目数量', 'kratos'),
-            'default' => 20,
-            'attributes' => array('min' => 1, 'step' => 1),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'otd_fields',
-    'title' => __('岁月同一天', 'kratos'),
-    'icon' => 'far fa-calendar-alt',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('展示历史年份中同月同日发布的文章 / 说说。短码 [on_this_day]，也可作为小工具、首页顶部或文章底部自动展示。', 'kratos'),
-        ),
-        array(
-            'id' => 'otd_enable',
-            'type' => 'switcher',
-            'title' => __('启用', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'otd_title',
-            'type' => 'text',
-            'title' => __('标题', 'kratos'),
-            'default' => __('岁月同一天', 'kratos'),
-        ),
-        array(
-            'id' => 'otd_subtitle',
-            'type' => 'text',
-            'title' => __('副标题', 'kratos'),
-            'default' => __('回望过去的今天，你在写什么', 'kratos'),
-        ),
-        array(
-            'id' => 'otd_post_types',
-            'type' => 'checkbox',
-            'title' => __('包含的文章类型', 'kratos'),
-            'options' => array(
-                'post'     => __('博客文章 (post)', 'kratos'),
-                'shuoshuo' => __('说说 (shuoshuo)', 'kratos'),
-            ),
-            'default' => array('post'),
-        ),
-        array(
-            'id' => 'otd_limit',
-            'type' => 'number',
-            'title' => __('最多条数', 'kratos'),
-            'default' => 20,
-            'attributes' => array('min' => 1, 'step' => 1),
-        ),
-        array(
-            'id' => 'otd_show_thumb',
-            'type' => 'switcher',
-            'title' => __('展示缩略图', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'otd_home_position',
-            'type' => 'select',
-            'title' => __('首页位置', 'kratos'),
-            'options' => array(
-                'none' => __('不展示', 'kratos'),
-                'top'  => __('首页主循环顶部', 'kratos'),
-            ),
-            'default' => 'none',
-        ),
-        array(
-            'id' => 'otd_after_post',
-            'type' => 'switcher',
-            'title' => __('在文章底部自动展示', 'kratos'),
-            'subtitle' => __('仅在今天有历史内容时展示。', 'kratos'),
-            'default' => false,
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'timeline_fields',
-    'title' => __('时间轴配置', 'kratos'),
-    'icon' => 'fas fa-stream',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('页面顶部展示在「时间轴」模板（page-timeline.php）以及 [timeline] 短码的头部，可留空隐藏。短码同名参数会覆盖后台默认值。', 'kratos'),
-        ),
-        array(
-            'id' => 'timeline_sc_title',
-            'type' => 'text',
-            'title' => __('页面标题', 'kratos'),
-            'subtitle' => __('[timeline] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
-            'default' => __('时间轴', 'kratos'),
-        ),
-        array(
-            'id' => 'timeline_sc_subtitle',
-            'type' => 'text',
-            'title' => __('页面副标题', 'kratos'),
-            'subtitle' => __('[timeline] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
-            'default' => __('把每一次写作，钉在属于它的那一天', 'kratos'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('列表展示', 'kratos'),
-        ),
-        array(
-            'id' => 'timeline_sc_per_page',
-            'type' => 'number',
-            'title' => __('每页条数', 'kratos'),
-            'subtitle' => __('时间轴每页显示多少篇文章，短码可通过 per_page 参数覆盖；填 0 表示不分页全部展示', 'kratos'),
-            'default' => 20,
-            'attributes' => array(
-                'min' => 0,
-                'step' => 1,
-            ),
-        ),
-        array(
-            'id' => 'timeline_sc_exclude_cats',
-            'type' => 'checkbox',
-            'title' => __('排除分类', 'kratos'),
-            'subtitle' => __('勾选的分类下的文章不会出现在时间轴中；短码可通过 exclude_cats="1,2,3" 覆盖', 'kratos'),
-            'options' => (function () {
-                $out = array();
-                $terms = function_exists('get_terms') ? get_terms(array(
-                    'taxonomy'   => 'category',
-                    'hide_empty' => false,
-                )) : array();
-                if (!is_wp_error($terms) && !empty($terms)) {
-                    foreach ($terms as $t) {
-                        $out[(int) $t->term_id] = $t->name;
-                    }
-                }
-                return $out;
-            })(),
-            'inline' => true,
-            'default' => array(),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('文章热力图', 'kratos'),
-        ),
-        array(
-            'id' => 'heatmap_enabled',
-            'type' => 'switcher',
-            'title' => __('启用热力图', 'kratos'),
-            'subtitle' => __('启用后可通过 [post_heatmap] 短码在任意文章 / 页面展示 GitHub 风格的发布热力图，同时控制资源是否入队', 'kratos'),
-            'text_on' => __('开启', 'kratos'),
-            'text_off' => __('关闭', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'heatmap_on_timeline',
-            'type' => 'switcher',
-            'title' => __('时间轴页自动展示', 'kratos'),
-            'subtitle' => __('开启后，「时间轴」模板页面（page-timeline.php）会在列表上方自动展示一个热力图，无需手动写短码', 'kratos'),
-            'text_on' => __('开启', 'kratos'),
-            'text_off' => __('关闭', 'kratos'),
-            'dependency' => array('heatmap_enabled', '==', 'true'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'heatmap_sc_title',
-            'type' => 'text',
-            'title' => __('默认标题', 'kratos'),
-            'subtitle' => __('[post_heatmap] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
-            'dependency' => array('heatmap_enabled', '==', 'true'),
-            'default' => __('文章热力图', 'kratos'),
-        ),
-        array(
-            'id' => 'heatmap_sc_post_type',
-            'type' => 'text',
-            'title' => __('默认文章类型', 'kratos'),
-            'subtitle' => __('要统计的文章类型别名，例如 post / shuoshuo；短码可通过 post_type 覆盖', 'kratos'),
-            'dependency' => array('heatmap_enabled', '==', 'true'),
-            'default' => 'post',
-        ),
-        array(
-            'id' => 'heatmap_sc_time_range',
-            'type' => 'number',
-            'title' => __('默认时间范围（天）', 'kratos'),
-            'subtitle' => __('未选择年份时展示的最近天数；短码可通过 time_range 覆盖', 'kratos'),
-            'dependency' => array('heatmap_enabled', '==', 'true'),
-            'default' => 365,
-            'attributes' => array('min' => 30, 'step' => 1),
-        ),
-        array(
-            'id' => 'heatmap_years_max',
-            'type' => 'number',
-            'title' => __('年份标签最多显示', 'kratos'),
-            'subtitle' => __('热力图右侧年份标签最多展示多少年（除"最近一年"外，按年份倒序）；填 0 表示显示全部年份', 'kratos'),
-            'dependency' => array('heatmap_enabled', '==', 'true'),
-            'default' => 5,
-            'attributes' => array('min' => 0, 'step' => 1),
-        ),
-        array(
-            'type' => 'content',
-            'content' => __(
-                '<div style="padding:12px 14px;background:#f6f8fa;border:1px solid #e1e4e8;border-radius:6px;line-height:1.8;">'
-                . '<b>短码使用说明：</b><br>'
-                . '<code>[post_heatmap]</code>  显示默认设置的热力图<br>'
-                . '<code>[post_heatmap title="我的写作日历" year="2025"]</code>  指定标题与年份<br>'
-                . '<code>[post_heatmap post_type="shuoshuo" time_range="180"]</code>  统计说说，最近 180 天<br>'
-                . '<code>[post_heatmap width="900px"]</code>  自定义容器宽度<br><br>'
-                . '<b>支持参数：</b><br>'
-                . '• <code>title</code>：标题文本，留空则不显示标题<br>'
-                . '• <code>post_type</code>：文章类型 slug，默认 <code>post</code><br>'
-                . '• <code>year</code>：指定年份（如 <code>2024</code>），留空显示最近 <code>time_range</code> 天<br>'
-                . '• <code>time_range</code>：最近多少天（默认 <code>365</code>）<br>'
-                . '• <code>width</code>：容器宽度（默认 <code>100%</code>）<br><br>'
-                . '</div>',
-                'kratos'
-            ),
-        ),
-
-    ),
-));
-
-CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
     'title' => __('特色首页', 'kratos'),
     'icon' => 'fas fa-home',
     'fields' => array(
@@ -4140,8 +3720,489 @@ CSF::createSection($prefix, array(
     ),
 ));
 
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('说说配置', 'kratos'),
+    'icon' => 'far fa-comment-dots',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面顶部展示在「说说」模板（page-shuoshuo.php）页面顶部，可留空隐藏。', 'kratos'),
+        ),
+        array(
+            'id' => 'shuoshuo_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'default' => __('我的说说', 'kratos'),
+        ),
+        array(
+            'id' => 'shuoshuo_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'default' => __('记录碎碎念，分享小确幸', 'kratos'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('列表展示', 'kratos'),
+        ),
+        array(
+            'id' => 'shuoshuo_per_page',
+            'type' => 'number',
+            'title' => __('每页条数', 'kratos'),
+            'subtitle' => __('「说说」模板（page-shuoshuo.php）每页显示多少条说说。', 'kratos'),
+            'default' => 10,
+            'attributes' => array(
+                'min' => 1,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'shuoshuo_collapse_limit',
+            'type' => 'number',
+            'title' => __('折叠字数阈值', 'kratos'),
+            'subtitle' => __('列表中说说正文超过该字数时折叠，并显示「展开」。设为 0 关闭折叠功能。', 'kratos'),
+            'default' => 300,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 10,
+            ),
+        ),
+    ),
+));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('归档配置', 'kratos'),
+    'icon' => 'fas fa-archive',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面顶部展示在「文章归档」模板（page-archives.php）以及 [archives_stats] 短码的头部，可留空隐藏。短码同名参数会覆盖后台默认值。', 'kratos'),
+        ),
+        array(
+            'id' => 'archives_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[archives_stats] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('文章归档', 'kratos'),
+        ),
+        array(
+            'id' => 'archives_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[archives_stats] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('把写过的时间，安静收拢起来', 'kratos'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('列表展示', 'kratos'),
+        ),
+        array(
+            'id' => 'archives_sc_years_max',
+            'type' => 'number',
+            'title' => __('年份最多条数', 'kratos'),
+            'subtitle' => __('「时间归档 → 按年份」最多展示多少年；0 表示不限（全部展示）。短码可通过 years_max 覆盖', 'kratos'),
+            'default' => 0,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'archives_sc_months_max',
+            'type' => 'number',
+            'title' => __('月份最多条数', 'kratos'),
+            'subtitle' => __('「时间归档 → 按月份」最多展示多少个月；0 表示不展示月份 Tab。短码可通过 months_max 覆盖', 'kratos'),
+            'default' => 24,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'archives_sc_tags_max',
+            'type' => 'number',
+            'title' => __('标签最多条数', 'kratos'),
+            'subtitle' => __('「标签统计」区块最多展示多少个标签；0 表示不展示标签区块。短码可通过 tags_max 覆盖', 'kratos'),
+            'default' => 20,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
+            ),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('时间轴配置', 'kratos'),
+    'icon' => 'fas fa-stream',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('页面顶部展示在「时间轴」模板（page-timeline.php）以及 [timeline] 短码的头部，可留空隐藏。短码同名参数会覆盖后台默认值。', 'kratos'),
+        ),
+        array(
+            'id' => 'timeline_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[timeline] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('时间轴', 'kratos'),
+        ),
+        array(
+            'id' => 'timeline_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[timeline] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('把每一次写作，钉在属于它的那一天', 'kratos'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('列表展示', 'kratos'),
+        ),
+        array(
+            'id' => 'timeline_sc_per_page',
+            'type' => 'number',
+            'title' => __('每页条数', 'kratos'),
+            'subtitle' => __('时间轴每页显示多少篇文章，短码可通过 per_page 参数覆盖；填 0 表示不分页全部展示', 'kratos'),
+            'default' => 20,
+            'attributes' => array(
+                'min' => 0,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'timeline_sc_exclude_cats',
+            'type' => 'checkbox',
+            'title' => __('排除分类', 'kratos'),
+            'subtitle' => __('勾选的分类下的文章不会出现在时间轴中；短码可通过 exclude_cats="1,2,3" 覆盖', 'kratos'),
+            'options' => (function () {
+                $out = array();
+                $terms = function_exists('get_terms') ? get_terms(array(
+                    'taxonomy'   => 'category',
+                    'hide_empty' => false,
+                )) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) {
+                        $out[(int) $t->term_id] = $t->name;
+                    }
+                }
+                return $out;
+            })(),
+            'inline' => true,
+            'default' => array(),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('文章热力图', 'kratos'),
+        ),
+        array(
+            'id' => 'heatmap_enabled',
+            'type' => 'switcher',
+            'title' => __('启用热力图', 'kratos'),
+            'subtitle' => __('启用后可通过 [post_heatmap] 短码在任意文章 / 页面展示 GitHub 风格的发布热力图，同时控制资源是否入队', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'heatmap_on_timeline',
+            'type' => 'switcher',
+            'title' => __('时间轴页自动展示', 'kratos'),
+            'subtitle' => __('开启后，「时间轴」模板页面（page-timeline.php）会在列表上方自动展示一个热力图，无需手动写短码', 'kratos'),
+            'text_on' => __('开启', 'kratos'),
+            'text_off' => __('关闭', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'heatmap_sc_title',
+            'type' => 'text',
+            'title' => __('默认标题', 'kratos'),
+            'subtitle' => __('[post_heatmap] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => __('文章热力图', 'kratos'),
+        ),
+        array(
+            'id' => 'heatmap_sc_post_type',
+            'type' => 'text',
+            'title' => __('默认文章类型', 'kratos'),
+            'subtitle' => __('要统计的文章类型别名，例如 post / shuoshuo；短码可通过 post_type 覆盖', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => 'post',
+        ),
+        array(
+            'id' => 'heatmap_sc_time_range',
+            'type' => 'number',
+            'title' => __('默认时间范围（天）', 'kratos'),
+            'subtitle' => __('未选择年份时展示的最近天数；短码可通过 time_range 覆盖', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => 365,
+            'attributes' => array('min' => 30, 'step' => 1),
+        ),
+        array(
+            'id' => 'heatmap_years_max',
+            'type' => 'number',
+            'title' => __('年份标签最多显示', 'kratos'),
+            'subtitle' => __('热力图右侧年份标签最多展示多少年（除"最近一年"外，按年份倒序）；填 0 表示显示全部年份', 'kratos'),
+            'dependency' => array('heatmap_enabled', '==', 'true'),
+            'default' => 5,
+            'attributes' => array('min' => 0, 'step' => 1),
+        ),
+        array(
+            'type' => 'content',
+            'content' => __(
+                '<div style="padding:12px 14px;background:#f6f8fa;border:1px solid #e1e4e8;border-radius:6px;line-height:1.8;">'
+                . '<b>短码使用说明：</b><br>'
+                . '<code>[post_heatmap]</code>  显示默认设置的热力图<br>'
+                . '<code>[post_heatmap title="我的写作日历" year="2025"]</code>  指定标题与年份<br>'
+                . '<code>[post_heatmap post_type="shuoshuo" time_range="180"]</code>  统计说说，最近 180 天<br>'
+                . '<code>[post_heatmap width="900px"]</code>  自定义容器宽度<br><br>'
+                . '<b>支持参数：</b><br>'
+                . '• <code>title</code>：标题文本，留空则不显示标题<br>'
+                . '• <code>post_type</code>：文章类型 slug，默认 <code>post</code><br>'
+                . '• <code>year</code>：指定年份（如 <code>2024</code>），留空显示最近 <code>time_range</code> 天<br>'
+                . '• <code>time_range</code>：最近多少天（默认 <code>365</code>）<br>'
+                . '• <code>width</code>：容器宽度（默认 <code>100%</code>）<br><br>'
+                . '</div>',
+                'kratos'
+            ),
+        ),
+
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('数据看板', 'kratos'),
+    'icon' => 'fas fa-chart-bar',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('站点数据看板：新建页面并选择「站点数据看板」模板即可访问，也可用短码 [site_dashboard] 嵌入任意页面。数据全部复用归档统计 / 评论排行 / 阅读增强 / 地域分布已有的数据层。', 'kratos'),
+        ),
+        array(
+            'id' => 'g_dash_title',
+            'type' => 'text',
+            'title' => __('页头标题', 'kratos'),
+            'default' => __('站点数据看板', 'kratos'),
+        ),
+        array(
+            'id' => 'g_dash_subtitle',
+            'type' => 'text',
+            'title' => __('页头副标题', 'kratos'),
+            'default' => __('这个博客到今天为止，长成了什么样子 📊', 'kratos'),
+        ),
+        array(
+            'id' => 'g_dash_days',
+            'type' => 'text',
+            'title' => __('发布节奏天数', 'kratos'),
+            'subtitle' => __('柱状图展示最近多少天的发文数，范围 7~120。默认 30', 'kratos'),
+            'default' => '30',
+        ),
+        array(
+            'id' => 'g_dash_words',
+            'type' => 'switcher',
+            'title' => __('统计累计字数', 'kratos'),
+            'subtitle' => __('需要读取全部已发布文章正文逐篇计数。文章上千篇的站点若觉得缓存重算偏慢，可以关掉这一项', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_dash_years_max',
+            'type' => 'text',
+            'title' => __('年度产出条数', 'kratos'),
+            'subtitle' => __('填 0 不展示该区块', 'kratos'),
+            'default' => '8',
+        ),
+        array(
+            'id' => 'g_dash_cats_max',
+            'type' => 'text',
+            'title' => __('分类占比条数', 'kratos'),
+            'subtitle' => __('填 0 不展示该区块', 'kratos'),
+            'default' => '10',
+        ),
+        array(
+            'id' => 'g_dash_commenters_max',
+            'type' => 'text',
+            'title' => __('最勤评论者条数', 'kratos'),
+            'subtitle' => __('复用「评论排行榜」的数据层；填 0 不展示该区块', 'kratos'),
+            'default' => '5',
+        ),
+        array(
+            'id' => 'g_dash_geo',
+            'type' => 'switcher',
+            'title' => __('内嵌评论地域分布', 'kratos'),
+            'subtitle' => __('在看板底部嵌入 [comment_geo]（不重复输出它自己的页头卡）', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_dash_cache_min',
+            'type' => 'text',
+            'title' => __('缓存时长(分钟)', 'kratos'),
+            'subtitle' => __('聚合结果缓存多久；发文、删文、评论变动会自动失效。最小 5，默认 180', 'kratos'),
+            'default' => '180',
+        ),
+        array(
+            'id' => 'g_dash_show_updated',
+            'type' => 'switcher',
+            'title' => __('展示数据更新时间', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_dash_notice',
+            'type' => 'content',
+            'content' => '<div style="padding:12px 14px;background:#f7f3ea;border:1px solid #e3d9c4;border-radius:8px;line-height:1.8;">'
+                . '<p style="margin:0 0 6px;"><strong>' . __('建站天数取自：', 'kratos') . '</strong>'
+                . __('「年度回顾 → 建站日期」（<code>site_birthday</code>）；没填时自动回落到最早一篇文章的发布时间。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 平均更新间隔 = 首篇到末篇的天数跨度 ÷ 间隔数，只有两篇以上才会展示。', 'kratos') . '</p>'
+                . '</div>',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('年度回顾', 'kratos'),
+    'icon' => 'far fa-calendar-check',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('生成博客年度数据长图（新建页面并选择「年度回顾」模板即可访问），支持一键下载为 PNG。也可通过短代码 [yearly_review year="2026"] 嵌入任意页面。', 'kratos'),
+        ),
+        array(
+            'id' => 'site_birthday',
+            'type' => 'text',
+            'title' => __('建站日期', 'kratos'),
+            'subtitle' => __('格式 YYYY-MM-DD，用于计算「陪伴天数」和「生日提示条」', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'id' => 'yr_message',
+            'type' => 'textarea',
+            'title' => __('送给读者的一句话', 'kratos'),
+            'subtitle' => __('展示在年度长图底部', 'kratos'),
+            'default' => __('感谢每一位读者的陪伴，我们下一年见 🥂', 'kratos'),
+        ),
+        array(
+            'id' => 'yr_birthday_hint',
+            'type' => 'switcher',
+            'title' => __('生日当天首页提示', 'kratos'),
+            'subtitle' => __('生日当天在首页顶部显示彩色提示条，引导访客查看专属长图', 'kratos'),
+            'default' => false,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('Now 页面', 'kratos'),
+    'icon' => 'far fa-clock',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('用于展示「我最近在做什么」。新建一个页面并选择「Now」模板，页面内容来自后台「Now」菜单里发布的条目。', 'kratos'),
+        ),
+        array(
+            'id' => 'now_page_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'default' => __('Now', 'kratos'),
+        ),
+        array(
+            'id' => 'now_page_subtitle',
+            'type' => 'textarea',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('展示在标题下方，介绍这是一张「此刻的我」的名片', 'kratos'),
+            'default' => __('这是我最近在做的事、在想的事、在学的事。', 'kratos'),
+        ),
+        array(
+            'id' => 'now_show_history',
+            'type' => 'switcher',
+            'title' => __('展示历史条目', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'now_history_limit',
+            'type' => 'number',
+            'title' => __('历史条目数量', 'kratos'),
+            'default' => 20,
+            'attributes' => array('min' => 1, 'step' => 1),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('岁月同一天', 'kratos'),
+    'icon' => 'far fa-calendar-alt',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('展示历史年份中同月同日发布的文章 / 说说。短码 [on_this_day]，也可作为小工具、首页顶部或文章底部自动展示。', 'kratos'),
+        ),
+        array(
+            'id' => 'otd_enable',
+            'type' => 'switcher',
+            'title' => __('启用', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'otd_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'default' => __('岁月同一天', 'kratos'),
+        ),
+        array(
+            'id' => 'otd_subtitle',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => __('回望过去的今天，你在写什么', 'kratos'),
+        ),
+        array(
+            'id' => 'otd_post_types',
+            'type' => 'checkbox',
+            'title' => __('包含的文章类型', 'kratos'),
+            'options' => array(
+                'post'     => __('博客文章 (post)', 'kratos'),
+                'shuoshuo' => __('说说 (shuoshuo)', 'kratos'),
+            ),
+            'default' => array('post'),
+        ),
+        array(
+            'id' => 'otd_limit',
+            'type' => 'number',
+            'title' => __('最多条数', 'kratos'),
+            'default' => 20,
+            'attributes' => array('min' => 1, 'step' => 1),
+        ),
+        array(
+            'id' => 'otd_show_thumb',
+            'type' => 'switcher',
+            'title' => __('展示缩略图', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'otd_home_position',
+            'type' => 'select',
+            'title' => __('首页位置', 'kratos'),
+            'options' => array(
+                'none' => __('不展示', 'kratos'),
+                'top'  => __('首页主循环顶部', 'kratos'),
+            ),
+            'default' => 'none',
+        ),
+        array(
+            'id' => 'otd_after_post',
+            'type' => 'switcher',
+            'title' => __('在文章底部自动展示', 'kratos'),
+            'subtitle' => __('仅在今天有历史内容时展示。', 'kratos'),
+            'default' => false,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
     'title' => __('每日心情灯', 'kratos'),
     'icon' => 'fas fa-smile-beam',
     'fields' => array(
@@ -4208,6 +4269,244 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'id' => 'kp_social',
+    'title' => __('站点互联', 'kratos'),
+    'icon' => 'fas fa-users',
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_social',
+    'title' => __('友链配置', 'kratos'),
+    'icon' => 'fas fa-link',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('展示', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[friend_links] 短码未传 title 时使用；留空则不展示标题', 'kratos'),
+            'default' => __('友情链接', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[friend_links] 短码未传 subtitle 时使用；留空则不展示副标题', 'kratos'),
+            'default' => __('感谢各位朋友的关注与支持，欢迎申请交换友链 🤝', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_hide_empty',
+            'type' => 'switcher',
+            'title' => __('隐藏空分类', 'kratos'),
+            'subtitle' => __('开启后，没有已通过友链的分类不会显示在页面上', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('本站信息', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_siteinfo_enabled',
+            'type' => 'switcher',
+            'title' => __('展示本站信息', 'kratos'),
+            'subtitle' => __('在友链列表上方展示本站信息卡片，方便来访者快速获取交换友链所需信息', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_friend_siteinfo_name',
+            'type' => 'text',
+            'title' => __('站点名称', 'kratos'),
+            'subtitle' => __('留空则使用「设置 → 常规」中的站点标题', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_siteinfo_url',
+            'type' => 'text',
+            'title' => __('站点地址', 'kratos'),
+            'subtitle' => __('留空则使用当前站点首页地址', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_siteinfo_logo',
+            'type' => 'text',
+            'title' => __('Logo 地址', 'kratos'),
+            'subtitle' => __('站点 Logo / 头像的 URL；留空则不展示图片', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_siteinfo_desc',
+            'type' => 'text',
+            'title' => __('站点描述', 'kratos'),
+            'subtitle' => __('留空则使用「设置 → 常规」中的副标题', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_siteinfo_rss',
+            'type' => 'text',
+            'title' => __('RSS 订阅地址', 'kratos'),
+            'subtitle' => __('留空则使用站点默认 Feed 地址', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_friend_siteinfo_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('申请要求', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_requirements_enabled',
+            'type' => 'switcher',
+            'title' => __('展示申请要求', 'kratos'),
+            'subtitle' => __('在友链列表上方展示友链申请要求说明', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_friend_requirements_title',
+            'type' => 'text',
+            'title' => __('区块标题', 'kratos'),
+            'default' => __('友链申请要求', 'kratos'),
+            'dependency' => array('g_friend_requirements_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'callback',
+            'title' => __('要求内容', 'kratos'),
+            'subtitle' => __('支持 HTML，可使用列表、加粗等格式；是否展示由上方"展示申请要求"开关控制', 'kratos'),
+            'function' => 'kratos_friend_requirements_editor_render',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('探活检测', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_probe_enabled',
+            'type' => 'switcher',
+            'title' => __('启用探活检测', 'kratos'),
+            'subtitle' => __('定时检测友链 URL 是否可达，结果在前端卡片和后台列表中展示', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_friend_probe_interval',
+            'type' => 'select',
+            'title' => __('探测频率', 'kratos'),
+            'subtitle' => __('每隔多久对所有已通过的友链进行一次可达性检测', 'kratos'),
+            'options' => array(
+                'daily'      => __('每天一次', 'kratos'),
+                'twicedaily' => __('每天两次', 'kratos'),
+                'hourly'     => __('每小时', 'kratos'),
+            ),
+            'default' => 'daily',
+            'dependency' => array('g_friend_probe_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('最近访客', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_recent_enabled',
+            'type' => 'switcher',
+            'title' => __('展示最近访客', 'kratos'),
+            'subtitle' => __('在友链页面展示最近有评论的访客（按用户去重，仅取最新一条）', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_friend_recent_title',
+            'type' => 'text',
+            'title' => __('区块标题', 'kratos'),
+            'subtitle' => __('展示在最近访客区块顶部；留空则不展示标题', 'kratos'),
+            'default' => __('最近访客', 'kratos'),
+            'dependency' => array('g_friend_recent_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_recent_limit',
+            'type' => 'number',
+            'title' => __('展示数量', 'kratos'),
+            'subtitle' => __('最多展示的访客数量，去重后不足会自动少展示', 'kratos'),
+            'min' => 1,
+            'max' => 100,
+            'default' => 20,
+            'dependency' => array('g_friend_recent_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('申请表单', 'kratos'),
+        ),
+        array(
+            'id' => 'g_friend_form_enabled',
+            'type' => 'switcher',
+            'title' => __('开启申请表单', 'kratos'),
+            'subtitle' => __('关闭后，友链页面末尾的申请表单会隐藏', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_friend_form_intro',
+            'type' => 'text',
+            'title' => __('表单引导文案', 'kratos'),
+            'subtitle' => __('展示在表单标题下方；留空则不展示', 'kratos'),
+            'default' => __('填写下方表单提交友链申请，站长审核通过后会自动上线。', 'kratos'),
+            'dependency' => array('g_friend_form_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_default_category',
+            'type' => 'select',
+            'title' => __('默认分类', 'kratos'),
+            'subtitle' => __('新申请归入此分类；未选择时归入 link_category 中最早创建的一项（通常是 Blogroll）。分类在「链接 → 链接分类目录」中管理', 'kratos'),
+            'options' => (function () {
+                $out = array(0 => __('— 自动选择 —', 'kratos'));
+                $terms = function_exists('get_terms') ? get_terms(array('taxonomy' => 'link_category', 'hide_empty' => false)) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) $out[(int) $t->term_id] = $t->name;
+                }
+                return $out;
+            })(),
+            'default' => 0,
+            'dependency' => array('g_friend_form_enabled', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_friend_notify_admin',
+            'type' => 'switcher',
+            'title' => __('邮件通知管理员', 'kratos'),
+            'subtitle' => __('收到新申请时，发送邮件到「设置 → 常规」里的管理员邮箱', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_friend_form_enabled', '==', 'true'),
+        ),
+        array(
+            'type' => 'content',
+            'content' =>
+                '<div style="padding:16px 18px;background:linear-gradient(135deg,#f4f9ff 0%,#e6f1fe 100%);border:1px solid #c9dcf4;border-radius:12px;color:#243a5e;line-height:1.8;font-size:13px;">'
+                . '<p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#336699;">' . __('🔗 友链管理说明', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('1. 数据存储：', 'kratos') . '</strong>'
+                . sprintf(
+                    __('复用 WordPress 原生「链接」（wp_links）表，与「%s」共享数据。已通过的友链自动出现在「评论友链标识」的匹配列表中。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('link-manager.php')) . '" target="_blank">' . esc_html__('链接管理', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('2. 分类管理：', 'kratos') . '</strong>'
+                . sprintf(
+                    __('前台按 link_category 分组展示，请到 %s 里创建分类，然后手动新增或编辑链接时选择分类。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('edit-tags.php?taxonomy=link_category')) . '" target="_blank">' . esc_html__('链接分类目录', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 6px;"><strong>' . __('3. 审核流程：', 'kratos') . '</strong>'
+                . sprintf(
+                    __('新申请以 link_visible = "N" 保存；到 %s 页面顶部会显示「待审核」筛选，行内操作可以「通过」或「拒绝」（拒绝会直接删除该记录）。审核通过后自动清除评论友链缓存。', 'kratos'),
+                    '<a href="' . esc_url(admin_url('link-manager.php?kfl_filter=pending')) . '" target="_blank">' . esc_html__('链接管理', 'kratos') . '</a>'
+                )
+                . '</p>'
+                . '<p style="margin:0 0 4px;"><strong>' . __('4. 页面使用：', 'kratos') . '</strong>' . __('新建页面时模板选「友情链接」；或在任意页面 / 文章插入 <code style="background:#fff;padding:2px 8px;border-radius:4px;color:#336699;">[friend_links]</code>。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#5b6d8a;">' . __('💡 短码参数：', 'kratos') . '<code>title</code> ' . __('标题；', 'kratos') . '<code>subtitle</code> ' . __('副标题；', 'kratos') . '<code>hide_empty="0"</code> ' . __('展示空分类；', 'kratos') . '<code>form="0"</code> ' . __('隐藏表单。', 'kratos') . '</p>'
+                . '</div>',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_social',
     'title' => __('博友动态', 'kratos'),
     'icon' => 'fas fa-rss',
     'fields' => array(
@@ -4362,502 +4661,244 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
-    'id' => 'footer_fields',
-    'title' => __('页脚配置', 'kratos'),
-    'icon' => 'far fa-window-maximize',
+    'id' => 'kp_ux',
+    'title' => __('交互增强', 'kratos'),
+    'icon' => 'fas fa-magic',
 ));
 
 CSF::createSection($prefix, array(
-    'parent' => 'footer_fields',
-    'title' => __('社交图标', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
+    'parent' => 'kp_ux',
+    'title' => __('命令面板', 'kratos'),
+    'icon' => 'fas fa-terminal',
     'fields' => array(
         array(
-            'id' => 's_social_fieldset',
-            'type' => 'fieldset',
-            'fields' => array(
-                array(
-                    'type' => 'subheading',
-                    'content' => __('国内平台', 'kratos'),
-                ),
-                array(
-                    'id' => 's_sina_url',
-                    'type' => 'text',
-                    'title' => __('新浪微博', 'kratos'),
-                    'placeholder' => __('https://weibo.com/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_bilibili_url',
-                    'type' => 'text',
-                    'title' => __('哔哩哔哩', 'kratos'),
-                    'placeholder' => __('https://space.bilibili.com/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_coding_url',
-                    'type' => 'text',
-                    'title' => __('CODING', 'kratos'),
-                    'placeholder' => __('https://xxxxx.coding.net/u/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_gitee_url',
-                    'type' => 'text',
-                    'title' => __('码云', 'kratos'),
-                    'placeholder' => __('https://gitee.com/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_douban_url',
-                    'type' => 'text',
-                    'title' => __('豆瓣', 'kratos'),
-                    'placeholder' => __('https://www.douban.com/people/xxxxx', 'kratos'),
-                ),
-            ),
-        ),
-        array(
-            'id' => 's_social_fieldset',
-            'type' => 'fieldset',
-            'fields' => array(
-                array(
-                    'type' => 'subheading',
-                    'content' => __('海外平台', 'kratos'),
-                ),
-                array(
-                    'id' => 's_twitter_url',
-                    'type' => 'text',
-                    'title' => __('Twitter', 'kratos'),
-                    'placeholder' => __('https://twitter.com/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_telegram_url',
-                    'type' => 'text',
-                    'title' => __('Telegram', 'kratos'),
-                    'placeholder' => __('https://t.me/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_linkedin_url',
-                    'type' => 'text',
-                    'title' => __('LinkedIn', 'kratos'),
-                    'placeholder' => __('https://www.linkedin.com/in/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_youtube_url',
-                    'type' => 'text',
-                    'title' => __('YouTube', 'kratos'),
-                    'placeholder' => __('https://www.youtube.com/channel/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_github_url',
-                    'type' => 'text',
-                    'title' => __('Github', 'kratos'),
-                    'placeholder' => __('https://github.com/xxxxx', 'kratos'),
-                ),
-                array(
-                    'id' => 's_stackflow_url',
-                    'type' => 'text',
-                    'title' => __('Stack Overflow', 'kratos'),
-                    'placeholder' => __('https://stackoverflow.com/users/xxxxx', 'kratos'),
-                ),
-            ),
-        ),
-        array(
-            'id' => 's_social_fieldset',
-            'type' => 'fieldset',
-            'fields' => array(
-                array(
-                    'type' => 'subheading',
-                    'content' => __('其他', 'kratos'),
-                ),
-                array(
-                    'id' => 's_email_url',
-                    'type' => 'text',
-                    'title' => __('电子邮箱', 'kratos'),
-                    'placeholder' => __('mailto:xxxxx@example.com', 'kratos'),
-                ),
-            ),
-            'default' => array(
-                "s_sina_url" => "",
-                "s_bilibili_url" => "",
-                "s_coding_url" => "",
-                "s_gitee_url" => "",
-                "s_douban_url" => "",
-                "s_twitter_url" => "",
-                "s_telegram_url" => "",
-                "s_linkedin_url" => "",
-                "s_youtube_url" => "",
-                "s_github_url" => "",
-                "s_stackflow_url" => "",
-                "s_email_url" => ""
-            ),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('自定义图标', 'kratos'),
-        ),
-        array(
-            'id' => 's_social_custom',
-            'type' => 'group',
-            'title' => __('自定义社交图标', 'kratos'),
-            'subtitle' => __('在上方预置平台之外，追加任意条目。渲染顺序：预置图标在前，自定义在后。', 'kratos'),
-            'button_title' => __('添加图标', 'kratos'),
-            'accordion_title_prefix' => __('图标', 'kratos'),
-            'accordion_title_number' => true,
-            'fields' => array(
-                array(
-                    'id' => 'title',
-                    'type' => 'text',
-                    'title' => __('名称', 'kratos'),
-                    'subtitle' => __('用于鼠标悬停提示与无障碍标签', 'kratos'),
-                ),
-                array(
-                    'id' => 'url',
-                    'type' => 'text',
-                    'title' => __('链接', 'kratos'),
-                    'placeholder' => 'https://example.com',
-                ),
-                array(
-                    'id' => 'icon_type',
-                    'type' => 'button_set',
-                    'title' => __('图标类型', 'kratos'),
-                    'options' => array(
-                        'fontawesome' => __('Font Awesome', 'kratos'),
-                        'image' => __('图片', 'kratos'),
-                    ),
-                    'default' => 'fontawesome',
-                ),
-                array(
-                    'id' => 'icon',
-                    'type' => 'icon',
-                    'title' => __('图标', 'kratos'),
-                    'subtitle' => __('从 Font Awesome 图标库中选择', 'kratos'),
-                    'dependency' => array('icon_type', '==', 'fontawesome'),
-                ),
-                array(
-                    'id' => 'icon_image',
-                    'type' => 'upload',
-                    'title' => __('图片', 'kratos'),
-                    'subtitle' => __('建议正方形透明背景 PNG/SVG，推荐 32×32 或更大', 'kratos'),
-                    'library' => 'image',
-                    'preview' => true,
-                    'dependency' => array('icon_type', '==', 'image'),
-                ),
-            ),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'footer_fields',
-    'title' => __('备案信息', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
-    'fields' => array(
-        array(
-            'id' => 's_icp',
-            'type' => 'text',
-            'title' => __('工信部备案信息', 'kratos'),
-            'subtitle' => __('由<a target="_blank" href="https://beian.miit.gov.cn/">工业和信息化部政务服务平台</a>提供', 'kratos'),
-            'placeholder' => __('冀ICP证XXXXXX号', 'kratos'),
-        ),
-        array(
-            'id' => 's_gov',
-            'type' => 'text',
-            'title' => __('公安备案信息', 'kratos'),
-            'subtitle' => __('由<a target="_blank" href="http://www.beian.gov.cn/">全国互联网安全管理服务平台</a>提供', 'kratos'),
-            'placeholder' => __('冀公网安备 XXXXXXXXXXXXX 号', 'kratos'),
-        ),
-        array(
-            'id' => 's_gov_link',
-            'type' => 'text',
-            'title' => __('公安备案链接', 'kratos'),
-            'subtitle' => __('由<a target="_blank" href="http://www.beian.gov.cn/">全国互联网安全管理服务平台</a>提供', 'kratos'),
-            'placeholder' => __('http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=xxxxx', 'kratos'),
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'footer_fields',
-    'title' => __('版权信息', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
-    'fields' => array(
-        array(
-            'id' => 's_copyright',
-            'type' => 'textarea',
-            'title' => __('版权信息', 'kratos'),
-            'default' => 'COPYRIGHT © ' . wp_date('Y') . ' ' . get_bloginfo('name') . '. ALL RIGHTS RESERVED.',
-        ),
-    ),
-));
-
-CSF::createSection($prefix, array(
-    'id' => 'ad_fields',
-    'title' => __('广告配置', 'kratos'),
-    'icon' => 'fas fa-ad',
-));
-
-CSF::createSection($prefix, array(
-    'parent' => 'ad_fields',
-    'title' => __('文章广告', 'kratos'),
-    'icon' => 'fas fa-arrow-right',
-    'fields' => array(
-        array(
-            'id' => 'single_ad_top_group',
-            'type' => 'group',
-            'title' => '文章顶部广告',
-            'subtitle' => '点击添加广告，最多添加 3 个顶部广告；无需展示时可全部删除',
-            'min' => 0,
-            'max' => 3,
-            'fields' => kratos_single_ad_fields(),
-        ),
-        array(
-            'id' => 'single_ad_bottom_group',
-            'type' => 'group',
-            'title' => '文章底部广告',
-            'subtitle' => '点击添加广告，最多添加 3 个底部广告；无需展示时可全部删除',
-            'min' => 0,
-            'max' => 3,
-            'fields' => kratos_single_ad_fields(),
-        ),
-    ),
-));
-
-// ================= 登录页 =================
-CSF::createSection($prefix, array(
-    'title' => __('登录页', 'kratos'),
-    'icon' => 'fas fa-sign-in-alt',
-    'fields' => array(
-        array(
-            'type' => 'subheading',
-            'content' => __('功能开关', 'kratos'),
-        ),
-        array(
-            'id' => 'g_login_enable',
-            'type' => 'switcher',
-            'title' => __('启用自定义登录页', 'kratos'),
-            'subtitle' => __('接管 wp-login.php，使用双栏简洁风；关闭则走 WordPress 默认登录页', 'kratos'),
-            'text_on' => __('开启', 'kratos'),
-            'text_off' => __('关闭', 'kratos'),
-            'default' => true,
-        ),
-        array(
-            'id' => 'g_login_register_show',
-            'type' => 'switcher',
-            'title' => __('显示注册 Tab', 'kratos'),
-            'subtitle' => __('在登录卡片中显示「注册」入口（仍受 WordPress「任何人都可注册」全局设置约束）', 'kratos'),
-            'text_on' => __('显示', 'kratos'),
-            'text_off' => __('隐藏', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_login_enable', '==', 'true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('左侧品牌栏', 'kratos'),
-        ),
-        array(
-            'id' => 'g_login_brand_show',
-            'type' => 'switcher',
-            'title' => __('显示品牌栏', 'kratos'),
-            'subtitle' => __('关闭后登录页为单栏居中卡片', 'kratos'),
-            'text_on' => __('显示', 'kratos'),
-            'text_off' => __('隐藏', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_login_enable', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_login_brand_eyebrow',
-            'type' => 'text',
-            'title' => __('眼眉小标', 'kratos'),
-            'subtitle' => __('标题上方的一行小字（全大写效果，自动加字距）', 'kratos'),
-            'default' => 'WELCOME · 欢迎回来',
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_login_brand_title',
-            'type' => 'textarea',
-            'title' => __('主标题', 'kratos'),
-            'subtitle' => __('允许 HTML；用 &lt;em&gt;文字&lt;/em&gt; 让文字变主色斜体强调', 'kratos'),
-            'default' => '在这里，<em>写下</em><br>属于你的每日思绪。',
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_login_brand_desc',
-            'type' => 'textarea',
-            'title' => __('描述段落', 'kratos'),
-            'default' => 'Kratos+ 是一款为写作者打造的 WordPress 主题，简洁、有序、可自定义。登录后开始你的创作之旅。',
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_login_brand_bg',
-            'type' => 'upload',
-            'title' => __('背景图（可选）', 'kratos'),
-            'subtitle' => __('留空则使用默认网格纹理 + 渐变；填入图片 URL 后作为品牌栏底图（自动覆盖网格）', 'kratos'),
-            'default' => '',
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('底部数据条', 'kratos'),
-        ),
-        array(
+            'id' => 'g_cmdk_notice',
             'type' => 'content',
-            'content' => __('<p style="color:#8a8a8a;margin:0 0 12px;font-size:12px;">数值支持以下动态令牌，会在展示时自动替换：<code>{posts}</code> 文章数 · <code>{tags}</code> 标签数 · <code>{comments}</code> 评论数 · <code>{users}</code> 用户数。也可直接填写任意静态文本。</p>', 'kratos'),
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+            'content' => '<div style="padding:12px 14px;background:#f7f3ea;border:1px solid #e3d9c4;border-radius:8px;line-height:1.8;">'
+                . '<p style="margin:0 0 6px;"><strong>' . __('唤出方式：', 'kratos') . '</strong>'
+                . __('macOS 按 <code>⌘K</code>，Windows / Linux 按 <code>Ctrl+K</code>；非输入状态下按 <code>/</code> 也可唤出。快捷键提示会按访客的操作系统自动切换。', 'kratos') . '</p>'
+                . '<p style="margin:0;color:#8a6a5d;">' . __('💡 面板聚合了：站内搜索、页面跳转（只列出你实际建了的页面）、暗色切换、随机漫步，以及可选的皮肤切换。', 'kratos') . '</p>'
+                . '</div>',
         ),
         array(
-            'id' => 'g_login_stat_1_show',
+            'id' => 'g_cmdk',
             'type' => 'switcher',
-            'title' => __('数据 1 · 显示', 'kratos'),
-            'text_on' => __('显示', 'kratos'),
-            'text_off' => __('隐藏', 'kratos'),
+            'title' => __('命令面板', 'kratos'),
+            'subtitle' => __('启用 ⌘K / Ctrl+K 命令面板', 'kratos'),
             'default' => true,
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
         ),
         array(
-            'id' => 'g_login_stat_1_value',
-            'type' => 'text',
-            'title' => __('数据 1 · 数值', 'kratos'),
-            'default' => '{posts}',
-            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_1_show', '==|==|==', 'true|true|true'),
-        ),
-        array(
-            'id' => 'g_login_stat_1_label',
-            'type' => 'text',
-            'title' => __('数据 1 · 说明', 'kratos'),
-            'default' => 'ARTICLES',
-            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_1_show', '==|==|==', 'true|true|true'),
-        ),
-        array(
-            'id' => 'g_login_stat_2_show',
+            'id' => 'g_cmdk_button',
             'type' => 'switcher',
-            'title' => __('数据 2 · 显示', 'kratos'),
-            'text_on' => __('显示', 'kratos'),
-            'text_off' => __('隐藏', 'kratos'),
+            'title' => __('页脚唤出按钮', 'kratos'),
+            'subtitle' => __('在页脚右下角工具栈顶部显示一个入口按钮，便于不知道快捷键的访客发现', 'kratos'),
             'default' => true,
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
+            'dependency' => array('g_cmdk', '==', 'true'),
         ),
         array(
-            'id' => 'g_login_stat_2_value',
+            'id' => 'g_cmdk_placeholder',
             'type' => 'text',
-            'title' => __('数据 2 · 数值', 'kratos'),
-            'default' => '{tags}',
-            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_2_show', '==|==|==', 'true|true|true'),
-        ),
-        array(
-            'id' => 'g_login_stat_2_label',
-            'type' => 'text',
-            'title' => __('数据 2 · 说明', 'kratos'),
-            'default' => 'TAGS',
-            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_2_show', '==|==|==', 'true|true|true'),
-        ),
-        array(
-            'id' => 'g_login_stat_3_show',
-            'type' => 'switcher',
-            'title' => __('数据 3 · 显示', 'kratos'),
-            'text_on' => __('显示', 'kratos'),
-            'text_off' => __('隐藏', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_login_stat_3_value',
-            'type' => 'text',
-            'title' => __('数据 3 · 数值', 'kratos'),
-            'default' => '{comments}',
-            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_3_show', '==|==|==', 'true|true|true'),
-        ),
-        array(
-            'id' => 'g_login_stat_3_label',
-            'type' => 'text',
-            'title' => __('数据 3 · 说明', 'kratos'),
-            'default' => 'COMMENTS',
-            'dependency' => array('g_login_enable|g_login_brand_show|g_login_stat_3_show', '==|==|==', 'true|true|true'),
+            'title' => __('输入框占位文案', 'kratos'),
+            'default' => __('搜索文章，或输入命令…', 'kratos'),
+            'dependency' => array('g_cmdk', '==', 'true'),
         ),
         array(
             'type' => 'subheading',
-            'content' => __('自定义登录 URL', 'kratos'),
+            'content' => __('面板内容 —— 决定面板里出现哪些分组。这些开关只影响命令面板，与各功能自己的页脚按钮开关相互独立。', 'kratos'),
         ),
         array(
-            'id' => 'g_login_custom_url_enabled',
+            'id' => 'g_cmdk_show_pages',
             'type' => 'switcher',
-            'title' => __('启用自定义登录 URL', 'kratos'),
-            'subtitle' => __('启用后，只能通过下方 slug 访问登录页；直接访问 /wp-login.php 或未登录访问 /wp-admin 会返回 404', 'kratos'),
-            'text_on' => __('开启', 'kratos'),
-            'text_off' => __('关闭', 'kratos'),
+            'title' => __('展示页面跳转', 'kratos'),
+            'subtitle' => __('在面板里列出站内页面（特色页用固定中文名与图标，其余页面用页面标题）。单个页面可在「编辑页面 → Kratos+ 命令面板」里单独排除', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_pages_max',
+            'type' => 'text',
+            'title' => __('普通页面条数上限', 'kratos'),
+            'subtitle' => __('除特色页之外，最多列出多少个普通页面（按菜单顺序、标题排序）；填 0 表示只列特色页。默认 30', 'kratos'),
+            'default' => '30',
+            'dependency' => array('g_cmdk|g_cmdk_show_pages', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_cmdk_show_dark',
+            'type' => 'switcher',
+            'title' => __('展示暗色切换', 'kratos'),
+            'subtitle' => __('需要「功能配置 → 暗夜模式」总开关已开启。与页脚暗色按钮相互独立 —— 关掉页脚按钮时，这里就是唯一的切换入口', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_show_stumble',
+            'type' => 'switcher',
+            'title' => __('展示随机漫步', 'kratos'),
+            'subtitle' => __('需要「全站配置 → 随机漫步」总开关已开启。与随机漫步的页脚按钮相互独立', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_show_skins',
+            'type' => 'switcher',
+            'title' => __('展示皮肤切换', 'kratos'),
+            'subtitle' => __('默认关闭 —— 皮肤条目较多，列出来会占满面板。与「每日皮肤 → 前端皮肤切换器」按钮相互独立：只开这一项也能让访客选皮肤并在下次访问时保持', 'kratos'),
             'default' => false,
-            'dependency' => array('g_login_enable', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_login_custom_url_slug',
-            'type' => 'text',
-            'title' => __('登录 slug', 'kratos'),
-            'subtitle' => __('访问路径为 <code>' . esc_html(home_url('/')) . '{slug}/</code>；只能包含小写字母、数字、连字符', 'kratos'),
-            'default' => 'sign-in',
-            'dependency' => array('g_login_enable|g_login_custom_url_enabled', '==|==', 'true|true'),
+            'dependency' => array('g_cmdk', '==', 'true'),
         ),
         array(
             'type' => 'subheading',
-            'content' => __('反机器人（登录 / 注册 / 找回密码）', 'kratos'),
+            'content' => __('搜索行为', 'kratos'),
         ),
         array(
-            'id' => 'g_login_honeypot_enabled',
-            'type' => 'switcher',
-            'title' => __('蜜罐', 'kratos'),
-            'subtitle' => __('通过隐藏字段 + 最短耗时判定机器人；用户无感知', 'kratos'),
-            'text_on' => __('开启', 'kratos'),
-            'text_off' => __('关闭', 'kratos'),
-            'default' => true,
-            'dependency' => array('g_login_enable', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_login_honeypot_min_seconds',
-            'type' => 'number',
-            'title' => __('最短提交耗时（秒）', 'kratos'),
-            'subtitle' => __('从页面加载到点击提交，低于此秒数视为机器人', 'kratos'),
-            'default' => 2,
-            'dependency' => array('g_login_enable|g_login_honeypot_enabled', '==|==', 'true|true'),
-        ),
-        array(
-            'id' => 'g_login_captcha_enabled',
-            'type' => 'switcher',
-            'title' => __('数字验证码', 'kratos'),
-            'subtitle' => __('要求用户填写形如「3 + 5 =」的算式结果，进一步防机器人', 'kratos'),
-            'text_on' => __('开启', 'kratos'),
-            'text_off' => __('关闭', 'kratos'),
-            'default' => false,
-            'dependency' => array('g_login_enable', '==', 'true'),
-        ),
-        array(
-            'id' => 'g_login_captcha_max',
-            'type' => 'number',
-            'title' => __('运算数上限', 'kratos'),
-            'subtitle' => __('两个加/减操作数的最大值', 'kratos'),
-            'default' => 20,
-            'dependency' => array('g_login_enable|g_login_captcha_enabled', '==|==', 'true|true'),
-        ),
-        array(
-            'type' => 'subheading',
-            'content' => __('底部小字', 'kratos'),
-        ),
-        array(
-            'id' => 'g_login_footer_note',
+            'id' => 'g_cmdk_search_max',
             'type' => 'text',
-            'title' => __('页脚版权文本', 'kratos'),
-            'subtitle' => __('登录卡片底部的一行小字；留空则不显示', 'kratos'),
-            'default' => '© Kratos+ · 由 Dylan Li 二次开发',
-            'dependency' => array('g_login_enable', '==', 'true'),
+            'title' => __('增量搜索结果条数', 'kratos'),
+            'subtitle' => __('面板内实时展示的文章条数，最大 20。默认 8', 'kratos'),
+            'default' => '8',
+            'dependency' => array('g_cmdk', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_cmdk_debounce',
+            'type' => 'text',
+            'title' => __('搜索去抖延时(毫秒)', 'kratos'),
+            'subtitle' => __('停止输入多久后才发请求，避免每敲一个字都查库。最小 80，默认 220', 'kratos'),
+            'default' => '220',
+            'dependency' => array('g_cmdk', '==', 'true'),
         ),
     ),
 ));
 
 CSF::createSection($prefix, array(
-    'title' => __('备份恢复', 'kratos'),
-    'icon' => 'fas fa-undo',
+    'parent' => 'kp_ux',
+    'title' => __('搜索结果页', 'kratos'),
+    'icon' => 'fas fa-search',
     'fields' => array(
         array(
-            'type' => 'backup',
+            'id' => 'g_search_enhance',
+            'type' => 'switcher',
+            'title' => __('增强搜索结果页', 'kratos'),
+            'subtitle' => __('启用独立的 search.php 结果页（页头卡 + 关键词高亮 + 结果分组 + 零结果推荐）。关闭后回落到经典列表样式', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_search_title',
+            'type' => 'text',
+            'title' => __('结果页标题', 'kratos'),
+            'default' => __('搜索结果', 'kratos'),
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_placeholder',
+            'type' => 'text',
+            'title' => __('搜索框占位文案', 'kratos'),
+            'default' => __('换个词再试试…', 'kratos'),
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_highlight',
+            'type' => 'switcher',
+            'title' => __('关键词高亮', 'kratos'),
+            'subtitle' => __('在标题与摘要中用高亮底色标出命中的关键词', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_shuoshuo',
+            'type' => 'switcher',
+            'title' => __('搜索结果包含说说', 'kratos'),
+            'subtitle' => __('说说是独立文章类型且默认不进 WordPress 搜索，开启后单独查询并作为「说说」分组展示', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_shuoshuo_max',
+            'type' => 'text',
+            'title' => __('说说结果条数', 'kratos'),
+            'default' => '5',
+            'dependency' => array('g_search_shuoshuo|g_search_enhance', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_search_series',
+            'type' => 'switcher',
+            'title' => __('搜索结果包含系列', 'kratos'),
+            'subtitle' => __('匹配系列名称与描述，作为「系列」分组展示', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_search_enhance', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_search_series_max',
+            'type' => 'text',
+            'title' => __('系列结果条数', 'kratos'),
+            'default' => '6',
+            'dependency' => array('g_search_series|g_search_enhance', '==|==', 'true|true'),
+        ),
+        array(
+            'id' => 'g_search_empty_tags',
+            'type' => 'text',
+            'title' => __('零结果推荐标签数', 'kratos'),
+            'subtitle' => __('没有搜到内容时，在兜底区展示的热门标签个数；填 0 表示不展示', 'kratos'),
+            'default' => '12',
+            'dependency' => array('g_search_enhance', '==', 'true'),
         ),
     ),
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_ux',
+    'title' => __('随机漫步', 'kratos'),
+    'icon' => 'fas fa-random',
+    'fields' => array(
+        array(
+            'id' => 'g_stumble',
+            'type' => 'switcher',
+            'title' => __('随机漫步', 'kratos'),
+            'subtitle' => __('随机跳到一篇被埋没的老文章。关闭后隐藏下面所有入口；跳转端点与 [stumble] 短码不受此开关影响，始终可用', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_stumble_button',
+            'type' => 'switcher',
+            'title' => __('展示页脚按钮', 'kratos'),
+            'subtitle' => __('在页脚右下角工具栈显示「随机漫步」按钮', 'kratos'),
+            'default' => true,
+            'dependency' => array('g_stumble', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_stumble_cmdk_hint',
+            'type' => 'content',
+            'content' => '<div style="padding:10px 12px;background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;line-height:1.8;color:#3f5f80;">'
+                . __('命令面板里的「随机漫步」入口在 <strong>全站配置 → 命令面板 → 展示随机漫步</strong>，与这里的页脚按钮相互独立。', 'kratos')
+                . '</div>',
+            'dependency' => array('g_stumble', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_stumble_min_age',
+            'type' => 'text',
+            'title' => __('老文章阈值(天)', 'kratos'),
+            'subtitle' => __('只在发布时间早于该天数的文章里随机；填 0 表示不限制文章年龄。默认 180', 'kratos'),
+            'default' => '180',
+            'dependency' => array('g_stumble', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_stumble_pool_size',
+            'type' => 'text',
+            'title' => __('候选池大小', 'kratos'),
+            'subtitle' => __('每天从「评论最少、发布最早」的老文章里取前 N 篇组成候选池，再随机命中。值越大随机面越广、越偏冷门。默认 200', 'kratos'),
+            'default' => '200',
+            'dependency' => array('g_stumble', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'id' => 'kp_system',
+    'title' => __('系统维护', 'kratos'),
+    'icon' => 'fas fa-tools',
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_system',
     'title' => __('版本更新', 'kratos'),
     'icon' => 'fas fa-cloud-download-alt',
     'fields' => array(
@@ -4889,6 +4930,18 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_system',
+    'title' => __('备份恢复', 'kratos'),
+    'icon' => 'fas fa-undo',
+    'fields' => array(
+        array(
+            'type' => 'backup',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_system',
     'title' => __('关于主题', 'kratos'),
     'icon' => 'fas fa-question-circle',
     'fields' => array(
@@ -4955,4 +5008,3 @@ CSF::createSection($prefix, array(
         ),
     ),
 ));
-
