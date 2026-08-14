@@ -259,6 +259,11 @@ function dplayer($atts = array(), $content = '')
 
     if (empty($atts['src'])) return;
 
+    // 「性能优化 → 播放器脚本按需加载」会把全站无条件入队的 DPlayer 摘掉，
+    // 由用到它的短码在此按需入队。短码运行于 the_content 阶段，页脚脚本尚未
+    // 打印，此时 enqueue 仍然有效。
+    wp_enqueue_script('dplayer');
+
     $output = sprintf(
         '<script> const dp%u = new DPlayer({ container: document.getElementById("dplayer-%u"), autoplay: %b, theme: "%s", loop: %b, preload: "%s", video: { url: "%s", type: "%s", pic: "%s", }, mutex: %b, iconsColor: "%s" }); </script>',
         $instance,

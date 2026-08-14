@@ -191,7 +191,7 @@ function kratos_read_get_related($post_id, $limit)
     } else {
         return array();
     }
-    $q = new WP_Query($args);
+    $q = new WP_Query(kratos_lean_query_args($args, array('no_terms' => true)));
     return $q->posts;
 }
 

@@ -335,7 +335,7 @@ add_action('wp_ajax_kratos_lqip_backfill', function () {
     $offset = max(0, (int) ($_POST['offset'] ?? 0));
 
     // 查找尚未生成 LQIP 的图片附件（不用 NOT EXISTS 子查询避免慢）
-    $q = new WP_Query(array(
+    $q = new WP_Query(kratos_lean_query_args(array(
         'post_type'      => 'attachment',
         'post_status'    => 'inherit',
         'post_mime_type' => array('image/jpeg', 'image/png', 'image/webp', 'image/bmp'),
@@ -346,7 +346,7 @@ add_action('wp_ajax_kratos_lqip_backfill', function () {
         'meta_query'     => array(
             array('key' => '_kratos_lqip', 'compare' => 'NOT EXISTS'),
         ),
-    ));
+    ), array('no_terms' => true)));
 
     $ok = $skip = $fail = 0;
     foreach ($q->posts as $id) {

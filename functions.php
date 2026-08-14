@@ -11,6 +11,23 @@
 define('THEME_VERSION', '1.1.17');
 // 内置 Font Awesome Free 版本（assets/css/fontawesome.min.css + assets/fonts/webfonts/）
 define('FA_VERSION', '7.3.1');
+// 内置 CodeMirror 版本（assets/codemirror/，取自 npm codemirror@5.62.2，
+// 须与 inc/codestar-framework/fields/code_editor/code_editor.php 的 $version 一致）
+define('KRATOS_CM_VERSION', '5.62.2');
+
+/**
+ * 本地 CodeMirror 资源根 URL。既给 inc/theme-extends.php 的
+ * kratos_csf_local_codemirror() 入队用，也作为 code_editor 字段的 `cdnURL` 设置值
+ * （CSF main.js 用它拼 CodeMirror.modeURL 懒加载语法模式），因此目录层级必须和
+ * npm 包一致（lib/ addon/ mode/）。
+ *
+ * 定义在这里而不是 theme-extends.php：theme-options.php 由 CSF autoload 立即加载，
+ * 早于 theme-extends.php 的 require，字段定义里就要用到它。
+ */
+function kratos_cm_base_url()
+{
+    return get_template_directory_uri() . '/assets/codemirror';
+}
 
 if (defined('WP_USE_THEMES') && WP_USE_THEMES === false) {
     return;
@@ -104,6 +121,9 @@ require get_template_directory() . '/inc/theme-volcengine.php';
 require get_template_directory() . '/inc/theme-smtp.php';
 
 require get_template_directory() . '/inc/theme-extends.php';
+
+// 性能优化（资源按需加载 / 查询瘦身 / 数据库清理 / 运行指标）
+require get_template_directory() . '/inc/theme-performance.php';
 
 require get_template_directory() . '/inc/theme-comment-extends.php';
 

@@ -165,11 +165,11 @@ function post_thumbnail()
             $img_val = $img_src[$img_count];
         }
         if (!empty($img_val)) {
-            echo '<img src="' . $img_val . '" />';
+            echo kratos_perf_mark_img('<img src="' . $img_val . '" loading="lazy" />');
         } elseif (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
             echo kratos_default_thumb_html($post);
         } else {
-            echo '<img src="' . kratos_option('g_postthumbnail', ASSET_PATH . '/assets/img/default.jpg') . '" />';
+            echo kratos_perf_mark_img('<img src="' . kratos_option('g_postthumbnail', ASSET_PATH . '/assets/img/default.jpg') . '" loading="lazy" />');
         }
     }
 }

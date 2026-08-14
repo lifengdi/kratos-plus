@@ -83,11 +83,11 @@ function kratos_stumble_pick($exclude_id = 0)
         }
         $args = apply_filters('kratos_stumble_query_args', $args, $min_age, $pool_max);
 
-        $q = new WP_Query($args);
+        $q = new WP_Query(kratos_lean_query_args($args, array('no_terms' => true, 'no_meta' => true)));
         $pool = array_map('intval', $q->posts);
         // 新站候选为空时退而用「全部已发布文章」，避免按钮永远打不开
         if (empty($pool)) {
-            $q = new WP_Query(array(
+            $q = new WP_Query(kratos_lean_query_args(array(
                 'post_type'           => 'post',
                 'post_status'         => 'publish',
                 'fields'              => 'ids',
@@ -95,7 +95,7 @@ function kratos_stumble_pick($exclude_id = 0)
                 'ignore_sticky_posts' => true,
                 'orderby'             => 'rand',
                 'no_found_rows'       => true,
-            ));
+            ), array('no_terms' => true, 'no_meta' => true)));
             $pool = array_map('intval', $q->posts);
         }
         set_transient($pool_key, $pool, DAY_IN_SECONDS);

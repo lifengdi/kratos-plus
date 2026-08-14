@@ -413,7 +413,9 @@ function kratos_default_thumb_html($post, $w = 512, $h = 288)
 {
     $url = kratos_default_thumb_url($post, $w, $h);
     $alt = is_object($post) ? esc_attr(get_the_title($post)) : '';
-    return '<img src="' . $url . '" alt="' . $alt . '" loading="lazy" />';
+    $html = '<img src="' . $url . '" alt="' . $alt . '" loading="lazy" />';
+    // 首图交给性能模块改成 eager + fetchpriority=high（见 kratos_perf_mark_img）
+    return function_exists('kratos_perf_mark_img') ? kratos_perf_mark_img($html) : $html;
 }
 
 /**

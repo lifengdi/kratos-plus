@@ -142,7 +142,9 @@
         .k-nav:not(.nav-sticky) {
             position: relative !important;
         }
-        /* 桌面：navbar 内容高 70px；管理员条开启时由 theme-core.php 的 admin_bar_css 再叠 padding-top */
+        /* 桌面：navbar 内容高 70px。管理条不需要在这里让位 —— 核心的
+           html{margin-top} 已经把文档下推，只有吸顶态（fixed）要偏移，
+           见 theme-core.php 里 is_admin_bar_showing() 那段。 */
         .k-main.color {
             padding-top: 20px !important;
         }

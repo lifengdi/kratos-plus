@@ -90,9 +90,8 @@ function theme_autoload()
         }
         // Font Awesome 无条件加载：列表页 / 文章详情页 / 特色首页的元信息图标
         // （热度、评论数、点赞数、作者、日期、字数、阅读时长，见 kratos_meta_icon()）
-        // 已经属于主题核心 UI，不能再由「g_fontawesome」开关决定有无，否则关掉开关
-        // 这些图标会全部消失。g_fontawesome 保留为「是否在自己的内容里使用 FA」的语义，
-        // 页脚自定义社交图标同理无需再单独按需入队。
+        // 已经属于主题核心 UI，不存在开关（曾经的 g_fontawesome 选项已移除）：主题自带
+        // FA Free 实体，前台/后台都用本地这一份，页脚自定义社交图标同理无需按需入队。
         wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
         wp_enqueue_style('kratos', ASSET_PATH . '/style.css', array(), THEME_VERSION);
         // 短代码/特色页公共组件样式（kr-* 统一类的默认外观层）。
@@ -119,30 +118,32 @@ function theme_autoload()
                 wp_add_inline_style('kratos', $css);
             }
         }
-        if (kratos_option('g_adminbar', true)) {
-            $admin_bar_css = "
-            @media screen and (min-width: 782px) {
-                .k-nav { padding-top: 40px; }
-                .k-nav.nav-sticky { padding-top: 40px !important; }
+        /*
+         * 管理条（wp_admin_bar）与导航的避让。
+         *
+         * 核心自己会输出 `html { margin-top: 32px }`（≤782px 为 46px，见
+         * wp-includes/admin-bar.php 的 _admin_bar_bump_cb），整个文档已经被下推，
+         * 所以 absolute / relative 定位的 .k-nav 天然就在管理条下方 —— 这里**不能**
+         * 再加 padding-top 或抬高 height，那是二次补偿，会把导航条整体撑高
+         * （70px → 110px），也是「开了前台管理员导航后导航条变高」的原因。
+         *
+         * 真正需要补偿的只有吸顶态：.k-nav.nav-sticky 是 position:fixed，不吃
+         * html 的 margin-top，会被管理条盖住，所以按管理条高度给它 top 偏移。
+         * header.php 的 #k-nav-sticky-style 在 wp_head 之后输出且写了 top:0，
+         * 故这里必须用 !important 才压得住。
+         *
+         * 判定用 is_admin_bar_showing() 而不是 current_user_can('level_10')：
+         * 编辑、作者等非管理员登录后同样会看到管理条，用户在个人资料里关掉
+         * 「显示工具栏」时也应当不补偿。
+         */
+        if (is_admin_bar_showing()) {
+            wp_add_inline_style('kratos', "
+            @media screen and (min-width: 783px) {
+                .k-nav.nav-sticky { top: 32px !important; }
             }
             @media screen and (max-width: 782px) {
-                .k-nav { padding-top: 46px; }
-                .k-nav.nav-sticky { padding-top: 46px !important; }
-            }
-            @media screen and (min-width: 992px) {
-                .k-nav { height: 110px; }
-            }
-            /* 让 .k-header 跟随 nav 抬高，避免固定高度把 nav 内容压出边界 */
-            .k-header { height: auto; }
-            @media screen and (max-width: 991.98px) {
-                .k-header { min-height: calc(59px + 46px); }
-            }
-            @media screen and (max-width: 767.98px) {
-                .k-header { min-height: calc(50px + 46px); }
-            }";
-            if (current_user_can('level_10')) {
-                wp_add_inline_style('kratos', $admin_bar_css);
-            }
+                .k-nav.nav-sticky { top: 46px !important; }
+            }");
         }
         wp_add_inline_style('kratos', "
         @media screen and (min-width: 992px) {

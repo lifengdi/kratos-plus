@@ -51,7 +51,7 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
         return $cached;
     }
 
-    $q = new WP_Query(array(
+    $q = new WP_Query(kratos_lean_query_args(array(
         'post_type'      => $post_types,
         'post_status'    => 'publish',
         'posts_per_page' => max(1, (int) $limit),
@@ -69,7 +69,7 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
                 'before' => array('year' => $today_y, 'month' => 1, 'day' => 1),
             ),
         ),
-    ));
+    ), array('no_terms' => true)));
 
     $items = array();
     if ($q->have_posts()) {

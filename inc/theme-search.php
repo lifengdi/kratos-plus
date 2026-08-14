@@ -148,7 +148,7 @@ function kratos_search_shuoshuo($kw, $limit = 5)
     if (!post_type_exists('shuoshuo') || trim((string) $kw) === '') {
         return array();
     }
-    $q = new WP_Query(array(
+    $q = new WP_Query(kratos_lean_query_args(array(
         'post_type'              => 'shuoshuo',
         'post_status'            => 'publish',
         's'                      => $kw,
@@ -156,7 +156,7 @@ function kratos_search_shuoshuo($kw, $limit = 5)
         'ignore_sticky_posts'    => true,
         'no_found_rows'          => true,
         'update_post_term_cache' => false,
-    ));
+    ), array('no_terms' => true)));
     return $q->posts;
 }
 

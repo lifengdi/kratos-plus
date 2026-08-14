@@ -451,7 +451,7 @@ function kratos_series_get_current_term($post_id)
  */
 function kratos_series_get_posts($term_id)
 {
-    $q = new WP_Query(array(
+    $q = new WP_Query(kratos_lean_query_args(array(
         'post_type'      => 'post',
         'post_status'    => 'publish',
         'posts_per_page' => -1,
@@ -468,7 +468,7 @@ function kratos_series_get_posts($term_id)
         // 保存时已确保每篇文章都有 kratos_series_order，直接用 INNER JOIN meta_value_num
         'meta_key' => 'kratos_series_order',
         'orderby'  => array('meta_value_num' => 'ASC', 'date' => 'ASC'),
-    ));
+    ), array('no_terms' => true)));
     return $q->posts;
 }
 

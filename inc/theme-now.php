@@ -142,7 +142,7 @@ add_action('save_post_' . KRATOS_NOW_CPT, 'kratos_now_auto_title', 20, 3);
  */
 function kratos_now_get_items($limit = 20)
 {
-    $q = new WP_Query(array(
+    $q = new WP_Query(kratos_lean_query_args(array(
         'post_type'      => KRATOS_NOW_CPT,
         'post_status'    => 'publish',
         'posts_per_page' => max(1, (int) $limit),
@@ -150,7 +150,7 @@ function kratos_now_get_items($limit = 20)
         'order'          => 'DESC',
         'no_found_rows'  => true,
         'ignore_sticky_posts' => true,
-    ));
+    ), array('no_terms' => true)));
     return $q->posts;
 }
 

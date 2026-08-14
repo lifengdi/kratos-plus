@@ -94,7 +94,7 @@ JS
 
 /**
  * 使用「Kratos+ 特色标题」模板时，若填了图标（Font Awesome class），
- * 自动加载 FA CSS —— 避免依赖主题选项 g_fontawesome 开关。
+ * 自动加载 FA CSS（主题内置那一份，handle 与 theme_autoload() 一致，不会重复加载）。
  */
 add_action('wp_enqueue_scripts', function () {
     if (!is_page_template('page-featured-title.php')) {

@@ -188,7 +188,7 @@ function kratos_cmdk_rest_search($request)
 
     $limit = max(1, min(20, (int) kratos_option('g_cmdk_search_max', 8)));
 
-    $query = new WP_Query(array(
+    $query = new WP_Query(kratos_lean_query_args(array(
         's'                      => $q,
         'post_type'              => array('post', 'page'),
         'post_status'            => 'publish',
@@ -196,7 +196,7 @@ function kratos_cmdk_rest_search($request)
         'ignore_sticky_posts'    => true,
         'no_found_rows'          => true,
         'update_post_term_cache' => false,
-    ));
+    ), array('no_terms' => true, 'no_meta' => true)));
 
     $items = array();
     foreach ($query->posts as $p) {
