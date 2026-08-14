@@ -7,8 +7,11 @@
  * @version 2025.12.02
  */
 
-// copyright
+// copyright —— 由「文章与阅读 → 文章配置 → 版权声明」（g_post_copyright）控制，默认开
 function feed_copyright($content) {
+    if (!kratos_option('g_post_copyright', true)) {
+        return $content;
+    }
     if(is_single() or is_feed()) {
 		$sitename = get_bloginfo('name');
 		$siteurl = home_url();

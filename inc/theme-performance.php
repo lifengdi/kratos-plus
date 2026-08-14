@@ -672,34 +672,26 @@ function kratos_perf_clean_expired_transients()
 }
 
 /**
- * 回跳地址：主题选项页 + 定位到「性能优化」子页。
+ * AJAX 处理：执行清理并回传「本次删了多少」+「全部项目的最新条数」。
  *
- * CSF 用 URL 片段 `#tab=<父级 slug>/<子级 slug>` 记住当前子页，slug 取
- * `sanitize_title($section['title'])`（见 admin-options.class.php 的 $sub_id）。
- * 片段不会随请求发到服务端，所以 wp_get_referer() 拿不到它 —— 不显式拼回去，
- * 清理完就会落回「基础设置」的第一个子页（界面开关）。
- *
- * 这里依赖两个 section 标题，改标题时需同步改这两个字符串。
+ * 之所以连没清的项也一起回传统计：删 revisions / trash_posts 会顺带带走孤立
+ * postmeta（见下面的收尾 SQL），只更新被点的那一行会让别的行数字对不上。
  */
-function kratos_perf_options_url()
+function kratos_perf_db_clean_ajax()
 {
-    $tab = sanitize_title(__('基础设置', 'kratos')) . '/' . sanitize_title(__('性能优化', 'kratos'));
-    $url = wp_get_referer() ?: admin_url('admin.php?page=kratos-options');
-    $url = preg_replace('/#.*$/', '', $url);
-    return $url . '#tab=' . $tab;
-}
-
-/** admin-post 处理：执行清理后带结果回跳。 */
-function kratos_perf_db_clean_handler()
-{
-    if (!current_user_can('manage_options') || !check_admin_referer('kratos_perf_db_clean')) {
-        wp_die('Unauthorized', 'Forbidden', array('response' => 403));
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(array('message' => __('权限不足。', 'kratos')), 403);
     }
+    check_ajax_referer('kratos_perf_db_clean', 'nonce');
 
     global $wpdb;
-    $what  = isset($_GET['what']) ? sanitize_key($_GET['what']) : '';
+    $what  = isset($_POST['what']) ? sanitize_key(wp_unslash($_POST['what'])) : '';
     $items = kratos_perf_db_items();
     $todo  = ($what === 'all') ? array_keys($items) : (isset($items[$what]) ? array($what) : array());
+
+    if (empty($todo)) {
+        wp_send_json_error(array('message' => __('清理项不存在。', 'kratos')), 400);
+    }
 
     $done = array();
     foreach ($todo as $key) {
@@ -720,26 +712,44 @@ function kratos_perf_db_clean_handler()
         $wpdb->query("DELETE cm FROM {$wpdb->commentmeta} cm LEFT JOIN {$wpdb->comments} c ON c.comment_ID = cm.comment_id WHERE c.comment_ID IS NULL");
     }
 
-    set_transient('kratos_perf_db_notice', $done, 60);
-    wp_safe_redirect(kratos_perf_options_url());
-    exit;
-}
-add_action('admin_post_kratos_perf_db_clean', 'kratos_perf_db_clean_handler');
+    $stats     = kratos_perf_db_stats();
+    $formatted = array();
+    foreach ($stats as $key => $n) {
+        $formatted[$key] = number_format_i18n($n);
+    }
+    $total = array_sum($stats);
 
-/** 主题选项里的「数据库瘦身」面板（callback 字段）。 */
+    wp_send_json_success(array(
+        'cleaned'         => array_sum($done),
+        'message'         => sprintf(__('已清理 %s 条记录。', 'kratos'), number_format_i18n(array_sum($done))),
+        'stats'           => $stats,
+        'stats_formatted' => $formatted,
+        'total'           => $total,
+        'total_formatted' => number_format_i18n($total),
+        'all_label'       => sprintf(__('一键清理全部（%s 条）', 'kratos'), number_format_i18n($total)),
+    ));
+}
+add_action('wp_ajax_kratos_perf_db_clean', 'kratos_perf_db_clean_ajax');
+
+/**
+ * 主题选项里的「数据库瘦身」面板（callback 字段）。
+ *
+ * 清理走 AJAX（wp_ajax_kratos_perf_db_clean），不再跳 admin-post 再重定向回来 ——
+ * 那样会整页刷新，还得靠 transient 传结果、靠 `#tab=` 片段把用户送回本子页。
+ * 现在原地更新条数与按钮状态，页面不动。
+ *
+ * 脚本直接内联在面板里：这段 JS 只服务这一个面板，注册成独立文件反而要多一次请求，
+ * 且 CSF 选项页的 DOM 结构在这里是现成的。依赖 jQuery 与 ajaxurl（后台默认都有）。
+ */
 function kratos_perf_render_db_panel()
 {
     $items = kratos_perf_db_items();
     $stats = kratos_perf_db_stats();
     $total = array_sum($stats);
-    $notice = get_transient('kratos_perf_db_notice');
-    if (is_array($notice)) {
-        delete_transient('kratos_perf_db_notice');
-        $sum = array_sum($notice);
-        echo '<div class="csf-notice csf-success-notice" style="margin-bottom:12px;">'
-            . sprintf(esc_html__('已清理 %s 条记录。', 'kratos'), '<strong>' . number_format_i18n($sum) . '</strong>')
-            . '</div>';
-    }
+
+    echo '<div class="kratos-perf-db" data-nonce="' . esc_attr(wp_create_nonce('kratos_perf_db_clean')) . '">';
+
+    echo '<div class="kratos-perf-db-notice" style="display:none;margin-bottom:12px;"></div>';
 
     echo '<p style="margin:0 0 10px;color:#666;">'
         . esc_html__('清理只删除上述类型的冗余记录，不会碰已发布内容。删除不可撤销，建议先备份数据库。', 'kratos')
@@ -753,17 +763,13 @@ function kratos_perf_render_db_panel()
 
     foreach ($items as $key => $item) {
         $n = isset($stats[$key]) ? $stats[$key] : 0;
-        $url = wp_nonce_url(
-            admin_url('admin-post.php?action=kratos_perf_db_clean&what=' . $key),
-            'kratos_perf_db_clean'
-        );
-        echo '<tr><td><strong>' . esc_html($item['label']) . '</strong><br>'
+        echo '<tr data-key="' . esc_attr($key) . '"><td><strong>' . esc_html($item['label']) . '</strong><br>'
             . '<span style="color:#888;font-size:12px;">' . esc_html($item['desc']) . '</span></td>'
-            . '<td>' . esc_html(number_format_i18n($n)) . '</td><td>';
+            . '<td class="kratos-perf-db-count">' . esc_html(number_format_i18n($n)) . '</td>'
+            . '<td class="kratos-perf-db-act">';
         if ($n > 0) {
-            echo '<a class="button button-small" href="' . esc_url($url) . '" '
-                . 'onclick="return confirm(\'' . esc_js(__('确认清理该项？删除不可撤销。', 'kratos')) . '\');">'
-                . esc_html__('清理', 'kratos') . '</a>';
+            echo '<button type="button" class="button button-small kratos-perf-db-clean" data-what="' . esc_attr($key) . '">'
+                . esc_html__('清理', 'kratos') . '</button>';
         } else {
             echo '<span style="color:#aaa;">—</span>';
         }
@@ -771,15 +777,97 @@ function kratos_perf_render_db_panel()
     }
     echo '</tbody></table>';
 
-    if ($total > 0) {
-        $all = wp_nonce_url(
-            admin_url('admin-post.php?action=kratos_perf_db_clean&what=all'),
-            'kratos_perf_db_clean'
-        );
-        echo '<p style="margin-top:12px;"><a class="button button-primary" href="' . esc_url($all) . '" '
-            . 'onclick="return confirm(\'' . esc_js(__('确认清理全部项目？删除不可撤销。', 'kratos')) . '\');">'
-            . sprintf(esc_html__('一键清理全部（%s 条）', 'kratos'), number_format_i18n($total)) . '</a></p>';
-    }
+    echo '<p class="kratos-perf-db-all-wrap" style="margin-top:12px;' . ($total > 0 ? '' : 'display:none;') . '">'
+        . '<button type="button" class="button button-primary kratos-perf-db-clean" data-what="all">'
+        . esc_html(sprintf(__('一键清理全部（%s 条）', 'kratos'), number_format_i18n($total)))
+        . '</button></p>';
+
+    echo '</div>';
+
+    $i18n = array(
+        'confirm_one' => __('确认清理该项？删除不可撤销。', 'kratos'),
+        'confirm_all' => __('确认清理全部项目？删除不可撤销。', 'kratos'),
+        'working'     => __('清理中…', 'kratos'),
+        'clean'       => __('清理', 'kratos'),
+        'failed'      => __('清理失败，请重试。', 'kratos'),
+        'dash'        => '—',
+    );
+    ?>
+    <script>
+    (function ($) {
+        var i18n = <?php echo wp_json_encode($i18n); ?>;
+
+        $(document).on('click', '.kratos-perf-db .kratos-perf-db-clean', function (e) {
+            e.preventDefault();
+
+            var $btn   = $(this),
+                what   = $btn.data('what'),
+                $panel = $btn.closest('.kratos-perf-db'),
+                $note  = $panel.find('.kratos-perf-db-notice');
+
+            if (!window.confirm(what === 'all' ? i18n.confirm_all : i18n.confirm_one)) {
+                return;
+            }
+
+            // 清理期间锁掉整个面板的按钮，避免并发点两下把同一批记录算两遍
+            var $all = $panel.find('.kratos-perf-db-clean');
+            $all.prop('disabled', true);
+            $btn.text(i18n.working);
+            $note.hide();
+
+            $.post(window.ajaxurl, {
+                action: 'kratos_perf_db_clean',
+                what: what,
+                nonce: $panel.data('nonce')
+            }).done(function (res) {
+                if (!res || !res.success) {
+                    $note.attr('class', 'kratos-perf-db-notice csf-notice csf-notice-danger')
+                        .text((res && res.data && res.data.message) || i18n.failed).show();
+                    return;
+                }
+                var d = res.data;
+
+                // 全部行都刷新：清 revisions 之类会顺带带走别的行的记录
+                $panel.find('tbody tr').each(function () {
+                    var $row = $(this),
+                        key  = $row.data('key');
+                    if (!(key in d.stats)) {
+                        return;
+                    }
+                    $row.find('.kratos-perf-db-count').text(d.stats_formatted[key]);
+                    var $act = $row.find('.kratos-perf-db-act');
+                    if (d.stats[key] > 0) {
+                        $act.html($('<button type="button" class="button button-small kratos-perf-db-clean">')
+                            .attr('data-what', key).text(i18n.clean));
+                    } else {
+                        $act.html($('<span style="color:#aaa;">').text(i18n.dash));
+                    }
+                });
+
+                var $allWrap = $panel.find('.kratos-perf-db-all-wrap');
+                if (d.total > 0) {
+                    $allWrap.show().find('.kratos-perf-db-clean').text(d.all_label);
+                } else {
+                    $allWrap.hide();
+                }
+
+                $note.attr('class', 'kratos-perf-db-notice csf-notice csf-notice-success')
+                    .text(d.message).show();
+            }).fail(function () {
+                $note.attr('class', 'kratos-perf-db-notice csf-notice csf-notice-danger')
+                    .text(i18n.failed).show();
+            }).always(function () {
+                // 成功分支重建过行内按钮，所以按最新 DOM 再查一次解锁；
+                // 失败分支按钮还在原地，把「清理中…」还原成原文案
+                if ($btn.closest('.kratos-perf-db').length && $btn.text() === i18n.working) {
+                    $btn.text(i18n.clean);
+                }
+                $panel.find('.kratos-perf-db-clean').prop('disabled', false);
+            });
+        });
+    })(jQuery);
+    </script>
+    <?php
 }
 
 /* ============================================================

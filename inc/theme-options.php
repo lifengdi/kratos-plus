@@ -355,9 +355,20 @@ add_action('admin_footer', 'kratos_options_bbs_button');
 CSF::createOptions($prefix, array(
     'menu_title' => __('主题设置', 'kratos'),
     'menu_slug' => 'kratos-options',
+    // 每个顶级分组在 WP 左侧菜单里注册一个子项（CSF 默认行为，保留）。
+    //
+    // 注意副作用：多出的 9 个子项把 WP 菜单顶到约 900px，落进 wp-admin/js/common.js
+    // 的临界区 —— 比视口高一点时 setPinMenu() 会摘掉 body.sticky-menu，而 pinMenu()
+    // 又因算不出正的 menuTop 直接 unpinMenu()，结果菜单彻底随页面滚。
+    // 该问题由 kratos_csf_sticky_offset_script()（inc/theme-core.php）里接管
+    // core 的 .pin-menu 事件来解决，不是靠删菜单项。
+    'show_sub_menu' => true,
     'show_search' => false,
     'show_all_options' => false,
-    'sticky_header' => false,
+    // 顶部条（含「保存」按钮）吸顶，CSF 内置能力：滚动时给 .csf-header 加
+    // .csf-sticky，把 .csf-header-inner 切成 position:fixed;top:32px。
+    // 侧栏菜单的吸顶不在框架内，见 assets/css/admin.css 的 .csf-nav-normal 段。
+    'sticky_header' => true,
     'admin_bar_menu_icon' => 'dashicons-admin-generic',
     'framework_title' => '主题设置<small style="margin-left:10px">Kratos+ v' . THEME_VERSION . '</small>',
     'theme' => 'light',
@@ -2082,8 +2093,22 @@ CSF::createSection($prefix, array(
         array(
             'id' => 'g_post_revision',
             'type' => 'switcher',
-            'title' => __('附加功能', 'kratos'),
-            'subtitle' => __('关闭自动保存与修订版本，减少数据库膨胀', 'kratos'),
+            'title' => __('禁用文章修订版本', 'kratos'),
+            'subtitle' => __('保存文章时不再留 revision 历史，减少数据库膨胀（不影响自动保存）', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_post_autosave_off',
+            'type' => 'switcher',
+            'title' => __('禁用编辑器自动保存', 'kratos'),
+            'subtitle' => __('编辑器不再每分钟自动存稿。浏览器崩溃或断网时将没有草稿可恢复，请自行勤按保存', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_post_copyright',
+            'type' => 'switcher',
+            'title' => __('版权声明', 'kratos'),
+            'subtitle' => __('文章末尾与 RSS 输出「除非注明，否则均为……原创文章」及本文链接', 'kratos'),
             'default' => true,
         ),
         array(

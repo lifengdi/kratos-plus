@@ -242,15 +242,142 @@ function kratos_admin_enqueue()
 
 add_action('admin_enqueue_scripts', 'kratos_admin_enqueue', 20);
 
+/**
+ * 主题设置页的两处交互补丁（CSF 框架本身没有，写在这里避免改 vendored 源码）：
+ *
+ * 1. 侧栏吸顶的偏移量：把顶部条（.csf-header-inner）的实测高度写进 CSS 变量
+ *    --kratos-csf-header-h，供 assets/css/admin.css 的 .csf-nav-normal 计算
+ *    sticky 的 top 与 max-height。为什么不在 CSS 里写死：顶部条高度受标题字号、
+ *    后台语言换行、浏览器缩放影响，写死会差出十几像素，表现为侧栏第一项被压在
+ *    顶部条底下。顶部条 sticky 后变成 position:fixed，但高度不变，随时可测。
+ *
+ * 2. 切换菜单时把内容区滚回顶部：CSF 换 section 只是 show/hide DOM，不动滚动位置，
+ *    所以在页面中段点另一个菜单，新 section 是从中间露出来的。
+ */
+function kratos_csf_sticky_offset_script()
+{
+    $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+    if ($page !== 'kratos-options') {
+        return;
+    }
+    ?>
+    <script>
+    (function () {
+        function sync() {
+            var inner = document.querySelector('.csf-options .csf-header-inner');
+            if (!inner) {
+                return;
+            }
+            // 用 getBoundingClientRect 而不是 offsetHeight：后者取整，缩放比例非 100%
+            // 时会差出小数，表现为侧栏和顶部条之间留一条发丝缝或压掉 1px
+            document.documentElement.style.setProperty('--kratos-csf-header-h', inner.getBoundingClientRect().height + 'px');
+        }
+        sync();
+        window.addEventListener('resize', sync);
+        // 顶部条里的「未保存」提示条出现/消失会改变高度，用 observer 跟一下
+        var target = document.querySelector('.csf-options .csf-header-inner');
+        if (target && window.ResizeObserver) {
+            new ResizeObserver(sync).observe(target);
+        }
+
+        // 接管 WP 左侧菜单的吸顶：解绑 core 的 .pin-menu 事件，自己加 sticky-menu
+        //
+        // core 的三档逻辑（见 wp-admin/js/common.js 的 setPinMenu / pinMenu）：
+        //   菜单 + 管理条 < 视口          → body.sticky-menu，position:fixed，稳定
+        //   菜单远高于视口                → pinMenu() 钉到 position:fixed;bottom:0，稳定
+        //   菜单只比视口高一点            → 摘掉 sticky-menu，且 pinMenu() 算不出正的
+        //                                  menuTop，落到 unpinMenu() —— 菜单彻底随页面滚
+        // 本页因为 CSF 给每个顶级分组注册了子菜单，菜单高度正好落在第三档。
+        //
+        // 不能只叠 CSS：pinMenu() 挂在 scroll 上，每次滚动都重写 #adminmenuwrap 的行内
+        // position/top/bottom，!important 也只能赢一帧。所以先 off 掉它的命名空间事件，
+        // 再借用 core 自己的 .sticky-menu 样式（position:fixed），高度超出时由
+        // assets/css/admin.css 给菜单加内部滚动。
+        if (window.jQuery) {
+            // 必须在 ready 回调里做：common.js 在 <head> 加载、其 ready 回调先注册先执行，
+            // 本脚本在页脚，若在解析期就 off，那时 core 还没绑上，等于没解绑。
+            window.jQuery(function ($) {
+                $(window).off('scroll.pin-menu');
+                $(document).off('wp-window-resized.pin-menu');
+                // core 可能已经写过行内定位，清掉再交给 .sticky-menu
+                $('#adminmenuwrap').removeAttr('style');
+                $('body').addClass('sticky-menu');
+            });
+        }
+
+        // 切换菜单后把内容区顶部对齐到顶部条下沿
+        function scrollToContentTop() {
+            var wrap = document.querySelector('.csf-options .csf-wrapper');
+            if (!wrap) {
+                return;
+            }
+            var bar    = document.getElementById('wpadminbar'),
+                inner  = document.querySelector('.csf-options .csf-header-inner'),
+                offset = (bar ? bar.getBoundingClientRect().height : 0)
+                       + (inner ? inner.getBoundingClientRect().height : 0),
+                top    = wrap.getBoundingClientRect().top + window.pageYOffset - offset;
+
+            // 已经在内容顶部上方（还没滚过去）就不要往下拽用户
+            if (window.pageYOffset <= top) {
+                return;
+            }
+            window.scrollTo({ top: Math.max(0, top) });
+        }
+
+        document.addEventListener('click', function (e) {
+            var link = e.target.closest ? e.target.closest('.csf-options .csf-nav a[data-tab-id]') : null;
+            if (!link) {
+                return;
+            }
+            // 让 CSF 自己的 tab 切换先跑完（它绑在同一次点击上），再调整滚动位置
+            requestAnimationFrame(scrollToContentTop);
+        });
+    })();
+    </script>
+    <?php
+}
+add_action('admin_footer', 'kratos_csf_sticky_offset_script');
+
 // 前台管理员导航
 if (!kratos_option('g_adminbar', true)) {
     add_filter('show_admin_bar', '__return_false');
 }
 
-// 移除自动保存、修订版本
+// 禁用文章修订版本（g_post_revision）——只关 revision，不影响自动保存
 if (kratos_option('g_post_revision', true)) {
     remove_action('post_updated', 'wp_save_post_revision');
 }
+
+/**
+ * 禁用编辑器自动保存（g_post_autosave_off，默认关）。
+ *
+ * 自动保存和修订版本是两回事，各走各的路，所以要分别处理：
+ *  - 经典编辑器：靠 wp-includes 的 autosave.js（handle `autosave`）按
+ *    AUTOSAVE_INTERVAL 定时 POST wp_autosave，deregister 掉即停；
+ *  - 区块编辑器：自动保存在 wp-editor 内部实现，摘不掉脚本，只能把编辑器设置里的
+ *    autosaveInterval 拉大（单位秒，这里给 24 小时，等价于一次编辑会话内不会触发）。
+ *
+ * 「新建文章」时落的那条 auto-draft 是 WP 打开编辑页就写的，与自动保存无关，
+ * 这里不动它；积攒的空草稿在「基础设置 → 性能优化 → 数据库瘦身」里清。
+ */
+function kratos_disable_autosave()
+{
+    if (!kratos_option('g_post_autosave_off', false)) {
+        return;
+    }
+    wp_dequeue_script('autosave');
+    wp_deregister_script('autosave');
+}
+add_action('admin_enqueue_scripts', 'kratos_disable_autosave', 100);
+
+function kratos_disable_autosave_block_editor($settings)
+{
+    if (kratos_option('g_post_autosave_off', false)) {
+        $settings['autosaveInterval'] = DAY_IN_SECONDS;
+    }
+    return $settings;
+}
+add_filter('block_editor_settings_all', 'kratos_disable_autosave_block_editor');
 
 // 添加友情链接
 add_filter('pre_option_link_manager_enabled', '__return_true');
