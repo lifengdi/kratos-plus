@@ -672,6 +672,65 @@ function kratos_perf_clean_expired_transients()
 }
 
 /**
+ * 清理孤立的 term_relationships（object_id 指向已不存在的文章）。
+ *
+ * 关键：term_relationships.object_id 并不总是 posts.ID —— link_category
+ * 的 object_id 是 wp_links.link_id，与 posts 表毫无关系。若直接
+ * `LEFT JOIN posts WHERE p.ID IS NULL`，会把所有友链的分类关联一并删掉，
+ * 表现为「友链后台分配好的分类莫名消失、前台全部落回默认分类」。
+ * 因此必须把删除范围限定在「object 类型确实是文章」的分类法上。
+ */
+function kratos_perf_clean_orphan_term_relationships()
+{
+    global $wpdb;
+
+    // 只取注册给（任意）文章类型的分类法，排除 link_category 这类非 post 对象分类法
+    $post_taxonomies = get_taxonomies(array(), 'objects');
+    $post_types      = get_post_types(array(), 'names');
+    $allowed         = array();
+    foreach ($post_taxonomies as $tax) {
+        if (array_intersect((array) $tax->object_type, $post_types)) {
+            $allowed[] = $tax->name;
+        }
+    }
+    if (empty($allowed)) {
+        return 0;
+    }
+
+    $in = implode(', ', array_fill(0, count($allowed), '%s'));
+
+    // 先记下受影响的 term_taxonomy_id，删完后重算 count
+    $rows = $wpdb->get_results($wpdb->prepare(
+        "SELECT DISTINCT tr.term_taxonomy_id, tt.taxonomy
+         FROM {$wpdb->term_relationships} tr
+         INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+         LEFT JOIN {$wpdb->posts} p ON p.ID = tr.object_id
+         WHERE p.ID IS NULL AND tt.taxonomy IN ($in)",
+        $allowed
+    ));
+
+    $deleted = (int) $wpdb->query($wpdb->prepare(
+        "DELETE tr FROM {$wpdb->term_relationships} tr
+         INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+         LEFT JOIN {$wpdb->posts} p ON p.ID = tr.object_id
+         WHERE p.ID IS NULL AND tt.taxonomy IN ($in)",
+        $allowed
+    ));
+
+    if ($deleted > 0 && !empty($rows)) {
+        $by_tax = array();
+        foreach ($rows as $row) {
+            $by_tax[$row->taxonomy][] = (int) $row->term_taxonomy_id;
+        }
+        foreach ($by_tax as $taxonomy => $ids) {
+            wp_update_term_count_now($ids, $taxonomy);
+        }
+    }
+
+    return $deleted;
+}
+
+/**
  * AJAX 处理：执行清理并回传「本次删了多少」+「全部项目的最新条数」。
  *
  * 之所以连没清的项也一起回传统计：删 revisions / trash_posts 会顺带带走孤立
@@ -706,7 +765,7 @@ function kratos_perf_db_clean_ajax()
     // 删完 posts / comments 行后，父表计数与孤立 meta 需要收尾
     if (array_intersect(array_keys($done), array('revisions', 'auto_drafts', 'trash_posts'))) {
         $wpdb->query("DELETE pm FROM {$wpdb->postmeta} pm LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id WHERE p.ID IS NULL");
-        $wpdb->query("DELETE tr FROM {$wpdb->term_relationships} tr LEFT JOIN {$wpdb->posts} p ON p.ID = tr.object_id WHERE p.ID IS NULL");
+        kratos_perf_clean_orphan_term_relationships();
     }
     if (array_intersect(array_keys($done), array('spam_comments', 'trash_comments', 'pingbacks'))) {
         $wpdb->query("DELETE cm FROM {$wpdb->commentmeta} cm LEFT JOIN {$wpdb->comments} c ON c.comment_ID = cm.comment_id WHERE c.comment_ID IS NULL");

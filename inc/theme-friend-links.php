@@ -1567,6 +1567,166 @@ function kratos_friend_admin_filter_form()
 }
 add_action('admin_notices', 'kratos_friend_admin_filter_form', 20);
 
+/* ============================================================
+ *  link-manager 批量操作：批量设置 / 追加 link_category
+ * ============================================================ */
+
+/**
+ * 往批量操作下拉里加两项。
+ *
+ * WP_Links_List_Table::get_bulk_actions() 只给了「删除」，但
+ * WP_List_Table::bulk_actions() 会跑 bulk_actions-{screen_id} 过滤器，
+ * 所以这里挂 link-manager 即可。
+ */
+function kratos_friend_bulk_actions($actions)
+{
+    $actions['kfl_set_cat'] = __('设置分类（替换原有）', 'kratos');
+    $actions['kfl_add_cat'] = __('追加分类', 'kratos');
+    return $actions;
+}
+add_filter('bulk_actions-link-manager', 'kratos_friend_bulk_actions');
+
+/**
+ * 目标分类选择框。
+ *
+ * link-manager 没有 restrict_manage_posts 之类的钩子，只能在页脚输出一份
+ * 模板，再用 JS 塞到上下两处 .bulkactions 里（表单是 method="get"，select
+ * 带 name 就能随批量提交一起过来）。
+ */
+function kratos_friend_bulk_cat_select()
+{
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if (!$screen || $screen->id !== 'link-manager') return;
+
+    $terms = get_terms(array(
+        'taxonomy'   => 'link_category',
+        'hide_empty' => false,
+        'orderby'    => 'name',
+    ));
+    if (is_wp_error($terms) || empty($terms)) return;
+
+    $options = '<option value="">' . esc_html__('— 选择友链分类 —', 'kratos') . '</option>';
+    foreach ($terms as $term) {
+        $options .= '<option value="' . (int) $term->term_id . '">' . esc_html($term->name) . '</option>';
+    }
+    ?>
+    <script>
+    (function () {
+        var html = '<select name="kfl_bulk_cat" class="kfl-bulk-cat" style="margin-right:6px;"><?php echo str_replace(array("\r", "\n"), '', addcslashes($options, "'\\")); ?></select>';
+        document.querySelectorAll('#posts-filter .bulkactions').forEach(function (box) {
+            var submit = box.querySelector('input[type="submit"]');
+            if (!submit) return;
+            submit.insertAdjacentHTML('beforebegin', html);
+        });
+        // 两处 select 保持同步，避免上面选了、提交下面那个
+        var sels = document.querySelectorAll('#posts-filter select[name="kfl_bulk_cat"]');
+        sels.forEach(function (s) {
+            s.addEventListener('change', function () {
+                sels.forEach(function (o) { o.value = s.value; });
+            });
+        });
+    })();
+    </script>
+    <?php
+}
+add_action('admin_footer', 'kratos_friend_bulk_cat_select');
+
+/**
+ * 执行批量分类。
+ *
+ * 挂 load-link-manager.php：admin.php 里这个钩子跑在 include link-manager.php
+ * 之前，而 link-manager.php 自己只处理 'delete'，其它 action 会被它直接
+ * redirect 掉，所以必须抢在它之前处理完并自行跳转。
+ */
+function kratos_friend_bulk_handle_cat()
+{
+    $action = '';
+    foreach (array('action', 'action2') as $key) {
+        if (!empty($_REQUEST[$key]) && $_REQUEST[$key] !== '-1') {
+            $action = sanitize_key(wp_unslash($_REQUEST[$key]));
+            break;
+        }
+    }
+    if ($action !== 'kfl_set_cat' && $action !== 'kfl_add_cat') return;
+
+    if (!current_user_can('manage_links')) wp_die(__('权限不足', 'kratos'));
+    check_admin_referer('bulk-bookmarks');
+
+    $sendback = remove_query_arg(
+        array('action', 'action2', 'kfl_bulk_cat', 'linkcheck', '_wpnonce', '_wp_http_referer', 'kfl_cat_done', 'kfl_cat_err'),
+        wp_get_referer() ?: admin_url('link-manager.php')
+    );
+
+    $term_id = isset($_REQUEST['kfl_bulk_cat']) ? (int) $_REQUEST['kfl_bulk_cat'] : 0;
+    $ids     = isset($_REQUEST['linkcheck']) ? array_map('intval', (array) wp_unslash($_REQUEST['linkcheck'])) : array();
+    $ids     = array_filter(array_unique($ids));
+
+    if ($term_id <= 0 || !term_exists($term_id, 'link_category')) {
+        wp_safe_redirect(add_query_arg('kfl_cat_err', 'noterm', $sendback));
+        exit;
+    }
+    if (empty($ids)) {
+        wp_safe_redirect(add_query_arg('kfl_cat_err', 'nolink', $sendback));
+        exit;
+    }
+
+    if (!function_exists('wp_set_link_cats')) {
+        require_once ABSPATH . 'wp-admin/includes/bookmark.php';
+    }
+
+    $done = 0;
+    foreach ($ids as $link_id) {
+        $link = get_bookmark($link_id);
+        if (!$link) continue;
+
+        if ($action === 'kfl_add_cat') {
+            $current = wp_get_object_terms($link_id, 'link_category', array('fields' => 'ids'));
+            $current = is_wp_error($current) ? array() : array_map('intval', $current);
+            if (in_array($term_id, $current, true)) continue;
+            $cats = array_merge($current, array($term_id));
+        } else {
+            $cats = array($term_id);
+        }
+
+        wp_set_link_cats($link_id, $cats);
+        $done++;
+    }
+
+    if (function_exists('kratos_blogroll_clear_cache')) {
+        kratos_blogroll_clear_cache();
+    }
+
+    wp_safe_redirect(add_query_arg('kfl_cat_done', $done, $sendback));
+    exit;
+}
+add_action('load-link-manager.php', 'kratos_friend_bulk_handle_cat');
+
+/**
+ * 批量分类结果提示
+ */
+function kratos_friend_bulk_cat_notice()
+{
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if (!$screen || $screen->id !== 'link-manager') return;
+
+    if (isset($_GET['kfl_cat_done'])) {
+        $n = (int) $_GET['kfl_cat_done'];
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html(sprintf(
+            _n('已更新 %s 条友链的分类。', '已更新 %s 条友链的分类。', $n, 'kratos'),
+            number_format_i18n($n)
+        )) . '</p></div>';
+        return;
+    }
+    if (isset($_GET['kfl_cat_err'])) {
+        $err = sanitize_key(wp_unslash($_GET['kfl_cat_err']));
+        $msg = $err === 'noterm'
+            ? __('请先在批量操作旁边选择一个友链分类。', 'kratos')
+            : __('请先勾选要修改的友链。', 'kratos');
+        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html($msg) . '</p></div>';
+    }
+}
+add_action('admin_notices', 'kratos_friend_bulk_cat_notice', 19);
+
 /**
  * link-manager 列表加「状态」列
  */
