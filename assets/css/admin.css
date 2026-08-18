@@ -9,64 +9,38 @@
     padding-left: max(1.25rem, 5vw);
     padding-right: max(1.25rem, 5vw);
 }
-/* ============================================================
- *  主题设置页：侧栏菜单吸顶
- *
- *  顶部条的吸顶用的是 CSF 内置能力（createOptions 的 sticky_header，
- *  滚动时 .csf-header-inner 变 position:fixed;top:32px）；侧栏没有对应实现，
- *  这里用 position:sticky 补上。
- *
- *  top 值 = 管理条高度（--wp-admin--admin-bar--height，桌面 32px）+ 顶部条实际高度，
- *  正好接在顶部条下沿，否则吸住之后第一项会被 fixed 的顶部条压住。顶部条高度不写死：
- *  标题字号、后台语言、缩放都会影响它，由 kratos_csf_sticky_offset_script()
- *  （inc/theme-core.php）实测 .csf-header-inner 后写进 --kratos-csf-header-h，
- *  这里的 76px 只是脚本没跑起来时的兜底值。
- *
- *  只在 >782px 生效：CSF 在窄屏会把 .csf-nav 整块 display:none（见 style.css 的
- *  媒体查询），它自己的 sticky JS 也有同样的宽度门槛。
- * ============================================================ */
+
 @media screen and (min-width: 783px) {
     .csf-options {
-        /* 吸顶后侧栏在视口里的起始位置：管理条 + 顶部条。top 与 max-height 共用同一个
-         * 表达式，避免两处各写一遍算出不同结果（曾导致菜单内部滚不到最后一项）。 */
         --kratos-csf-nav-top: calc(var(--wp-admin--admin-bar--height, 32px) + var(--kratos-csf-header-h, 76px));
     }
     .csf-options .csf-nav-normal {
         position: sticky;
         top: var(--kratos-csf-nav-top);
-        /* 菜单展开子项后可能比视口高，超出部分自己滚，避免底部项点不到。
-         * 高度取「视口减去上方被占掉的部分」，即吸住后从 top 到视口底部的整条，
-         * 不再额外留边 —— 留边会让容器底部落在视口外，内部滚到底了最后几项仍看不见。
-         * 100dvh 让移动端/带工具条的窗口按可见高度算，退化到 100vh 兜底。 */
         max-height: calc(100vh - var(--kratos-csf-nav-top));
         max-height: calc(100dvh - var(--kratos-csf-nav-top));
         overflow-y: auto;
+        /* CSF light 主题给这个 ul 加了 margin-right:-1px（画选中项右边框用），内容因此比容器
+         * 宽 1px。CSS 规定一轴非 visible 时另一轴的 visible 会被当成 auto，于是 overflow-y
+         * 顺带把 x 也变成 auto —— Windows 是实体滚动条，这 1px 就实打实地多出一条横向滚动条
+         * （macOS 是浮层滚动条，看不见，所以之前没发现）。子级 tab 是 position:relative 的
+         * 内联列表（不是悬浮飞出菜单），裁掉横向不会藏内容。 */
+        overflow-x: hidden;
         overscroll-behavior: contain;
-        /* 给滚动条预留槽位，否则它会压在菜单文字上 */
-        scrollbar-gutter: stable;
+        /* 不要 scrollbar-gutter: stable：Windows 的实体滚动条本来就不压文字，预留槽位等于
+         * 永远空出一条,看着像滚动条常驻 */
+        scrollbar-width: thin;
     }
 }
 
-/* 顶部条吸顶后不要下阴影：框架默认给 .csf-sticky .csf-header-inner 加了
- * box-shadow: 0 5px 10px rgba(0,0,0,.1)，它的视觉外延会在紧贴的侧栏上投一道灰边。 */
 .csf-options .csf-sticky .csf-header-inner {
     box-shadow: none;
 }
 
-/* ------------------------------------------------------------
- *  主题设置页：WP 左侧菜单吸顶后的内部滚动
+/* 注意：不要给 #adminmenuwrap 加 overflow 做内部滚动。
  *
- *  吸顶本身用的是 core 自己的 .sticky-menu（position:fixed），由
- *  kratos_csf_sticky_offset_script()（inc/theme-core.php）在解绑 core 的
- *  .pin-menu 事件后手动加上 —— 见那里的注释。
- *
- *  本页菜单会多出每个顶级分组的子项，可能比视口高，fixed 之后底部项会露不出来，
- *  所以给它一条内部滚动。作用域限死本页，其它后台页面仍是 core 原样行为。
- * ------------------------------------------------------------ */
-body.toplevel_page_kratos-options.sticky-menu #adminmenuwrap {
-    max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
-    max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-}
+ * WP 左侧菜单的子菜单是 position:absolute; left:160px 的悬浮飞出层，一旦父级 overflow
+ * 不是 visible，它们既会被裁掉（鼠标悬停时子菜单只露出一角），又会把内容宽度撑到容器之外，
+ * 在 Windows 的实体滚动条下多出一条横向滚动条。菜单高于视口时的可达性改由
+ * kratos_csf_sticky_offset_script()（inc/theme-core.php）处理：装不下就不吸顶，让它随
+ * 页面滚动，而不是给它开内部滚动。 */

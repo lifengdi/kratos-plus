@@ -280,28 +280,148 @@ function kratos_csf_sticky_offset_script()
             new ResizeObserver(sync).observe(target);
         }
 
-        // 接管 WP 左侧菜单的吸顶：解绑 core 的 .pin-menu 事件，自己加 sticky-menu
+        // 接管 WP 左侧菜单的吸顶：解绑 core 的 pin-menu，改用自己的一套定位
         //
-        // core 的三档逻辑（见 wp-admin/js/common.js 的 setPinMenu / pinMenu）：
-        //   菜单 + 管理条 < 视口          → body.sticky-menu，position:fixed，稳定
-        //   菜单远高于视口                → pinMenu() 钉到 position:fixed;bottom:0，稳定
-        //   菜单只比视口高一点            → 摘掉 sticky-menu，且 pinMenu() 算不出正的
-        //                                  menuTop，落到 unpinMenu() —— 菜单彻底随页面滚
-        // 本页因为 CSF 给每个顶级分组注册了子菜单，菜单高度正好落在第三档。
+        // core 的逻辑（wp-admin/js/common.js 的 setPinMenu / pinMenu）分三档：
+        //   菜单 + 管理条 < 视口          → body.sticky-menu（position:fixed），稳定
+        //   菜单高于视口且页面够长        → pinMenu() 跟着滚动方向在 fixed(top/bottom:0)
+        //                                  与 absolute(top:N) 之间来回切，写行内样式
+        //   其余                          → unpinMenu() 清空行内样式，菜单随页面滚
         //
-        // 不能只叠 CSS：pinMenu() 挂在 scroll 上，每次滚动都重写 #adminmenuwrap 的行内
-        // position/top/bottom，!important 也只能赢一帧。所以先 off 掉它的命名空间事件，
-        // 再借用 core 自己的 .sticky-menu 样式（position:fixed），高度超出时由
-        // assets/css/admin.css 给菜单加内部滚动。
+        // 它有两个已知的坑，本页两个都会踩：
+        //   1. `height.menu + height.adminbar + 20 > height.wpwrap` 这道门槛 —— 页面一旦不
+        //      比菜单长多少就直接 unpin。CSF 切到内容少的分区时 #wpwrap 变矮，行内的
+        //      position:fixed;bottom:0 就被清掉了，看起来就是"菜单突然不吸顶了"。
+        //   2. 高度只在 resetHeights() 里更新，触发点是 scroll / resize / 几个后台事件。
+        //      CSF 换分区只是 show/hide DOM，一个都不触发，于是它拿着过期高度做判断，
+        //      表现更像随机丢样式。
+        //
+        // 所以这里整段自己实现：菜单装得下就用 core 的 .sticky-menu，装不下就按滚动方向
+        // 平移 fixed 的 top（向下滚到底 = 菜单底边贴视口底，等效于 core 的 bottom:0；向上滚
+        // 回去 = 菜单顶边贴管理条下沿）。每次都现场量高度，不缓存，也就没有过期问题。
+        // 注意：不给 #adminmenuwrap 开内部滚动来解决"菜单比视口高"——子菜单是
+        // position:absolute 的悬浮飞出层，父级 overflow 非 visible 会把它们裁掉，
+        // Windows 的实体滚动条下还会多出横向滚动条（详见 assets/css/admin.css）。
         if (window.jQuery) {
             // 必须在 ready 回调里做：common.js 在 <head> 加载、其 ready 回调先注册先执行，
             // 本脚本在页脚，若在解析期就 off，那时 core 还没绑上，等于没解绑。
             window.jQuery(function ($) {
-                $(window).off('scroll.pin-menu');
-                $(document).off('wp-window-resized.pin-menu');
-                // core 可能已经写过行内定位，清掉再交给 .sticky-menu
-                $('#adminmenuwrap').removeAttr('style');
-                $('body').addClass('sticky-menu');
+                var wrap = document.getElementById('adminmenuwrap'),
+                    $body = $('body'),
+                    desktop = window.matchMedia ? window.matchMedia('(min-width: 783px)') : null,
+                    curTop = null,      // 当前 fixed 的 top（null = 没在接管）
+                    lastPos = window.pageYOffset || 0;
+
+                if (!wrap) {
+                    return;
+                }
+
+                // core 把 setPinMenu 绑在一长串事件上（common.js 末尾）：
+                //   wp-pin-menu wp-window-resized.pin-menu postboxes-columnchange.pin-menu
+                //   postbox-toggled.pin-menu wp-collapse-menu.pin-menu wp-scroll-start.pin-menu
+                // 注意 `wp-pin-menu` **没有命名空间**，off('.pin-menu') 摘不掉，要单独 off；
+                // 漏掉任何一个，它就会在折叠菜单、开关 metabox 等时机再跑一遍，把下面写的
+                // 定位覆盖掉。scroll.pin-menu 绑在 window 上，也要一起摘。
+                $(window).off('.pin-menu');
+                $(document).off('.pin-menu').off('wp-pin-menu');
+
+                function setStyle(position, top) {
+                    // 只在值真的变了才写，避免和下面的 MutationObserver 互相触发
+                    if (wrap.style.position !== position) {
+                        wrap.style.position = position;
+                    }
+                    if (wrap.style.top !== top) {
+                        wrap.style.top = top;
+                    }
+                    if (wrap.style.bottom !== '') {
+                        wrap.style.bottom = '';
+                    }
+                }
+
+                function update() {
+                    var responsive = (desktop && !desktop.matches) || !!$('#adminmenu').data('wp-responsive');
+
+                    // 窄屏是 core 的滑出式菜单，别插手，把自己写的定位撤掉
+                    if (responsive) {
+                        curTop = null;
+                        setStyle('', '');
+                        return;
+                    }
+
+                    var bar    = document.getElementById('wpadminbar'),
+                        barH   = bar ? bar.getBoundingClientRect().height : 0,
+                        menuH  = wrap.getBoundingClientRect().height,
+                        winH   = window.innerHeight,
+                        pos    = window.pageYOffset || 0,
+                        maxTop = barH,             // 菜单顶边贴管理条下沿
+                        minTop = winH - menuH;     // 菜单底边贴视口底（菜单比视口高时为负）
+
+                    // 装得进视口：交给 core 自己的 .sticky-menu，不写行内样式
+                    if (menuH > 0 && menuH + barH <= winH) {
+                        curTop = null;
+                        setStyle('', '');
+                        if (!$body.hasClass('sticky-menu')) {
+                            $body.addClass('sticky-menu');
+                        }
+                        lastPos = pos;
+                        return;
+                    }
+
+                    // 菜单高于视口：自己按滚动方向平移 fixed 的 top
+                    // .sticky-menu 的 position:fixed 会和这里的行内 top 打架（它没有 top），
+                    // 而且 core 在这一档也是摘掉它的，保持一致
+                    if ($body.hasClass('sticky-menu')) {
+                        $body.removeClass('sticky-menu');
+                    }
+
+                    if (curTop === null) {
+                        curTop = maxTop;
+                    }
+
+                    var delta = pos - lastPos;
+
+                    if (pos <= 0) {
+                        // 到顶（含 overscroll）：顶边归位
+                        curTop = maxTop;
+                    } else if (delta > 0) {
+                        // 向下滚：菜单相对上移，最多到底边贴视口底
+                        curTop = Math.max(minTop, curTop - delta);
+                    } else if (delta < 0) {
+                        // 向上滚：菜单相对下移，最多到顶边贴管理条
+                        curTop = Math.min(maxTop, curTop - delta);
+                    }
+
+                    setStyle('fixed', Math.round(curTop) + 'px');
+                    lastPos = pos;
+                }
+
+                update();
+
+                // scroll 用 passive，滚动时不阻塞合成
+                window.addEventListener('scroll', update, { passive: true });
+                window.addEventListener('resize', update);
+
+                // 菜单高度会变：折叠按钮、当前分组子菜单展开/收起
+                if (window.ResizeObserver) {
+                    new ResizeObserver(update).observe(wrap);
+                }
+
+                // 摘不掉的最后一路：wpResponsive.activate()/deactivate()（窗口跨 782px 断点）
+                // **直接调用** setPinMenu()，不经过任何可解绑的事件，setPinMenu 又是闭包内的
+                // 私有函数、没法替换。它会改 body 的 class（加/摘 sticky-menu），所以盯 class
+                // 变化再跑一次 update()。update() 每步都先比较再写，不会自激循环。
+                if (window.MutationObserver) {
+                    new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+                }
+
+                if (desktop) {
+                    var onChange = function () { curTop = null; update(); };
+                    if (desktop.addEventListener) {
+                        desktop.addEventListener('change', onChange);
+                    } else if (desktop.addListener) {
+                        desktop.addListener(onChange);
+                    }
+                }
             });
         }
 

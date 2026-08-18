@@ -148,6 +148,48 @@ function kratos_csf_local_fontawesome()
 add_action('admin_enqueue_scripts', 'kratos_csf_local_fontawesome', 100);
 
 /**
+ * CSF 图标选择器的候选列表来自 FA5 时代的 `fields/icon/fa5-icons.php`，而上面已经把
+ * 后台实际加载的字体换成主题内置的 Font Awesome Free（FA_VERSION，现为 7.x）。FA6 起
+ * 上游删掉/转 Pro 的图标在 FA7 的 CSS 里没有对应的 `--fa` 字形，选中后前后台都是空白，
+ * 所以在这里把它们从选择器里摘掉，避免用户选到「点了不显示」的图标。
+ *
+ * 名单的校验办法：把 `fa5-icons.php` 里的每个名字拿去 `assets/css/fontawesome.min.css`
+ * 中形如 `sel{--fa:"..."}` 的规则里查——别名是**逗号分隔的组选择器**（如
+ * `.fa-cog,.fa-gear{--fa:"\f013"}`），必须按组内每个名字分别匹配，只匹配紧贴 `{` 的
+ * 那个会把上千个仍然可用的旧别名误判成缺失。按 FA 7.3.1 核对，全表 1611 项里只有
+ * 下面 3 项查无此名。升级 FA 版本后重跑一次这个校验再调整名单。
+ */
+function kratos_csf_filter_unavailable_icons($icon_lists)
+{
+    $unavailable = array(
+        'fa-acquisitions-incorporated', // FA6 起移除（品牌图标下架）
+        'fa-penny-arcade',              // FA6 起移除（品牌图标下架）
+        'fa-vector-square',             // FA6 起转为 Pro
+    );
+
+    foreach ($icon_lists as $key => $list) {
+        if (empty($list['icons']) || !is_array($list['icons'])) {
+            continue;
+        }
+        $icon_lists[$key]['icons'] = array_values(array_filter(
+            $list['icons'],
+            function ($icon) use ($unavailable) {
+                foreach ($unavailable as $name) {
+                    // 末尾整词匹配，别让 fa-vector-square 顺手带走 fa-vector-square-xxx
+                    if (preg_match('/(^|\s)' . preg_quote($name, '/') . '$/', $icon)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        ));
+    }
+
+    return $icon_lists;
+}
+add_filter('csf_field_icon_add_icons', 'kratos_csf_filter_unavailable_icons');
+
+/**
  * 后台代码编辑器字段（`type => code_editor`）改用主题内置的 CodeMirror，
  * 不再从 jsDelivr 拉 lib/ 与 addon/。
  *
