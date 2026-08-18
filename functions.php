@@ -91,6 +91,9 @@ require get_template_directory() . '/inc/theme-setting.php';
 // SEO / 社交分享 meta 统一出口
 require get_template_directory() . '/inc/theme-seo.php';
 
+// RSS 订阅扩展（按分类排除）
+require get_template_directory() . '/inc/theme-rss.php';
+
 // 文章配置
 require get_template_directory() . '/inc/theme-article.php';
 

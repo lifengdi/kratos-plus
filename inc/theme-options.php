@@ -1270,6 +1270,60 @@ CSF::createSection($prefix, array(
 
 CSF::createSection($prefix, array(
     'parent' => 'kp_basic',
+    'title' => __('RSS 订阅', 'kratos'),
+    'icon' => 'fas fa-rss',
+    'fields' => array(
+        array(
+            'type' => 'content',
+            'content' => '<ul><li>' . __('- 每页输出条数与「摘要 / 全文」由 ', 'kratos') . '<a href="' . admin_url('options-reading.php') . '" target="_blank">' . __('设置-阅读', 'kratos') . '</a>' . __(' 控制，此处只做分类级别的内容过滤', 'kratos') . '</li><li>' . __('- 点击 ', 'kratos') . '<a href="' . home_url() . '/feed" target="_blank">/feed</a>' . __(' 查看配置是否生效，如果网站开启了 CDN 或缓存插件，可能需要刷新缓存', 'kratos') . '</li></ul>',
+        ),
+        array(
+            'id' => 'g_rss_exclude_cats',
+            'type' => 'checkbox',
+            'title' => __('排除分类', 'kratos'),
+            'subtitle' => __('这些分类的文章不进 RSS 订阅；留空则输出全部', 'kratos'),
+            'options' => (function () {
+                $out = array();
+                $terms = function_exists('get_terms') ? get_terms(array(
+                    'taxonomy'   => 'category',
+                    'hide_empty' => false,
+                )) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) {
+                        $out[(int) $t->term_id] = $t->name;
+                    }
+                }
+                return $out;
+            })(),
+            'inline' => true,
+            'default' => array(),
+        ),
+        array(
+            'id' => 'g_rss_exclude_children',
+            'type' => 'switcher',
+            'title' => __('连同子分类', 'kratos'),
+            'subtitle' => __('被排除分类的子分类也一并排除', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_rss_block_term_feed',
+            'type' => 'switcher',
+            'title' => __('屏蔽分类 Feed', 'kratos'),
+            'subtitle' => __('直接访问被排除分类的 Feed（/category/xxx/feed）时返回空列表；关闭则该分类 Feed 仍可正常订阅', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_rss_exclude_comments',
+            'type' => 'switcher',
+            'title' => __('同步过滤评论 Feed', 'kratos'),
+            'subtitle' => __('评论 Feed 里不再输出被排除分类文章下的评论', 'kratos'),
+            'default' => true,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_basic',
     'title' => __('邮件配置', 'kratos'),
     'icon' => 'fas fa-envelope',
     'fields' => array(
