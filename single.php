@@ -76,10 +76,13 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                                 }; ?>
                             </div>
                         </div>
-                        <?php if (function_exists('kratos_series_render_box')) kratos_series_render_box(); ?>
+                        <?php
+                            if (function_exists('kratos_read_render_update_notice')) kratos_read_render_update_notice();
+                            if (function_exists('kratos_series_render_box')) kratos_series_render_box();
+                        ?>
                         <div class="content" id="lightgallery">
                             <?php
-                            if (function_exists('kratos_read_render_update_notice')) kratos_read_render_update_notice();
+
                             if (!empty(kratos_option('single_ad_top_group'))) {
                                 foreach (kratos_option('single_ad_top_group') as $group_item) {
                                     if (!empty($group_item['ad_switcher'])) {
@@ -87,6 +90,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                                     }
                                 }
                             }
+                            if (function_exists('kratos_series_render_text')) kratos_series_render_text('intro');
                             the_content();
                             wp_link_pages(
                                 array(
@@ -115,6 +119,8 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                                     'nextpagelink' => __('<span>下一页</span>', 'kratos')
                                 )
                             );
+                            if (function_exists('kratos_series_render_text')) kratos_series_render_text('outro');
+                            if (function_exists('kratos_copyright_html')) echo kratos_copyright_html();
                             if (!empty(kratos_option('single_ad_bottom_group'))) {
                                 foreach (kratos_option('single_ad_bottom_group') as $group_item) {
                                     if (!empty($group_item['ad_switcher'])) {

@@ -26,6 +26,16 @@ function kratos_series_defaults()
         'g_series_default_open'    => false,
         'g_series_replace_navi'    => true,
         'g_series_max_depth'       => 3,
+        'g_series_intro'           => '',
+        'g_series_intro_scope'     => 'all',
+        'g_series_intro_head_on'   => false,
+        'g_series_intro_head_text' => '本系列导读',
+        'g_series_intro_head_icon' => 'fas fa-book-open',
+        'g_series_outro'           => '',
+        'g_series_outro_scope'     => 'all',
+        'g_series_outro_head_on'   => false,
+        'g_series_outro_head_text' => '继续阅读本系列',
+        'g_series_outro_head_icon' => 'fas fa-list-ol',
     );
 }
 
@@ -250,6 +260,97 @@ if (class_exists('CSF')) {
                 'subtitle' => __('数字越小越靠前；留空则排到最后并按名称排序', 'kratos'),
                 'default'  => '',
             ),
+
+            array(
+                'type'    => 'subheading',
+                'content' => __('本系列的开头 / 结尾文字', 'kratos'),
+            ),
+            array(
+                'id'      => 'kratos_series_intro_mode',
+                'type'    => 'button_set',
+                'title'   => __('开头文字', 'kratos'),
+                'options' => array(
+                    'inherit' => __('继承全局', 'kratos'),
+                    'replace' => __('替换全局', 'kratos'),
+                    'append'  => __('追加在全局之后', 'kratos'),
+                    'off'     => __('本系列不显示', 'kratos'),
+                ),
+                'default' => 'inherit',
+            ),
+            array(
+                'id'         => 'kratos_series_intro',
+                'type'       => 'wp_editor',
+                'title'      => __('开头文字内容', 'kratos'),
+                'subtitle'   => __('支持 %series% / %index% / %total% / %title% / %date% / %series_link% 占位符', 'kratos'),
+                'height'     => '160px',
+                'dependency' => array('kratos_series_intro_mode', 'any', 'replace,append'),
+            ),
+            array(
+                'id'      => 'kratos_series_intro_head_mode',
+                'type'    => 'button_set',
+                'title'   => __('开头标题头', 'kratos'),
+                'options' => array(
+                    'inherit' => __('继承全局', 'kratos'),
+                    'custom'  => __('本系列自定义', 'kratos'),
+                    'off'     => __('本系列不显示', 'kratos'),
+                ),
+                'default' => 'inherit',
+            ),
+            array(
+                'id'         => 'kratos_series_intro_head_text',
+                'type'       => 'text',
+                'title'      => __('开头标题头文案', 'kratos'),
+                'dependency' => array('kratos_series_intro_head_mode', '==', 'custom'),
+            ),
+            array(
+                'id'         => 'kratos_series_intro_head_icon',
+                'type'       => 'icon',
+                'title'      => __('开头标题头图标', 'kratos'),
+                'dependency' => array('kratos_series_intro_head_mode', '==', 'custom'),
+            ),
+            array(
+                'id'      => 'kratos_series_outro_mode',
+                'type'    => 'button_set',
+                'title'   => __('结尾文字', 'kratos'),
+                'options' => array(
+                    'inherit' => __('继承全局', 'kratos'),
+                    'replace' => __('替换全局', 'kratos'),
+                    'append'  => __('追加在全局之后', 'kratos'),
+                    'off'     => __('本系列不显示', 'kratos'),
+                ),
+                'default' => 'inherit',
+            ),
+            array(
+                'id'         => 'kratos_series_outro',
+                'type'       => 'wp_editor',
+                'title'      => __('结尾文字内容', 'kratos'),
+                'subtitle'   => __('支持 %series% / %index% / %total% / %title% / %date% / %series_link% 占位符', 'kratos'),
+                'height'     => '160px',
+                'dependency' => array('kratos_series_outro_mode', 'any', 'replace,append'),
+            ),
+            array(
+                'id'      => 'kratos_series_outro_head_mode',
+                'type'    => 'button_set',
+                'title'   => __('结尾标题头', 'kratos'),
+                'options' => array(
+                    'inherit' => __('继承全局', 'kratos'),
+                    'custom'  => __('本系列自定义', 'kratos'),
+                    'off'     => __('本系列不显示', 'kratos'),
+                ),
+                'default' => 'inherit',
+            ),
+            array(
+                'id'         => 'kratos_series_outro_head_text',
+                'type'       => 'text',
+                'title'      => __('结尾标题头文案', 'kratos'),
+                'dependency' => array('kratos_series_outro_head_mode', '==', 'custom'),
+            ),
+            array(
+                'id'         => 'kratos_series_outro_head_icon',
+                'type'       => 'icon',
+                'title'      => __('结尾标题头图标', 'kratos'),
+                'dependency' => array('kratos_series_outro_head_mode', '==', 'custom'),
+            ),
         ),
     ));
 }
@@ -397,8 +498,15 @@ add_action('wp_enqueue_scripts', function () {
     if (is_singular('post')) {
         $term = kratos_series_get_current_term(get_the_ID());
         if ($term) {
-            $icon = get_term_meta($term->term_id, 'kratos_series_icon', true);
-            if ($icon && strpos($icon, 'fa') !== false) $need_fa = true;
+            $icons = array(get_term_meta($term->term_id, 'kratos_series_icon', true));
+            // 开头 / 结尾文字的标题头图标同样可能是 FA
+            foreach (array('intro', 'outro') as $slot) {
+                $icons[] = get_term_meta($term->term_id, 'kratos_series_' . $slot . '_head_icon', true);
+                $icons[] = kratos_option('g_series_' . $slot . '_head_icon', '');
+            }
+            foreach ($icons as $icon) {
+                if (is_string($icon) && $icon !== '' && strpos($icon, 'fa') !== false) { $need_fa = true; break; }
+            }
         }
     } elseif (is_tax('kratos_series')) {
         // 归档模板使用 fas fa-clock 展示日期，且 term 图标也是 FA
@@ -430,6 +538,13 @@ if (class_exists('CSF')) {
                 'title'    => __('本文在系列中的顺序', 'kratos'),
                 'subtitle' => __('数字越小越靠前；留空则按发布时间自动排序', 'kratos'),
                 'default'  => '',
+            ),
+            array(
+                'id'       => 'kratos_series_hide_text',
+                'type'     => 'switcher',
+                'title'    => __('隐藏系列开头/结尾文字', 'kratos'),
+                'subtitle' => __('仅本篇不显示，不影响系列内其它文章', 'kratos'),
+                'default'  => false,
             ),
         ),
     ));
@@ -547,6 +662,139 @@ add_action('admin_init', function () {
 });
 
 /**
+ * 当前文章在其系列中的上下文：term / 全部文章 / 序号（1 起）/ 总数
+ * 不属于任何系列、或系列内查不到本文时返回 null。
+ * render_box / render_nav / 开头结尾文字共用这一处，避免重复算 index。
+ */
+function kratos_series_context($post_id = null)
+{
+    $post_id = $post_id ? (int) $post_id : (int) get_the_ID();
+    if (!$post_id) return null;
+    $term = kratos_series_get_current_term($post_id);
+    if (!$term) return null;
+    $posts = kratos_series_get_posts($term->term_id);
+    if (empty($posts)) return null;
+    $index = 0;
+    foreach ($posts as $i => $p) {
+        if ((int)$p->ID === (int)$post_id) { $index = $i + 1; break; }
+    }
+    if ($index === 0) return null;
+    return array(
+        'term'  => $term,
+        'posts' => $posts,
+        'index' => $index,
+        'total' => count($posts),
+    );
+}
+
+/**
+ * 占位符替换（开头/结尾文字与标题头文案共用）
+ */
+function kratos_series_apply_tokens($text, $ctx, $post_id)
+{
+    if ($text === '' || strpos($text, '%') === false) return $text;
+    $link = get_term_link($ctx['term']);
+    return str_replace(
+        array('%series%', '%index%', '%total%', '%title%', '%date%', '%series_link%'),
+        array(
+            $ctx['term']->name,
+            (int) $ctx['index'],
+            (int) $ctx['total'],
+            get_the_title($post_id),
+            get_the_date('', $post_id),
+            is_wp_error($link) ? '' : $link,
+        ),
+        $text
+    );
+}
+
+/**
+ * 解析某个槽位（intro / outro）最终要输出的内容
+ * 三级覆盖：全局默认 → 系列 term 覆盖（继承 / 替换 / 追加 / 关闭）→ 单篇隐藏
+ * 返回 array('body' => raw html, 'head_text' => 纯文本, 'head_icon' => FA class)
+ * body 为空表示整块不渲染。
+ */
+function kratos_series_resolve_slot($slot, $ctx, $post_id)
+{
+    $empty = array('body' => '', 'head_text' => '', 'head_icon' => '');
+    if (!in_array($slot, array('intro', 'outro'), true)) return $empty;
+    if (get_post_meta($post_id, 'kratos_series_hide_text', true) === '1') return $empty;
+
+    $term_id = (int) $ctx['term']->term_id;
+    $g_body  = (string) kratos_option('g_series_' . $slot, '');
+    $mode    = get_term_meta($term_id, 'kratos_series_' . $slot . '_mode', true);
+    $t_body  = (string) get_term_meta($term_id, 'kratos_series_' . $slot, true);
+
+    switch ($mode) {
+        case 'off':
+            return $empty;
+        case 'replace':
+            $body = $t_body;
+            break;
+        case 'append':
+            $body = trim($g_body) . "\n\n" . $t_body;
+            break;
+        default: // inherit
+            $body = $g_body;
+    }
+    if (trim($body) === '') return $empty;
+
+    // 显示范围：仅第一篇 / 仅最后一篇
+    $scope = (string) kratos_option('g_series_' . $slot . '_scope', 'all');
+    if ($scope === 'off') return $empty;
+    if ($scope === 'first' && (int) $ctx['index'] !== 1) return $empty;
+    if ($scope === 'last' && (int) $ctx['index'] !== (int) $ctx['total']) return $empty;
+
+    // 标题头
+    $head_mode = get_term_meta($term_id, 'kratos_series_' . $slot . '_head_mode', true);
+    $head_text = '';
+    $head_icon = '';
+    if ($head_mode === 'custom') {
+        $head_text = (string) get_term_meta($term_id, 'kratos_series_' . $slot . '_head_text', true);
+        $head_icon = (string) get_term_meta($term_id, 'kratos_series_' . $slot . '_head_icon', true);
+    } elseif ($head_mode !== 'off' && kratos_option('g_series_' . $slot . '_head_on', false)) {
+        $head_text = (string) kratos_option('g_series_' . $slot . '_head_text', '');
+        $head_icon = (string) kratos_option('g_series_' . $slot . '_head_icon', '');
+    }
+
+    return array(
+        'body'      => kratos_series_apply_tokens($body, $ctx, $post_id),
+        'head_text' => trim(kratos_series_apply_tokens(trim($head_text), $ctx, $post_id)),
+        'head_icon' => trim($head_icon),
+    );
+}
+
+/**
+ * 输出系列开头 / 结尾文字（供 single.php 调用，$slot = intro|outro）
+ */
+function kratos_series_render_text($slot)
+{
+    if (!kratos_option('g_series_enabled', true)) return;
+    if (!is_singular('post')) return;
+    $post_id = (int) get_the_ID();
+    $ctx = kratos_series_context($post_id);
+    if (!$ctx) return;
+
+    $data = kratos_series_resolve_slot($slot, $ctx, $post_id);
+    if ($data['body'] === '') return;
+
+    // 富文本管道：先过滤 → 再跑短码 → 最后补段落（顺序不可颠倒）
+    $body = wpautop(do_shortcode(wp_kses_post($data['body'])));
+
+    echo '<div class="kratos-series-text kratos-series-' . esc_attr($slot) . ' kr-body kr-card">';
+    if ($data['head_text'] !== '') {
+        echo '<div class="kratos-series-text-head kr-hd">';
+        if ($data['head_icon'] !== '') {
+            echo '<i class="' . esc_attr($data['head_icon']) . ' kratos-series-text-icon kr-ico"></i>';
+        }
+        echo '<span class="kratos-series-text-title kr-hd-title">' . esc_html($data['head_text']) . '</span>';
+        echo '</div>';
+    }
+    echo '<div class="kratos-series-text-body">' . $body . '</div>';
+    echo '</div>';
+}
+
+/**
  * 渲染系列盒子（供 single.php 直接调用；插入正文顶部）
  * 位置：文章 header 之后、正文之前
  */
@@ -556,18 +804,12 @@ function kratos_series_render_box()
     if (!is_singular('post')) return;
 
     $post_id = get_the_ID();
-    $term = kratos_series_get_current_term($post_id);
-    if (!$term) return;
-
-    $posts = kratos_series_get_posts($term->term_id);
-    if (empty($posts)) return;
-
-    $total = count($posts);
-    $index = 0;
-    foreach ($posts as $i => $p) {
-        if ((int)$p->ID === (int)$post_id) { $index = $i + 1; break; }
-    }
-    if ($index === 0) return;
+    $ctx = kratos_series_context($post_id);
+    if (!$ctx) return;
+    $term  = $ctx['term'];
+    $posts = $ctx['posts'];
+    $total = $ctx['total'];
+    $index = $ctx['index'];
 
     $title_tpl = kratos_option('g_series_title_tpl', __('系列：%series%', 'kratos'));
     $pos_tpl   = kratos_option('g_series_position_tpl', __('第 %index% 篇 / 共 %total% 篇', 'kratos'));
@@ -639,15 +881,10 @@ function kratos_series_render_nav()
     if (!kratos_option('g_series_enabled', true)) return;
     if (!is_singular('post')) return;
     $post_id = get_the_ID();
-    $term = kratos_series_get_current_term($post_id);
-    if (!$term) return;
-    $posts = kratos_series_get_posts($term->term_id);
-    if (empty($posts)) return;
-    $idx = -1;
-    foreach ($posts as $i => $p) {
-        if ((int)$p->ID === (int)$post_id) { $idx = $i; break; }
-    }
-    if ($idx < 0) return;
+    $ctx = kratos_series_context($post_id);
+    if (!$ctx) return;
+    $posts = $ctx['posts'];
+    $idx   = $ctx['index'] - 1;
     $prev = ($idx > 0) ? $posts[$idx - 1] : null;
     $next = ($idx < count($posts) - 1) ? $posts[$idx + 1] : null;
     if (!$prev && !$next) return;
@@ -709,6 +946,16 @@ add_action('wp_enqueue_scripts', function () {
     $css .= '.kratos-series-crumb-sep{color:' . $muted . ';opacity:.6}';
     $css .= '.kratos-series-crumb-current{color:' . $text . ';font-weight:600}';
     $css .= '.kratos-series:not(.is-open) .kratos-series-crumbs{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-bottom-width:0}';
+    // 系列开头 / 结尾文字（形态走公共类 kr-body / kr-card / kr-hd / kr-ico，随皮肤变化）
+    $css .= '.kratos-series-text{margin:0 0 24px;padding:0;overflow:hidden;color:' . $text . '}';
+    $css .= '.kratos-series-outro{margin:28px 0 0}';
+    $css .= '.kratos-series-text-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(90deg,' . $tag_bg . ',transparent);border-bottom:1px solid ' . $card_line . '}';
+    $css .= '.kratos-series-text-icon{color:' . $accent . ';font-size:15px}';
+    $css .= '.kratos-series-text-title{font-size:15px;font-weight:600;color:inherit}';
+    $css .= '.kratos-series-text-body{padding:14px 16px;font-size:15px;line-height:1.8}';
+    $css .= '.kratos-series-text-body > :first-child{margin-top:0}';
+    $css .= '.kratos-series-text-body > :last-child{margin-bottom:0}';
+    $css .= '.kratos-series-text-body a{color:' . $accent . '}';
 
     wp_register_style('kratos-series', false);
     wp_enqueue_style('kratos-series');
@@ -793,6 +1040,7 @@ add_action('manage_post_posts_custom_column', function ($col, $post_id) {
     }
     // 隐藏字段供快速编辑 JS 读取
     echo '<span class="kratos-series-order-raw" style="display:none">' . esc_html($order === '' ? '' : (int) $order) . '</span>';
+    echo '<span class="kratos-series-hide-text-raw" style="display:none">' . (get_post_meta($post_id, 'kratos_series_hide_text', true) === '1' ? '1' : '0') . '</span>';
 }, 10, 2);
 add_filter('manage_edit-post_sortable_columns', function ($cols) {
     $cols['kratos_series_order'] = 'kratos_series_order';
@@ -818,6 +1066,10 @@ add_action('quick_edit_custom_box', function ($column_name, $post_type) {
                 <span class="title"><?php _e('系列排序', 'kratos'); ?></span>
                 <span class="input-text-wrap"><input type="number" name="kratos_series_order" class="ptitle" value="" style="width:6em"></span>
             </label>
+            <label class="alignleft" style="margin-top:6px">
+                <input type="checkbox" name="kratos_series_hide_text" value="1">
+                <span class="checkbox-title"><?php _e('隐藏系列开头/结尾文字', 'kratos'); ?></span>
+            </label>
         </div>
     </fieldset>
     <?php
@@ -826,6 +1078,9 @@ add_action('save_post_post', function ($post_id, $post) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!isset($_POST['kratos_series_order_qe_nonce']) || !wp_verify_nonce($_POST['kratos_series_order_qe_nonce'], 'kratos_series_order_qe')) return;
     if (!current_user_can('edit_post', $post_id)) return;
+    // 复选框未勾选时浏览器不提交，因此这里显式写 0
+    $hide = (isset($_POST['kratos_series_hide_text']) && $_POST['kratos_series_hide_text'] === '1') ? '1' : '0';
+    update_post_meta($post_id, 'kratos_series_hide_text', $hide);
     $raw = isset($_POST['kratos_series_order']) ? trim((string) $_POST['kratos_series_order']) : '';
     if ($raw === '') return; // 空值不动，保持保存兜底逻辑
     update_post_meta($post_id, 'kratos_series_order', (int) $raw);
@@ -847,7 +1102,10 @@ add_action('admin_footer-edit.php', function () {
             if (!post_id) return;
             var $row = $('#post-' + post_id);
             var val = $row.find('.kratos-series-order-raw').text();
-            $('#edit-' + post_id).find('input[name="kratos_series_order"]').val(val);
+            var $box = $('#edit-' + post_id);
+            $box.find('input[name="kratos_series_order"]').val(val);
+            $box.find('input[name="kratos_series_hide_text"]')
+                .prop('checked', $row.find('.kratos-series-hide-text-raw').text() === '1');
         };
     })(jQuery);
     </script>

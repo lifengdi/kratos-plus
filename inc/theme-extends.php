@@ -8,15 +8,20 @@
  */
 
 // copyright —— 由「文章与阅读 → 文章配置 → 版权声明」（g_post_copyright）控制，默认开
-function feed_copyright($content) {
+// 原创声明的 HTML；单篇由 single.php 在正文容器内、系列结尾文字之后输出，Feed 走 the_content 过滤器追加
+function kratos_copyright_html() {
     if (!kratos_option('g_post_copyright', true)) {
-        return $content;
+        return '';
     }
-    if(is_single() or is_feed()) {
-		$sitename = get_bloginfo('name');
-		$siteurl = home_url();
-		$content.= '<blockquote style="margin:10px 0;font-size:16px;">除非注明，否则均为<a rel="bookmark" title="'.$sitename.'" href="'.$siteurl.'">'.$sitename.'</a>原创文章，转载必须以链接形式标明本文链接';
-		$content.= '<p>本文链接：<a rel="bookmark" title="'.get_the_title().'" href="'.get_permalink().'">'.get_permalink().'</a></p></blockquote>';
+    $sitename = get_bloginfo('name');
+    $siteurl = home_url();
+    $html = '<blockquote style="margin:10px 0;font-size:16px;">除非注明，否则均为<a rel="bookmark" title="'.$sitename.'" href="'.$siteurl.'">'.$sitename.'</a>原创文章，转载必须以链接形式标明本文链接';
+    $html.= '<p>本文链接：<a rel="bookmark" title="'.get_the_title().'" href="'.get_permalink().'">'.get_permalink().'</a></p></blockquote>';
+    return $html;
+}
+function feed_copyright($content) {
+    if (is_feed()) {
+        $content .= kratos_copyright_html();
     }
     return $content;
 }
