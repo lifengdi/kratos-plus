@@ -1536,14 +1536,87 @@ add_filter('pre_get_bookmarks', 'kratos_friend_admin_pre_get_bookmarks');
 
 function kratos_friend_admin_filter_bookmarks($bookmarks)
 {
-    if (!is_admin() || empty($_GET['kfl_filter']) || !is_array($bookmarks)) return $bookmarks;
-    $want = $_GET['kfl_filter'] === 'pending' ? 'N' : ($_GET['kfl_filter'] === 'approved' ? 'Y' : '');
-    if ($want === '') return $bookmarks;
-    return array_values(array_filter($bookmarks, function ($b) use ($want) {
-        return isset($b->link_visible) && $b->link_visible === $want;
-    }));
+    if (!is_admin() || !is_array($bookmarks)) return $bookmarks;
+
+    $probe = kratos_friend_admin_probe_filter();
+    if (empty($_GET['kfl_filter']) && $probe === '') return $bookmarks;
+
+    if (!empty($_GET['kfl_filter'])) {
+        $want = $_GET['kfl_filter'] === 'pending' ? 'N' : ($_GET['kfl_filter'] === 'approved' ? 'Y' : '');
+        if ($want !== '') {
+            $bookmarks = array_filter($bookmarks, function ($b) use ($want) {
+                return isset($b->link_visible) && $b->link_visible === $want;
+            });
+        }
+    }
+
+    if ($probe !== '') {
+        $data = kratos_friend_probe_get_all();
+        $bookmarks = array_filter($bookmarks, function ($b) use ($probe, $data) {
+            return kratos_friend_admin_probe_status($b->link_id, $data) === $probe;
+        });
+    }
+
+    return array_values($bookmarks);
 }
 add_filter('get_bookmarks', 'kratos_friend_admin_filter_bookmarks');
+
+/**
+ * 当前请求的探活筛选值：'' / reachable / unreachable / unknown
+ */
+function kratos_friend_admin_probe_filter()
+{
+    $v = isset($_GET['kfl_probe']) ? sanitize_key(wp_unslash($_GET['kfl_probe'])) : '';
+    return in_array($v, array('reachable', 'unreachable', 'unknown'), true) ? $v : '';
+}
+
+/**
+ * 单条链接的探活状态：reachable / unreachable / unknown（缓存里没有记录算未检测）
+ */
+function kratos_friend_admin_probe_status($link_id, $data = null)
+{
+    if ($data === null) $data = kratos_friend_probe_get_all();
+    $row = isset($data[(int) $link_id]) ? $data[(int) $link_id] : null;
+    if (!is_array($row) || empty($row['status'])) return 'unknown';
+    return $row['status'] === 'reachable' ? 'reachable' : 'unreachable';
+}
+
+/**
+ * 探活筛选下拉：塞到 link-manager 自带的「分类」筛选下拉后面。
+ *
+ * WP_Links_List_Table::extra_tablenav() 里那个 .actions（分类下拉 +「筛选」按钮）
+ * 没有任何钩子，所以照 kratos_friend_bulk_cat_select() 的路子在页脚输出 JS，把
+ * select 插到 #post-query-submit 前面。表单是 method="get"，随「筛选」一起提交。
+ */
+function kratos_friend_admin_probe_filter_select()
+{
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if (!$screen || $screen->id !== 'link-manager') return;
+    if (!kratos_option('g_friend_probe_enabled', false)) return;
+
+    $current = kratos_friend_admin_probe_filter();
+    $items = array(
+        ''            => __('所有探活状态', 'kratos'),
+        'reachable'   => __('可访问', 'kratos'),
+        'unreachable' => __('不可访问', 'kratos'),
+        'unknown'     => __('未检测', 'kratos'),
+    );
+    $options = '';
+    foreach ($items as $k => $label) {
+        $options .= '<option value="' . esc_attr($k) . '"' . selected($current, $k, false) . '>' . esc_html($label) . '</option>';
+    }
+    $html = '<select name="kfl_probe" id="kfl-probe-filter" style="margin-right:6px;">' . $options . '</select>';
+    ?>
+    <script>
+    (function () {
+        var submit = document.getElementById('post-query-submit');
+        if (!submit) return;
+        submit.insertAdjacentHTML('beforebegin', '<?php echo str_replace(array("\r", "\n"), '', addcslashes($html, "'\\")); ?>');
+    })();
+    </script>
+    <?php
+}
+add_action('admin_footer', 'kratos_friend_admin_probe_filter_select');
 
 /**
  * 在 link-manager 列表标题区加筛选表单

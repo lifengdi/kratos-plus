@@ -4,7 +4,7 @@
  *
  * 功能：
  *   - 统计每位评论者的已审核评论数，按评论数降序展示 TOP N
- *   - 每人展示：头像 / 用户名 / 评论数 / 最后一次评论时间 / 友链标签（若命中 Blogroll）
+ *   - 每人展示：头像 / 用户名 / 评论等级标签 / 评论数 / 最后一次评论时间
  *   - 若填写了个人网站，用户名即为跳转链接（在新标签打开）
  *   - 展示数量 / 标题 / 副标题在「评论配置 → 通用配置 → 评论排行榜」中配置
  *
@@ -40,7 +40,6 @@ const KRATOS_TOP_COMMENTERS_CACHE_TTL = 30 * MINUTE_IN_SECONDS;
  *   count: int,
  *   last_time: int,
  *   avatar_html: string,
- *   is_friend: bool,
  *   comment_id: int
  * }>
  */
@@ -139,7 +138,6 @@ function kratos_top_commenters_get($limit = 20)
             'count'       => (int) $r['cnt'],
             'last_time'   => (int) $r['last_time'],
             'avatar_html' => $avatar,
-            'is_friend'   => $latest ? kratos_top_commenters_is_friend((string) $url) : false,
             'comment_id'  => (int) $r['last_cid'],
         );
     }
@@ -165,7 +163,6 @@ function kratos_top_commenters_get($limit = 20)
             'count'       => (int) $r['cnt'],
             'last_time'   => (int) $r['last_time'],
             'avatar_html' => $avatar,
-            'is_friend'   => kratos_top_commenters_is_friend($url),
             'comment_id'  => (int) $r['last_cid'],
         );
     }
@@ -182,20 +179,6 @@ function kratos_top_commenters_get($limit = 20)
 
     set_transient($cache_key, $items, KRATOS_TOP_COMMENTERS_CACHE_TTL);
     return $items;
-}
-
-/**
- * 判断 URL 是否命中友链列表。复用 theme-comment-link.php 的 host 集合。
- */
-function kratos_top_commenters_is_friend($url)
-{
-    if (!function_exists('kratos_blogroll_normalize_host') || !function_exists('kratos_blogroll_hosts')) {
-        return false;
-    }
-    $host = kratos_blogroll_normalize_host((string) $url);
-    if ($host === '') return false;
-    $hosts = kratos_blogroll_hosts();
-    return isset($hosts[$host]);
 }
 
 /**
@@ -335,9 +318,7 @@ function kratos_top_commenters_shortcode($atts)
                         <div class="ktc-body">
                             <div class="ktc-body-row1">
                                 <?php echo $name_html; ?>
-                                <?php if ($it['is_friend'] && kratos_top_commenters_friend_badge_enabled()) { ?>
-                                    <?php echo kratos_top_commenters_friend_badge_html(); ?>
-                                <?php } ?>
+                                <?php echo kratos_top_commenters_level_badge_html((int) $it['count']); ?>
                             </div>
                             <div class="ktc-body-row2">
                                 <span class="ktc-count" title="<?php printf(esc_attr__('%d 条评论', 'kratos'), (int) $it['count']); ?>">
@@ -512,18 +493,16 @@ function kratos_top_commenters_shortcode($atts)
         .kratos-topcommenters .ktc-name-arrow{flex-shrink:0;opacity:.5;transition:opacity .2s ease,transform .2s ease;}
         .kratos-topcommenters .ktc-name-link:hover .ktc-name-arrow{opacity:1;transform:translate(1px,-1px);}
 
-        /* 友链徽章 —— 紧凑版，只保留图标 + 一个字 */
-        .kratos-topcommenters .ktc-friend-badge{
+        /* 等级标签 —— 与评论列表 .kratos-rank-badge 同规格，配色由等级配置内联给出 */
+        .kratos-topcommenters .ktc-level-badge{
             flex-shrink:0;
-            display:inline-flex;align-items:center;gap:2px;
-            padding:0 6px;
-            font-size:10px;line-height:1.5;font-weight:500;
-            border-radius:8px;
+            display:inline-block;
+            padding:1px 7px;
+            font-size:11px;line-height:1.5;font-weight:500;
+            border-radius:3px;
             color:#fff;
-            background:linear-gradient(135deg,#38bdf8 0%,#6366f1 100%);
-            box-shadow:0 1px 2px rgba(0,0,0,.15);
+            background:#9ca3af;
         }
-        .kratos-topcommenters .ktc-friend-badge svg{width:9px;height:9px;}
 
         /* 评论数：内联小信息条，图标 + 数字 + 单位；字号 / 颜色与时间行完全一致 */
         .kratos-topcommenters .ktc-count{
@@ -593,33 +572,35 @@ function kratos_top_commenters_shortcode($atts)
 add_shortcode('top_commenters', 'kratos_top_commenters_shortcode');
 
 /* ============================================================
- *  友链徽章（复用 theme-comment-link.php 的配置项）
+ *  评论等级标签（复用 theme-comment-rank.php 的等级配置）
  * ============================================================ */
 
-function kratos_top_commenters_friend_badge_enabled()
-{
-    return function_exists('kratos_blogroll_enabled') && kratos_blogroll_enabled();
-}
-
 /**
- * 榜单里的友链徽章：读的是同一套「友链标识」配置，保证前后视觉一致。
+ * 榜单里的等级标签：门槛/头衔/配色都读「评论配置 → 通用配置 → 用户等级」，
+ * 与评论列表里的 .kratos-rank-badge 同一套配置，保证观感一致。
+ *
+ * @param int $count 该用户的已审核评论数
+ * @return string
  */
-function kratos_top_commenters_friend_badge_html()
+function kratos_top_commenters_level_badge_html($count)
 {
-    $text = (string) kratos_option('g_comment_blogroll_badge_text', __('友链', 'kratos'));
-    if (trim($text) === '') $text = __('友链', 'kratos');
-    $color    = sanitize_hex_color((string) kratos_option('g_comment_blogroll_badge_color', '#ffffff')) ?: '#ffffff';
-    $bg_start = sanitize_hex_color((string) kratos_option('g_comment_blogroll_badge_bg_start', '#38bdf8')) ?: '#38bdf8';
-    $bg_end   = sanitize_hex_color((string) kratos_option('g_comment_blogroll_badge_bg_end', '#6366f1')) ?: '#6366f1';
+    if (!function_exists('kratos_rank_enabled') || !kratos_rank_enabled()) {
+        return '';
+    }
 
-    $style = sprintf(
-        'color:%s;background:linear-gradient(135deg,%s 0%%,%s 100%%);',
-        esc_attr($color),
-        esc_attr($bg_start),
-        esc_attr($bg_end)
-    );
-    $icon = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="' . esc_attr($color) . '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1 1"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1-1"/></svg>';
-    return '<span class="ktc-friend-badge" title="' . esc_attr__('友链博主', 'kratos') . '" style="' . $style . '">' . $icon . esc_html($text) . '</span>';
+    $level = kratos_rank_match((int) $count);
+    if (!$level) {
+        return '';
+    }
+
+    $color = sanitize_hex_color($level['color']) ?: '#ffffff';
+    $bg    = sanitize_hex_color($level['bg_color']) ?: '#9ca3af';
+
+    $style = sprintf('color:%s;background:%s;', esc_attr($color), esc_attr($bg));
+
+    return '<span class="ktc-level-badge" title="'
+        . esc_attr(sprintf(__('%1$s · %2$d 条评论', 'kratos'), $level['title'], (int) $count))
+        . '" style="' . $style . '">' . esc_html($level['title']) . '</span>';
 }
 
 /**

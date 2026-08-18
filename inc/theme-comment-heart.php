@@ -339,6 +339,62 @@ add_action('deleted_comment',       'kratos_heart_flush_stats_cache');
 add_action('trashed_comment',       'kratos_heart_flush_stats_cache');
 add_action('untrashed_comment',     'kratos_heart_flush_stats_cache');
 
+/**
+ * 生成评论摘要 HTML：纯文本转义，表情 shortcode（:smile: / :pepe/happy:）还原成 <img class="wp-smiley">。
+ *
+ * 不能直接 wp_strip_all_tags(get_comment_text()) —— 表情图是 convert_smilies 输出的 <img>，会被整条剥掉；
+ * 所以在原始文本上按表情 shortcode 切段，逐段处理，并且截断只按可见文本计宽，避免把 shortcode 切成两半。
+ *
+ * @param string $raw      已 strip 标签的评论文本
+ * @param int    $max_width mb_strimwidth 的宽度上限
+ * @return string 可直接输出的 HTML
+ */
+function kratos_heart_excerpt_html($raw, $max_width = 120)
+{
+    $map = function_exists('kratos_get_smilies_map') ? kratos_get_smilies_map() : array();
+    if (empty($map) || !get_option('use_smilies')) {
+        $text = function_exists('mb_strimwidth') ? mb_strimwidth($raw, 0, $max_width, '…', 'UTF-8') : $raw;
+        return esc_html($text);
+    }
+
+    // shortcode 名已限定为 [A-Za-z0-9_-]（可带一层组前缀），用它切段
+    $parts = preg_split('#(:[A-Za-z0-9_\-]+(?:/[A-Za-z0-9_\-]+)?:)#', $raw, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $html  = '';
+    $width = 0;
+
+    foreach ($parts as $part) {
+        if ($part === '') {
+            continue;
+        }
+        if (isset($map[$part])) {
+            // 表情按两个半角宽计入，避免一屏塞满图片
+            if ($width + 2 > $max_width) {
+                $html .= '…';
+                break;
+            }
+            $width += 2;
+            $alt   = trim($part, ':');
+            $html .= '<img class="wp-smiley khs-smiley" src="' . esc_url(ASSET_PATH . '/assets/img/smilies/' . $map[$part]) . '" alt="' . esc_attr($alt) . '" />';
+            continue;
+        }
+
+        $left = $max_width - $width;
+        if ($left <= 0) {
+            $html .= '…';
+            break;
+        }
+        if (function_exists('mb_strwidth') && mb_strwidth($part, 'UTF-8') > $left) {
+            $html .= esc_html(mb_strimwidth($part, 0, $left, '…', 'UTF-8'));
+            $width = $max_width;
+            break;
+        }
+        $width += function_exists('mb_strwidth') ? mb_strwidth($part, 'UTF-8') : strlen($part);
+        $html  .= esc_html($part);
+    }
+
+    return $html;
+}
+
 /* ============================================================
  *  短码 [heart_comments]
  * ============================================================ */
@@ -446,8 +502,7 @@ function kratos_heart_shortcode($atts)
                     $avatar       = get_avatar($c, 56, '', $author, array('class' => 'khs-avatar-img'));
                     $time_human   = human_time_diff(get_comment_date('U', $c->comment_ID), current_time('timestamp')) . __('前', 'kratos');
                     $time_full    = get_comment_date(get_option('date_format') . ' ' . get_option('time_format'), $c->comment_ID);
-                    $excerpt      = wp_strip_all_tags(get_comment_text($c->comment_ID));
-                    $excerpt      = function_exists('mb_strimwidth') ? mb_strimwidth($excerpt, 0, 120, '…', 'UTF-8') : (mb_strlen($excerpt) > 60 ? mb_substr($excerpt, 0, 60) . '…' : $excerpt);
+                    $excerpt      = kratos_heart_excerpt_html(wp_strip_all_tags($c->comment_content), 120);
                 ?>
                     <a class="khs-card kr-card" href="<?php echo esc_url($comment_link); ?>" title="<?php echo esc_attr($post_title); ?>">
                         <div class="khs-card-head">
@@ -460,7 +515,7 @@ function kratos_heart_shortcode($atts)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.3 5c1.9 0 3.6 1.1 4.4 2.7C11.6 6.1 13.3 5 15.2 5c3.3 0 5.2 3.6 3.8 6.9C19.5 16.4 12 21 12 21z"/></svg>
                             </span>
                         </div>
-                        <div class="khs-text"><?php echo esc_html($excerpt); ?></div>
+                        <div class="khs-text"><?php echo $excerpt; ?></div>
                         <div class="khs-from">
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
                             <span><?php echo esc_html($post_title); ?></span>
@@ -674,6 +729,11 @@ function kratos_heart_shortcode($atts)
             overflow:hidden;
         }
         /* 来源文章：实线细分隔（不要 dashed strong，过抢） */
+        /* 评论里的表情图：跟随行高，不撑破两行 clamp */
+        .kratos-heart-shortcode .khs-text .khs-smiley{
+            display:inline-block;vertical-align:-3px;
+            width:18px;height:18px;margin:0 1px;
+        }
         .kratos-heart-shortcode .khs-from{
             display:flex;align-items:center;gap:4px;
             margin-top:auto;padding-top:8px;
