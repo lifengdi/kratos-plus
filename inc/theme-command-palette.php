@@ -269,7 +269,13 @@ function kratos_cmdk_enqueue()
             'toggleDark'   => __('切换暗色 / 亮色', 'kratos'),
             'stumble'      => __('随机漫步 · 随机一篇老文章', 'kratos'),
             'goHome'       => __('回到首页', 'kratos'),
-            'skinDefault'  => __('恢复默认外观', 'kratos'),
+            // 两个条目语义不同，与页脚切换面板一一对应：
+            //   skinDefault → 钉死为「不使用任何皮肤」（面板列表首项）
+            //   skinRestore → 清除本地选择，回到站点配置的皮肤（面板底部按钮）
+            'skinDefault'  => __('默认外观 · 不使用皮肤', 'kratos'),
+            'skinDefaultSub' => __('本机固定为无皮肤', 'kratos'),
+            'skinRestore'  => __('恢复默认（清除本地设置）', 'kratos'),
+            'skinRestoreSub' => __('回到站点当前配置的皮肤', 'kratos'),
             'empty'        => __('没有匹配的结果', 'kratos'),
             'navHint'      => __('↑↓ 选择 · Enter 打开 · Esc 关闭', 'kratos'),
         ),

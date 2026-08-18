@@ -280,12 +280,17 @@ function kratos_weekday_vermilion_fireworks()
 {
     if (is_admin()) return;
     $s = kratos_weekday_settings();
-    if ($s['mode'] === 'off') return;
-    // auto 模式下 vermilion 不在每日轮播里（只出现在 locked），因此只在 locked=vermilion 才注入
-    if ($s['mode'] !== 'locked' || $s['locked'] !== 'vermilion') return;
+    // auto 模式下 vermilion 不在每日轮播里（只出现在 locked），所以站点侧只有 locked=vermilion 才需要它；
+    // 但访客可本地覆盖皮肤时（页脚切换器 / 命令面板），任何页面都可能变成 vermilion，
+    // 故这种情况下也注入，由脚本内的 attr 判定决定是否真的挂载。
+    $site_vermilion = ($s['mode'] === 'locked' && $s['locked'] === 'vermilion');
+    if (!$site_vermilion && !kratos_weekday_override_enabled()) return;
 
     $js = <<<'JS'
 (function(){
+    // 只在当前实际生效的皮肤是朱砂时挂载：皮肤可能被访客本地覆盖成别的皮肤或
+    // 「默认外观」，此时 <html> 上不再是 vermilion，不应再有烟花。
+    if (document.documentElement.getAttribute('data-weekday-skin') !== 'vermilion') return;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var colors = ['#C0392B','#E74C3C','#F1C40F','#E8B62D','#FFEDB5'];
     var canvas, ctx, dpr = Math.min(window.devicePixelRatio || 1, 2);

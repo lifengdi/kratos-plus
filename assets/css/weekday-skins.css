@@ -2226,15 +2226,15 @@ html[data-theme="dark"][data-weekday-skin] .kratos-archives-shortcode.kas-scheme
  *   继续保留各皮肤的视觉。
  * =============================================================== */
 
-body.is-kratos-archives-page .k-main .details,
-body.is-kratos-dashboard-page .k-main .details,
-body.is-kratos-heart-page .k-main .details,
-body.is-kratos-shuoshuo-page .k-main .details,
-body.is-kratos-topcommenters-page .k-main .details,
-body.is-kratos-friend-links-page .k-main .details,
-body.is-kratos-home-page .k-main .details,
-body.is-kratos-timeline-page .k-main .details,
-body.is-kratos-friend-feed-page .k-main .details {
+html[data-weekday-skin] body.is-kratos-archives-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-dashboard-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-heart-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-shuoshuo-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-topcommenters-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-friend-links-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-home-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-timeline-page .k-main .details,
+html[data-weekday-skin] body.is-kratos-friend-feed-page .k-main .details {
     background-color: transparent !important;
     background-image: none !important;
     border: none !important;
@@ -2246,15 +2246,15 @@ body.is-kratos-friend-feed-page .k-main .details {
 }
 
 /* 周日小星花角标也关掉（避免在 shortcode 内容上方挂金星） */
-body.is-kratos-archives-page .k-main .details::after,
-body.is-kratos-dashboard-page .k-main .details::after,
-body.is-kratos-heart-page .k-main .details::after,
-body.is-kratos-shuoshuo-page .k-main .details::after,
-body.is-kratos-topcommenters-page .k-main .details::after,
-body.is-kratos-friend-links-page .k-main .details::after,
-body.is-kratos-home-page .k-main .details::after,
-body.is-kratos-timeline-page .k-main .details::after,
-body.is-kratos-friend-feed-page .k-main .details::after {
+html[data-weekday-skin] body.is-kratos-archives-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-dashboard-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-heart-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-shuoshuo-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-topcommenters-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-friend-links-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-home-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-timeline-page .k-main .details::after,
+html[data-weekday-skin] body.is-kratos-friend-feed-page .k-main .details::after {
     display: none !important;
 }
 
@@ -2299,37 +2299,37 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
 /* 通用骨架：清默认 marker，改用 ::before 手绘，行距舒展一点。
  * 用 CSS 变量 --kra-list-scope 将"作用域"抽象化，正文与侧边栏共享同一套规则。
  * 排除已用 list-style:none 的自定义列表（.paginations / .kratos-series-list / .kratos-related-items 等）。*/
-.k-main .details .article .content ul,
-.k-main .details .article .content ol,
-.widget_recent_entries ul,
-.widget_recent_comments ul,
-.widget_pages ul,
-.widget_meta ul,
-.widget_rss ul,
-.widget_nav_menu ul,
-.widget_block ul {
+html[data-weekday-skin] .k-main .details .article .content ul,
+html[data-weekday-skin] .k-main .details .article .content ol,
+html[data-weekday-skin] .widget_recent_entries ul,
+html[data-weekday-skin] .widget_recent_comments ul,
+html[data-weekday-skin] .widget_pages ul,
+html[data-weekday-skin] .widget_meta ul,
+html[data-weekday-skin] .widget_rss ul,
+html[data-weekday-skin] .widget_nav_menu ul,
+html[data-weekday-skin] .widget_block ul {
     list-style: none;
     padding-left: 1.6em;
 }
-.k-main .details .article .content ol {
+html[data-weekday-skin] .k-main .details .article .content ol {
     counter-reset: kra-ol;
 }
 /* 代码块行号 <ol> 已在 style.css 设 list-style:none，此处显式排除，避免 marker 溢出 */
-.k-main .details .article .content pre ul,
-.k-main .details .article .content pre ol {
+html[data-weekday-skin] .k-main .details .article .content pre ul,
+html[data-weekday-skin] .k-main .details .article .content pre ol {
     list-style: none;
     padding-left: 0;
     counter-reset: none;
 }
-.k-main .details .article .content ul > li,
-.k-main .details .article .content ol > li,
-.widget_recent_entries ul > li,
-.widget_recent_comments ul > li,
-.widget_pages ul > li,
-.widget_meta ul > li,
-.widget_rss ul > li,
-.widget_nav_menu ul > li,
-.widget_block ul > li {
+html[data-weekday-skin] .k-main .details .article .content ul > li,
+html[data-weekday-skin] .k-main .details .article .content ol > li,
+html[data-weekday-skin] .widget_recent_entries ul > li,
+html[data-weekday-skin] .widget_recent_comments ul > li,
+html[data-weekday-skin] .widget_pages ul > li,
+html[data-weekday-skin] .widget_meta ul > li,
+html[data-weekday-skin] .widget_rss ul > li,
+html[data-weekday-skin] .widget_nav_menu ul > li,
+html[data-weekday-skin] .widget_block ul > li {
     position: relative;
     /* 半行高：marker 与首行文字垂直居中的基准（行高 1.8 → 0.9em） */
     --kra-marker-mid: 0.9em;
@@ -2338,27 +2338,27 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
 }
 /* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
 @supports (top: 0.5lh) {
-.k-main .details .article .content ul > li,
-.k-main .details .article .content ol > li,
-.widget_recent_entries ul > li,
-.widget_recent_comments ul > li,
-.widget_pages ul > li,
-.widget_meta ul > li,
-.widget_rss ul > li,
-.widget_nav_menu ul > li,
-.widget_block ul > li {
+html[data-weekday-skin] .k-main .details .article .content ul > li,
+html[data-weekday-skin] .k-main .details .article .content ol > li,
+html[data-weekday-skin] .widget_recent_entries ul > li,
+html[data-weekday-skin] .widget_recent_comments ul > li,
+html[data-weekday-skin] .widget_pages ul > li,
+html[data-weekday-skin] .widget_meta ul > li,
+html[data-weekday-skin] .widget_rss ul > li,
+html[data-weekday-skin] .widget_nav_menu ul > li,
+html[data-weekday-skin] .widget_block ul > li {
     --kra-marker-mid: 0.5lh;
 }
 }
 
-.k-main .details .article .content ul > li::before,
-.widget_recent_entries ul > li::before,
-.widget_recent_comments ul > li::before,
-.widget_pages ul > li::before,
-.widget_meta ul > li::before,
-.widget_rss ul > li::before,
-.widget_nav_menu ul > li::before,
-.widget_block ul > li::before {
+html[data-weekday-skin] .k-main .details .article .content ul > li::before,
+html[data-weekday-skin] .widget_recent_entries ul > li::before,
+html[data-weekday-skin] .widget_recent_comments ul > li::before,
+html[data-weekday-skin] .widget_pages ul > li::before,
+html[data-weekday-skin] .widget_meta ul > li::before,
+html[data-weekday-skin] .widget_rss ul > li::before,
+html[data-weekday-skin] .widget_nav_menu ul > li::before,
+html[data-weekday-skin] .widget_block ul > li::before {
     content: "";
     position: absolute;
     left: -1em;
@@ -2369,10 +2369,10 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
     border-radius: 50%;
     background: var(--kr-skin-accent, currentColor);
 }
-.k-main .details .article .content ol > li {
+html[data-weekday-skin] .k-main .details .article .content ol > li {
     counter-increment: kra-ol;
 }
-.k-main .details .article .content ol > li::before {
+html[data-weekday-skin] .k-main .details .article .content ol > li::before {
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
@@ -2384,27 +2384,27 @@ html[data-weekday-skin]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
     font-weight: 600;
 }
 /* 嵌套 ul：第二层空心圆，第三层实心方块 */
-.k-main .details .article .content ul ul > li::before,
-.widget_recent_entries ul ul > li::before,
-.widget_recent_comments ul ul > li::before,
-.widget_pages ul ul > li::before,
-.widget_meta ul ul > li::before,
-.widget_rss ul ul > li::before,
-.widget_nav_menu ul ul > li::before,
-.widget_block ul ul > li::before {
+html[data-weekday-skin] .k-main .details .article .content ul ul > li::before,
+html[data-weekday-skin] .widget_recent_entries ul ul > li::before,
+html[data-weekday-skin] .widget_recent_comments ul ul > li::before,
+html[data-weekday-skin] .widget_pages ul ul > li::before,
+html[data-weekday-skin] .widget_meta ul ul > li::before,
+html[data-weekday-skin] .widget_rss ul ul > li::before,
+html[data-weekday-skin] .widget_nav_menu ul ul > li::before,
+html[data-weekday-skin] .widget_block ul ul > li::before {
     background: transparent;
     border: 1px solid var(--kr-skin-accent, currentColor);
     top: var(--kra-marker-mid);
     transform: translateY(-50%);
 }
-.k-main .details .article .content ul ul ul > li::before,
-.widget_recent_entries ul ul,
-.widget_recent_comments ul ul,
-.widget_pages ul ul,
-.widget_meta ul ul,
-.widget_rss ul ul,
-.widget_nav_menu ul ul,
-.widget_block ul ul ul > li::before {
+html[data-weekday-skin] .k-main .details .article .content ul ul ul > li::before,
+html[data-weekday-skin] .widget_recent_entries ul ul,
+html[data-weekday-skin] .widget_recent_comments ul ul,
+html[data-weekday-skin] .widget_pages ul ul,
+html[data-weekday-skin] .widget_meta ul ul,
+html[data-weekday-skin] .widget_rss ul ul,
+html[data-weekday-skin] .widget_nav_menu ul ul,
+html[data-weekday-skin] .widget_block ul ul ul > li::before {
     background: var(--kr-skin-accent, currentColor);
     border: none;
     border-radius: 0;

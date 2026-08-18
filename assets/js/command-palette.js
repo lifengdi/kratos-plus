@@ -138,10 +138,18 @@
         var skins = cfg.skins || [];
         if (!skins.length || !cfg.skinStorage) return [];
 
+        // 写入本地覆盖并重载：让 wp_head 的早期脚本在下一次启动时解析覆盖并注入
+        // 对应皮肤 CSS，避免在这里重抄一份「slug → CSS 文件」的注入逻辑
         function apply(value) {
             try { localStorage.setItem(cfg.skinStorage, value); } catch (e) {}
-            // 重新加载：让 skin-switcher.js 在下一次启动时还原并注入对应皮肤 CSS，
-            // 避免在这里重抄一份「slug → CSS 文件」的注入逻辑
+            window.location.reload();
+        }
+
+        // 清除本地覆盖：回到跟随站点配置（off / auto / locked），
+        // 与页脚切换面板底部的「恢复默认（清除本地设置）」完全一致。
+        // 注意它不同于「默认外观」——后者是把覆盖钉死为「不使用任何皮肤」。
+        function clearOverride() {
+            try { localStorage.removeItem(cfg.skinStorage); } catch (e) {}
             window.location.reload();
         }
 
@@ -158,8 +166,17 @@
         out.push({
             group: i18n.groupSkins,
             label: i18n.skinDefault,
+            sub: i18n.skinDefaultSub,
             icon: ICONS.palette,
             run: function () { apply(cfg.skinSentinel); }
+        });
+
+        out.push({
+            group: i18n.groupSkins,
+            label: i18n.skinRestore,
+            sub: i18n.skinRestoreSub,
+            icon: ICONS.palette,
+            run: clearOverride
         });
 
         return out;
