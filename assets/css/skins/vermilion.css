@@ -326,7 +326,7 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main blockquote:
     content: "“";
     position: absolute;
     top: -6px;
-    left: 6px;
+    left: 4px;
     font-size: 44px;
     color: var(--kr-skin-accent);
     opacity: 0.4;
