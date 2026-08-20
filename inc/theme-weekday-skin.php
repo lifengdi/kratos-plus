@@ -59,6 +59,7 @@ function kratos_weekday_options()
         'web1998'   => __('复古 · 千禧网页', 'kratos'),
         'ebook'     => __('电子书 · 纸墨', 'kratos'),
         'bookfold'  => __('书卷 · 半开卷', 'kratos'),
+        'bourse'    => __('金融 · 盘口', 'kratos'),
     );
 }
 
@@ -112,6 +113,7 @@ function kratos_weekday_variant_files()
         'web1998'   => 'web1998.css',
         'ebook'     => 'ebook.css',
         'bookfold'  => 'bookfold.css',
+        'bourse'    => 'bourse.css',
     );
 }
 

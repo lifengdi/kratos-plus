@@ -1422,6 +1422,7 @@ CSF::createSection($prefix, array(
                 'web1998'   => __('复古 · 千禧网页', 'kratos'),
                 'ebook'     => __('电子书 · 纸墨', 'kratos'),
                 'bookfold'  => __('书卷 · 半开卷', 'kratos'),
+                'bourse'    => __('金融 · 盘口', 'kratos'),
             ),
             'default' => 'mon',
             'dependency' => array('g_weekday_skin_mode', '==', 'locked'),

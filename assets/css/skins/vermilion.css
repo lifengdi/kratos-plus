@@ -1722,15 +1722,15 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .c
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .children {
     border-color: var(--kr-skin-card-line) !important;
 }
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-heart-badge {
-    border-radius: var(--kr-shape-radius-sm) !important;
-    background: var(--kr-skin-accent) !important;
-    color: #F8E7B8 !important;
-    border: 1px solid var(--kr-skin-decor) !important;
-    font-family: "KaiTi", "STKaiti", serif;
-    letter-spacing: 1px;
-    box-shadow: var(--kr-shape-shadow-sm);
-}
+/*html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .kratos-heart-badge {*/
+/*    border-radius: var(--kr-shape-radius-sm) !important;*/
+/*    background: var(--kr-skin-accent) !important;*/
+/*    color: #F8E7B8 !important;*/
+/*    border: 1px solid var(--kr-skin-decor) !important;*/
+/*    font-family: "KaiTi", "STKaiti", serif;*/
+/*    letter-spacing: 1px;*/
+/*    box-shadow: var(--kr-shape-shadow-sm);*/
+/*}*/
 
 /* ---------- 上下篇导航 ---------- */
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .post-navigation {

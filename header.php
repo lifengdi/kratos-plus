@@ -92,6 +92,12 @@
                 background: linear-gradient(90deg, transparent, #E5C97A 20%, #E5C97A 80%, transparent);
                 opacity: 0.7;
             }
+            /* 金融 · 盘口：吸顶用金融红渐变 + 下沿细金线 */
+            html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav.nav-sticky {
+                background: linear-gradient(180deg, #C8102E, #98071F) !important;
+                box-shadow: 0 4px 14px rgba(20, 32, 44, 0.18);
+                border-bottom: 2px solid #B08A3E;
+            }
             /* 暗夜模式：跟随暗夜次级底色 */
             html[data-theme="dark"] .k-nav.nav-sticky {
                 background: var(--kr-bg-elev, #1a1d22) !important;
@@ -151,6 +157,10 @@
         /* 图片导航关闭时，导航跟随皮肤 / 暗夜模式 */
         html[data-weekday-skin]:not([data-theme="dark"]) .k-nav:not(.nav-sticky) {
             background: var(--kr-skin-heading, <?php echo esc_attr(kratos_option('top_color', '#24292e')); ?>) !important;
+        }
+        /* 金融 · 盘口：常态导航同样是金融红渐变（与 demo 的行情页头一致） */
+        html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav:not(.nav-sticky) {
+            background: linear-gradient(180deg, #C8102E, #98071F) !important;
         }
         html[data-theme="dark"] .k-nav:not(.nav-sticky) {
             background: var(--kr-bg-elev, #1a1d22) !important;

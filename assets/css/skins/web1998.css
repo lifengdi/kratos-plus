@@ -2015,15 +2015,15 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .com
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .list > li {
     border-bottom: 1px dashed var(--kr-skin-card-line-strong) !important;
 }
-html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-badge {
-    border-radius: var(--kr-shape-radius) !important;
-    background: var(--kr-skin-accent) !important;
-    color: var(--kr-skin-heading) !important;
-    border: var(--kr-shape-border) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
-    letter-spacing: 1px;
-    box-shadow: 1px 1px 0 var(--kr-skin-heading);
-}
+/*html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-badge {*/
+/*    border-radius: var(--kr-shape-radius) !important;*/
+/*    background: var(--kr-skin-accent) !important;*/
+/*    color: var(--kr-skin-heading) !important;*/
+/*    border: var(--kr-shape-border) !important;*/
+/*    font-family: "Tahoma", "Verdana", sans-serif;*/
+/*    letter-spacing: 1px;*/
+/*    box-shadow: 1px 1px 0 var(--kr-skin-heading);*/
+/*}*/
 
 /* ---------- 文章底部：上一篇 / 下一篇按钮 ---------- */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .post-navigation {

@@ -1,0 +1,2357 @@
+@charset "UTF-8";
+@property --kra-marker-mid {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 0px;
+}
+
+/* Kratos+ 皮肤 · 金融 · 盘口 bourse
+ * 视觉参考：demo/skin-bourse.html —— 专业金融终端 / 行情盘口。
+ * 形态语言：冷灰蓝护眼底、白卡、1px 细边框、2px 小直角、极弱阴影、
+ * 密排间距；主色为金融红（涨红），跌绿仅用于数据对比，细金线作克制点缀；
+ * 数字统一 tabular-nums 等宽对齐。选择器覆盖面与 retro / vermilion 一致。
+ */
+
+html[data-weekday-skin="bourse"] {
+    --kr-skin-bg:          #F3F5F8;   /* 冷灰蓝护眼底 */
+    --kr-skin-card-bg:     #FFFFFF;   /* 白卡 */
+    --kr-skin-card-soft:   #EAEEF3;   /* 表头 / 输入槽 */
+    --kr-skin-card-line:   #D8DFE7;
+    --kr-skin-card-line-strong: #BCC7D2;
+    --kr-skin-heading:     #14202C;   /* 深墨蓝 */
+    --kr-skin-text:        #2E3A46;
+    --kr-skin-muted:       #6B7A88;
+    --kr-skin-link:        #C8102E;   /* 金融红 */
+    --kr-skin-link-hover:  #98071F;   /* 深红 */
+    --kr-skin-accent:      #C8102E;
+    --kr-skin-accent-hover:#98071F;
+    --kr-skin-decor:       #B08A3E;   /* 细金线 */
+    --kr-skin-accent-soft: #F5E3E6;   /* 浅红底（选中 / tag） */
+    --kr-skin-down:        #0E7A55;   /* 跌绿，仅数据用 */
+    --kr-skin-quote-bg:    #EAEEF3;
+    --kr-skin-tag-bg:      var(--kr-skin-accent-soft);
+    --kr-skin-banner-overlay: rgba(20, 32, 44, 0.55);
+    --kr-skin-footer-bg:   #14202C;
+    --kr-skin-footer-fg:   #96A5B4;
+
+    /* 字体：全站无衬线（终端可读性优先），数字等宽 */
+    --kr-skin-font:      "Inter", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    --kr-skin-font-head: "Inter", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    --kr-skin-font-num:  "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace;
+
+    /* 形状语言令牌（本皮肤所有圆角/阴影/描边的单一来源；改这里即全局生效）。
+     * 亮/暗通用：颜色走 --kr-skin-* 主题变量，自动随亮暗切换。 */
+    --kr-shape-radius:        2px;
+    --kr-shape-radius-sm:     1px;
+    --kr-shape-shadow:        0 1px 2px rgba(20, 32, 44, .06);
+    --kr-shape-shadow-sm:     0 1px 2px rgba(20, 32, 44, .08);
+    --kr-shape-shadow-hover:  0 2px 6px rgba(20, 32, 44, .10);
+    --kr-shape-shadow-accent: 0 2px 8px rgba(200, 16, 46, .18);
+    --kr-shape-border:        1px solid var(--kr-skin-card-line);
+    --kr-shape-border-strong: 1px solid var(--kr-skin-card-line-strong);
+    /* 按钮/胶囊的实心底压边（终端质感，取代复古硬投影） */
+    --kr-shape-inset:         inset 0 -1px 0 rgba(0, 0, 0, .16);
+}
+
+/* ===== 主区：极淡坐标网格（终端坐标纸的暗示，不抢内容） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main {
+    background-image:
+        linear-gradient(to right, rgba(20, 32, 44, .028) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(20, 32, 44, .028) 1px, transparent 1px) !important;
+    background-size: 56px 56px !important;
+}
+
+/* ===== 数字等宽对齐（表格 / 元信息 / 计数 / 分页） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table td,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .header .meta,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-date,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-views,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-comments,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-lasttime,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-time,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-time,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-stats-value,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-cat-percent,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-time {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+/* 纯数值字段（计数 / 占比 / 分页序号）再上等宽字体，扫读时数位对齐 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-stats-value,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-cat-percent,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .current {
+    font-family: var(--kr-skin-font-num);
+}
+
+/* ===== 全站无衬线字体（金融终端可读性优先） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo {
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main h1,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main h2,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main h3,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main h4,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main h5,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main h6,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .article-panel h2,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .comments-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    font-family: var(--kr-skin-font-head);
+    letter-spacing: .03em;
+    font-weight: 900;
+}
+
+/* ===== 顶部导航（红底白字 + 下沿细金线，与 demo 的行情页头一致） =====
+ * demo：linear-gradient(180deg,#C8102E,#A80A24) + 2px 金色下沿，
+ *      菜单白字（未选中 86% 透明度），hover/当前项加深色蒙版，
+ *      当前项再补一条金色下边线。
+ * 注：header.php 的内联样式会在两种情况下强制 nav 背景（吸顶态、以及
+ *     「图片导航关闭」时的常态），且与本文件同特异性但后加载，故那两处
+ *     已在 header.php 内为本皮肤补了 bourse 分支；这里负责其余状态与
+ *     全部前景色/形态。
+ */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav {
+    background: linear-gradient(180deg, var(--kr-skin-accent) 0%, var(--kr-skin-accent-hover) 100%) !important;
+    border-bottom: 2px solid var(--kr-skin-decor) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav.nav-sticky {
+    box-shadow: 0 4px 14px rgba(20, 32, 44, 0.18) !important;
+    position: fixed;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-brand,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-brand h1 {
+    color: #fff !important;
+    font-family: var(--kr-skin-font-head);
+    font-weight: 800;
+    letter-spacing: .06em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-brand:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-brand:focus {
+    color: var(--kr-skin-decor) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .nav-link,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav > li.nav-item > a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .nav-link:focus,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav > li.nav-item > a:focus {
+    color: rgba(255, 255, 255, .86) !important;
+    font-family: var(--kr-skin-font);
+    letter-spacing: .04em;
+    font-weight: 600;
+    font-size: 13px;
+    opacity: 1;
+    border-bottom: 2px solid transparent;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .nav-link:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav > li.nav-item > a:hover {
+    color: #fff !important;
+    background: rgba(0, 0, 0, .12);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .active > .nav-link,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav > li.nav-item.active > a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav > li.current-menu-item > a {
+    color: #fff !important;
+    background: rgba(0, 0, 0, .16);
+    border-bottom-color: var(--kr-skin-decor);
+}
+/* 汉堡按钮三条线：白色 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .line {
+    background: #fff !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-toggler {
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, .5) !important;
+}
+/* 下拉菜单：白卡 + 细边框 + 红色选中（与站内卡片语言一致，不用红底叠红底） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .dropdown-menu {
+    background: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .dropdown-item {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .dropdown-item:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .dropdown-item.active,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-nav .dropdown-item:active {
+    background-color: var(--kr-skin-accent);
+    color: #fff;
+}
+/* 移动端展开的菜单面板：红底延续，条目之间用半透明白线分隔 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-collapse.show,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav .navbar-collapse.collapsing {
+    background: var(--kr-skin-accent-hover);
+    border-top: 1px solid rgba(255, 255, 255, .18);
+}
+
+/* ===== Banner（细金压边 + 底部强调线，终端页头感） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-header .banner .content {
+    border-radius: var(--kr-shape-radius);
+    overflow: hidden;
+    position: relative;
+    border: var(--kr-shape-border);
+    border-bottom: 2px solid var(--kr-skin-accent);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-header .banner .content::before {
+    /* 顶部一条细金线（克制点缀，呼应导航下沿） */
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--kr-skin-decor);
+    opacity: .85;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ===== 文章卡片（报纸剪贴 + 硬阴影 + 折痕） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .toolbar {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget {
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius) !important;
+    position: relative;
+}
+/* 文章目录小工具需保持吸顶：上面的 .widget position:relative 会盖掉
+ * style.css 里 .w-toc 的 position:sticky，这里用更高特异性(加 .sidebar)恢复。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc {
+    position: sticky;
+}
+/* 列表卡左侧强调细条（盘口面板语言，取代复古折痕） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    background: var(--kr-skin-accent);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ===== 标题下的细线分割 & 左侧强调条 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .article-panel h2,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article h1 {
+    padding-bottom: 10px;
+    padding-left: 10px;
+    border-bottom: 1px solid var(--kr-skin-card-line);
+    border-left: 3px solid var(--kr-skin-accent);
+    position: relative;
+    color: var(--kr-skin-heading);
+}
+
+/* ===== 侧栏 / 评论区小标题（灰槽细线 + 小型大写字距） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .comments-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
+    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
+    padding-left: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .title::after,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget-title::after {
+    display: none !important;
+}
+
+/* ===== 引用块（细金左条 + 灰槽底，风险提示口吻） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main blockquote,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content blockquote {
+    border-left: 3px solid var(--kr-skin-decor) !important;
+    background: var(--kr-skin-quote-bg);
+    color: var(--kr-skin-muted);
+    font-style: normal;
+    position: relative;
+    border-radius: 0 var(--kr-shape-radius) var(--kr-shape-radius) 0 !important;
+}
+
+/* ===== 标签（硬边直角 + hover 反色） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .article-tags a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .tagcloud a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .tag-links a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background: var(--kr-skin-tag-bg);
+    color: var(--kr-skin-accent-hover) !important;
+    border: 1px solid var(--kr-skin-accent);
+    border-radius: var(--kr-shape-radius) !important;
+    letter-spacing: .03em;
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .article-tags a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .tagcloud a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .tag-links a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer .tags a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover {
+    background: var(--kr-skin-accent);
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent);
+}
+
+/* ===== 分页（硬边直角） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border-strong);
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .current,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .pagination .page-item.active .page-link,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .pagination .page-item .page-link:hover {
+    background: var(--kr-skin-accent-hover);
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-muted);
+    cursor: default;
+}
+
+/* ===== 侧栏列表（§ 前缀 + 点线分割） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget li {
+    border-bottom: 1px dotted var(--kr-skin-card-line);
+}
+/*html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget li:last-child {*/
+/*    border-bottom: none;*/
+/*}*/
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    content: "\A7";           /* § */
+    background: transparent !important;
+    border: none !important;
+    color: var(--kr-skin-accent);
+    font-weight: 700;
+    width: auto !important;
+    height: auto !important;
+    top: var(--kra-marker-mid) !important;
+    transform: translateY(-50%) !important;
+    left: -1em !important;
+    border-radius: var(--kr-shape-radius) !important;
+}
+
+/* ===== 表单输入 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main #respond .comment-form textarea,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main #respond .comment-form input {
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main #respond .comment-form textarea:focus,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main #respond .comment-form input:focus {
+    border-color: var(--kr-skin-accent-hover);
+    box-shadow: var(--kr-shape-shadow);
+}
+
+/* ===== 页脚 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer {
+    background: var(--kr-skin-footer-bg) !important;
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: var(--kr-skin-accent);
+    opacity: .6;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer::after {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: var(--kr-skin-accent);
+    opacity: .3;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer p,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer p a {
+    color: var(--kr-skin-footer-fg);
+    letter-spacing: .03em;
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer p a {
+    color: var(--kr-skin-accent);
+    border-bottom: 1px dotted var(--kr-skin-accent);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer p a:hover {
+    color: #fff !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a {
+    border-bottom: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a .kicon,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+    color: var(--kr-skin-footer-fg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+    color: #fff;
+}
+
+/* ============ 通用规则（复用自 weekday-skins.css，锁定到本 slug） ============ */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body {
+    background-color: var(--kr-skin-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main {
+    background-color: var(--kr-skin-bg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main p,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main ol,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main ul,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo p,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo ul {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo a {
+    color: var(--kr-skin-link);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo a:hover {
+    color: var(--kr-skin-link-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-header .banner .overlay {
+    background-color: var(--kr-skin-banner-overlay);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a:hover {
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content p {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta {
+    border-top-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a:hover {
+    color: var(--kr-skin-link-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label {
+    background-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label .label-arrow {
+    border-left-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .search-title {
+    color: var(--kr-skin-heading);
+}
+
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .breadcrumb-box {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .header .meta {
+    color: var(--kr-skin-muted);
+    font-family: var(--kr-skin-font);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .header .meta > span:not(:last-child):after {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content p {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .content h2.title {
+    background-color: transparent;
+    border-left: 0;
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .content h2.title::after {
+    background-color: var(--kr-skin-accent);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content hr {
+    border-top-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table th,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table td {
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table tr:nth-child(2n) {
+    background-color: var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main thead {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .copyright span {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer {
+    border-top-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer .tags span,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer .tool span {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .downbtn {
+    border-color: var(--kr-skin-accent-hover);
+    background: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-inset), var(--kr-shape-shadow);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .downbtn:hover {
+    background: var(--kr-skin-heading);
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations span {
+    margin: 0 !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px !important;
+    border-radius: var(--kr-shape-radius);
+    border: var(--kr-shape-border-strong);
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1;
+    transition: all .2s ease;
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
+    background: var(--kr-skin-accent-hover);
+    color: #fff;
+    border-color: var(--kr-skin-accent-hover);
+    font-weight: 600;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .motto {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .meta .name a {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate {
+    border-color: var(--kr-skin-accent-hover);
+    color: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:focus,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate:hover {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-accent-hover);
+    color: #fff;
+}
+
+/* ===== 评论 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .list > li,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .children {
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name a {
+    color: var(--kr-skin-accent-hover);
+    font-family: var(--kr-skin-font);
+    font-weight: 900;
+    letter-spacing: .03em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p span {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta a {
+    color: var(--kr-skin-muted);
+    font-style: normal;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .avatar img {
+    border-color: var(--kr-skin-heading);
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) #commentpage a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) #commentpage .current,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) #commentpage .dots {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    border-color: var(--kr-skin-card-line-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) #commentpage a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) #commentpage .current {
+    background: var(--kr-skin-accent-hover);
+    border-color: var(--kr-skin-accent-hover);
+    color: #fff;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) #commentpage .dots {
+    background: transparent;
+    border-color: transparent;
+    color: var(--kr-skin-muted);
+}
+
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .input-group-text,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .form-control {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line-strong);
+    color: var(--kr-skin-text);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .form-control::placeholder {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea {
+    border-color: var(--kr-skin-card-line-strong);
+    background-color: var(--kr-skin-card-soft);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea {
+    background-color: transparent;
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea::placeholder {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar {
+    background-color: var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn:hover {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .smile .smile-tabs {
+    background: var(--kr-skin-card-soft);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab {
+    border-right-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab.active {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile .smile-panel a {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .error {
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line-strong);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary {
+    background-color: var(--kr-skin-accent-hover);
+    border-color: var(--kr-skin-heading);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-inset), var(--kr-shape-shadow);
+    font-family: var(--kr-skin-font);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .btn-primary:hover {
+    background-color: var(--kr-skin-heading);
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+
+/* ===== 侧栏 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget {
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a {
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
+    background-color: var(--kr-skin-tag-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li {
+    border-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item:hover {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-desc {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item:hover {
+    color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .nav-tabs .nav-link {
+    border-bottom-color: var(--kr-skin-card-line);
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .nav-tabs .nav-item.show .nav-link,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .nav-tabs .nav-link.active {
+    background-color: transparent !important;
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar tbody a {
+    background: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-accent-hover);
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments a:not(:last-child) {
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .message {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .author,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .date {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc {
+    border-left-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::after {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-card-bg);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li::before {
+    border-color: var(--kr-skin-card-bg);
+    background: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item li:hover::before {
+    background: var(--kr-skin-accent-hover);
+}
+
+/* ===== 通用输入 / 按钮 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) input[type="text"],
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) input[type="email"],
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) input[type="url"],
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) input[type="search"],
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) input[type="password"],
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) textarea,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) select {
+    background-color: var(--kr-skin-card-soft);
+    color: var(--kr-skin-text);
+    border-color: var(--kr-skin-card-line-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-captcha-input {
+    color: var(--kr-skin-text);
+    background-color: var(--kr-skin-card-soft);
+    border-color: var(--kr-skin-card-line-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-captcha-input::placeholder {
+    color: var(--kr-skin-muted);
+    opacity: 1;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-captcha-input:focus {
+    border-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-captcha-q {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .btn-search {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .dropdown-item.active,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .dropdown-item:active {
+    background-color: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-prevpage {
+    border-color: var(--kr-skin-accent-hover);
+    background-color: var(--kr-skin-accent-hover);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-inset), var(--kr-shape-shadow);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index {
+    border-color: var(--kr-skin-heading);
+    color: var(--kr-skin-heading);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .page404 .content .action .back-index:hover {
+    background-color: var(--kr-skin-heading);
+    color: var(--kr-skin-card-bg);
+}
+
+/* ===== 关于我小工具 CTA 按钮（直角 + 硬阴影，与主按钮统一） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary {
+    background: var(--kr-skin-accent-hover);
+    color: #fff;
+    border: var(--kr-shape-border);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-inset), var(--kr-shape-shadow);
+    font-family: var(--kr-skin-font);
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: box-shadow .15s, background .2s, border-color .15s;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-primary:hover {
+    background: var(--kr-skin-heading);
+    color: #fff;
+    opacity: 1;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost {
+    background: var(--kr-skin-card-bg);
+    color: var(--kr-skin-accent-hover);
+    border: 1px solid var(--kr-skin-accent);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow);
+    font-family: var(--kr-skin-font);
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .w-about-plus a.w-about-cta-btn.is-ghost:hover {
+    background: var(--kr-skin-accent);
+    color: var(--kr-skin-card-bg);
+    box-shadow: var(--kr-shape-shadow-hover);
+}
+
+/* ===== 说说 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item {
+    background: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+    box-shadow: var(--kr-shape-shadow);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author {
+    color: var(--kr-skin-heading);
+    border-bottom-color: var(--kr-skin-card-line);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author::before {
+    background: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-text {
+    color: var(--kr-skin-text);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-time {
+    color: var(--kr-skin-muted);
+    font-style: normal;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle {
+    color: var(--kr-skin-link);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle::after {
+    border-top-color: var(--kr-skin-link);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle:hover {
+    color: var(--kr-skin-link-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
+    background: var(--kr-skin-card-bg);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
+    color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title::before {
+    background: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-subtitle {
+    color: var(--kr-skin-muted);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-back {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line-strong);
+    color: var(--kr-skin-muted) !important;
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-back:hover {
+    color: var(--kr-skin-accent-hover) !important;
+    border-color: var(--kr-skin-accent-hover);
+    background: var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page {
+    background: var(--kr-skin-card-bg);
+    border-color: var(--kr-skin-card-line-strong);
+    color: var(--kr-skin-heading) !important;
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-page:hover {
+    background: var(--kr-skin-accent-hover);
+    border-color: var(--kr-skin-accent-hover);
+    color: #fff !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-current {
+    background: var(--kr-skin-accent-hover);
+    border-color: var(--kr-skin-accent-hover);
+    color: #fff !important;
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-ellipsis {
+    color: var(--kr-skin-muted) !important;
+    background: transparent;
+    border-color: transparent;
+}
+
+/* ===== 详情页 header 强制统一色 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article h1,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h1,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h2,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h3,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h4,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h5,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h6 {
+    color: var(--kr-skin-heading);
+}
+
+/* ===== 底部工具盒图标 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
+    background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
+    transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+
+/* ===== 短代码 shortcode 变量映射 ===== */
+/* khs / kas 通用映射见 components.css：本皮肤 accent 即金融红，
+ * 与公共别名层取值一致，故无需逐短代码重抄映射（仅下方个别形态覆盖）。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::after {
+    display: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-stat,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-row,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-header,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-header,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-card {
+    border-color: var(--kr-skin-card-line-strong) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
+    background: var(--kr-skin-bg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-input:focus {
+    border-color: var(--kr-skin-accent-hover) !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .06) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit {
+    background: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit:hover {
+    background: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: var(--kr-skin-bg) !important;
+    color: var(--kr-skin-text) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count {
+    border-left-color: var(--kr-skin-card-line) !important;
+}
+/* 归档 kas：通用映射见 components.css，取值即金融红，无需在此对调 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header {
+    border-color: var(--kr-skin-card-line-strong) !important;
+}
+
+/* ===== Dark 模式（暗夜优先） ===== */
+html[data-theme="dark"][data-weekday-skin="bourse"] {
+    --kr-link: #FF6B7E;
+    --kr-link-hover: #FF8E9D;
+    --kr-accent: #E23B52;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .k-main {
+    background-image: none !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .k-main::after,
+html[data-theme="dark"][data-weekday-skin="bourse"] .k-main .board .article-panel::before {
+    display: none !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
+    background: rgba(255, 255, 255, .06) !important;
+    color: var(--kr-fg, #d6d8db) !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-topcommenters .ktc-count-num {
+    color: var(--kr-accent) !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-heart-shortcode.khs-scheme-parchment,
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-archives-shortcode.kas-scheme-parchment {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    clip-path: none !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-heart-shortcode.khs-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-heart-shortcode.khs-scheme-parchment::after,
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-archives-shortcode.kas-scheme-parchment::before,
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-archives-shortcode.kas-scheme-parchment::after {
+    display: none !important;
+}
+
+/* ===== 特殊页面（归档/心情等）关闭卡片装饰 ===== */
+html[data-weekday-skin="bourse"] body.is-kratos-archives-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-dashboard-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-heart-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-shuoshuo-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-topcommenters-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-friend-links-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-home-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-timeline-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-friend-feed-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-featured-title-page .k-main .details,
+html[data-weekday-skin="bourse"] body.is-kratos-now-page .k-main .details {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: var(--kr-shape-radius) !important;
+    padding: 0 !important;
+}
+html[data-weekday-skin="bourse"] body.is-kratos-archives-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-dashboard-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-heart-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-shuoshuo-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-topcommenters-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-friend-links-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-home-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-timeline-page .k-main .details::after,
+html[data-weekday-skin="bourse"] body.is-kratos-friend-feed-page .k-main .details::after {
+    display: none !important;
+}
+
+/* ===== 滚动条 ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--kr-skin-accent-hover) var(--kr-skin-card-soft);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb {
+    background-color: var(--kr-skin-accent-hover);
+    border: var(--kr-shape-border-strong);
+    border-radius: var(--kr-shape-radius);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--kr-skin-heading);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) ::-webkit-scrollbar-track {
+    background-color: var(--kr-skin-card-soft);
+    border: 1px solid var(--kr-skin-card-line);
+}
+
+/* ===== 列表标记（实心小方块 / 等宽序号，金融红） ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_pages ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_meta ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_rss ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_nav_menu ul > li::before,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .widget_block ul > li::before {
+    background: var(--kr-skin-accent-hover);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+    color: var(--kr-skin-accent-hover);
+}
+
+html[data-weekday-skin="bourse"] .k-main .details .article .content ul,
+html[data-weekday-skin="bourse"] .k-main .details .article .content ol,
+html[data-weekday-skin="bourse"] .widget_recent_entries ul,
+html[data-weekday-skin="bourse"] .widget_recent_comments ul,
+html[data-weekday-skin="bourse"] .widget_pages ul,
+html[data-weekday-skin="bourse"] .widget_meta ul,
+html[data-weekday-skin="bourse"] .widget_rss ul,
+html[data-weekday-skin="bourse"] .widget_nav_menu ul,
+html[data-weekday-skin="bourse"] .widget_block ul {
+    list-style: none;
+    padding-left: 1.6em;
+}
+html[data-weekday-skin="bourse"] .k-main .details .article .content ol {
+    counter-reset: kra-ol;
+}
+html[data-weekday-skin="bourse"] .k-main .details .article .content ul > li,
+html[data-weekday-skin="bourse"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="bourse"] .widget_recent_entries ul > li,
+html[data-weekday-skin="bourse"] .widget_recent_comments ul > li,
+html[data-weekday-skin="bourse"] .widget_pages ul > li,
+html[data-weekday-skin="bourse"] .widget_meta ul > li,
+html[data-weekday-skin="bourse"] .widget_rss ul > li,
+html[data-weekday-skin="bourse"] .widget_nav_menu ul > li,
+html[data-weekday-skin="bourse"] .widget_block ul > li {
+    position: relative;
+    /* 半行高：marker 与首行文字垂直居中的基准（行高 1.8 → 0.9em） */
+    --kra-marker-mid: 0.9em;
+    margin-bottom: 6px;
+    padding-left: 0.4em;
+}
+/* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
+@supports (top: 0.5lh) {
+html[data-weekday-skin="bourse"] .k-main .details .article .content ul > li,
+html[data-weekday-skin="bourse"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="bourse"] .widget_recent_entries ul > li,
+html[data-weekday-skin="bourse"] .widget_recent_comments ul > li,
+html[data-weekday-skin="bourse"] .widget_pages ul > li,
+html[data-weekday-skin="bourse"] .widget_meta ul > li,
+html[data-weekday-skin="bourse"] .widget_rss ul > li,
+html[data-weekday-skin="bourse"] .widget_nav_menu ul > li,
+html[data-weekday-skin="bourse"] .widget_block ul > li {
+    --kra-marker-mid: 0.5lh;
+}
+}
+
+html[data-weekday-skin="bourse"] .k-main .details .article .content ul > li::before {
+    content: "";
+    position: absolute;
+    left: -1em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--kr-skin-accent, currentColor);
+}
+html[data-weekday-skin="bourse"] .k-main .details .article .content ol > li {
+    counter-increment: kra-ol;
+}
+html[data-weekday-skin="bourse"] .k-main .details .article .content ol > li::before {
+    content: counter(kra-ol) ".";
+    position: absolute;
+    left: -1.4em;
+    top: var(--kra-marker-mid);
+    transform: translateY(-50%);
+    min-width: 1.2em;
+    text-align: right;
+    color: var(--kr-skin-accent, currentColor);
+    font-weight: 600;
+}
+
+/* ============================================================
+ * 特色页面 / 短代码 · 金融风强化覆盖
+ * 走心评论 / 说说 / 归档 / 时间轴 / 博友圈 / 榜首评论人 / 特色标题页
+ * 统一：白卡 + 2px 小直角 + 极弱阴影 + 细线小标题 +
+ *      小型大写字距标题 + 金融红高亮
+ * ============================================================ */
+
+/* ---------- 共通：把「卡片系」统一为「白卡 + 细边框 + 2px 小直角 + 极弱阴影」 ----------
+ * 统一走公共类：.kr-hd（标题卡）/ .kr-body（主体卡）/ .kr-card（内容卡 + 统计小卡 + 系列列表卡 + 相关文章卡）。
+ * 覆盖对象等价于此前逐命名空间枚举的 22 个选择器；新增短代码只要挂 kr-* 即自动继承。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) :is(.kr-hd, .kr-body, .kr-card) {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border-strong) !important;
+    background: var(--kr-skin-card-bg) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+
+/* ---------- 共通：标题/大字段 统一字重与字距 ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-header,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-header-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h1,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h2 {
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    letter-spacing: .08em !important;
+    color: var(--kr-skin-heading) !important;
+}
+
+/* 副标题（灰字 + 克制字距）—— 统一走公共类 .kr-hd-sub */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd-sub {
+    color: var(--kr-skin-muted) !important;
+    font-family: var(--kr-skin-font) !important;
+    font-style: normal !important;
+    letter-spacing: .03em !important;
+}
+
+/* 标题下的分隔线：细金线 —— 统一走公共类 .kr-hd-divider */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd-divider {
+    background: transparent !important;
+    border-top: 1px solid var(--kr-skin-decor) !important;
+    height: 0 !important;
+    opacity: 1 !important;
+}
+
+/* ---------- 走心评论 khs ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat-num {
+    font-family: var(--kr-skin-font-head) !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card {
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-author,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-from {
+    color: var(--kr-skin-accent-hover) !important;
+    font-weight: 700;
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-time {
+    color: var(--kr-skin-muted) !important;
+    font-style: normal;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-page {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-heading) !important;
+    border: var(--kr-shape-border-strong) !important;
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-page:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-current {
+    background: var(--kr-skin-accent-hover) !important;
+    color: #fff !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+/* 头像图片本体默认 border-radius:50%（theme-comment-heart.php 内联 !important），必须显式改方形 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar-img,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-avatar img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+
+/* ---------- 说说 kss ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-item {
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
+    font-family: var(--kr-skin-font-head) !important;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+/* ---------- 榜首评论人 ktc ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-avatar,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-avatar img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank {
+    font-family: var(--kr-skin-font-head) !important;
+    color: var(--kr-skin-heading) !important;
+    background: var(--kr-skin-bg) !important;
+    border-radius: var(--kr-shape-radius) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank.ktc-rank-medal {
+    background: var(--kr-skin-accent) !important;
+    color: var(--kr-skin-heading) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font);
+    font-weight: 700;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
+    font-family: var(--kr-skin-font-head) !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-lasttime {
+    font-style: normal;
+    color: var(--kr-skin-muted) !important;
+}
+
+/* ---------- 友链 kfl ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-logo,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-logo img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-logo-letter {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font);
+    font-weight: 700;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-desc {
+    color: var(--kr-skin-muted) !important;
+    font-style: normal;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
+    font-family: var(--kr-skin-font-head) !important;
+    letter-spacing: .06em;
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-copy-btn {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    font-family: var(--kr-skin-font);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    box-shadow: var(--kr-shape-inset), var(--kr-shape-shadow);
+    transition: box-shadow .15s, background .2s, border-color .15s;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-copy-btn:hover {
+    box-shadow: var(--kr-shape-shadow-sm);
+    background: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-input,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-textarea {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border-strong) !important;
+    background: var(--kr-skin-card-soft) !important;
+    color: var(--kr-skin-text) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert {
+    border-radius: var(--kr-shape-radius) !important;
+    border: 1px dashed var(--kr-skin-accent-hover) !important;
+    background: var(--kr-skin-quote-bg) !important;
+}
+
+/* ---------- 博友圈 kff ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-logo,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-logo img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-site {
+    font-family: var(--kr-skin-font);
+    color: var(--kr-skin-heading) !important;
+    font-weight: 700;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-time,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-from,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-meta {
+    color: var(--kr-skin-muted) !important;
+    font-style: normal;
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat-num {
+    font-family: var(--kr-skin-font-head) !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-badge {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-tag-bg) !important;
+    color: var(--kr-skin-accent-hover) !important;
+    border: 1px solid var(--kr-skin-accent) !important;
+    font-family: var(--kr-skin-font);
+    letter-spacing: .03em;
+}
+
+/* ---------- 归档 kas ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-num,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count {
+    font-family: var(--kr-skin-font-head) !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-label,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-label {
+    color: var(--kr-skin-muted) !important;
+    font-family: var(--kr-skin-font);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font);
+    box-shadow: var(--kr-shape-shadow);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill.is-active {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-tab {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font);
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-tab.is-active,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-tab:hover {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-time-head {
+    font-family: var(--kr-skin-font-head) !important;
+    color: var(--kr-skin-heading) !important;
+    letter-spacing: .06em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section-head {
+    border-bottom: 1px dashed var(--kr-skin-card-line-strong) !important;
+}
+
+/* ---------- 时间轴 ktl（.kratos-timeline） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-year {
+    color: var(--kr-skin-accent-hover) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    letter-spacing: .08em !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-month {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 700 !important;
+    letter-spacing: .06em !important;
+    border-bottom: 1px dashed var(--kr-skin-card-line-strong) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item {
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item a {
+    color: var(--kr-skin-link) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-date {
+    color: var(--kr-skin-muted) !important;
+    font-style: normal;
+    font-family: var(--kr-skin-font);
+}
+
+/* ---------- 特色标题页（page-featured-title） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content {
+    padding: 24px 28px;
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h1,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h2,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h3 {
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--kr-skin-card-line-strong);
+    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
+    padding-left: 10px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content blockquote {
+    border-left: 3px solid var(--kr-skin-decor) !important;
+    background: var(--kr-skin-quote-bg) !important;
+    font-style: normal;
+    border-radius: var(--kr-shape-radius) !important;
+}
+
+/* ---------- 特殊页面主容器背景兜底（透明化） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-archives-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-dashboard-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-heart-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-shuoshuo-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-topcommenters-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-friend-links-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-home-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-timeline-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-friend-feed-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-featured-title-page .k-main .details,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body.is-kratos-now-page .k-main .details {
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* ============================================================
+ * 补丁 · 金融风扩展覆盖
+ * 覆盖对象：走心评论标题头 / 时间轴内容卡片 / 系列短码 /
+ *          系列列表页 / 相关文章卡片 / 详情页评论卡片 /
+ *          上下篇导航按钮
+ * ============================================================ */
+
+/* ---------- 走心评论：标题头（.khs-header）图标块 ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-header {
+    padding: 22px 26px !important;
+    gap: 14px;
+}
+/* .khs-title-icon 走统一图标胶囊规则（见文件底部） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title {
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase;
+    color: var(--kr-skin-heading) !important;
+}
+
+/* ---------- 时间轴：条目行（不作为独立卡片，保持轴线内联样式） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    position: relative;
+}
+/* 年份/月份是轴内分组标签，不是卡片（只卸背景/阴影，保留装饰边线） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-year,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-month {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+/* 年份徽章：灰槽底 + 细描边 + 小直角，替代默认圆角灰底 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-year-badge {
+    background: var(--kr-skin-accent) !important;
+    color: var(--kr-skin-heading) !important;
+    border: var(--kr-shape-border) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow-sm) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    letter-spacing: .06em !important;
+}
+/* 时间轴中轴线：换成金线 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-spine {
+    background: var(--kr-skin-accent) !important;
+    opacity: .7;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-title {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 700;
+    letter-spacing: .03em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-title:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-meta,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-date,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-sep,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-views,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-comments {
+    color: var(--kr-skin-muted) !important;
+    font-style: normal;
+    font-family: var(--kr-skin-font);
+}
+/* .ktl-title-icon / .ktl-item-icon 走统一图标胶囊规则（见文件底部） */
+
+/* ---------- 系列短码（文章页内的 .kratos-series） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-head {
+    border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
+    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
+    padding-left: 10px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-icon {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-title {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    letter-spacing: .06em !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-title:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-pos {
+    background: var(--kr-skin-tag-bg) !important;
+    color: var(--kr-skin-accent-hover) !important;
+    border: 1px solid var(--kr-skin-accent) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    font-family: var(--kr-skin-font);
+    letter-spacing: .03em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-toggle {
+    background: transparent !important;
+    color: var(--kr-skin-accent-hover) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-toggle:hover {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-crumbs,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-crumbs a {
+    color: var(--kr-skin-muted) !important;
+    font-family: var(--kr-skin-font);
+    font-style: normal;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-crumbs a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-crumb-current {
+    color: var(--kr-skin-heading) !important;
+    font-weight: 700;
+    font-style: normal;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-crumb-sep {
+    color: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-item {
+    border-bottom: 1px dotted var(--kr-skin-card-line-strong) !important;
+    padding: 8px 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-item:last-child {
+    border-bottom: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-item.is-current {
+    background: var(--kr-skin-quote-bg) !important;
+    padding-left: 8px !important;
+    border-left: 3px solid var(--kr-skin-decor) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-num {
+    background: var(--kr-skin-heading) !important;
+    color: var(--kr-skin-accent) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    min-width: 26px;
+    text-align: center;
+    padding: 2px 6px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-item.is-current .kratos-series-num {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font);
+    letter-spacing: .02em;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) a.kratos-series-name:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-badge {
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    font-family: var(--kr-skin-font);
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 2px 8px;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+
+/* ---------- 系列列表页（.kratos-series-list-wrap 内的 .ksl-*） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list-wrap {
+    --ksl-bg: var(--kr-skin-card-bg) !important;
+    --ksl-card-bg: var(--kr-skin-card-bg) !important;
+    --ksl-line: var(--kr-skin-card-line-strong) !important;
+    --ksl-accent: var(--kr-skin-accent-hover) !important;
+    --ksl-fg: var(--kr-skin-heading) !important;
+    --ksl-fg-dim: var(--kr-skin-muted) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-card {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    transition: box-shadow .15s ease, border-color .15s ease !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-card:hover {
+    box-shadow: var(--kr-shape-shadow-accent) !important;
+    background: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-icon {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    letter-spacing: .06em !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-desc {
+    color: var(--kr-skin-muted) !important;
+    font-style: normal;
+    font-family: var(--kr-skin-font);
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-list-wrap [class*="ksl-level-"]:not(.ksl-level-0):not(.ksl-level-1) {
+    border-left: 3px solid var(--kr-skin-decor) !important;
+}
+
+/* ---------- 相关文章卡片 .kratos-related ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-title {
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase;
+    color: var(--kr-skin-heading) !important;
+    padding-left: 0 !important;
+    padding-bottom: 8px !important;
+    border-left: 0 !important;
+    border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
+    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
+    padding-left: 10px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-item a {
+    background: var(--kr-skin-card-soft) !important;
+    border: 1px solid var(--kr-skin-card-line) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    color: var(--kr-skin-heading) !important;
+    transition: box-shadow .15s, border-color .15s !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-item a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+    box-shadow: var(--kr-shape-shadow-sm);
+    background: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-thumb {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-name {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font);
+    font-weight: 600;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-date {
+    color: var(--kr-skin-muted) !important;
+    font-style: normal;
+    font-family: var(--kr-skin-font);
+}
+
+/* ---------- 详情页评论区（.details .comments 主卡片） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments {
+    background-color: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    position: relative;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--kr-skin-accent);
+    pointer-events: none;
+    z-index: 2;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    font-family: var(--kr-skin-font-head) !important;
+    font-weight: 900 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase;
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
+    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
+    padding-left: 10px;
+    color: var(--kr-skin-heading) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .list > li {
+    border-bottom: 1px solid var(--kr-skin-card-line) !important;
+}
+/* 走心评论页的心形图标胶囊：其 svg fill 走 --khs-heart-fill（= 皮肤 accent 红），
+ * 在红底胶囊上同样会红压红，这里统一改吃 currentColor（胶囊内已是白字/红字） */
+html[data-weekday-skin="bourse"] .kratos-heart-shortcode .khs-heart-icon svg,
+html[data-weekday-skin="bourse"] .kratos-heart-shortcode .khs-heart-icon svg path {
+    fill: currentColor !important;
+}
+
+/* ---------- 文章底部：上一篇 / 下一篇按钮 ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation {
+    display: flex;
+    flex-wrap: wrap;
+}
+/* 只有下一篇（没有上一篇）时：靠右，且宽度与成对时的下一篇一致。
+ * 关键：基础主题 style.css 给 .nav-next 设了 max-width:50%（皮肤未覆盖，仍生效）。
+ * 保留 item 的 flex-grow:1，独子想撑满但被 50% 卡住 → 恰好 50% 宽；再加 margin-left:auto
+ * 把左侧空白吃掉 → 靠右。桌面/手机都是「50% 宽、靠右」，与成对时的下一篇完全一致。
+ * （不要设 flex-grow:0，否则退回 flex-basis 260px 定宽，比成对的 50% 窄。） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next:only-child,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next:only-child {
+    margin-left: auto;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next {
+    background: var(--kr-skin-card-bg) !important;
+    border: var(--kr-shape-border-strong) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease !important;
+    flex: 1 1 260px;
+    padding: 12px 16px;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next:hover {
+    box-shadow: var(--kr-shape-shadow-accent) !important;
+    background: var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous a,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next a {
+    color: var(--kr-skin-heading) !important;
+    font-family: var(--kr-skin-font) !important;
+    letter-spacing: .03em;
+    text-decoration: none;
+    font-weight: 600;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous a:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next a:hover {
+    color: var(--kr-skin-accent-hover) !important;
+}
+
+/* ============================================================
+ * 补丁 · 图标胶囊统一 & 友链卡片阴影修正
+ * ============================================================ */
+
+/* ---------- 通用：所有 *-title-icon / *-header-icon / *-section-icon /
+ *              *-total-icon / *-stat-icon / khs-heart-icon
+ *   统一改为「金融红实心底 + 白色图标 + 深红描边 + 底压边 + 2px 小直角」
+ *   （终端里的强调徽标语言；实心底必须显式给白字，否则红底红字看不见） */
+/* 图标胶囊统一样式令牌 —— 皮肤内所有图标胶囊都吃这一套变量，
+ * 想换整套图标语言只改这里即可。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) {
+    --kr-skin-icon-bg:      var(--kr-skin-accent);        /* 金融红实心底 */
+    --kr-skin-icon-fg:      #fff;                         /* 白色图标 */
+    --kr-skin-icon-border:  var(--kr-skin-accent-hover);  /* 深红描边 */
+    --kr-skin-icon-radius:  var(--kr-shape-radius-sm);    /* 1px 小直角 */
+    --kr-skin-icon-shadow:  var(--kr-shape-inset);        /* 实心底压边 */
+}
+/* 图标胶囊统一走公共类 .kr-ico（等价于此前 14 成员的 :is 枚举，且自动覆盖新增短代码的图标） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-ico {
+    border-radius: var(--kr-skin-icon-radius) !important;
+    background: var(--kr-skin-icon-bg) !important;
+    color: var(--kr-skin-icon-fg) !important;
+    border: 1px solid var(--kr-skin-icon-border) !important;
+    box-shadow: var(--kr-skin-icon-shadow) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-ico > * {
+    color: var(--kr-skin-icon-fg) !important;
+}
+/* SVG 里 fill=currentColor 的走跟色；带 stroke 的中空图标保持中空
+ * （只让描边跟色，fill 强制透明，避免把空腔填死） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-ico svg {
+    color: var(--kr-skin-icon-fg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-ico svg [stroke]:not([stroke="none"]) {
+    stroke: var(--kr-skin-icon-fg) !important;
+    fill: none !important;
+}
+
+/* ---------- 时间轴：小圆点（年/月/条目）— 金融风小方点 ----------
+ * 默认 dot 尺寸/left 已按 spine 中线（桌面 145 / 移动 99）算好，
+ * 这里不改 left / width / height，只换成小方点 + 细描边。
+ * 用 outline 而非 border（避免 border-box 收缩 content 导致视觉偏移），
+ * box-shadow ring 对称：内圈 card-bg（遮 spine）+ 外圈 heading（描边）。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    border: none !important;
+    outline: 1px solid var(--kr-skin-heading) !important;
+    outline-offset: 0 !important;
+    box-shadow: 0 0 0 3px var(--kr-skin-card-bg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-year-dot,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-timeline .ktl-month-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    border: none !important;
+    outline: 1px solid var(--kr-skin-heading) !important;
+    outline-offset: 0 !important;
+    box-shadow: 0 0 0 2px var(--kr-skin-card-bg) !important;
+}
+
+/* ---------- 榜首评论人：ktc-dot（作者名前小点） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    background: var(--kr-skin-accent-hover) !important;
+    border: var(--kr-shape-border) !important;
+}
+
+/* ---------- 友链：卡片阴影修正 ----------
+ * hover 时基础样式使用 var(--khs-card-shadow-hv)（羊皮预设的柔和大阴影），
+ * 与本皮肤「极弱阴影 + 细边框」的形态语言不符，这里显式改成
+ * --kr-shape-shadow-hover + 红色描边；金融风不做位移动画。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item {
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+    transition: box-shadow .15s ease, border-color .15s ease, background .2s ease !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-item:hover {
+    box-shadow: var(--kr-shape-shadow-hover) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-accent-hover) !important;
+}
+/* 友链探针小点（在线/离线指示） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-probe-dot {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+/* 友链警告 icon（表单校验反馈） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert-icon {
+    color: var(--kr-skin-accent-hover) !important;
+}
+/* 友链其它默认圆角/柔阴影零散元素统一直角化 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert-ok,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-alert-err,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-empty,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-link,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-tip {
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-avatar-img,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-avatar img {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-link:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor:focus .kfl-visitor-link,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor:focus-within .kfl-visitor-link {
+    box-shadow: var(--kr-shape-shadow-accent) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+    background: var(--kr-skin-card-bg) !important;
+}
+
+/* ===== heatmap 覆盖：tooltip / year-tag / year-select ===== */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-tooltip {
+    background: var(--kr-skin-heading) !important;
+    color: var(--kr-skin-card-bg) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow-accent) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-tag,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-tag.is-active {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heatmap .kph-year-select {
+    border-radius: var(--kr-shape-radius) !important;
+    border: var(--kr-shape-border) !important;
+    background: var(--kr-skin-card-bg) !important;
+    color: var(--kr-skin-heading) !important;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+
+/* ============================================================
+ * 补丁 · 金融风专属补充
+ *   1) 公共类 .kr-btn / .kr-pill / .kr-dot 的皮肤语言
+ *   2) 正文表格「灰槽表头 + 细线」终端观感
+ *   3) 评论排名徽章：只统一形态，配色留给主题选项
+ *   4) 暗夜兜底：卡片外壳 / 图标胶囊
+ * ============================================================ */
+
+/* ---------- 公共类：按钮 / 药丸 / 小圆点 ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-btn {
+    border-radius: var(--kr-shape-radius) !important;
+    border: 1px solid var(--kr-skin-accent-hover) !important;
+    background: var(--kr-skin-accent) !important;
+    color: #fff !important;
+    box-shadow: var(--kr-shape-inset) !important;
+    font-weight: 600 !important;
+    letter-spacing: .03em !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-btn:hover {
+    background: var(--kr-skin-accent-hover) !important;
+    color: #fff !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-pill {
+    border-radius: var(--kr-shape-radius-sm) !important;
+    border: var(--kr-shape-border-strong) !important;
+    background: var(--kr-skin-card-soft) !important;
+    color: var(--kr-skin-heading) !important;
+    box-shadow: none !important;
+    letter-spacing: .03em !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-pill.is-active,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-pill:hover {
+    background: var(--kr-skin-accent) !important;
+    border-color: var(--kr-skin-accent-hover) !important;
+    color: #fff !important;
+}
+/* 小圆点：与图标胶囊呼应的小方点（不改尺寸/定位，只换外观）。
+ * 友链探活点（.is-up/.is-down）承载「在线/离线」语义，排除在统一底色之外，
+ * 只把配色收敛到本皮肤的绿/红。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-dot:not(.is-up):not(.is-down) {
+    border-radius: var(--kr-shape-radius-sm) !important;
+    background: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-probe-dot.is-up {
+    background: var(--kr-skin-down) !important;   /* 在线：低饱和绿 */
+    box-shadow: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-probe-dot.is-down {
+    background: var(--kr-skin-accent) !important; /* 离线：金融红 */
+    box-shadow: none !important;
+}
+
+/* ---------- 正文表格：灰槽表头 + 细线（终端数据表观感） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table th {
+    background: var(--kr-skin-card-soft) !important;
+    color: var(--kr-skin-muted) !important;
+    border-color: var(--kr-skin-card-line-strong) !important;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table tr:nth-child(2n) {
+    background-color: transparent;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table tr:hover {
+    background-color: var(--kr-skin-quote-bg);
+}
+
+/* ---------- 评论排名徽章：只统一形态（配色由主题选项内联输出，不覆盖） ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-rank-badge,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-admin-badge {
+    border-radius: var(--kr-shape-radius-sm) !important;
+    box-shadow: var(--kr-shape-inset) !important;
+    font-family: var(--kr-skin-font) !important;
+    letter-spacing: .06em !important;
+    font-weight: 700 !important;
+}
+
+/* ---------- 暗夜兜底：卡片外壳 ---------- */
+html[data-theme="dark"][data-weekday-skin="bourse"] :is(.kr-hd, .kr-body, .kr-card) {
+    background: rgba(255, 255, 255, .04) !important;
+    border: 1px solid rgba(255, 255, 255, .09) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .35) !important;
+}
+/* ---------- 暗夜兜底：图标胶囊（暗底上仍是红底白字） ---------- */
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-ico {
+    border-radius: var(--kr-shape-radius-sm) !important;
+    background: var(--kr-accent) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, .14) !important;
+    box-shadow: var(--kr-shape-inset) !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-ico > * {
+    color: #fff !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-ico svg [stroke]:not([stroke="none"]) {
+    stroke: #fff !important;
+    fill: none !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-dot:not(.is-up):not(.is-down) {
+    border-radius: var(--kr-shape-radius-sm) !important;
+    background: var(--kr-accent) !important;
+}
+
+/* ============================================================
+ * 补丁 · 涨停板（封板红牌）卡片语言
+ * ------------------------------------------------------------
+ * 语义：借用 A 股「涨停封板」的视觉——实心红底 + 白字 + 红光晕 + 上沿高光。
+ * 施用范围（刻意收窄，避免全站铺红导致正文不可读）：
+ *   1) 标题卡 .kr-hd            —— 各短代码/特色页的页头，直接做成红牌
+ *   2) 侧栏 / 评论区小标题       —— 灰槽换红牌，与页头呼应
+ *   3) 内容卡 hover              —— 「封板」瞬态：红描边 + 淡红底 + 红光晕
+ * 正文主体卡（.kr-body / .details .article）保持白底，只吃描边与光晕。
+ * 形态集中在下面 5 个 --kr-limitup-* 令牌里，想调红牌浓度只改这里。
+ * ============================================================ */
+
+html[data-weekday-skin="bourse"] {
+    --kr-limitup-bg:     linear-gradient(180deg, var(--kr-skin-accent) 0%, var(--kr-skin-accent-hover) 100%);
+    --kr-limitup-fg:     #fff;
+    --kr-limitup-border: 1px solid var(--kr-skin-accent-hover);
+    --kr-limitup-glow:   0 2px 10px rgba(200, 16, 46, .22);
+    /* 上沿高光：红牌顶部一道亮边，模拟盘口封单的立体感 */
+    --kr-limitup-sheen:  inset 0 1px 0 rgba(255, 255, 255, .28);
+}
+
+/* ---------- 1) 标题卡 = 封板红牌 ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd {
+    background: var(--kr-limitup-bg) !important;
+    border: var(--kr-limitup-border) !important;
+    border-bottom: 2px solid var(--kr-skin-decor) !important;
+    box-shadow: var(--kr-limitup-sheen), var(--kr-limitup-glow) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-hd-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kratos-heart-shortcode .khs-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd h1,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd h2,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd h3 {
+    color: var(--kr-limitup-fg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-hd-sub {
+    color: rgba(255, 255, 255, .80) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-hd-divider {
+    background: transparent !important;
+    border-top: 1px solid rgba(255, 255, 255, .34) !important;
+}
+/* 红牌里的统计小卡 / 药丸：半透明白，保证红底上仍有层次 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-card,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-pill {
+    background: rgba(255, 255, 255, .14) !important;
+    border: 1px solid rgba(255, 255, 255, .28) !important;
+    color: var(--kr-limitup-fg) !important;
+    box-shadow: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-card *,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-pill * {
+    color: var(--kr-limitup-fg) !important;
+}
+/* 红牌里的图标胶囊反相：白底红字（红底红字会看不见） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-ico {
+    background: var(--kr-limitup-fg) !important;
+    color: var(--kr-skin-accent) !important;
+    border: 1px solid rgba(255, 255, 255, .6) !important;
+    box-shadow: none !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-ico > * {
+    color: var(--kr-skin-accent) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-ico svg [stroke]:not([stroke="none"]) {
+    stroke: var(--kr-skin-accent) !important;
+    fill: none !important;
+}
+/* 红牌里的小圆点：白点 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-dot:not(.is-up):not(.is-down) {
+    background: var(--kr-limitup-fg) !important;
+}
+
+/* ---------- 2) 侧栏 / 评论区小标题 = 小号红牌 ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget-title,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .title {
+    background: var(--kr-limitup-bg) !important;
+    color: var(--kr-limitup-fg) !important;
+    border: var(--kr-limitup-border) !important;
+    border-bottom: 2px solid var(--kr-skin-decor) !important;
+    border-radius: var(--kr-shape-radius) !important;
+    box-shadow: var(--kr-limitup-sheen) !important;
+    padding: 8px 12px !important;
+}
+
+/* ---------- 3) 卡片 hover = 「封板」瞬态 ---------- */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-card,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel {
+    transition: box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-card:hover,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel:hover {
+    border-color: var(--kr-skin-accent) !important;
+    background-color: var(--kr-skin-accent-soft) !important;
+    box-shadow: var(--kr-limitup-glow) !important;
+}
+/* 列表卡左侧强调条 hover 时加粗（封单变厚） */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel:hover::before {
+    width: 5px;
+}
+
+/* ---------- 暗夜：红牌降饱和，避免暗底上过曝 ---------- */
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd,
+html[data-theme="dark"][data-weekday-skin="bourse"] .k-main .sidebar .title,
+html[data-theme="dark"][data-weekday-skin="bourse"] .k-main .widget-title,
+html[data-theme="dark"][data-weekday-skin="bourse"] .k-main .details .comments .title {
+    background: linear-gradient(180deg, #A81430 0%, #7E0A1C 100%) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, .12) !important;
+    border-bottom: 2px solid #8A6B31 !important;
+    box-shadow: var(--kr-limitup-sheen) !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd .kr-hd-title,
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd h1,
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd h2,
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd h3 { color: #fff !important; }
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd .kr-hd-sub { color: rgba(255, 255, 255, .72) !important; }
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd .kr-ico {
+    background: #fff !important;
+    color: #A81430 !important;
+    border: 1px solid rgba(255, 255, 255, .5) !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd .kr-ico > * { color: #A81430 !important; }
+html[data-theme="dark"][data-weekday-skin="bourse"] .kr-card:hover {
+    border-color: var(--kr-accent) !important;
+    box-shadow: 0 2px 10px rgba(226, 59, 82, .22) !important;
+}

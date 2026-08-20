@@ -87,6 +87,7 @@ function kratos_thumb_ph_skin_accent()
         'vermilion' => '#C8322A', 'morandi'   => '#A68B73',
         'retro'     => '#C89B3C', 'web1998'   => '#1084D0',
         'ebook'     => '#4A4A4A', 'bookfold'  => '#33477E',
+        'bourse'    => '#C8102E',
     );
     $slug = null;
     if (function_exists('kratos_weekday_settings')) {

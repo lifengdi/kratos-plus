@@ -2244,15 +2244,15 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .details .co
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .details .comments .list > li {
     border-bottom: 1px dotted var(--kr-skin-line-strong) !important;
 }
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .kratos-heart-badge {
-    border-radius: var(--kr-shape-radius) !important;
-    background: var(--kr-skin-accent) !important;
-    color: var(--kr-skin-card) !important;
-    border: 1px solid var(--kr-skin-accent) !important;
-    font-family: "Georgia", serif;
-    letter-spacing: 1px;
-    box-shadow: var(--kr-shape-shadow-sm);
-}
+/*html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .kratos-heart-badge {*/
+/*    border-radius: var(--kr-shape-radius) !important;*/
+/*    background: var(--kr-skin-accent) !important;*/
+/*    color: var(--kr-skin-card) !important;*/
+/*    border: 1px solid var(--kr-skin-accent) !important;*/
+/*    font-family: "Georgia", serif;*/
+/*    letter-spacing: 1px;*/
+/*    box-shadow: var(--kr-shape-shadow-sm);*/
+/*}*/
 
 /* ---------- 文章底部：上一篇 / 下一篇按钮 ---------- */
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .details .post-navigation {
