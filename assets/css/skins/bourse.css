@@ -221,7 +221,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-header .banner .con
     z-index: 2;
 }
 
-/* ===== 文章卡片（报纸剪贴 + 硬阴影 + 折痕） ===== */
+/* ===== 文章卡片（细边框 + 极弱阴影 + 左侧强调条） ===== */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget,
@@ -236,6 +236,12 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .widget {
     border: var(--kr-shape-border-strong);
     border-radius: var(--kr-shape-radius) !important;
     position: relative;
+}
+/* 列表卡只留上边线（左侧由 ::before 的红条收边），去掉右/下描边，
+ * 让卡片与页面留白衔接得更松，不显得每条都被框住 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel {
+    border-right: none;
+    border-bottom: none;
 }
 /* 文章目录小工具需保持吸顶：上面的 .widget position:relative 会盖掉
  * style.css 里 .w-toc 的 position:sticky，这里用更高特异性(加 .sidebar)恢复。 */
@@ -255,13 +261,11 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .articl
     z-index: 2;
 }
 
-/* ===== 标题下的细线分割 & 左侧强调条 ===== */
+/* ===== 标题下的细线分割（标题不加左竖条，保持齐左） ===== */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .article-panel h2,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article h1 {
     padding-bottom: 10px;
-    padding-left: 10px;
     border-bottom: 1px solid var(--kr-skin-card-line);
-    border-left: 3px solid var(--kr-skin-accent);
     position: relative;
     color: var(--kr-skin-heading);
 }
@@ -2330,15 +2334,23 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-card,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel {
     transition: box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-card:hover,
+/* 列表卡（只有上边线 + 左红条两条边）：封板 = 两条边一起转红，
+ * 左条加粗（封单变厚）+ 顶线用 inset 阴影转红（用 inset 而不是改
+ * border-width，避免 1px 的布局跳动）。不再铺淡红底，让「封板」信号
+ * 集中在这两条边上。 */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel:hover {
+    border-top-color: var(--kr-skin-accent) !important;
+    box-shadow: inset 0 2px 0 var(--kr-skin-accent), var(--kr-limitup-glow) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel:hover::before {
+    width: 5px;
+}
+/* 四边完整描边的内容卡（短代码卡片等）没有「两条边」可点亮，
+ * 仍用整框转红 + 淡红底表达封板 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-card:hover {
     border-color: var(--kr-skin-accent) !important;
     background-color: var(--kr-skin-accent-soft) !important;
     box-shadow: var(--kr-limitup-glow) !important;
-}
-/* 列表卡左侧强调条 hover 时加粗（封单变厚） */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel:hover::before {
-    width: 5px;
 }
 
 /* ---------- 暗夜：红牌降饱和，避免暗底上过曝 ---------- */
