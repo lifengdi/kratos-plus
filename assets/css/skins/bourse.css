@@ -2095,12 +2095,20 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .
     border-radius: var(--kr-shape-radius) !important;
     border: var(--kr-shape-border) !important;
 }
+/* 最近访客药丸 hover：该元素同时挂 .kr-pill，公共类给的是「红底白字」，
+ * 这里必须连 background 与 color 一起给，且两者配套 —— 只改其中一个会出现
+ * 「白字压白底 / 红字压红底」，文字直接看不见。统一走红底白字。 */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-link:hover,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor:focus .kfl-visitor-link,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor:focus-within .kfl-visitor-link {
     box-shadow: var(--kr-shape-shadow-accent) !important;
     border-color: var(--kr-skin-accent-hover) !important;
-    background: var(--kr-skin-card-bg) !important;
+    background: var(--kr-skin-accent) !important;
+    color: #fff !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor-link:hover .kfl-visitor-name,
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-visitor:focus-within .kfl-visitor-link .kfl-visitor-name {
+    color: #fff !important;
 }
 
 /* ===== heatmap 覆盖：tooltip / year-tag / year-select ===== */
