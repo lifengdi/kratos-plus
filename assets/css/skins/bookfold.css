@@ -2300,18 +2300,6 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .navigation.post-nav
     color: var(--kr-skin-accent-2) !important;
 }
 
-/* ---------- 评论排名徽章（谨慎：只覆盖形态，配色交给用户主题选项） ----------
- * .kratos-rank-badge / .kratos-admin-badge 的 background/color 由主题选项内联输出，
- * 皮肤不用 !important 覆盖颜色，只统一形状语言（近直角 + 发丝边 + 衬线字距）。 */
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .kratos-rank-badge,
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .kratos-admin-badge {
-    border-radius: var(--kr-shape-radius);
-    border: 1px solid var(--kr-skin-line-strong);
-    box-shadow: var(--kr-shape-shadow-sm);
-    font-family: "Georgia", serif;
-    letter-spacing: 1px;
-}
-
 /* ============================================================
  * 补丁 · 图标胶囊（中空描边）& 小圆点 & 友链卡片阴影修正 & 热度图
  * ============================================================ */

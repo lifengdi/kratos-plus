@@ -1864,8 +1864,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-title 
     padding-bottom: 8px !important;
     border-left: 0 !important;
     border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
-    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
-    padding-left: 10px;
+    box-shadow: none !important;
 }
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-related-item a {
     background: var(--kr-skin-card-soft) !important;
@@ -2190,16 +2189,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .arti
     background-color: var(--kr-skin-quote-bg);
 }
 
-/* ---------- 评论排名徽章：只统一形态（配色由主题选项内联输出，不覆盖） ---------- */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-rank-badge,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-admin-badge {
-    border-radius: var(--kr-shape-radius-sm) !important;
-    box-shadow: var(--kr-shape-inset) !important;
-    font-family: var(--kr-skin-font) !important;
-    letter-spacing: .06em !important;
-    font-weight: 700 !important;
-}
-
 /* ---------- 暗夜兜底：卡片外壳 ---------- */
 html[data-theme="dark"][data-weekday-skin="bourse"] :is(.kr-hd, .kr-body, .kr-card) {
     background: rgba(255, 255, 255, .04) !important;
@@ -2295,6 +2284,29 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-ico svg [st
     stroke: var(--kr-skin-accent) !important;
     fill: none !important;
 }
+/* 红牌里的分类专区 tab（.khf-tab）：默认色是 --khf-muted（灰）、选中色是
+ * --khf-accent（皮肤红）配 8% 红底，落在红牌上就成了「灰压红 / 红压红」，
+ * 尤其选中态几乎看不见。这里改成红牌自己的高亮语言：
+ *   未选中 = 半透明白字 + 半透明白描边；选中 = 白实底 + 红字（对比度最高）。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-home .kr-hd .khf-tab {
+    color: rgba(255, 255, 255, .82) !important;
+    border-color: rgba(255, 255, 255, .34) !important;
+    background: rgba(255, 255, 255, .10) !important;
+    font-weight: 600;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-home .kr-hd .khf-tab:hover {
+    color: #fff !important;
+    background: rgba(255, 255, 255, .20) !important;
+    border-color: rgba(255, 255, 255, .55) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-home .kr-hd .khf-tab.is-active {
+    color: var(--kr-skin-accent-hover) !important;
+    background: #fff !important;
+    border-color: #fff !important;
+    font-weight: 700;
+    box-shadow: var(--kr-shape-shadow) !important;
+}
+
 /* 红牌里的小圆点：白点 */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-dot:not(.is-up):not(.is-down) {
     background: var(--kr-limitup-fg) !important;
@@ -2351,6 +2363,21 @@ html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd .kr-ico {
     border: 1px solid rgba(255, 255, 255, .5) !important;
 }
 html[data-theme="dark"][data-weekday-skin="bourse"] .kr-hd .kr-ico > * { color: #A81430 !important; }
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-home .kr-hd .khf-tab {
+    color: rgba(255, 255, 255, .80) !important;
+    border-color: rgba(255, 255, 255, .30) !important;
+    background: rgba(255, 255, 255, .10) !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-home .kr-hd .khf-tab:hover {
+    color: #fff !important;
+    background: rgba(255, 255, 255, .18) !important;
+}
+html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-home .kr-hd .khf-tab.is-active {
+    color: #A81430 !important;
+    background: #fff !important;
+    border-color: #fff !important;
+    font-weight: 700;
+}
 html[data-theme="dark"][data-weekday-skin="bourse"] .kr-card:hover {
     border-color: var(--kr-accent) !important;
     box-shadow: 0 2px 10px rgba(226, 59, 82, .22) !important;
