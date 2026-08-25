@@ -8,7 +8,7 @@
   "use strict";
 
   var KRATOS_VERSION =
-    "1.1.18";
+    "1.1.19";
 
   var navbarConfig =
     function () {
@@ -28,9 +28,19 @@
 
   var tooltipConfig =
     function () {
-      $(
-        '[data-toggle="tooltip"]'
-      ).tooltip();
+      if (
+        typeof window.bootstrap !== "undefined" &&
+        window.bootstrap.Tooltip
+      ) {
+        var els = document.querySelectorAll(
+          '[data-bs-toggle="tooltip"]'
+        );
+        els.forEach(
+          function (el) {
+            window.bootstrap.Tooltip.getOrCreateInstance(el);
+          }
+        );
+      }
     };
 
   var gotopConfig =

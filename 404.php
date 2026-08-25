@@ -21,7 +21,7 @@ get_header(); ?>
                     <div class="subtitle pt-4"><?php _e('可能是输入地址有误或该地址已被删除', 'kratos'); ?></div>
                     <div class="action pt-4">
                         <a href="javascript:history.go(-1)" class="btn btn-outline-primary back-prevpage"><?php _e('返回上页', 'kratos'); ?></a>
-                        <a href="<?php echo get_option('home'); ?>" class="btn btn-outline-primary ml-3 back-index"><?php _e('返回主页', 'kratos'); ?></a>
+                        <a href="<?php echo get_option('home'); ?>" class="btn btn-outline-primary ms-3 back-index"><?php _e('返回主页', 'kratos'); ?></a>
                     </div>
                 </div>
             </div>

@@ -425,6 +425,9 @@ function kratos_heatmap_css()
     background: transparent;
     border: 1px solid var(--khs-line);
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     line-height: 1.4;
     white-space: nowrap;

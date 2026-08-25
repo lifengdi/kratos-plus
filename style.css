@@ -2,7 +2,7 @@
 /*
 Theme Name: Kratos+
 Text Domain: kratos
-Version: 1.1.18
+Version: 1.1.19
 Requires PHP: 8.0
 Requires at least: 5.3.0
 Description: Kratos+ 在 Seaton Jiang 的 Kratos 主题（GPL-3.0）基础上二次开发，新增可视化代码高亮、布局自定义、评论数学验证码等功能。本主题继承 GPL-3.0 协议。
@@ -5446,3 +5446,33 @@ html[data-theme="dark"] .w-about-plus .about-toggle {
     line-height: 1;
     white-space: nowrap;
 }
+
+/* ==============================
+ * Bootstrap 5 兼容补丁（BS4→5 升级）
+ * 恢复主题依赖的 BS4 默认外观，避免 BS5 Reboot 引入的回归
+ * ============================== */
+
+/* 1) BS5 Reboot 在 :root 加了 scroll-behavior: smooth，会与 jQuery
+ *    `$('html,body').animate({scrollTop:...})` 叠加，导致"回到顶部"点击后
+ *    浏览器自身再补一次平滑滚动，视觉上延迟明显。恢复瞬时滚动，让 JS 独占动画。 */
+:root { scroll-behavior: auto; }
+
+/* 2) BS5 Reboot 默认 `a { text-decoration: underline }`。主题原本预期无下划线。 */
+a { text-decoration: none; }
+a:hover, a:focus { text-decoration: none; }
+
+/* 3) BS5 Reboot 给 <code> 加了 `color: var(--bs-code-color, #d63384)`（粉色），
+ *    会覆盖 Prism/hljs 主题的 token 底色，看起来就是"没有高亮"。
+ *    Prism 用 <code class="language-xxx">，hljs 用 <code class="hljs">。
+ *    对这两类代码撤销 BS5 的颜色规则，交回给对应主题 CSS 的 token 类去着色。 */
+code[class*="language-"],
+code[class*="language-"] *,
+pre[class*="language-"] code,
+pre[class*="language-"] code *,
+code.hljs,
+code.hljs * {
+    color: inherit;
+}
+
+/* 4) BS5 Reboot 的 `label` `display: inline-block`、`fieldset` legend 变化通常
+ *    与本主题无冲突；如后续再发现问题，加在此处。 */

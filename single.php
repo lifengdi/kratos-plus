@@ -144,7 +144,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                             echo '</span></div>';
                         } ?>
                         <div class="footer clearfix">
-                            <div class="tags float-left">
+                            <div class="tags float-start">
                                 <span><?php _e('标签：', 'kratos'); ?></span>
                                 <?php if (get_the_tags()) {
                                     the_tags('', ' ', '');
@@ -152,7 +152,7 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                                     echo '<a>' . __('暂无', 'kratos') . '</a>';
                                 } ?>
                             </div>
-                            <div class="tool float-right d-none d-lg-block">
+                            <div class="tool float-end d-none d-lg-block">
                                 <span><?php _e('最后更新：', 'kratos'); ?><?php the_modified_date(); ?></span>
                             </div>
                         </div>

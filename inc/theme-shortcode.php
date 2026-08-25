@@ -66,7 +66,7 @@ function bdbtn($atts, $content = null, $code = "")
 {
     $return = '<a class="downbtn" href="';
     $return .= $content;
-    $return .= '" target="_blank"><i class="kicon i-download mr-1"></i>立即下载</a>';
+    $return .= '" target="_blank"><i class="kicon i-download me-1"></i>立即下载</a>';
     return $return;
 }
 add_shortcode('bdbtn', 'bdbtn');

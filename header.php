@@ -207,7 +207,7 @@
                     ?>
                 </a>
                 <?php if (has_nav_menu('header_menu')) { ?>
-                    <button class="navbar-toggler navbar-toggler-right" id="navbutton" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler navbar-toggler-right" id="navbutton" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="line first-line"></span>
                         <span class="line second-line"></span>
                         <span class="line third-line"></span>
@@ -220,7 +220,7 @@
                         'container'       => 'div',
                         'container_class' => 'collapse navbar-collapse',
                         'container_id'    => 'navbarResponsive',
-                        'menu_class'      => 'navbar-nav ml-auto',
+                        'menu_class'      => 'navbar-nav ms-auto',
                         'walker'          => new WP_Bootstrap_Navwalker(),
                     ));
                 }

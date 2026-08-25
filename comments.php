@@ -23,29 +23,26 @@ if (comments_open()) { ?>
 			<?php else : ?>
 				<form id="commentform" name="commentform" action="<?php echo get_option('siteurl'); ?>/wp-comments-post.php" method="post">
 					<div class="comment-form">
-						<?php if (!is_user_logged_in()) : ?>
+						<?php if (!is_user_logged_in()) :
+							$req_name_email = (bool) get_option('require_name_email');
+							$req_attr = $req_name_email ? ' required="required"' : '';
+						?>
 							<div class="comment-info mb-3 row">
 								<div class="col-md-6 comment-form-author">
 									<div class="input-group">
-										<div class="input-group-prepend">
-											<span class="input-group-text"><i class="kicon i-user"></i></span>
-										</div>
-										<input class="form-control" id="author" placeholder="<?php _e('昵称', 'kratos'); ?>" name="author" type="text" value="<?php echo esc_attr($commenter['comment_author']); ?>">
+										<span class="input-group-text"><i class="kicon i-user"></i></span>
+										<input class="form-control" id="author" placeholder="<?php _e('昵称', 'kratos'); ?>" name="author" type="text"<?php echo $req_attr; ?> value="<?php echo esc_attr($commenter['comment_author']); ?>">
 									</div>
 								</div>
 								<div class="col-md-6 mt-3 mt-md-0 comment-form-email">
 									<div class="input-group">
-										<div class="input-group-prepend">
-											<span class="input-group-text"><i class="kicon i-cemail"></i></span>
-										</div>
-										<input id="email" class="form-control" name="email" placeholder="<?php _e('邮箱', 'kratos'); ?>" type="email" value="<?php echo esc_attr($commenter['comment_author_email']); ?>">
+										<span class="input-group-text"><i class="kicon i-cemail"></i></span>
+										<input id="email" class="form-control" name="email" placeholder="<?php _e('邮箱', 'kratos'); ?>" type="email"<?php echo $req_attr; ?> value="<?php echo esc_attr($commenter['comment_author_email']); ?>">
 									</div>
 								</div>
 								<div class="col-md-6 mt-3 comment-form-author">
 									<div class="input-group">
-										<div class="input-group-prepend">
-											<span class="input-group-text"><i class="kicon i-url"></i></span>
-										</div>
+										<span class="input-group-text"><i class="kicon i-url"></i></span>
 										<input class="form-control" id="url" placeholder="<?php _e('网址', 'kratos'); ?>" name="url" type="url" value="<?php echo esc_attr($commenter['comment_author_url']); ?>">
 									</div>
 								</div>
@@ -54,7 +51,7 @@ if (comments_open()) { ?>
 						<div class="comment-textarea">
 							<textarea class="form-control" id="comment" name="comment" rows="7" required="required" placeholder="<?php echo esc_attr((string) kratos_option('g_comment_placeholder', __('说点什么吧…', 'kratos'))); ?>"></textarea>
 							<div class="text-bar clearfix">
-								<div class="tool float-left">
+								<div class="tool float-start">
 									<a class="addbtn" href="#" id="addsmile"><i class="kicon i-face"></i></a>
 									<div class="smile">
 										<div class="clearfix">
@@ -62,7 +59,7 @@ if (comments_open()) { ?>
 										</div>
 									</div>
 								</div>
-								<div class="float-right">
+								<div class="float-end">
 									<?php comment_form_title(''); ?>
 									<?php cancel_comment_reply_link(__('取消回复', 'kratos')); ?>
 									<input name="submit" type="submit" id="submit" class="btn btn-primary" value="<?php _e('提交评论', 'kratos'); ?>">

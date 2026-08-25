@@ -480,6 +480,11 @@ function kratos_archives_stats_shortcode($atts = array())
             font-size: 13px;
             color: var(--kas-fg-dim);
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.4;
             transition: background .2s ease, color .2s ease;
             font-family: inherit;
         }

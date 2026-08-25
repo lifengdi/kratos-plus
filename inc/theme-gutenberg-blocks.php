@@ -150,9 +150,9 @@ function kratos_block_search_render($attrs)
         . esc_url(home_url('/'))
         . '"> <div class="input-group mt-2 mb-2"> <input type="text" name="s" id="search-widgets" class="form-control" placeholder="'
         . esc_attr(__('搜点什么呢?', 'kratos'))
-        . '"> <div class="input-group-append"> <button class="btn btn-primary btn-search" type="submit" id="searchsubmit">'
+        . '"> <button class="btn btn-primary btn-search" type="submit" id="searchsubmit">'
         . esc_html(__('搜索', 'kratos'))
-        . '</button> </div> </div> </form></div>';
+        . '</button> </div> </form></div>';
 
     // 小工具区：外层已被 WP_Widget_Block 包装为 <div class="widget widget_block w-search">，
     // 不再叠一层 .widget.w-search，避免重复包裹（padding/border 叠加）

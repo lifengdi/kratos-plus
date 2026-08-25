@@ -287,7 +287,7 @@ if (!function_exists('comment_callback')) :
         }
 ?>
         <li class="comment cleanfix" id="comment-<?php echo esc_attr(comment_ID()); ?>">
-            <div class="avatar float-left d-inline-block mr-2">
+            <div class="avatar float-start d-inline-block me-2">
                 <?php if (function_exists('get_avatar') && get_option('show_avatars')) {
                     echo get_avatar($comment, 50);
                 } ?>
@@ -301,17 +301,17 @@ if (!function_exists('comment_callback')) :
                     <?php comment_text(); ?>
                 </div>
                 <div class="meta clearfix">
-                    <div class="date d-inline-block float-left"><?php echo get_comment_date(); ?>
+                    <div class="date d-inline-block float-start"><?php echo get_comment_date(); ?>
                         <?php if (current_user_can('edit_posts')) {
-                            echo '<span class="ml-2">';
+                            echo '<span class="ms-2">';
                             edit_comment_link(__('编辑', 'kratos'));
                             echo '</span>';
                         }; ?>
                     </div>
-                    <div class="tool reply ml-2 d-inline-block float-right">
+                    <div class="tool reply ms-2 d-inline-block float-end">
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
-                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ml-1">' . __('回复', 'kratos') . '</span>');
+                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
                         comment_reply_link(array_merge($defaults, array('depth' => 1, 'max_depth' => get_option('thread_comments_depth', 5))));
                         ?>
                     </div>
@@ -351,7 +351,7 @@ if (!function_exists('comment_callbacks')) :
         $GLOBALS['comment'] = $comment;
         $kratos_is_sticky = function_exists('kratos_comment_meta_int') && kratos_comment_meta_int($comment->comment_ID, 'kratos_sticky'); ?>
         <li class="comment cleanfix<?php echo $kratos_is_sticky ? ' is-sticky' : ''; ?>" id="comment-<?php echo esc_attr(comment_ID()); ?>">
-            <div class="avatar float-left d-inline-block mr-2">
+            <div class="avatar float-start d-inline-block me-2">
                 <?php if (function_exists('get_avatar') && get_option('show_avatars')) {
                     echo get_avatar($comment, 50);
                 } ?>
@@ -368,17 +368,17 @@ if (!function_exists('comment_callbacks')) :
                     <?php comment_text(); ?>
                 </div>
                 <div class="meta clearfix">
-                    <div class="date d-inline-block float-left"><?php echo get_comment_date(); ?>
+                    <div class="date d-inline-block float-start"><?php echo get_comment_date(); ?>
                         <?php if (current_user_can('edit_posts')) {
-                            echo '<span class="ml-2">';
+                            echo '<span class="ms-2">';
                             edit_comment_link(__('编辑', 'kratos'));
                             echo '</span>';
                         }; ?>
                     </div>
-                    <div class="tool reply ml-2 d-inline-block float-right">
+                    <div class="tool reply ms-2 d-inline-block float-end">
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
-                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ml-1">' . __('回复', 'kratos') . '</span>');
+                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
                         comment_reply_link(array_merge($defaults, array('depth' => $depth, 'max_depth' => $args['max_depth'])));
                         ?>
                     </div>
@@ -655,7 +655,7 @@ function kratos_carousel()
     if (kratos_option('g_carousel', false)) {
         $slide = 0;
         $item = 0;
-        $output = '<div id="indexCarousel" class="carousel article-carousel slide" data-ride="carousel"> <ol class="carousel-indicators">';
+        $output = '<div id="indexCarousel" class="carousel article-carousel slide" data-bs-ride="carousel"> <ol class="carousel-indicators">';
 
         if (!empty(kratos_option('carousel_group'))) {
 
@@ -664,7 +664,7 @@ function kratos_carousel()
                 if ($slide == 0) {
                     $active = 'class="active"';
                 }
-                $output .= '<li data-target="#indexCarousel" data-slide-to="' . $slide . '" ' . $active . '></li>';
+                $output .= '<li data-bs-target="#indexCarousel" data-bs-slide-to="' . $slide . '" ' . $active . '></li>';
                 $slide++;
             }
 
@@ -686,7 +686,7 @@ function kratos_carousel()
                 $item++;
             }
 
-            $output .= '</div> <a class="carousel-control-prev" href="#indexCarousel" role="button" data-slide="prev"> <span class="carousel-control-prev-icon" aria-hidden="true"></span> </a> <a class="carousel-control-next" href="#indexCarousel" role="button" data-slide="next"> <span class="carousel-control-next-icon" aria-hidden="true"></span> </a> </div>';
+            $output .= '</div> <a class="carousel-control-prev" href="#indexCarousel" role="button" data-bs-slide="prev"> <span class="carousel-control-prev-icon" aria-hidden="true"></span> </a> <a class="carousel-control-next" href="#indexCarousel" role="button" data-bs-slide="next"> <span class="carousel-control-next-icon" aria-hidden="true"></span> </a> </div>';
         }
 
         echo $output;
