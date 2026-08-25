@@ -5,7 +5,7 @@
  *  - 输入即增量搜索文章（去抖），同时对「页面 / 操作 / 皮肤」命令做本地模糊过滤
  *  - 键盘：↑↓ 选择、Enter 执行、Esc 关闭；打开时锁滚动、关闭时焦点还原
  *
- * @author Dylan Li (Kratos+)
+ * @author Dylan Li (Kratos-plus)
  * @license GPL-3.0 License
  */
 (function () {

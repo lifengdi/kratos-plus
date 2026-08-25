@@ -5,7 +5,7 @@
     initial-value: 0px;
 }
 
-/* Kratos+ 皮肤 · 书卷 · 半开卷 bookfold（Open Book / 摊开的书）
+/* Kratos-plus 皮肤 · 书卷 · 半开卷 bookfold（Open Book / 摊开的书）
  * 视觉参考：demo/skin-bookfold.html —— 暖米黄书页 / 棕墨正文 / 墨蓝强调 / 朱红丝带，
  * 左页平铺、正中书中缝（阴影谷 + 装订压线）、右页翻卷起（翻页角）。
  * 骨架承自 ebook（同为书/纸系），换成暖调 + 柔圆角 + 暖柔阴影，并保持与其它

@@ -1,5 +1,5 @@
 /*!
- * Kratos+ 文章目录：sticky 偏移、折叠、滚动高亮
+ * Kratos-plus 文章目录：sticky 偏移、折叠、滚动高亮
  */
 (function () {
   "use strict";

@@ -1,4 +1,4 @@
-/* Kratos+ 自定义登录页 —— 视觉基准：demo/login.html
+/* Kratos-plus 自定义登录页 —— 视觉基准：demo/login.html
  * 通过 login_enqueue_scripts 加载，覆盖 wp-login.php 默认样式。
  * body 直接作 grid 容器，注入 .kratos-login-brand（左）+ .kratos-login-panel（右）。
  * WordPress 原生 #login 落入右栏容器，通过样式重塑成 demo 的 card。

@@ -22,7 +22,7 @@
  *   weekday-skins.css 的所有覆盖规则用 :not([data-theme="dark"]) 兜底，
  *   暗夜模式优先。
  *
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 

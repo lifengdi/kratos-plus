@@ -9,7 +9,7 @@
  *    命中缓存开销 ≈ 一次 GET；term 增删改时 bump 全局 terms_version 整体失效。
  *  - 仅在单篇文章正文（is_singular('post') + 主查询）启用；列表页摘要不参与。
  *
- * @author Dylan Li (Kratos+) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 

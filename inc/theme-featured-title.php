@@ -1,7 +1,7 @@
 <?php
 
 /*
- * 「Kratos+特色标题」页面模板专用 Metabox
+ * 「Kratos-plus特色标题」页面模板专用 Metabox
  *
  * 仅在页面编辑器中、且模板选为 page-featured-title.php 时显示，
  * 提供 标题 / 副标题 / 图标（Font Awesome）三个字段。
@@ -19,7 +19,7 @@ if (class_exists('CSF')) {
     $prefix = '_kft_meta';
 
     CSF::createMetabox($prefix, array(
-        'title'          => __('Kratos+ 特色标题', 'kratos'),
+        'title'          => __('Kratos-plus 特色标题', 'kratos'),
         'post_type'      => 'page',
         'page_templates' => 'page-featured-title.php',
         'data_type'      => 'unserialize',
@@ -93,7 +93,7 @@ JS
 });
 
 /**
- * 使用「Kratos+ 特色标题」模板时，若填了图标（Font Awesome class），
+ * 使用「Kratos-plus 特色标题」模板时，若填了图标（Font Awesome class），
  * 自动加载 FA CSS（主题内置那一份，handle 与 theme_autoload() 一致，不会重复加载）。
  */
 add_action('wp_enqueue_scripts', function () {

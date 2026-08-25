@@ -5,7 +5,7 @@
     initial-value: 0px;
 }
 
-/* Kratos+ 皮肤 · 朱砂 vermilion（架构与 retro 一致：kr-shape 令牌 + kr- 公共类） */
+/* Kratos-plus 皮肤 · 朱砂 vermilion（架构与 retro 一致：kr-shape 令牌 + kr- 公共类） */
 
 html[data-weekday-skin="vermilion"] {
     --kr-skin-bg:          #FBF3E8;

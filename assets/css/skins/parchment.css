@@ -5,7 +5,7 @@
     initial-value: 0px;
 }
 
-/* Kratos+ 皮肤 · 羊皮 parchment（从 weekday-skins.css 抽出） */
+/* Kratos-plus 皮肤 · 羊皮 parchment（从 weekday-skins.css 抽出） */
 
 html[data-weekday-skin="parchment"] {
     --kr-skin-bg:          #F7F4EE;

@@ -4,7 +4,7 @@
  * 通过 login_enqueue_scripts / login_header / login_footer / login_message / login_headerurl
  * 等钩子重塑 wp-login.php 的视觉与结构，保留 WordPress 原生的表单处理、nonce、错误提示流程。
  *
- * @package Kratos+
+ * @package Kratos-plus
  */
 
 if (!defined('ABSPATH')) exit;
@@ -72,7 +72,7 @@ function kratos_login_render_brand() {
     $bg_img   = trim((string) kratos_option('g_login_brand_bg', ''));
     $eyebrow  = (string) kratos_option('g_login_brand_eyebrow', 'WELCOME · 欢迎回来');
     $title    = (string) kratos_option('g_login_brand_title', '在这里，<em>写下</em><br>属于你的每日思绪。');
-    $desc     = (string) kratos_option('g_login_brand_desc', 'Kratos+ 是一款为写作者打造的 WordPress 主题，简洁、有序、可自定义。登录后开始你的创作之旅。');
+    $desc     = (string) kratos_option('g_login_brand_desc', 'Kratos-plus 是一款为写作者打造的 WordPress 主题，简洁、有序、可自定义。登录后开始你的创作之旅。');
 
     $stat_defaults = array(
         1 => array('v' => '{posts}',    'l' => 'ARTICLES'),
@@ -116,7 +116,7 @@ add_action('login_header', 'kratos_login_render_brand', 1);
 /** 版权小字：紧跟在提交按钮之后（在 #login 内部） */
 function kratos_login_render_foot_note() {
     if (!kratos_login_enabled()) return;
-    $note = (string) kratos_option('g_login_footer_note', '© Kratos+ · 由 Dylan Li 二次开发');
+    $note = (string) kratos_option('g_login_footer_note', '© Kratos-plus · 由 Dylan Li 二次开发');
     if ($note === '') return;
     echo '<div class="kratos-login-foot-note">' . esc_html($note) . '</div>';
 }

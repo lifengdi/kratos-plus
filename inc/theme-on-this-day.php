@@ -328,7 +328,7 @@ class widget_on_this_day extends WP_Widget
 {
     public function __construct()
     {
-        parent::__construct(false, __('Kratos+ - 岁月同一天', 'kratos'), array(
+        parent::__construct(false, __('Kratos-plus - 岁月同一天', 'kratos'), array(
             'description' => __('展示历史年份中同月同日发布的文章 / 说说', 'kratos'),
         ));
     }

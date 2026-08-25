@@ -3,13 +3,13 @@
 /**
  * 系列文章分类归档模板 —— /series/<slug>/
  *
- * 视觉复用 Kratos+特色标题（page-featured-title.php）的头部与卡片体系：
+ * 视觉复用 Kratos-plus特色标题（page-featured-title.php）的头部与卡片体系：
  *  - 图标：term meta kratos_series_icon（未设置时由 kratos_series_get_icon() 回落 fa-solid fa-layer-group）
  *  - 标题：系列名
  *  - 描述：term description（未填不展示副标题及分隔线）
  * 文章列表按 kratos_series_get_posts() 顺序（order meta + 发布时间）渲染。
  *
- * @author Dylan Li (Kratos+)
+ * @author Dylan Li (Kratos-plus)
  * @license GPL-3.0 License
  */
 

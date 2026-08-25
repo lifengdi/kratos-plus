@@ -30,7 +30,7 @@ function kratos_thumb_ph_palette($name)
 function kratos_thumb_ph_text($post)
 {
     $src = kratos_option('g_postthumbnail_text_source', 'title_initial');
-    $custom = kratos_option('g_postthumbnail_text_custom', 'Kratos+');
+    $custom = kratos_option('g_postthumbnail_text_custom', 'Kratos-plus');
     $title = is_object($post) ? get_the_title($post) : '';
     $title = trim(wp_strip_all_tags($title));
 

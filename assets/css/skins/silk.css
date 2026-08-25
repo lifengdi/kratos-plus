@@ -5,7 +5,7 @@
     initial-value: 0px;
 }
 
-/* Kratos+ 皮肤 · 黄绢 silk（新架构：kr-* 公共类 + kr-shape 令牌） */
+/* Kratos-plus 皮肤 · 黄绢 silk（新架构：kr-* 公共类 + kr-shape 令牌） */
 /* 注：短代码命名空间变量（khs 与 kas）到 kr-skin 令牌的通用映射由 components.css 统一提供，本文件不再重复 */
 
 html[data-weekday-skin="silk"] {

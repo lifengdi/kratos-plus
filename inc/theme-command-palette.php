@@ -51,7 +51,7 @@ function kratos_cmdk_template_map()
 /**
  * 单个页面是否允许出现在命令面板。
  *
- * 由页面编辑器右侧「Kratos+ 命令面板」metabox 控制（见本文件底部）。
+ * 由页面编辑器右侧「Kratos-plus 命令面板」metabox 控制（见本文件底部）。
  * meta 缺失 = 从未保存过该选项 = 默认展示，这样老页面升级后不会集体消失。
  *
  * @param int $post_id
@@ -297,7 +297,7 @@ if (class_exists('CSF')) {
     $kratos_cmdk_prefix = '_kcmdk_meta';
 
     CSF::createMetabox($kratos_cmdk_prefix, array(
-        'title'     => __('Kratos+ 命令面板', 'kratos'),
+        'title'     => __('Kratos-plus 命令面板', 'kratos'),
         'post_type' => 'page',
         'data_type' => 'unserialize',
         'context'   => 'side',

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Template Name: Kratos+特色标题
+ * Template Name: Kratos-plus特色标题
  *
  * 空白页面模板：复用友链页面（[friend_links]）的标题头视觉，
  * 页面正文（the_content）渲染在标题下方，无侧边逻辑差异。

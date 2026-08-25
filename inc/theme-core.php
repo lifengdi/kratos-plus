@@ -3,7 +3,7 @@
 /**
  * 核心函数
  * @author Seaton Jiang <hi@seatonjiang.com>
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2024.08.05
  */
@@ -607,7 +607,7 @@ if (kratos_option('g_replace_gravatar_url_fieldset')['g_replace_gravatar_url'] ?
     add_filter('get_avatar_url', 'replace_gravatar_url');
 }
 
-// Kratos+ 主题自动更新（GitHub Release 为源，可选切换到 Gitee 下载）
+// Kratos-plus 主题自动更新（GitHub Release 为源，可选切换到 Gitee 下载）
 //   - 版本探测仍以 GitHub Release 为准（API 稳定、限流宽松）；
 //   - 实际 zip 下载 URL 可由主题选项「主题更新下载源」控制：
 //       auto   ：按时区判断，Asia/Shanghai 等国内时区改写为 Gitee 下载

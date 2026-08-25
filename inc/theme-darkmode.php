@@ -2,7 +2,7 @@
 
 /**
  * 暗夜模式
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 

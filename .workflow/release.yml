@@ -63,7 +63,7 @@ stages:
     - "if [ -f \"$NOTES_FILE\" ]; then"
     - '  cp "$NOTES_FILE" release_body.md'
     - else
-    - '  printf "## Kratos+ %s\n\n自动发布，无手写更新说明。\n" "$TAG" > release_body.md'
+    - '  printf "## Kratos-plus %s\n\n自动发布，无手写更新说明。\n" "$TAG" > release_body.md'
     - fi
     - ""
     - "echo \"PUBLISH_TOKEN length: ${#PUBLISH_TOKEN}\""
@@ -115,7 +115,7 @@ stages:
     - ""
     - BODY_JSON=$(jq -Rs \
     - '  --arg tag "$TAG" \'
-    - '  --arg name "Kratos+ $TAG" \'
+    - '  --arg name "Kratos-plus $TAG" \'
     - '  --arg target "main" \'
     - '  --arg token "$GITEE_TOKEN" \'
     - "  '{access_token:$token, tag_name:$tag, name:$name, body:., prerelease:false,\

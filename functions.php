@@ -3,7 +3,7 @@
 /**
  * 模板函数
  * @author Seaton Jiang <hi@seatonjiang.com>
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2025.02.08
  */
@@ -177,7 +177,7 @@ require get_template_directory() . '/inc/theme-post-heatmap.php';
 // 每日心情灯（[mood_log] / [mood_log_input] 短码）
 require get_template_directory() . '/inc/theme-mood-log.php';
 
-// 「Kratos+ 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
+// 「Kratos-plus 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
 require get_template_directory() . '/inc/theme-featured-title.php';
 
 // 阅读增强（阅读进度条 / 字数 & 预计阅读时间 / 更新提示条 / 相关文章）

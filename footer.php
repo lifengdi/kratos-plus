@@ -3,7 +3,7 @@
 /**
  * 主题页脚
  * @author Seaton Jiang <hi@seatonjiang.com>
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2022.05.27
  */
@@ -87,7 +87,7 @@
                 </p>
                 <?php
                 echo '<p>' . kratos_option('s_copyright', 'COPYRIGHT © ' . wp_date('Y') . ' ' . get_bloginfo('name') . '. ALL RIGHTS RESERVED.') . '</p>';
-                echo '<p>Theme <a href="https://github.com/lifengdi/kratos-plus" target="_blank" rel="nofollow">Kratos+</a> By <a href="https://www.lifengdi.com" target="_blank" rel="nofollow">Dylan Li</a></p>';
+                echo '<p>Theme <a href="https://github.com/lifengdi/kratos-plus" target="_blank" rel="nofollow">Kratos-plus</a> By <a href="https://www.lifengdi.com" target="_blank" rel="nofollow">Dylan Li</a></p>';
                 if (kratos_option('s_icp')) {
                     echo '<p><a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow">' . kratos_option('s_icp') . '</a></p>';
                 }

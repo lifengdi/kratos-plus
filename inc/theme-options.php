@@ -3,7 +3,7 @@
 /**
  * 主题选项
  * @author Seaton Jiang <hi@seatonjiang.com>
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2025.02.08
  */
@@ -370,9 +370,9 @@ CSF::createOptions($prefix, array(
     // 侧栏菜单的吸顶不在框架内，见 assets/css/admin.css 的 .csf-nav-normal 段。
     'sticky_header' => true,
     'admin_bar_menu_icon' => 'dashicons-admin-generic',
-    'framework_title' => '主题设置<small style="margin-left:10px">Kratos+ v' . THEME_VERSION . '</small>',
+    'framework_title' => '主题设置<small style="margin-left:10px">Kratos-plus v' . THEME_VERSION . '</small>',
     'theme' => 'light',
-    'footer_credit' => '感谢使用 Kratos+ 主题进行创作。本主题基于 <a target="_blank" href="https://github.com/seatonjiang/kratos">Kratos</a>（GPL-3.0）二次开发。',
+    'footer_credit' => '感谢使用 Kratos-plus 主题进行创作。本主题基于 <a target="_blank" href="https://github.com/seatonjiang/kratos">Kratos</a>（GPL-3.0）二次开发。',
 ));
 
 CSF::createSection($prefix, array(
@@ -928,7 +928,7 @@ CSF::createSection($prefix, array(
             'type' => 'text',
             'title' => __('自定义文字', 'kratos'),
             'subtitle' => __('建议不超过 4 个字', 'kratos'),
-            'default' => 'Kratos+',
+            'default' => 'Kratos-plus',
             'dependency' => array('g_postthumbnail_text_source|g_postthumbnail_mode', '==|==', 'custom|text'),
         ),
         array(
@@ -1593,7 +1593,7 @@ CSF::createSection($prefix, array(
             'id' => 'top_title',
             'type' => 'text',
             'title' => __('图片标题', 'kratos'),
-            'default' => __('Kratos+', 'kratos'),
+            'default' => __('Kratos-plus', 'kratos'),
         ),
         array(
             'id' => 'top_describe',
@@ -1983,7 +1983,7 @@ CSF::createSection($prefix, array(
             'id' => 'g_login_brand_desc',
             'type' => 'textarea',
             'title' => __('描述段落', 'kratos'),
-            'default' => 'Kratos+ 是一款为写作者打造的 WordPress 主题，简洁、有序、可自定义。登录后开始你的创作之旅。',
+            'default' => 'Kratos-plus 是一款为写作者打造的 WordPress 主题，简洁、有序、可自定义。登录后开始你的创作之旅。',
             'dependency' => array('g_login_enable|g_login_brand_show', '==|==', 'true|true'),
         ),
         array(
@@ -2143,7 +2143,7 @@ CSF::createSection($prefix, array(
             'type' => 'text',
             'title' => __('页脚版权文本', 'kratos'),
             'subtitle' => __('卡片底部的小字，留空则不显示', 'kratos'),
-            'default' => '© Kratos+ · 由 Dylan Li 二次开发',
+            'default' => '© Kratos-plus · 由 Dylan Li 二次开发',
             'dependency' => array('g_login_enable', '==', 'true'),
         ),
     ),
@@ -2784,7 +2784,7 @@ CSF::createSection($prefix, array(
                 . '<code>[kratos_series_list depth="2" hide_empty="yes"]</code><br>'
                 . '<span style="color:#888;">' . __('仅展开 2 层，隐藏空系列', 'kratos') . '</span><br><br>'
                 . '<strong>' . __('推荐用法：', 'kratos') . '</strong>'
-                . __('新建一个页面（可选「Kratos+ 特色标题」模板配头图），正文粘贴短码，即得「所有系列」总览页；再把该页加入菜单即可。', 'kratos')
+                . __('新建一个页面（可选「Kratos-plus 特色标题」模板配头图），正文粘贴短码，即得「所有系列」总览页；再把该页加入菜单即可。', 'kratos')
                 . '</div>',
         ),
     ),
@@ -5043,7 +5043,7 @@ CSF::createSection($prefix, array(
             'id' => 'g_cmdk_show_pages',
             'type' => 'switcher',
             'title' => __('展示页面跳转', 'kratos'),
-            'subtitle' => __('面板里列出站内页面；个别页面可在「编辑页面 → Kratos+ 命令面板」里排除', 'kratos'),
+            'subtitle' => __('面板里列出站内页面；个别页面可在「编辑页面 → Kratos-plus 命令面板」里排除', 'kratos'),
             'default' => true,
             'dependency' => array('g_cmdk', '==', 'true'),
         ),
@@ -5285,7 +5285,7 @@ CSF::createSection($prefix, array(
         array(
             'type' => 'content',
             'content' => '<ul style="margin: 0 auto;">'
-                . '<li>' . __('主题名称：', 'kratos') . 'Kratos+</li>'
+                . '<li>' . __('主题名称：', 'kratos') . 'Kratos-plus</li>'
                 . '<li>' . __('主题版本：', 'kratos') . THEME_VERSION . '</li>'
                 . '<li>' . __('PHP 版本：', 'kratos') . PHP_VERSION . '</li>'
                 . '<li>' . __('WordPress 版本：', 'kratos') . $wp_version . '</li>'
@@ -5300,7 +5300,7 @@ CSF::createSection($prefix, array(
             'type' => 'content',
             'content' => '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:20px 24px;background:linear-gradient(135deg,#f2f8ff 0%,#e6f1ff 100%);border-radius:14px;border:1px solid #cfe3fb;">'
                 . '<div style="flex:1 1 240px;min-width:240px;color:#2f4a66;line-height:1.7;">'
-                . '<p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#2874d0;">' . __('Kratos+ 主题论坛', 'kratos') . '</p>'
+                . '<p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#2874d0;">' . __('Kratos-plus 主题论坛', 'kratos') . '</p>'
                 . '<p style="margin:0 0 4px;font-size:13px;">' . __('遇到使用问题、想反馈 Bug 或提交功能建议，都欢迎到论坛发帖交流。', 'kratos') . '</p>'
                 . '<p style="margin:0;font-size:13px;color:#5b7799;">' . __('也可以在论坛里分享你的建站配置与皮肤搭配，和其他站长互相取经。', 'kratos') . '</p>'
                 . '</div>'
@@ -5334,7 +5334,7 @@ CSF::createSection($prefix, array(
         array(
             'type' => 'content',
             'content' => __(
-                '<p>本主题 <strong>Kratos+</strong> 由 <a href="https://www.lifengdi.com" target="_blank">Dylan Li</a> 在 <a href="https://github.com/seatonjiang/kratos" target="_blank">Kratos</a> 主题（原作者 Seaton Jiang）的基础上二次开发，新增可视化代码高亮、布局自定义、评论数学验证码等功能。</p>'
+                '<p>本主题 <strong>Kratos-plus</strong> 由 <a href="https://www.lifengdi.com" target="_blank">Dylan Li</a> 在 <a href="https://github.com/seatonjiang/kratos" target="_blank">Kratos</a> 主题（原作者 Seaton Jiang）的基础上二次开发，新增可视化代码高亮、布局自定义、评论数学验证码等功能。</p>'
                 . '<p>本主题继承原主题 <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU GPL-3.0</a> 协议许可，原作者及所有引用第三方组件的版权署名均予以保留。再次分发须遵守 GPL-3.0 协议要求，包括开源、保留版权声明和许可信息。</p>',
                 'kratos'
             ),

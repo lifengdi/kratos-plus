@@ -5,7 +5,7 @@
  *  - 结果按 href 在内存中缓存，同一链接不重复请求
  *  - 触屏 / 无 hover 能力的设备直接不启用
  *
- * @author Dylan Li (Kratos+)
+ * @author Dylan Li (Kratos-plus)
  * @license GPL-3.0 License
  */
 (function () {

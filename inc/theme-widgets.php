@@ -3,7 +3,7 @@
 /**
  * 侧栏小工具
  * @author Seaton Jiang <hi@seatonjiang.com>
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  * @version 2023.01.14
  */
@@ -214,7 +214,7 @@ class widget_ad extends WP_Widget
         add_action('admin_enqueue_scripts', array($this, 'scripts'));
 
         $widget_ops = array(
-            'name' => __('Kratos+ - 图片广告', 'kratos'),
+            'name' => __('Kratos-plus - 图片广告', 'kratos'),
             'description' => __('显示自定义图片广告的工具', 'kratos'),
         );
 
@@ -296,7 +296,7 @@ class widget_about extends WP_Widget
         add_action('wp_enqueue_scripts', array($this, 'front_scripts'));
 
         $widget_ops = array(
-            'name'        => __('Kratos+ - 个人简介', 'kratos'),
+            'name'        => __('Kratos-plus - 个人简介', 'kratos'),
             'description' => __('站长个人简介的展示工具（支持社交、统计、Markdown、CTA、二维码）', 'kratos'),
         );
 
@@ -766,7 +766,7 @@ class widget_tags extends WP_Widget
     public function __construct()
     {
         $widget_ops = array(
-            'name' => __('Kratos+ - 标签聚合', 'kratos'),
+            'name' => __('Kratos-plus - 标签聚合', 'kratos'),
             'description' => __('文章标签的展示工具', 'kratos'),
         );
 
@@ -834,7 +834,7 @@ class widget_posts extends WP_Widget
     public function __construct()
     {
         $widget_ops = array(
-            'name' => __('Kratos+ - 文章聚合', 'kratos'),
+            'name' => __('Kratos-plus - 文章聚合', 'kratos'),
             'description' => __('展示最热、随机、最新文章的工具', 'kratos'),
         );
 
@@ -925,7 +925,7 @@ class widget_comments extends WP_Widget
     public function __construct()
     {
         $widget_ops = array(
-            'name' => __('Kratos+ - 最近评论', 'kratos'),
+            'name' => __('Kratos-plus - 最近评论', 'kratos'),
             'description' => __('展示站点最近的评论', 'kratos'),
         );
 
@@ -978,7 +978,7 @@ class widget_toc extends WP_Widget
         add_action('admin_enqueue_scripts', array($this, 'scripts'));
 
         $widget_ops = array(
-            'name' => __('Kratos+ - 文章目录', 'kratos'),
+            'name' => __('Kratos-plus - 文章目录', 'kratos'),
             'description' => __('仅在有目录规则的文章中显示目录的工具', 'kratos'),
         );
 
@@ -1049,12 +1049,12 @@ class widget_links extends WP_Widget
     public function __construct()
     {
         $widget_ops = array(
-            'name'                        => __('Kratos+ - 链接', 'kratos'),
+            'name'                        => __('Kratos-plus - 链接', 'kratos'),
             'description'                 => __('展示友情链接，图标复用友链页面的 Logo / 首字母占位逻辑', 'kratos'),
             'classname'                   => 'widget_links',
             'customize_selective_refresh' => true,
         );
-        parent::__construct('links', __('Kratos+ - 链接', 'kratos'), $widget_ops);
+        parent::__construct('links', __('Kratos-plus - 链接', 'kratos'), $widget_ops);
     }
 
     public function widget($args, $instance)

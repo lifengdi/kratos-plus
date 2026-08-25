@@ -6,7 +6,7 @@
  * 把属性拼回原 shortcode 字符串再 do_shortcode()，复用既有 PHP 渲染逻辑：
  * 评论权限校验（[reply]）、DPlayer 实例计数、iframe 拼装等无需重写。
  *
- * @author Dylan Li (Kratos+) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 
@@ -206,7 +206,7 @@ function kratos_blocks_register_category($cats)
     return array_merge(array(
         array(
             'slug'  => 'kratos-blocks',
-            'title' => __('Kratos+ 短码', 'kratos'),
+            'title' => __('Kratos-plus 短码', 'kratos'),
             'icon'  => null,
         ),
     ), (array) $cats);

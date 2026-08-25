@@ -8,7 +8,7 @@
  *
  * 系列内排序读取 meta `_kratos_series_order`；缺省时按发布时间升序（旧 → 新，符合连载）。
  *
- * @author Dylan Li (Kratos+) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 

@@ -430,7 +430,7 @@
   var consoleConfig =
     function () {
       console.log(
-        "\n Kratos+ v" +
+        "\n Kratos-plus v" +
           KRATOS_VERSION +
           "\n\n https://www.lifengdi.com \n\n"
       );

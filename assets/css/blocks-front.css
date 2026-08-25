@@ -1,5 +1,5 @@
 /**
- * Kratos+ 短码区块 - 前台样式（与编辑器内预览对齐）。
+ * Kratos-plus 短码区块 - 前台样式（与编辑器内预览对齐）。
  *
  * 不替换 Bootstrap 的 .alert / .card —— 这两套类是从 theme-shortcode.php 输出的
  * 现成 HTML 结构。本表只在主题选择器下叠加：浅色背景、左侧色带、SVG 图标，

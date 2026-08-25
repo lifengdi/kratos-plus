@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Kratos+ 主题后台更新提示与版本说明
+ * Kratos-plus 主题后台更新提示与版本说明
  *
  * 独立于 PUC 的轻量更新模块：定期请求 GitHub Releases API，与 THEME_VERSION 比对，
  * 在「主题设置 → 版本更新」section 展示：

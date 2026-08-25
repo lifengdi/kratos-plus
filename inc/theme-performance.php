@@ -6,7 +6,7 @@
  * 「减少请求 / 减少查询 / 减少写库 / 改善 LCP」这一类开关，全部可在主题选项
  * 「基础设置 → 性能优化」里逐项关闭。不含整页缓存、图片转码、CSS/JS 合并压缩。
  *
- * @author Dylan Li (Kratos+)
+ * @author Dylan Li (Kratos-plus)
  * @license GPL-3.0 License
  */
 

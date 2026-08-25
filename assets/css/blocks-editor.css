@@ -1,5 +1,5 @@
 /**
- * Kratos+ 短码区块 - 编辑器内可视化样式。
+ * Kratos-plus 短码区块 - 编辑器内可视化样式。
  * 仅在 Gutenberg 编辑器加载（enqueue_block_editor_assets），不影响前台。
  *
  * 图标统一用真实 DOM <span class="kratos-block__icon">（PlainText 渲染的

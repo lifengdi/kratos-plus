@@ -3,7 +3,7 @@
 /**
  * 表情图标
  * @author Seaton Jiang <hi@seatonjiang.com>
- * @author Dylan Li (Kratos+ fork) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 $kratos_groups = kratos_get_smilies_groups();

@@ -11,7 +11,7 @@
  *   - 那个模块处理「没有特色图」时的 SVG 占位
  *   - 本模块处理「有图但未加载完」的渐显
  *
- * @author Dylan Li (Kratos+) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 

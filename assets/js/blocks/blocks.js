@@ -1,5 +1,5 @@
 /**
- * Kratos+ 短码区块 - Gutenberg 注册脚本（无构建步骤，浏览器端 IIFE）。
+ * Kratos-plus 短码区块 - Gutenberg 注册脚本（无构建步骤，浏览器端 IIFE）。
  *
  * 与 inc/theme-gutenberg-blocks.php 的 kratos_blocks_defs() 一一对应。
  *   wrap   -> RichText 编辑 content
@@ -158,7 +158,7 @@
     /* -------------------------------------------------------------- */
     registerBlockType( 'kratos/search', {
         apiVersion: 2,
-        title: '搜索（Kratos+）',
+        title: '搜索（Kratos-plus）',
         description: '主题自带样式的搜索小工具，与侧栏 Search widget 输出一致',
         category: 'widgets',
         icon: 'search',

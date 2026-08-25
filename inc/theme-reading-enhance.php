@@ -7,7 +7,7 @@
  *  - 文章更新提示条（post_modified 距 post_date 超过阈值时提示）
  *  - 相关文章推荐（按标签/分类匹配）
  *
- * @author Dylan Li (Kratos+) <https://www.lifengdi.com>
+ * @author Dylan Li (Kratos-plus) <https://www.lifengdi.com>
  * @license GPL-3.0 License
  */
 

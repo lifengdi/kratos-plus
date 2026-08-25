@@ -5,7 +5,7 @@
     initial-value: 0px;
 }
 
-/* Kratos+ 皮肤 · 莫兰迪柔和 morandi（从 weekday-skins.css 抽出） */
+/* Kratos-plus 皮肤 · 莫兰迪柔和 morandi（从 weekday-skins.css 抽出） */
 
 html[data-weekday-skin="morandi"] {
     --kr-skin-bg:          #E5E0DA;

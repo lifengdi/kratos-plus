@@ -1,4 +1,4 @@
-/* Kratos+ 自定义登录页交互
+/* Kratos-plus 自定义登录页交互
  * - 主题切换（亮/暗）持久化到 localStorage
  */
 (function () {

@@ -1,5 +1,5 @@
 /*!
- * Kratos+ 暗夜模式前端脚本
+ * Kratos-plus 暗夜模式前端脚本
  *  - 监听系统主题（auto 模式）
  *  - 按时间段自动切换（schedule 模式）
  *  - 提供右下角浮动切换按钮，手动切换写入 localStorage 覆盖默认
