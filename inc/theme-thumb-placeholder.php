@@ -324,9 +324,9 @@ add_action('wp_head', function () {
   color:#3A2A1A;
   font-family:'Playfair Display',Georgia,'Songti SC',serif;
   box-shadow:
-    inset 0 0 0 4px #3A2A1A,
-    inset 0 0 0 5px #EFE7D6,
-    inset 0 0 0 6px #3A2A1A;
+    inset 0 0 0 2px #3A2A1A,
+    inset 0 0 0 3px #EFE7D6,
+    inset 0 0 0 4px #3A2A1A;
 }
 
 /* grid: 深底 + 40px 网格线（repeating-linear-gradient 两层交叉） */

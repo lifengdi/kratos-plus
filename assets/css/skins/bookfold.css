@@ -1417,12 +1417,12 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
 html[data-weekday-skin="bookfold"] .k-main .details *,
 html[data-weekday-skin="bookfold"] .k-main .board *,
 html[data-weekday-skin="bookfold"] .k-main .sidebar * {
-    box-shadow: none !important;
+    box-shadow: none;
 }
 html[data-weekday-skin="bookfold"] .k-main .details *:hover,
 html[data-weekday-skin="bookfold"] .k-main .board *:hover,
 html[data-weekday-skin="bookfold"] .k-main .sidebar *:hover {
-    box-shadow: none !important;
+    box-shadow: none;
     transform: none !important;
 }
 
