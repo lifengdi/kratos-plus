@@ -249,6 +249,7 @@ add_action('wp_head', function () {
   position:absolute;inset:0;
   width:100%;height:100%;
   aspect-ratio:auto;
+  border-radius:inherit;
 }
 @media screen and (max-width: 768px){
   .k-main .board .article-panel .a-thumb > a{
