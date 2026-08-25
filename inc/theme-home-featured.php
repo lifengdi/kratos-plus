@@ -883,7 +883,7 @@ function kratos_home_featured_shortcode($atts = array())
     $minutes = max(0, (int) kratos_option('hf_cache_minutes', 10));
     // 登录用户不吃缓存：站长改完文章要能立刻看到效果
     $use_cache = $minutes > 0 && !is_user_logged_in();
-    $key       = 'kratos_hf_html';
+    $key       = 'kratos_hf_html_v2';
 
     if ($use_cache) {
         $cached = get_transient($key);
@@ -905,7 +905,7 @@ add_shortcode('home_featured', 'kratos_home_featured_shortcode');
 /** 清缓存：文章、分类标签、评论、主题选项变动都会影响首页内容。 */
 function kratos_home_flush_cache()
 {
-    delete_transient('kratos_hf_html');
+    delete_transient('kratos_hf_html_v2');
 }
 add_action('save_post', 'kratos_home_flush_cache');
 add_action('deleted_post', 'kratos_home_flush_cache');

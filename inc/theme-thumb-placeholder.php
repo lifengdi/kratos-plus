@@ -223,7 +223,8 @@ add_action('wp_head', function () {
   box-sizing:border-box;
   width:100%;height:100%;
   aspect-ratio:16/9;
-  background:var(--kt-bg,#5B8DEF);
+  background-color:var(--kt-bg,#5B8DEF);
+  background-image:none;
   color:var(--kt-fg,#fff);
   font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   font-weight:700;line-height:1;
@@ -308,15 +309,18 @@ add_action('wp_head', function () {
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
 }
 
-/* gradient: 从 --kt-c1 到 --kt-c2 的对角线渐变，白字 */
+/* gradient: 从 --kt-c1 到 --kt-c2 的对角线渐变，白字。
+   用 background-image 而不是 shorthand，避免被外层 background 短属性重置成透明 */
 .k-thumb-ph.is-preset-gradient{
-  background:linear-gradient(135deg,var(--kt-c1,#5B8DEF) 0%,var(--kt-c2,#8E7DBE) 100%);
+  background-color:var(--kt-c1,#5B8DEF);
+  background-image:linear-gradient(135deg,var(--kt-c1,#5B8DEF) 0%,var(--kt-c2,#8E7DBE) 100%);
   color:#fff;
 }
 
 /* retro: 米色底 + 双重描边 + Playfair 衬线 */
 .k-thumb-ph.is-preset-retro{
-  background:#EFE7D6;
+  background-color:#EFE7D6;
+  background-image:none;
   color:#3A2A1A;
   font-family:'Playfair Display',Georgia,'Songti SC',serif;
   box-shadow:
@@ -327,16 +331,17 @@ add_action('wp_head', function () {
 
 /* grid: 深底 + 40px 网格线（repeating-linear-gradient 两层交叉） */
 .k-thumb-ph.is-preset-grid{
-  background:
+  background-color:#111111;
+  background-image:
     repeating-linear-gradient(to right, rgba(255,255,255,.06) 0 1px, transparent 1px 40px),
-    repeating-linear-gradient(to bottom, rgba(255,255,255,.06) 0 1px, transparent 1px 40px),
-    #111111;
+    repeating-linear-gradient(to bottom, rgba(255,255,255,.06) 0 1px, transparent 1px 40px);
   color:#fff;
 }
 
 /* notion: 米色底 + 中央方块（吃 --kt-accent），文字放方块内 */
 .k-thumb-ph.is-preset-notion{
-  background:#F1EEE8;
+  background-color:#F1EEE8;
+  background-image:none;
   color:#fff;
 }
 .k-thumb-ph.is-preset-notion .k-thumb-ph-inner{
