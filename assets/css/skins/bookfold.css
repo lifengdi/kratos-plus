@@ -1414,15 +1414,15 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .board {
  * 只命中 .details/.board/.sidebar 的「子孙元素」，故书页本身的书脊内阴影不受影响。
  * 让文章卡、侧栏 widget、短代码卡、相关文章、评论卡、按钮等一律平印在书页上，
  * 鼠标悬浮不再抬起/投影，符合「内容是书页的一部分」的观感。 */
-html[data-weekday-skin="bookfold"] .k-main .details *,
-html[data-weekday-skin="bookfold"] .k-main .board *,
-html[data-weekday-skin="bookfold"] .k-main .sidebar * {
-    box-shadow: none;
-}
+/*html[data-weekday-skin="bookfold"] .k-main .details *,*/
+/*html[data-weekday-skin="bookfold"] .k-main .board *,*/
+/*html[data-weekday-skin="bookfold"] .k-main .sidebar * {*/
+/*    box-shadow: none;*/
+/*}*/
 html[data-weekday-skin="bookfold"] .k-main .details *:hover,
 html[data-weekday-skin="bookfold"] .k-main .board *:hover,
 html[data-weekday-skin="bookfold"] .k-main .sidebar *:hover {
-    box-shadow: none;
+    /*box-shadow: none;*/
     transform: none !important;
 }
 
