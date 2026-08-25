@@ -214,15 +214,15 @@ add_action('wp_head', function () {
     if (!kratos_default_thumb_is_text_mode()) return;
     ?>
 <style id="kratos-thumb-ph-inline">
-/* 外壳：容器查询做字号自适应，纯 CSS 承载 5 个预设的形态与配色。
-   PHP 端只算 hash 色（写进 --kt-c1/--kt-c2/--kt-accent/--kt-bg/--kt-fg），
-   文字换行由浏览器 line-clamp 兜底，不再服务端估宽。 */
+/* 外壳：优先填满父容器（thumbnail 位一般是显式尺寸或 aspect-ratio 容器），
+   父容器没高度时用 aspect-ratio:16/9 兜底。文字换行/字号自适应由 CSS 完成。 */
 .k-thumb-ph{
   container-type:inline-size;
   position:relative;
   display:flex;align-items:center;justify-content:center;
   box-sizing:border-box;
-  width:100%;aspect-ratio:16/9;
+  width:100%;height:100%;
+  aspect-ratio:16/9;
   background:var(--kt-bg,#5B8DEF);
   color:var(--kt-fg,#fff);
   font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
@@ -237,16 +237,19 @@ add_action('wp_head', function () {
   white-space:nowrap;overflow:hidden;text-overflow:clip;
 }
 
-/* 尺寸容器覆盖：外壳给了显式尺寸时，div 铺满、放弃自身 aspect-ratio */
+/* 宿主容器无论是显式 px 尺寸、aspect-ratio 还是 padding-top hack，都统一走
+   "position:relative 承接 + 内部 div 绝对铺满" 的路径，稳过 <a>/<span> 中间层。 */
 .a-thumb{position:relative}
-.a-thumb .k-thumb-ph,
-.kratos-related-thumb .k-thumb-ph,
-.kotd-thumb .k-thumb-ph{
-  position:absolute;inset:0;
-  width:100%;height:100%;aspect-ratio:auto;
-}
 .kratos-related-thumb.kratos-related-thumb-ph,
 .kotd-thumb.kotd-thumb-ph{position:relative;background:transparent}
+.a-thumb .k-thumb-ph,
+.kratos-related-thumb-ph .k-thumb-ph,
+.kotd-thumb-ph .k-thumb-ph,
+.khf-thumb .k-thumb-ph{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  aspect-ratio:auto;
+}
 @media screen and (max-width: 768px){
   .k-main .board .article-panel .a-thumb > a{
     position:absolute;inset:0;display:block;overflow:hidden;
