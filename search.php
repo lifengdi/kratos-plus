@@ -137,9 +137,11 @@ $kratos_enhance = kratos_option('g_search_enhance', true);
                 }
                 wp_reset_query(); ?>
             </div>
+            <?php if ( kratos_perf_show_sidebar() ) : ?>
             <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
                 <?php dynamic_sidebar('home_sidebar'); ?>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

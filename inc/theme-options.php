@@ -802,6 +802,13 @@ CSF::createSection($prefix, array(
             'default' => true,
         ),
         array(
+            'id' => 'g_perf_mobile_no_sidebar',
+            'type' => 'switcher',
+            'title' => __('移动端不输出侧边栏', 'kratos'),
+            'subtitle' => __('按 UA 判定移动端时后端直接跳过侧边栏 HTML 与小工具查询；开启页面缓存请启用移动端分桶', 'kratos'),
+            'default' => true,
+        ),
+        array(
             'id' => 'g_perf_adminbar_metrics',
             'type' => 'switcher',
             'title' => __('工具条显示运行指标', 'kratos'),
@@ -1647,6 +1654,49 @@ CSF::createSection($prefix, array(
             'title' => __('吸顶背景色（默认主题）', 'kratos'),
             'subtitle' => __('仅默认外观下生效；启用皮肤或暗夜时跟随皮肤配色。', 'kratos'),
             'default' => '#24292e',
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_chrome',
+    'title' => __('自定义代码', 'kratos'),
+    'icon' => 'fas fa-code',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('原样注入到前台页面。仅在需要接入第三方统计、验证代码、A/B 脚本等场景时使用；填错会影响前台渲染。留空即关闭。', 'kratos'),
+        ),
+        array(
+            'id' => 'g_custom_head_code',
+            'type' => 'textarea',
+            'title' => __('前台 Head 代码', 'kratos'),
+            'subtitle' => __('输出到前台 &lt;/head&gt; 之前（wp_head 尾部）', 'kratos'),
+            'sanitize' => false,
+            'attributes' => array(
+                'rows' => 8,
+                'style' => 'font-family:Consolas,Monaco,monospace;',
+                'placeholder' => "<!-- 例如：统计 / 站点验证 -->\n<meta name=\"baidu-site-verification\" content=\"xxxxx\" />",
+            ),
+        ),
+        array(
+            'id' => 'g_custom_footer_code',
+            'type' => 'textarea',
+            'title' => __('前台 Footer 代码', 'kratos'),
+            'subtitle' => __('输出到前台 &lt;/body&gt; 之前（wp_footer 尾部）', 'kratos'),
+            'sanitize' => false,
+            'attributes' => array(
+                'rows' => 8,
+                'style' => 'font-family:Consolas,Monaco,monospace;',
+                'placeholder' => "<!-- 例如：客服组件 / 异步脚本 -->\n<script>/* your code */</script>",
+            ),
+        ),
+        array(
+            'id' => 'g_custom_code_admin_only',
+            'type' => 'switcher',
+            'title' => __('仅登录用户可见', 'kratos'),
+            'subtitle' => __('调试期使用：仅在当前用户已登录时注入上述代码', 'kratos'),
+            'default' => false,
         ),
     ),
 ));

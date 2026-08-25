@@ -185,9 +185,11 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                 <?php comments_template(); ?>
             </div>
             <?php if ($kratos_layout === 'two_side') { ?>
+                <?php if ( kratos_perf_show_sidebar() ) : ?>
                 <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
                     <?php dynamic_sidebar('single_sidebar'); ?>
                 </div>
+                <?php endif; ?>
             <?php } ?>
         </div>
     </div>

@@ -760,3 +760,40 @@ if (kratos_option('g_search', false)) {
         return $search;
     }
 }
+
+/**
+ * 前台自定义 Head / Footer 代码注入
+ * 主题选项 → 顶部与页脚 → 自定义代码
+ */
+if (!function_exists('kratos_custom_code_should_output')) {
+    function kratos_custom_code_should_output()
+    {
+        if (is_admin() || is_feed() || is_robots() || is_trackback()) {
+            return false;
+        }
+        if (kratos_option('g_custom_code_admin_only') && !is_user_logged_in()) {
+            return false;
+        }
+        return true;
+    }
+}
+
+add_action('wp_head', function () {
+    if (!kratos_custom_code_should_output()) {
+        return;
+    }
+    $code = (string) kratos_option('g_custom_head_code');
+    if (trim($code) !== '') {
+        echo "\n" . $code . "\n";
+    }
+}, 999);
+
+add_action('wp_footer', function () {
+    if (!kratos_custom_code_should_output()) {
+        return;
+    }
+    $code = (string) kratos_option('g_custom_footer_code');
+    if (trim($code) !== '') {
+        echo "\n" . $code . "\n";
+    }
+}, 999);

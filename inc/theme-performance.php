@@ -18,6 +18,15 @@ function kratos_perf_on($key, $default = true)
     return (bool) kratos_option($key, $default);
 }
 
+/** 是否在当前请求输出侧边栏。移动端 UA + 开关开启时返回 false。 */
+function kratos_perf_show_sidebar()
+{
+    if (kratos_perf_on('g_perf_mobile_no_sidebar', true) && wp_is_mobile()) {
+        return false;
+    }
+    return true;
+}
+
 /* ============================================================
  *  A1 播放器脚本按需加载
  * ============================================================ */

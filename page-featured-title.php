@@ -114,9 +114,11 @@ $kratos_cols = kratos_layout_cols(); ?>
                 <?php endif; ?>
                 <?php comments_template(); ?>
             </div>
+            <?php if ( kratos_perf_show_sidebar() ) : ?>
             <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
                 <?php dynamic_sidebar('page_sidebar'); ?>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

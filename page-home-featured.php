@@ -44,9 +44,11 @@ $kratos_hf_main = $kratos_hf_sidebar ? $kratos_cols['main'] : 'col-lg-12'; ?>
                 <?php endif; ?>
             </div>
             <?php if ($kratos_hf_sidebar) : ?>
+                <?php if ( kratos_perf_show_sidebar() ) : ?>
                 <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
                     <?php dynamic_sidebar('page_sidebar'); ?>
                 </div>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>
