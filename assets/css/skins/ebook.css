@@ -2010,6 +2010,10 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related-thumb {
     border: var(--kr-shape-border) !important;
     filter: grayscale(1) contrast(1.02);
 }
+/* 文字占位图（无图回退）不走 grayscale，否则 gradient 会被拍成单色灰 */
+html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related-thumb.kratos-related-thumb-ph {
+    filter: none;
+}
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related-name {
     color: var(--kr-skin-heading) !important;
     font-family: "Georgia", serif;
