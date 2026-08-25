@@ -408,15 +408,71 @@ function kratos_default_thumb_url($post, $w = 512, $h = 288)
 
 /**
  * 返回可直接 echo 的 HTML。
- * skin 预设走 <span> 以吃 CSS 变量；其余预设走 <img>。
+ * 输出纯 div + CSS 变量，5 个预设的形态与配色完全由浏览器渲染，
+ * PHP 只算 hash 色板与提取文字。文字换行、字号自适应交给 CSS。
+ * 需要 data URL（如 JSON/transient）的场景走 kratos_default_thumb_url()。
  */
 function kratos_default_thumb_html($post, $w = 512, $h = 288)
 {
-    $url = kratos_default_thumb_url($post, $w, $h);
-    $alt = is_object($post) ? esc_attr(get_the_title($post)) : '';
-    $html = '<img src="' . $url . '" alt="' . $alt . '" loading="lazy" />';
-    // 首图交给性能模块改成 eager + fetchpriority=high（见 kratos_perf_mark_img）
-    return function_exists('kratos_perf_mark_img') ? kratos_perf_mark_img($html) : $html;
+    $preset = kratos_option('g_postthumbnail_preset', 'solid');
+    if ($preset === 'skin') $preset = 'solid';
+    $allowed = array('solid', 'gradient', 'retro', 'grid', 'notion');
+    if (!in_array($preset, $allowed, true)) $preset = 'solid';
+
+    $text   = kratos_thumb_ph_text($post);
+    $is_full = kratos_option('g_postthumbnail_text_source', 'title_initial') === 'title_full';
+    $len    = mb_strlen($text, 'UTF-8');
+    if ($is_full && $len > 60) {
+        $text = mb_substr($text, 0, 60, 'UTF-8');
+        $len  = 60;
+    }
+    $wrap = ($is_full && $len > 6);
+
+    // 色板 hash：与 SVG 端保持一致（同 post 出同色），前端只需读 CSS 变量。
+    $bg     = kratos_thumb_ph_bg($post);
+    if (!$bg) $bg = '#5B8DEF';
+    $fg     = kratos_thumb_ph_fg($bg);
+
+    $seed = is_object($post) ? ($post->post_name ?: (string)$post->ID) : 'kratos';
+
+    // gradient：从 palette 取两色
+    $g_palette = kratos_thumb_ph_palette(kratos_option('g_postthumbnail_palette', 'material'));
+    $gi1 = abs(crc32($seed)) % count($g_palette);
+    $gi2 = ($gi1 + 3) % count($g_palette);
+    $c1 = $g_palette[$gi1]; $c2 = $g_palette[$gi2];
+
+    // notion：从 morandi 色板取 accent
+    $n_palette = kratos_thumb_ph_palette(kratos_option('g_postthumbnail_palette', 'morandi'));
+    $accent = $n_palette[abs(crc32($seed)) % count($n_palette)];
+
+    $font = kratos_option('g_postthumbnail_font', 'sans');
+    $font_class = '';
+    if ($font === 'serif') $font_class = ' kt-ph-font-serif';
+    elseif ($font === 'mono') $font_class = ' kt-ph-font-mono';
+
+    $alt = is_object($post) ? get_the_title($post) : '';
+    $text_e = esc_html($text);
+    $alt_e  = esc_attr($alt);
+
+    $style = sprintf(
+        '--kt-bg:%s;--kt-fg:%s;--kt-c1:%s;--kt-c2:%s;--kt-accent:%s;',
+        esc_attr($bg), esc_attr($fg), esc_attr($c1), esc_attr($c2), esc_attr($accent)
+    );
+
+    $classes = 'k-thumb-ph is-preset-' . $preset . $font_class . ($wrap ? ' is-wrap' : '');
+    $data_len = min($len, 14);
+
+    // notion 预设有内嵌方块承载文字；其余预设文字直接放外层。
+    if ($preset === 'notion') {
+        $inner = '<span class="k-thumb-ph-inner"><span class="k-thumb-ph-text">' . $text_e . '</span></span>';
+    } else {
+        $inner = '<span class="k-thumb-ph-text">' . $text_e . '</span>';
+    }
+
+    return '<div class="' . $classes . '" data-len="' . (int)$data_len
+         . '" style="' . $style . '" role="img" aria-label="' . $alt_e . '">'
+         . $inner
+         . '</div>';
 }
 
 /**
@@ -461,84 +517,150 @@ add_action('wp_head', function () {
     if (!kratos_default_thumb_is_text_mode()) return;
     ?>
 <style id="kratos-thumb-ph-inline">
-/* 默认：独立位置（如相关文章 span）用 aspect-ratio 撑高 */
-.kratos-thumb-ph{
+/* 外壳：容器查询做字号自适应，纯 CSS 承载 5 个预设的形态与配色。
+   PHP 端只算 hash 色（写进 --kt-c1/--kt-c2/--kt-accent/--kt-bg/--kt-fg），
+   文字换行由浏览器 line-clamp 兜底，不再服务端估宽。 */
+.k-thumb-ph{
   container-type:inline-size;
-  display:grid;place-items:center;
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
   box-sizing:border-box;
   width:100%;aspect-ratio:16/9;
-  background:var(--kr-skin-accent,#5B8DEF);
-  color:#fff;
-  font-size:min(18.6cqw,72px);
-  font-family:-apple-system,"Segoe UI","PingFang SC",sans-serif;
+  background:var(--kt-bg,#5B8DEF);
+  color:var(--kt-fg,#fff);
+  font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   font-weight:700;line-height:1;
-  user-select:none;letter-spacing:-0.5px;
-  white-space:nowrap;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+  user-select:none;letter-spacing:-0.02em;
   overflow:hidden;text-align:center;
 }
-/* 桌面端 .a-thumb 是 256×144 明确尺寸，img 原有规则 width/height:100%，无需改；
-   只需保证 span 版跟 img 一致行为。 */
+.k-thumb-ph.kt-ph-font-serif{font-family:Georgia,"Songti SC","STSong",serif}
+.k-thumb-ph.kt-ph-font-mono{font-family:"JetBrains Mono","SFMono-Regular",Consolas,monospace}
+.k-thumb-ph .k-thumb-ph-text{
+  display:block;max-width:100%;
+  white-space:nowrap;overflow:hidden;text-overflow:clip;
+}
+
+/* 尺寸容器覆盖：.a-thumb 桌面固定尺寸、移动端 padding-bottom hack */
 .a-thumb{position:relative}
-.a-thumb .kratos-thumb-ph{width:100%;height:100%;aspect-ratio:auto}
-/* 手机端 .a-thumb 用 padding-bottom hack（height:0），
-   原 img 规则 height:auto 会让图片按自然比例撑高溢出容器，文字视觉偏下——
-   把 img/span 都绝对定位铺满 .a-thumb。 */
+.a-thumb .k-thumb-ph{width:100%;height:100%;aspect-ratio:auto}
 @media screen and (max-width: 768px){
   .k-main .board .article-panel .a-thumb > a{
-    position:absolute;top:0;left:0;right:0;bottom:0;display:block;overflow:hidden;
+    position:absolute;inset:0;display:block;overflow:hidden;
   }
   .k-main .board .article-panel .a-thumb > a > img,
-  .k-main .board .article-panel .a-thumb .kratos-thumb-ph{
-    position:absolute;top:0;left:0;
-    width:100%;height:100%;
-    max-width:100%;
-    aspect-ratio:auto;
-    object-fit:fill;
+  .k-main .board .article-panel .a-thumb .k-thumb-ph{
+    position:absolute;inset:0;width:100%;height:100%;max-width:100%;
+    aspect-ratio:auto;object-fit:fill;
   }
 }
-/* cqw = 容器宽度%；aspect-ratio:3/2 下短边 = 宽度 × 2/3；再用 min() 加绝对上限，防止宽卡片下字号失控 */
-.kratos-thumb-ph[data-len="1"]{font-size:min(24cqw,120px)}
-.kratos-thumb-ph[data-len="2"]{font-size:min(20cqw,96px)}
-.kratos-thumb-ph[data-len="3"]{font-size:min(16cqw,80px)}
-.kratos-thumb-ph[data-len="4"]{font-size:min(13cqw,68px)}
-.kratos-thumb-ph[data-len="5"]{font-size:min(11cqw,56px)}
-.kratos-thumb-ph[data-len="6"]{font-size:min(10cqw,50px)}
-.kratos-thumb-ph[data-len="7"]{font-size:min(9cqw,44px)}
-.kratos-thumb-ph[data-len="8"]{font-size:min(8cqw,40px)}
-.kratos-thumb-ph[data-len="9"]{font-size:min(7cqw,36px)}
-.kratos-thumb-ph[data-len="10"]{font-size:min(6.4cqw,32px)}
-.kratos-thumb-ph[data-len="11"]{font-size:min(5.8cqw,30px)}
-.kratos-thumb-ph[data-len="12"]{font-size:min(5.3cqw,28px)}
-.kratos-thumb-ph[data-len="13"]{font-size:min(4.9cqw,26px)}
-.kratos-thumb-ph[data-len="14"]{font-size:min(4.5cqw,24px)}
-/* container query 不支持时的老浏览器兜底 */
+
+/* 短文本字号自适应：按 data-len 分档（同 SVG 端 ratio 表校准），min() 加绝对上限 */
+.k-thumb-ph[data-len="1"] .k-thumb-ph-text{font-size:min(24cqw,120px)}
+.k-thumb-ph[data-len="2"] .k-thumb-ph-text{font-size:min(20cqw,96px)}
+.k-thumb-ph[data-len="3"] .k-thumb-ph-text{font-size:min(16cqw,80px)}
+.k-thumb-ph[data-len="4"] .k-thumb-ph-text{font-size:min(13cqw,68px)}
+.k-thumb-ph[data-len="5"] .k-thumb-ph-text{font-size:min(11cqw,56px)}
+.k-thumb-ph[data-len="6"] .k-thumb-ph-text{font-size:min(10cqw,50px)}
+.k-thumb-ph[data-len="7"] .k-thumb-ph-text{font-size:min(9cqw,44px)}
+.k-thumb-ph[data-len="8"] .k-thumb-ph-text{font-size:min(8cqw,40px)}
+.k-thumb-ph[data-len="9"] .k-thumb-ph-text{font-size:min(7cqw,36px)}
+.k-thumb-ph[data-len="10"] .k-thumb-ph-text{font-size:min(6.4cqw,32px)}
+.k-thumb-ph[data-len="11"] .k-thumb-ph-text{font-size:min(5.8cqw,30px)}
+.k-thumb-ph[data-len="12"] .k-thumb-ph-text{font-size:min(5.3cqw,28px)}
+.k-thumb-ph[data-len="13"] .k-thumb-ph-text{font-size:min(4.9cqw,26px)}
+.k-thumb-ph[data-len="14"] .k-thumb-ph-text{font-size:min(4.5cqw,24px)}
 @supports not (font-size: 1cqw){
-  .kratos-thumb-ph{font-size:clamp(20px,6vw,64px)}
+  .k-thumb-ph .k-thumb-ph-text{font-size:clamp(20px,6vw,64px)}
 }
-.kratos-thumb-ph.kt-ph-font-serif{font-family:Georgia,"Songti SC",serif}
-.kratos-thumb-ph.kt-ph-font-mono{font-family:"JetBrains Mono",Consolas,monospace}
-/* 完整标题模式：允许折行，最多 3 行，超出省略。
-   用高特异性 + !important 兜住 .a-thumb 后代选择器与移动端媒体查询覆盖。 */
-.kratos-thumb-ph.is-wrap,
-.a-thumb .kratos-thumb-ph.is-wrap,
-.k-main .board .article-panel .a-thumb .kratos-thumb-ph.is-wrap{
-  white-space:normal !important;
+
+/* 完整标题模式：允许换行，line-clamp 5 行封顶（浏览器原生排版比 PHP 估宽准） */
+.k-thumb-ph.is-wrap .k-thumb-ph-text,
+.a-thumb .k-thumb-ph.is-wrap .k-thumb-ph-text,
+.k-main .board .article-panel .a-thumb .k-thumb-ph.is-wrap .k-thumb-ph-text{
+  white-space:normal;
   word-break:break-word;
   overflow-wrap:anywhere;
-  line-height:1.2 !important;
-  letter-spacing:0 !important;
-  padding:3% 5% !important;
-  font-size:min(16cqw,60px) !important;
-  display:-webkit-box !important;
+  line-height:1.2;
+  letter-spacing:0;
+  padding:0 4%;
+  font-size:min(11cqw,44px);
+  display:-webkit-box;
   -webkit-box-orient:vertical;
   -webkit-line-clamp:5;
   line-clamp:5;
-  place-items:unset;
-  text-align:center;
+  overflow:hidden;text-overflow:ellipsis;
 }
 @supports not (font-size: 1cqw){
-  .kratos-thumb-ph.is-wrap{font-size:clamp(18px,6vw,48px) !important}
+  .k-thumb-ph.is-wrap .k-thumb-ph-text{font-size:clamp(16px,4.5vw,36px)}
+}
+
+/* ============ 预设 ============ */
+/* solid: 使用 --kt-bg / --kt-fg，已由基类承载，无需追加 */
+.k-thumb-ph.is-preset-solid{
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+/* gradient: 从 --kt-c1 到 --kt-c2 的对角线渐变，白字 */
+.k-thumb-ph.is-preset-gradient{
+  background:linear-gradient(135deg,var(--kt-c1,#5B8DEF) 0%,var(--kt-c2,#8E7DBE) 100%);
+  color:#fff;
+}
+
+/* retro: 米色底 + 双重描边 + Playfair 衬线 */
+.k-thumb-ph.is-preset-retro{
+  background:#EFE7D6;
+  color:#3A2A1A;
+  font-family:'Playfair Display',Georgia,'Songti SC',serif;
+  box-shadow:
+    inset 0 0 0 4px #3A2A1A,
+    inset 0 0 0 5px #EFE7D6,
+    inset 0 0 0 6px #3A2A1A;
+}
+
+/* grid: 深底 + 40px 网格线（repeating-linear-gradient 两层交叉） */
+.k-thumb-ph.is-preset-grid{
+  background:
+    repeating-linear-gradient(to right, rgba(255,255,255,.06) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(to bottom, rgba(255,255,255,.06) 0 1px, transparent 1px 40px),
+    #111111;
+  color:#fff;
+}
+
+/* notion: 米色底 + 中央方块（吃 --kt-accent），文字放方块内 */
+.k-thumb-ph.is-preset-notion{
+  background:#F1EEE8;
+  color:#fff;
+}
+.k-thumb-ph.is-preset-notion .k-thumb-ph-inner{
+  display:flex;align-items:center;justify-content:center;
+  width:50cqw;max-width:50%;aspect-ratio:1;
+  border-radius:11cqw;
+  background:var(--kt-accent,#B8A99A);
+  box-shadow:0 1cqw 3cqw rgba(0,0,0,.04);
+}
+/* 完整标题模式下方块放大到 85%，给多行文字留空间 */
+.k-thumb-ph.is-preset-notion.is-wrap .k-thumb-ph-inner{
+  width:85cqw;max-width:85%;
+}
+.k-thumb-ph.is-preset-notion .k-thumb-ph-text{
+  padding:0 8%;
+  font-size:min(11cqw,44px);
+}
+.k-thumb-ph.is-preset-notion[data-len="1"] .k-thumb-ph-text{font-size:min(18cqw,80px)}
+.k-thumb-ph.is-preset-notion[data-len="2"] .k-thumb-ph-text{font-size:min(15cqw,70px)}
+.k-thumb-ph.is-preset-notion[data-len="3"] .k-thumb-ph-text{font-size:min(12cqw,56px)}
+.k-thumb-ph.is-preset-notion[data-len="4"] .k-thumb-ph-text{font-size:min(10cqw,48px)}
+.k-thumb-ph.is-preset-notion.is-wrap .k-thumb-ph-text{
+  white-space:normal;word-break:break-word;overflow-wrap:anywhere;
+  line-height:1.2;font-size:min(9cqw,36px);
+  display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:5;line-clamp:5;
+  overflow:hidden;text-overflow:ellipsis;
+}
+@supports not (font-size: 1cqw){
+  .k-thumb-ph.is-preset-notion .k-thumb-ph-inner{width:50%;border-radius:8%}
+  .k-thumb-ph.is-preset-notion.is-wrap .k-thumb-ph-inner{width:85%}
+  .k-thumb-ph.is-preset-notion .k-thumb-ph-text{font-size:clamp(16px,4vw,36px)}
 }
 </style>
     <?php
