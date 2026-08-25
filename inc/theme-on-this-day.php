@@ -43,8 +43,8 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
     $today_m = (int) current_time('m');
     $today_d = (int) current_time('d');
     $today_y = (int) current_time('Y');
-    // v3：确保 thumb 用 post ID 取，避免旧缓存的空 thumb 干扰
-    $cache_key = 'kratos_otd_v1_' . current_time('Ymd') . '_' . md5(implode(',', $post_types) . '_' . (int) $limit);
+    // v4：文字模式改前端 div 渲染，thumb 字段可能存 HTML 片段，与旧 SVG data URL 不兼容
+    $cache_key = 'kratos_otd_v2_' . current_time('Ymd') . '_' . md5(implode(',', $post_types) . '_' . (int) $limit);
 
     $cached = get_transient($cache_key);
     if (is_array($cached)) {
@@ -81,6 +81,7 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
             // 2) 正文首张 <img>
             // 3) 主题选项 g_postthumbnail 默认封面（与列表兜底同源）
             $thumb = '';
+            $thumb_html = '';
             if (has_post_thumbnail($p->ID)) {
                 $src = wp_get_attachment_image_src(get_post_thumbnail_id($p->ID), 'kratos-thumbnail');
                 if (is_array($src)) $thumb = (string) $src[0];
@@ -90,20 +91,22 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
             }
             if ($thumb === '') {
                 if (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
-                    $thumb = kratos_default_thumb_url($p, 512, 288);
+                    // 文字模式：直接把前端渲染 div 存进缓存，渲染时原样输出
+                    $thumb_html = kratos_default_thumb_html($p, 512, 288);
                 } else {
                     $thumb = (string) kratos_option('g_postthumbnail', ASSET_PATH . '/assets/img/default.jpg');
                 }
             }
             $items[] = array(
-                'id'        => (int) $p->ID,
-                'title'     => get_the_title($p),
-                'permalink' => get_permalink($p),
-                'date'      => get_the_date(get_option('date_format'), $p),
-                'years_ago' => $years_ago,
-                'thumb'     => $thumb,
-                'excerpt'   => wp_trim_words(wp_strip_all_tags(strip_shortcodes($p->post_content)), 60, '…'),
-                'post_type' => $p->post_type,
+                'id'         => (int) $p->ID,
+                'title'      => get_the_title($p),
+                'permalink'  => get_permalink($p),
+                'date'       => get_the_date(get_option('date_format'), $p),
+                'years_ago'  => $years_ago,
+                'thumb'      => $thumb,
+                'thumb_html' => $thumb_html,
+                'excerpt'    => wp_trim_words(wp_strip_all_tags(strip_shortcodes($p->post_content)), 60, '…'),
+                'post_type'  => $p->post_type,
             );
         }
     }
@@ -207,9 +210,13 @@ function kratos_otd_shortcode($atts)
             <ul class="kotd-list">
                 <?php foreach ($items as $it) { ?>
                     <li class="kotd-item">
-                        <?php if ($show_thumb && !empty($it['thumb'])) { ?>
-                            <a class="kotd-thumb" href="<?php echo esc_url($it['permalink']); ?>" aria-hidden="true" tabindex="-1">
-                                <span class="kotd-thumb-bg" style="background-image:url('<?php echo esc_attr((strpos($it['thumb'], 'data:') === 0) ? $it['thumb'] : esc_url($it['thumb'])); ?>');"></span>
+                        <?php if ($show_thumb && (!empty($it['thumb']) || !empty($it['thumb_html']))) { ?>
+                            <a class="kotd-thumb<?php echo !empty($it['thumb_html']) ? ' kotd-thumb-ph' : ''; ?>" href="<?php echo esc_url($it['permalink']); ?>" aria-hidden="true" tabindex="-1">
+                                <?php if (!empty($it['thumb_html'])) {
+                                    echo $it['thumb_html'];
+                                } else { ?>
+                                <span class="kotd-thumb-bg" style="background-image:url('<?php echo esc_attr(esc_url($it['thumb'])); ?>');"></span>
+                                <?php } ?>
                             </a>
                         <?php } ?>
                         <div class="kotd-main">

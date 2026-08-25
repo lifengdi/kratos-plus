@@ -227,15 +227,15 @@ function kratos_read_render_related()
         echo '<a href="' . esc_url(get_permalink($p->ID)) . '" title="' . esc_attr($p->post_title) . '">';
         if ($show_thumb) {
             $thumb = get_the_post_thumbnail_url($p->ID, 'medium');
-            if (!$thumb) {
-                if (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
-                    $thumb = kratos_default_thumb_url($p, 512, 288);
-                } else {
+            if (!$thumb && function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
+                // 文字模式：走前端渲染 div，不再吃 SVG data URL
+                echo '<span class="kratos-related-thumb kratos-related-thumb-ph">' . kratos_default_thumb_html($p, 512, 288) . '</span>';
+            } else {
+                if (!$thumb) {
                     $thumb = kratos_option('g_postthumbnail', get_template_directory_uri() . '/assets/img/default.jpg');
                 }
+                echo '<span class="kratos-related-thumb" style="background-image:url(' . esc_attr(esc_url($thumb)) . ')"></span>';
             }
-            $thumb_url = (strpos($thumb, 'data:') === 0) ? $thumb : esc_url($thumb);
-            echo '<span class="kratos-related-thumb" style="background-image:url(' . esc_attr($thumb_url) . ')"></span>';
         }
         echo '<span class="kratos-related-name">' . esc_html($p->post_title) . '</span>';
         echo '<span class="kratos-related-date">' . esc_html(get_the_date('', $p)) . '</span>';
