@@ -1892,9 +1892,17 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-num {
     font-family: "Playfair Display", serif !important;
     font-weight: 900 !important;
     font-style: italic;
+    /* 默认样式是 height:22px + line-height:22px 的圆形；本皮肤改成加宽方牌后
+     * 若沿用那个 22px 行高，再叠 2px 上下内边距，border-box 下 22px 的行盒会
+     * 从内边距顶边往下溢出内容区，数字看着偏下。改用 inline-flex 居中 +
+     * line-height:1，垂直位置由 flex 决定，与内边距/字号脱钩。 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 26px;
-    text-align: center;
-    padding: 2px 6px;
+    height: 22px;
+    padding: 0 6px;
+    line-height: 1;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-item.is-current .kratos-series-num {
     background: var(--kr-skin-accent-2) !important;

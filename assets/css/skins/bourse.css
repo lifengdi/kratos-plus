@@ -277,8 +277,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .comments-titl
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .title {
     padding-bottom: 8px;
     border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
-    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
-    padding-left: 10px;
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--kr-skin-heading);
@@ -1598,8 +1596,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title
     text-transform: uppercase;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--kr-skin-card-line-strong);
-    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
-    padding-left: 10px;
 }
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-featured-title .kft-content blockquote {
     border-left: 3px solid var(--kr-skin-decor) !important;
@@ -1703,8 +1699,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series {
 }
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-head {
     border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
-    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
-    padding-left: 10px;
 }
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-icon {
     color: var(--kr-skin-accent-hover) !important;
@@ -1779,9 +1773,17 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-num {
     border-radius: var(--kr-shape-radius) !important;
     font-family: var(--kr-skin-font-head) !important;
     font-weight: 900 !important;
+    /* 默认样式是 height:22px + line-height:22px 的圆形；本皮肤改成加宽方牌后
+     * 若沿用那个 22px 行高，再叠 2px 上下内边距，border-box 下 22px 的行盒会
+     * 从内边距顶边往下溢出内容区，数字看着偏下。改用 inline-flex 居中 +
+     * line-height:1，垂直位置由 flex 决定，与内边距/字号脱钩。 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 26px;
-    text-align: center;
-    padding: 2px 6px;
+    height: 22px;
+    padding: 0 6px;
+    line-height: 1;
 }
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-series-item.is-current .kratos-series-num {
     background: var(--kr-skin-accent-hover) !important;
@@ -1923,8 +1925,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comm
     text-transform: uppercase;
     padding-bottom: 8px !important;
     border-bottom: 1px solid var(--kr-skin-card-line-strong) !important;
-    box-shadow: inset 3px 0 0 var(--kr-skin-accent);
-    padding-left: 10px;
     color: var(--kr-skin-heading) !important;
 }
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .list > li {
@@ -2322,6 +2322,24 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-home .kr-hd .k
 /* 红牌里的小圆点：白点 */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kr-dot:not(.is-up):not(.is-down) {
     background: var(--kr-limitup-fg) !important;
+}
+
+/* 红牌里的展开/收起按钮（系列短码 .kratos-series-head 也是 .kr-hd）：
+ * 该按钮自身的规则给的是「深红图标 + 深红描边」，那是按白卡头写的，落到
+ * 红牌上就成了红压红，箭头发暗看不清。改用红牌自己的高亮语言，与 .khf-tab
+ * 一致：默认半透明白，hover 反相成白实底红箭头。 */
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kratos-series-toggle {
+    color: var(--kr-limitup-fg) !important;
+    background: rgba(255, 255, 255, .10) !important;
+    border: 1px solid rgba(255, 255, 255, .34) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kratos-series-toggle:hover {
+    color: var(--kr-skin-accent-hover) !important;
+    background: var(--kr-limitup-fg) !important;
+    border-color: var(--kr-limitup-fg) !important;
+}
+html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-hd .kratos-series-toggle i {
+    color: inherit !important;
 }
 
 /* ---------- 2) 侧栏 / 评论区小标题 = 小号红牌 ---------- */
