@@ -12,6 +12,15 @@ if (!empty(kratos_option('g_imgx_fieldset')['g_imgx'])) {
 
     require_once 'volcengine-imagex/vendor/autoload.php';
 
+    // Guzzle 7.11+ 会调用 symfony/deprecation-contracts 的 trigger_deprecation()。
+    // 该函数由 Composer 的 files 自动加载引入，而 file identifier 的哈希在所有项目里
+    // 是同一个值，靠 $GLOBALS['__composer_autoload_files'] 去重。若站点上其它插件先
+    // 加载了自己那份（尤其是被 PHP-Scoper / Mozart 改过命名空间的副本——哈希不变但函数
+    // 被改名），我们这份就会被跳过，全局函数始终不存在，调用时 fatal。此处兜底补上。
+    if (!function_exists('trigger_deprecation')) {
+        require_once __DIR__ . '/volcengine-imagex/vendor/symfony/deprecation-contracts/function.php';
+    }
+
     function imagex_get_client()
     {
         $imagex_client = Volc\Service\ImageX::getInstance($region = kratos_option('g_imgx_fieldset')['g_imgx_region']);

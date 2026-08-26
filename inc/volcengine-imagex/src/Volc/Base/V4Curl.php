@@ -144,7 +144,11 @@ abstract class V4Curl extends Singleton
         $info = array_merge($defaultConfig, $config_api);
         $info['config'] = $config;
 
-        $method = $info['method'];
+        // [Kratos-plus 本地补丁] SDK 的 apiList 里 method 全是小写 'get' / 'post'，
+        // 而 Guzzle 7.11+ 遇到非大写方法名会走 trigger_deprecation()，导致每次调用都刷
+        // 一条 E_USER_DEPRECATED（且 Guzzle 8 将不再自动转大写）。此处统一转大写。
+        // 注意：升级 volc-sdk-php 时此文件会被覆盖，需重新打上本补丁。
+        $method = strtoupper($info['method']);
         try {
             $response = $this->client->request($method, $info['url'], $info['config']);
             return $response;
