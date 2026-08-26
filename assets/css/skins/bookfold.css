@@ -1445,7 +1445,7 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) ::-webkit-scrollbar-
 }
 
 /* ===== 列表（accent 中性灰点/序号） ===== */
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .widget_pages ul > li::before,
@@ -1455,12 +1455,12 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .widget_nav_menu ul 
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .widget_block ul > li::before {
     background: var(--kr-skin-accent);
 }
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
     color: var(--kr-skin-accent);
 }
 
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ul,
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ol,
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list),
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list),
 html[data-weekday-skin="bookfold"] .widget_recent_entries ul,
 html[data-weekday-skin="bookfold"] .widget_recent_comments ul,
 html[data-weekday-skin="bookfold"] .widget_pages ul,
@@ -1471,11 +1471,11 @@ html[data-weekday-skin="bookfold"] .widget_block ul {
     list-style: none;
     padding-left: 1.6em;
 }
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ol {
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) {
     counter-reset: kra-ol;
 }
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="bookfold"] .widget_recent_entries ul > li,
 html[data-weekday-skin="bookfold"] .widget_recent_comments ul > li,
 html[data-weekday-skin="bookfold"] .widget_pages ul > li,
@@ -1491,8 +1491,8 @@ html[data-weekday-skin="bookfold"] .widget_block ul > li {
 }
 /* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
 @supports (top: 0.5lh) {
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="bookfold"] .widget_recent_entries ul > li,
 html[data-weekday-skin="bookfold"] .widget_recent_comments ul > li,
 html[data-weekday-skin="bookfold"] .widget_pages ul > li,
@@ -1504,7 +1504,7 @@ html[data-weekday-skin="bookfold"] .widget_block ul > li {
 }
 }
 
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ul > li::before {
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li::before {
     content: "";
     position: absolute;
     left: -1em;
@@ -1515,10 +1515,10 @@ html[data-weekday-skin="bookfold"] .k-main .details .article .content ul > li::b
     border-radius: 50%;
     background: var(--kr-skin-accent, currentColor);
 }
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ol > li {
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li {
     counter-increment: kra-ol;
 }
-html[data-weekday-skin="bookfold"] .k-main .details .article .content ol > li::before {
+html[data-weekday-skin="bookfold"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;

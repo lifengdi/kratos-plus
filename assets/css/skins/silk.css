@@ -258,7 +258,7 @@ html[data-theme="dark"][data-weekday-skin="silk"] .kratos-otd-compact .kotd-c-da
 html[data-theme="dark"][data-weekday-skin="silk"] .kratos-otd-compact .kotd-c-title-link { color: #e8e4ec !important; }
 
 /* 列表符号 · 绢字花标 ❖ */
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
 html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_pages ul > li::before,
@@ -278,10 +278,10 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .widget_block ul > li::b
     font-size: 11px;
     line-height: 1;
 }
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol:where(:not([class]), .wp-block-list) {
     padding-left: 2.6em;
 }
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
     content: counter(kra-ol, cjk-ideographic) "、";
     left: -2.4em;
     min-width: 2em;
@@ -1162,8 +1162,8 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) ::-webkit-scrollbar-trac
 }
 
 /* 列表符号（皮肤无关，全局） */
-html[data-weekday-skin="silk"] .k-main .details .article .content ul,
-html[data-weekday-skin="silk"] .k-main .details .article .content ol,
+html[data-weekday-skin="silk"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list),
+html[data-weekday-skin="silk"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list),
 html[data-weekday-skin="silk"] .widget_recent_entries ul,
 html[data-weekday-skin="silk"] .widget_recent_comments ul,
 html[data-weekday-skin="silk"] .widget_pages ul,
@@ -1174,7 +1174,7 @@ html[data-weekday-skin="silk"] .widget_block ul {
     list-style: none;
     padding-left: 1.6em;
 }
-html[data-weekday-skin="silk"] .k-main .details .article .content ol {
+html[data-weekday-skin="silk"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) {
     counter-reset: kra-ol;
 }
 html[data-weekday-skin="silk"] .k-main .details .article .content pre ul,
@@ -1183,8 +1183,8 @@ html[data-weekday-skin="silk"] .k-main .details .article .content pre ol {
     padding-left: 0;
     counter-reset: none;
 }
-html[data-weekday-skin="silk"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="silk"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="silk"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="silk"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="silk"] .widget_recent_entries ul > li,
 html[data-weekday-skin="silk"] .widget_recent_comments ul > li,
 html[data-weekday-skin="silk"] .widget_pages ul > li,
@@ -1200,8 +1200,8 @@ html[data-weekday-skin="silk"] .widget_block ul > li {
 }
 /* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
 @supports (top: 0.5lh) {
-html[data-weekday-skin="silk"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="silk"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="silk"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="silk"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="silk"] .widget_recent_entries ul > li,
 html[data-weekday-skin="silk"] .widget_recent_comments ul > li,
 html[data-weekday-skin="silk"] .widget_pages ul > li,
@@ -1213,7 +1213,7 @@ html[data-weekday-skin="silk"] .widget_block ul > li {
 }
 }
 
-html[data-weekday-skin="silk"] .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="silk"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="silk"] .widget_recent_entries ul > li::before,
 html[data-weekday-skin="silk"] .widget_recent_comments ul > li::before,
 html[data-weekday-skin="silk"] .widget_pages ul > li::before,
@@ -1231,10 +1231,10 @@ html[data-weekday-skin="silk"] .widget_block ul > li::before {
     border-radius: 50%;
     background: var(--kr-skin-accent, currentColor);
 }
-html[data-weekday-skin="silk"] .k-main .details .article .content ol > li {
+html[data-weekday-skin="silk"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li {
     counter-increment: kra-ol;
 }
-html[data-weekday-skin="silk"] .k-main .details .article .content ol > li::before {
+html[data-weekday-skin="silk"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
@@ -1245,7 +1245,7 @@ html[data-weekday-skin="silk"] .k-main .details .article .content ol > li::befor
     color: var(--kr-skin-accent, currentColor);
     font-weight: 600;
 }
-html[data-weekday-skin="silk"] .k-main .details .article .content ul ul > li::before,
+html[data-weekday-skin="silk"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="silk"] .widget_recent_entries ul ul > li::before,
 html[data-weekday-skin="silk"] .widget_recent_comments ul ul > li::before,
 html[data-weekday-skin="silk"] .widget_pages ul ul > li::before,
@@ -1258,7 +1258,7 @@ html[data-weekday-skin="silk"] .widget_block ul ul > li::before {
     top: var(--kra-marker-mid);
     transform: translateY(-50%);
 }
-html[data-weekday-skin="silk"] .k-main .details .article .content ul ul ul > li::before,
+html[data-weekday-skin="silk"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) ul:where(:not([class]), .wp-block-list) ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="silk"] .widget_recent_entries ul ul,
 html[data-weekday-skin="silk"] .widget_recent_comments ul ul,
 html[data-weekday-skin="silk"] .widget_pages ul ul,

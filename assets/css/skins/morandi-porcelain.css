@@ -1088,8 +1088,8 @@ html[data-weekday-skin="porcelain"]:not([data-theme="dark"]) ::-webkit-scrollbar
     border: var(--kr-shape-border);
 }
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ul,
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ol,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list),
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list),
 html[data-weekday-skin="porcelain"] .widget_recent_entries ul,
 html[data-weekday-skin="porcelain"] .widget_recent_comments ul,
 html[data-weekday-skin="porcelain"] .widget_pages ul,
@@ -1101,7 +1101,7 @@ html[data-weekday-skin="porcelain"] .widget_block ul {
     padding-left: 1.6em;
 }
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ol {
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) {
     counter-reset: kra-ol;
 }
 
@@ -1112,8 +1112,8 @@ html[data-weekday-skin="porcelain"] .k-main .details .article .content pre ol {
     counter-reset: none;
 }
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="porcelain"] .widget_recent_entries ul > li,
 html[data-weekday-skin="porcelain"] .widget_recent_comments ul > li,
 html[data-weekday-skin="porcelain"] .widget_pages ul > li,
@@ -1129,8 +1129,8 @@ html[data-weekday-skin="porcelain"] .widget_block ul > li {
 }
 /* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
 @supports (top: 0.5lh) {
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="porcelain"] .widget_recent_entries ul > li,
 html[data-weekday-skin="porcelain"] .widget_recent_comments ul > li,
 html[data-weekday-skin="porcelain"] .widget_pages ul > li,
@@ -1143,7 +1143,7 @@ html[data-weekday-skin="porcelain"] .widget_block ul > li {
 }
 
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="porcelain"] .widget_recent_entries ul > li::before,
 html[data-weekday-skin="porcelain"] .widget_recent_comments ul > li::before,
 html[data-weekday-skin="porcelain"] .widget_pages ul > li::before,
@@ -1162,11 +1162,11 @@ html[data-weekday-skin="porcelain"] .widget_block ul > li::before {
     background: var(--kr-skin-accent, currentColor);
 }
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ol > li {
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li {
     counter-increment: kra-ol;
 }
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ol > li::before {
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
@@ -1178,7 +1178,7 @@ html[data-weekday-skin="porcelain"] .k-main .details .article .content ol > li::
     font-weight: 600;
 }
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ul ul > li::before,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="porcelain"] .widget_recent_entries ul ul > li::before,
 html[data-weekday-skin="porcelain"] .widget_recent_comments ul ul > li::before,
 html[data-weekday-skin="porcelain"] .widget_pages ul ul > li::before,
@@ -1192,7 +1192,7 @@ html[data-weekday-skin="porcelain"] .widget_block ul ul > li::before {
     transform: translateY(-50%);
 }
 
-html[data-weekday-skin="porcelain"] .k-main .details .article .content ul ul ul > li::before,
+html[data-weekday-skin="porcelain"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) ul:where(:not([class]), .wp-block-list) ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="porcelain"] .widget_recent_entries ul ul,
 html[data-weekday-skin="porcelain"] .widget_recent_comments ul ul,
 html[data-weekday-skin="porcelain"] .widget_pages ul ul,

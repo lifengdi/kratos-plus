@@ -197,7 +197,7 @@ html[data-theme="dark"][data-weekday-skin="vermilion"] .kratos-otd-compact .kotd
 }
 
 /* ===== 列表标记：朱砂方点 + CJK 中文序号 ===== */
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_recent_entries ul > li::before,
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_recent_comments ul > li::before,
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_pages ul > li::before,
@@ -211,10 +211,10 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .widget_block ul > 
     top: var(--kra-marker-mid);
     transform: translateY(-50%);
 }
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ol {
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ol:where(:not([class]), .wp-block-list) {
     padding-left: 2.6em;
 }
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ol > li::before {
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
     content: counter(kra-ol, cjk-ideographic) "、";
     left: -2.4em;
     min-width: 2em;
@@ -1020,8 +1020,8 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) ::-webkit-scrollbar
 }
 
 /* ===== 列表标记基础（皮肤关闭态也用，锁在 :not([data-theme="dark"]) 外） ===== */
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ul,
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ol,
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list),
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list),
 html[data-weekday-skin="vermilion"] .widget_recent_entries ul,
 html[data-weekday-skin="vermilion"] .widget_recent_comments ul,
 html[data-weekday-skin="vermilion"] .widget_pages ul,
@@ -1032,7 +1032,7 @@ html[data-weekday-skin="vermilion"] .widget_block ul {
     list-style: none;
     padding-left: 1.6em;
 }
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ol {
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) {
     counter-reset: kra-ol;
 }
 html[data-weekday-skin="vermilion"] .k-main .details .article .content pre ul,
@@ -1041,8 +1041,8 @@ html[data-weekday-skin="vermilion"] .k-main .details .article .content pre ol {
     padding-left: 0;
     counter-reset: none;
 }
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="vermilion"] .widget_recent_entries ul > li,
 html[data-weekday-skin="vermilion"] .widget_recent_comments ul > li,
 html[data-weekday-skin="vermilion"] .widget_pages ul > li,
@@ -1058,8 +1058,8 @@ html[data-weekday-skin="vermilion"] .widget_block ul > li {
 }
 /* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
 @supports (top: 0.5lh) {
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ul > li,
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ol > li,
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
 html[data-weekday-skin="vermilion"] .widget_recent_entries ul > li,
 html[data-weekday-skin="vermilion"] .widget_recent_comments ul > li,
 html[data-weekday-skin="vermilion"] .widget_pages ul > li,
@@ -1071,7 +1071,7 @@ html[data-weekday-skin="vermilion"] .widget_block ul > li {
 }
 }
 
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ul > li::before,
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li::before,
 html[data-weekday-skin="vermilion"] .widget_recent_entries ul > li::before,
 html[data-weekday-skin="vermilion"] .widget_recent_comments ul > li::before,
 html[data-weekday-skin="vermilion"] .widget_pages ul > li::before,
@@ -1089,10 +1089,10 @@ html[data-weekday-skin="vermilion"] .widget_block ul > li::before {
     border-radius: 50%;
     background: var(--kr-skin-accent, currentColor);
 }
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ol > li {
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li {
     counter-increment: kra-ol;
 }
-html[data-weekday-skin="vermilion"] .k-main .details .article .content ol > li::before {
+html[data-weekday-skin="vermilion"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
     content: counter(kra-ol) ".";
     position: absolute;
     left: -1.4em;
