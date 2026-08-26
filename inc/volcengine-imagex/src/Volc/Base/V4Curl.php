@@ -12,7 +12,8 @@ use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\HandlerStack;
 use Psr\Http\Message\RequestInterface;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
 use Throwable;
 
 abstract class V4Curl extends Singleton
@@ -22,6 +23,8 @@ abstract class V4Curl extends Singleton
     protected $region = '';
     protected $ak = '';
     protected $sk = '';
+    protected $st = '';
+    protected $version = '';
 
 
     public function __construct()
@@ -50,18 +53,29 @@ abstract class V4Curl extends Singleton
 
     public function setHost($host)
     {
-        if ($host != "") {
-            $this->client = new Client([
-                'handler' => $this->stack,
-                'base_uri' => $host,
-            ]);
+        if ($host == "") {
+            return;
         }
+        if (substr($host, 0, 8) != "https://" && substr($host, 0, 7) != "http://") {
+            $host = "https://" . $host;
+        }
+        $this->client = new Client([
+            'handler' => $this->stack,
+            'base_uri' => $host,
+        ]);
     }
 
     public function setSecretKey($sk)
     {
         if ($sk != "") {
             $this->sk = $sk;
+        }
+    }
+
+    public function setSessionToken($st)
+    {
+        if ($st != "") {
+            $this->st = $st;
         }
     }
 
@@ -81,13 +95,18 @@ abstract class V4Curl extends Singleton
 
     private function prepareCredentials(array $credentials)
     {
+        if (!isset($credentials['st'])) {
+            $credentials['st'] = '';
+        }
         if (!isset($credentials['ak']) || !isset($credentials['sk'])) {
             if ($this->ak != "" && $this->sk != "") {
                 $credentials['ak'] = $this->ak;
                 $credentials['sk'] = $this->sk;
+                $credentials['st'] = $this->st;
             } elseif (getenv("VOLC_ACCESSKEY") != "" && getenv("VOLC_SECRETKEY") != "") {
                 $credentials['ak'] = getenv("VOLC_ACCESSKEY");
                 $credentials['sk'] = getenv("VOLC_SECRETKEY");
+                $credentials['st'] = '';
             } else {
                 $json = json_decode(file_get_contents(getenv('HOME') . '/.volc/config'), true);
                 if (is_array($json) && isset($json['ak']) && isset($json['sk'])) {
@@ -119,7 +138,6 @@ abstract class V4Curl extends Singleton
     public function request($api, array $config = [])
     {
         $config_api = isset($this->apiList[$api]) ? $this->apiList[$api] : false;
-
         $defaultConfig = $this->getConfig($this->region);
         $config = $this->configMerge($defaultConfig['config'], $config_api['config'], $config);
         $config['headers']['User-Agent'] = 'volc-sdk-php/' . $this->version;
@@ -130,8 +148,21 @@ abstract class V4Curl extends Singleton
         try {
             $response = $this->client->request($method, $info['url'], $info['config']);
             return $response;
-        } catch (ClientException $exception) {
+        } catch (RequestException $exception) {
             return $exception->getResponse();
+        } catch (Exception $exception) {
+            return new Response(
+                500,
+                ['Content-Type' => 'application/json'],
+                json_encode([
+                    'ResponseMetadata' => [
+                        'Error' => [
+                            'Code' => 'InternalError',
+                            'Message' => $exception->getMessage()
+                        ]
+                    ]
+                ], JSON_UNESCAPED_UNICODE)
+            );
         }
     }
 

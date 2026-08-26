@@ -91,7 +91,7 @@ class ImageXAdapter
      * @param int $marker
      * @return string
      */
-    public function getImageUploadFiles(string $fNamePrefix = null, int $offset = 0, int $limit = 1, int $marker = 0)
+    public function getImageUploadFiles(?string $fNamePrefix = null, int $offset = 0, int $limit = 1, int $marker = 0)
     {
         $applyParams = [];
         $applyParams["Action"] = "GetImageUploadFiles";
@@ -114,7 +114,7 @@ class ImageXAdapter
      * @param string|null $storeUri
      * @return string
      */
-    public function getImageUploadFile(string $storeUri = null)
+    public function getImageUploadFile(?string $storeUri = null)
     {
         $applyParams = [];
         $applyParams["Action"] = "GetImageUploadFile";
