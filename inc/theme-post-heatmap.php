@@ -92,7 +92,7 @@ function kratos_heatmap_shortcode($atts)
          WHERE post_type = %s AND post_status = 'publish' AND post_date <= NOW()",
         $post_type
     ));
-    $current_year  = (int) date('Y');
+    $current_year  = (int) current_time('Y');
     $earliest_year = $earliest_year ? absint($earliest_year) : $current_year;
     $years         = range($earliest_year, $current_year);
     rsort($years);
@@ -156,7 +156,7 @@ function kratos_heatmap_get_data($post_type = 'post', $year = null, $time_range 
         $date_args  = array($start_date, $end_date);
         $total_days = (strtotime($end_date) - strtotime($start_date)) / 86400 + 1;
     } else {
-        $start_date = date('Y-m-d', strtotime("-$time_range days"));
+        $start_date = wp_date('Y-m-d', current_time('timestamp', true) - $time_range * DAY_IN_SECONDS);
         $date_where = "DATE(post_date) >= %s";
         $date_args  = array($start_date);
         $total_days = $time_range;

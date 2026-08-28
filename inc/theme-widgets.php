@@ -81,8 +81,9 @@ function most_comm_posts($days = 30, $nums = 6)
 {
     global $wpdb;
 
-    $today = wp_date("Y-m-d H:i:s");
-    $daysago = wp_date("Y-m-d H:i:s", strtotime($today) - ($days * 24 * 60 * 60));
+    $now_ts  = (int) current_time('timestamp', true);
+    $today   = wp_date("Y-m-d H:i:s", $now_ts);
+    $daysago = wp_date("Y-m-d H:i:s", $now_ts - ($days * DAY_IN_SECONDS));
     $result = $wpdb->get_results($wpdb->prepare("SELECT comment_count, ID, post_title, post_date FROM $wpdb->posts WHERE post_date BETWEEN %s AND %s and post_type = 'post' AND post_status = 'publish' ORDER BY comment_count DESC LIMIT 0, %d", $daysago, $today, $nums));
     $output = '';
 

@@ -160,7 +160,7 @@ function kratos_dash_aggregate($force = false)
     // 建站日期优先取主题选项（与年度回顾共用），未填则回落到首篇发布时间
     $birthday = trim((string) kratos_option('site_birthday', ''));
     $start_ts = $birthday !== '' ? (int) strtotime($birthday) : $first_ts;
-    $run_days = $start_ts > 0 ? max(1, (int) floor((time() - $start_ts) / DAY_IN_SECONDS)) : 0;
+    $run_days = $start_ts > 0 ? max(1, (int) floor((current_time('timestamp') - $start_ts) / DAY_IN_SECONDS)) : 0;
 
     // 平均更新间隔：从首篇到末篇的跨度 / 间隔数（篇数-1），不足两篇则为 0
     $avg_gap = 0.0;

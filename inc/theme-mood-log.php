@@ -126,7 +126,7 @@ function kratos_mood_get_data($year = null, $time_range = 365)
         $where = $wpdb->prepare("date BETWEEN %s AND %s", $start, $end);
         $total_days = (strtotime($end) - strtotime($start)) / 86400 + 1;
     } else {
-        $start = date('Y-m-d', strtotime("-$time_range days"));
+        $start = wp_date('Y-m-d', current_time('timestamp', true) - $time_range * DAY_IN_SECONDS);
         $where = $wpdb->prepare("date >= %s", $start);
         $total_days = $time_range;
     }
@@ -155,11 +155,11 @@ function kratos_mood_get_data($year = null, $time_range = 365)
 
     // 连续打卡（含今天）
     $streak = 0;
-    $today = date('Y-m-d');
+    $today = current_time('Y-m-d');
     $cursor = $today;
     while (isset($data[$cursor])) {
         $streak++;
-        $cursor = date('Y-m-d', strtotime($cursor . ' -1 day'));
+        $cursor = gmdate('Y-m-d', strtotime($cursor . ' -1 day'));
     }
 
     // 最长连续
@@ -224,7 +224,7 @@ function kratos_mood_shortcode($atts)
     global $wpdb;
     $table = kratos_mood_table();
     $earliest = $wpdb->get_var("SELECT YEAR(MIN(date)) FROM $table");
-    $current_year = (int) date('Y');
+    $current_year = (int) current_time('Y');
     $earliest = $earliest ? absint($earliest) : $current_year;
     $years = range($earliest, $current_year);
     rsort($years);
@@ -285,7 +285,7 @@ function kratos_mood_render_input_card()
 {
     global $wpdb;
     $table = kratos_mood_table();
-    $today = date('Y-m-d');
+    $today = current_time('Y-m-d');
     $row = $wpdb->get_row($wpdb->prepare("SELECT mood, note FROM $table WHERE date = %s", $today), ARRAY_A);
     $cur_mood = $row ? (int) $row['mood'] : 0;
     $cur_note = $row ? (string) $row['note'] : '';
@@ -294,7 +294,7 @@ function kratos_mood_render_input_card()
     $weekdays = array(__('周日', 'kratos'), __('周一', 'kratos'), __('周二', 'kratos'), __('周三', 'kratos'), __('周四', 'kratos'), __('周五', 'kratos'), __('周六', 'kratos'));
     $today_h = sprintf(
         __('%1$s 年 %2$s 月 %3$s 日 · %4$s', 'kratos'),
-        date('Y'), date('m'), date('d'), $weekdays[(int) date('w')]
+        current_time('Y'), current_time('m'), current_time('d'), $weekdays[(int) current_time('w')]
     );
 
     ob_start(); ?>
@@ -444,7 +444,7 @@ function kratos_mood_ajax_save()
 
     $mood = isset($_POST['mood']) ? (int) $_POST['mood'] : 0;
     $note = isset($_POST['note']) ? wp_unslash($_POST['note']) : '';
-    $date = isset($_POST['date']) && $_POST['date'] ? sanitize_text_field(wp_unslash($_POST['date'])) : date('Y-m-d');
+    $date = isset($_POST['date']) && $_POST['date'] ? sanitize_text_field(wp_unslash($_POST['date'])) : current_time('Y-m-d');
 
     if ($mood < 1 || $mood > 5) wp_send_json_error(array('msg' => __('心情等级不合法', 'kratos')), 400);
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) wp_send_json_error(array('msg' => __('日期格式不合法', 'kratos')), 400);

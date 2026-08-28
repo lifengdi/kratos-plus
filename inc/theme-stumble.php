@@ -78,7 +78,7 @@ function kratos_stumble_pick($exclude_id = 0)
         );
         if ($min_age > 0) {
             $args['date_query'] = array(array(
-                'before' => date('Y-m-d', strtotime("-{$min_age} days")),
+                'before' => wp_date('Y-m-d', current_time('timestamp', true) - $min_age * DAY_IN_SECONDS),
             ));
         }
         $args = apply_filters('kratos_stumble_query_args', $args, $min_age, $pool_max);

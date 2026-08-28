@@ -305,7 +305,7 @@ function kratos_heart_get_stats()
         }
     }
 
-    $month_start = date('Y-m-01 00:00:00');
+    $month_start = current_time('Y-m-01 00:00:00');
     $monthly = 0;
     foreach ($comments as $c) {
         if ($c->comment_date >= $month_start) {

@@ -68,7 +68,7 @@ function kratos_top_commenters_get($limit = 20)
             user_id,
             COUNT(*)                          AS cnt,
             MAX(comment_ID)                   AS last_cid,
-            MAX(UNIX_TIMESTAMP(comment_date)) AS last_time
+            MAX(comment_date_gmt)            AS last_time_gmt
          FROM {$wpdb->comments}
          WHERE comment_approved = '1'
            AND (comment_type = '' OR comment_type = 'comment')
@@ -102,7 +102,7 @@ function kratos_top_commenters_get($limit = 20)
             comment_author_email              AS email,
             COUNT(*)                          AS cnt,
             MAX(comment_ID)                   AS last_cid,
-            MAX(UNIX_TIMESTAMP(comment_date)) AS last_time
+            MAX(comment_date_gmt)            AS last_time_gmt
          FROM {$wpdb->comments}
          WHERE comment_approved = '1'
            AND (comment_type = '' OR comment_type = 'comment')
@@ -136,7 +136,7 @@ function kratos_top_commenters_get($limit = 20)
             'email'       => (string) $email,
             'url'         => (string) $url,
             'count'       => (int) $r['cnt'],
-            'last_time'   => (int) $r['last_time'],
+            'last_time'   => (int) strtotime((string) $r['last_time_gmt'] . ' GMT'),
             'avatar_html' => $avatar,
             'comment_id'  => (int) $r['last_cid'],
         );
@@ -161,7 +161,7 @@ function kratos_top_commenters_get($limit = 20)
             'email'       => $email,
             'url'         => $url,
             'count'       => (int) $r['cnt'],
-            'last_time'   => (int) $r['last_time'],
+            'last_time'   => (int) strtotime((string) $r['last_time_gmt'] . ' GMT'),
             'avatar_html' => $avatar,
             'comment_id'  => (int) $r['last_cid'],
         );
@@ -304,7 +304,7 @@ function kratos_top_commenters_shortcode($atts)
                     $medal_bg  = isset($medal_colors[$idx]) ? $medal_colors[$idx] : '';
                     $has_url   = $it['url'] !== '' && preg_match('#^https?://#i', $it['url']);
                     $time_full = $it['last_time'] > 0 ? wp_date($date_fmt, $it['last_time']) : '';
-                    $time_rel  = $it['last_time'] > 0 ? human_time_diff($it['last_time'], current_time('timestamp')) . __('前', 'kratos') : '';
+                    $time_rel  = $it['last_time'] > 0 ? human_time_diff($it['last_time'], time()) . __('前', 'kratos') : '';
 
                     // 名称 span：外层根据是否有 url 决定 <a>
                     $name_html = '<span class="ktc-name">' . esc_html($it['name']) . '</span>';

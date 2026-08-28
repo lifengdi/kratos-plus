@@ -157,7 +157,7 @@ function kratos_friend_recent_visitors($limit = 20)
     // 直接靠 SQL 做 GROUP BY 归并不了「按最新时间去重」逻辑，PHP 端二次处理更简单。
     $rows = $wpdb->get_results(
         "SELECT comment_ID, user_id, comment_author, comment_author_email,
-                comment_author_url, comment_content, comment_date, comment_post_ID
+                comment_author_url, comment_content, comment_date_gmt, comment_post_ID
          FROM {$wpdb->comments}
          WHERE comment_approved = '1'
            AND (comment_type = '' OR comment_type = 'comment')
@@ -208,7 +208,7 @@ function kratos_friend_recent_visitors($limit = 20)
             'avatar_html'  => $avatar,
             'comment_id'   => (int) $r->comment_ID,
             'excerpt'      => $excerpt,
-            'time'         => strtotime((string) $r->comment_date),
+            'time'         => (int) strtotime((string) $r->comment_date_gmt . ' GMT'),
             'post_id'      => $post_id,
             'post_title'   => $post_title,
             'post_url'     => $post_url,
@@ -441,7 +441,7 @@ function kratos_friend_shortcode($atts)
                     <?php foreach ($visitors as $v) {
                         $has_url = $v['url'] !== '' && preg_match('#^https?://#i', $v['url']);
                         $time_full = $v['time'] > 0 ? wp_date($date_fmt, $v['time']) : '';
-                        $time_rel  = $v['time'] > 0 ? human_time_diff($v['time'], current_time('timestamp')) . __('前', 'kratos') : '';
+                        $time_rel  = $v['time'] > 0 ? human_time_diff($v['time'], time()) . __('前', 'kratos') : '';
                         // 用户名可点击外链，头像整体点击到评论锚点
                         $tag = $has_url ? 'a' : 'span';
                     ?>
