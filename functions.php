@@ -102,6 +102,9 @@ require get_template_directory() . '/inc/theme-thumb-placeholder.php';
 // LQIP 模糊占位 —— 图片加载态渐显
 require get_template_directory() . '/inc/theme-lqip.php';
 
+// 响应式图片 —— srcset / sizes 修正与 CDN 缩放
+require get_template_directory() . '/inc/theme-image-optim.php';
+
 // 小工具配置
 require get_template_directory() . '/inc/theme-widgets.php';
 

@@ -190,7 +190,11 @@ function kratos_home_thumb_html($post, $size = 'kratos-thumbnail')
     }
 
     if (preg_match('/<img (.*?)src="(.+?)".*?>/', (string) $post->post_content, $m) && !empty($m[2])) {
-        return '<img src="' . esc_url($m[2]) . '" alt="' . esc_attr(get_the_title($post)) . '" loading="lazy" />';
+        // 焦点区最容易踩这条回落分支，而它渲染宽度最大、图也最大（实测有 1.99MB 的
+        // 原图 PNG）。交给 kratos_img_tag_from_url() 反查附件补 srcset。
+        return kratos_img_tag_from_url($m[2], $size, array(
+            'alt' => esc_attr(get_the_title($post)),
+        ), $post);
     }
 
     if (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {

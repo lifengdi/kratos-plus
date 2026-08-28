@@ -148,10 +148,6 @@ function post_thumbnail()
 {
     global $post;
     $img_id = get_post_thumbnail_id();
-    $img_url = wp_get_attachment_image_src($img_id, 'kratos-thumbnail');
-    if (is_array($img_url)) {
-        $img_url = $img_url[0];
-    }
     if (has_post_thumbnail()) {
         // 走 wp_get_attachment_image 而不是手写 <img>，以便 wp_get_attachment_image_attributes
         // filter 能命中（LQIP 模糊占位、后续任何 <img> 属性注入都靠这个 filter）。
@@ -165,7 +161,11 @@ function post_thumbnail()
             $img_val = $img_src[$img_count];
         }
         if (!empty($img_val)) {
-            echo kratos_perf_mark_img('<img src="' . $img_val . '" loading="lazy" />');
+            // 正文首图多半是原图直出（没有尺寸后缀也没有 srcset）。这里反查附件后
+            // 改走 wp_get_attachment_image()，手机才不会为 260px 的位置下整张原图。
+            echo kratos_img_tag_from_url($img_val, 'kratos-thumbnail', array(
+                'alt' => esc_attr(get_the_title($post)),
+            ), $post);
         } elseif (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {
             echo kratos_default_thumb_html($post);
         } else {

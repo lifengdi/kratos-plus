@@ -87,7 +87,18 @@ function kratos_otd_query($post_types = array('post'), $limit = 20)
                 if (is_array($src)) $thumb = (string) $src[0];
             }
             if ($thumb === '' && !empty($p->post_content) && preg_match('#<img[^>]+src=[\'"]([^\'"]+)[\'"]#i', $p->post_content, $mm)) {
+                // 正文首图是原图直出，这里只有 96px 的显示位；能反查到附件就取
+                // kratos-thumbnail 那档，否则退到 CDN 缩放
                 $thumb = $mm[1];
+                $aid   = function_exists('kratos_img_id_from_url') ? kratos_img_id_from_url($thumb) : 0;
+                if ($aid) {
+                    $src = wp_get_attachment_image_src($aid, 'kratos-thumbnail');
+                    if (is_array($src)) {
+                        $thumb = (string) $src[0];
+                    }
+                } elseif (function_exists('kratos_img_url_at_width')) {
+                    $thumb = kratos_img_url_at_width($thumb, 192);
+                }
             }
             if ($thumb === '') {
                 if (function_exists('kratos_default_thumb_is_text_mode') && kratos_default_thumb_is_text_mode()) {

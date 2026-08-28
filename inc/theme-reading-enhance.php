@@ -234,6 +234,9 @@ function kratos_read_render_related()
                 if (!$thumb) {
                     $thumb = kratos_option('g_postthumbnail', get_template_directory_uri() . '/assets/img/default.jpg');
                 }
+                // 背景图没法写 srcset，只能把 URL 收窄：medium 尺寸文件缺失时
+                // get_the_post_thumbnail_url() 会回落原图，交给 CDN 缩放收一下
+                $thumb = kratos_img_url_at_width($thumb, 320);
                 echo '<span class="kratos-related-thumb" style="background-image:url(' . esc_attr(esc_url($thumb)) . ')"></span>';
             }
         }

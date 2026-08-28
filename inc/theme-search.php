@@ -224,7 +224,8 @@ function kratos_search_header_html($kw, $total)
 /** 单条文章结果行。 */
 function kratos_search_post_row_html($post_id, $kw)
 {
-    $thumb = get_the_post_thumbnail_url($post_id, 'kratos-thumbnail');
+    // 直接拿附件 ID（thumbnail meta 已随主查询预热），不要用 URL 再反查一遍
+    $thumb_id = (int) get_post_thumbnail_id($post_id);
     $title = kratos_search_highlight(get_the_title($post_id), $kw);
     $src   = get_the_excerpt($post_id);
     if (trim((string) $src) === '') {
@@ -237,9 +238,9 @@ function kratos_search_post_row_html($post_id, $kw)
 
     ob_start(); ?>
     <article class="ksr-item kr-card">
-        <?php if ($thumb) { ?>
+        <?php if ($thumb_id) { ?>
             <a class="ksr-item-thumb" href="<?php echo esc_url(get_permalink($post_id)); ?>" aria-hidden="true" tabindex="-1">
-                <img src="<?php echo esc_url($thumb); ?>" alt="" loading="lazy" />
+                <?php echo wp_get_attachment_image($thumb_id, 'kratos-thumbnail', false, array('alt' => '')); ?>
             </a>
         <?php } ?>
         <div class="ksr-item-body">
