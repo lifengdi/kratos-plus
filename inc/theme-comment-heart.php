@@ -290,34 +290,42 @@ function kratos_heart_get_stats()
         return $cached;
     }
 
-    $comments = kratos_heart_get_comments(0);
-
-    $post_ids = array();
-    $user_keys = array();
-    foreach ($comments as $c) {
-        $post_ids[(int) $c->comment_post_ID] = true;
-        if ((int) $c->user_id > 0) {
-            $user_keys['u_' . (int) $c->user_id] = true;
-        } elseif ($c->comment_author_email) {
-            $user_keys['e_' . md5(strtolower($c->comment_author_email))] = true;
-        } else {
-            $user_keys['n_' . md5((string) $c->comment_author)] = true;
-        }
-    }
-
+    // 四个数字用一条聚合 SQL 算出来。
+    // 早先是 kratos_heart_get_comments(0) 把全部走心评论连正文一起取回 PHP 再遍历，
+    // 评论上万时既吃内存又要拉一大块结果集；这里改成库里聚合，只回一行。
+    // 「参与用户」的去重口径与原实现一致：登录用户按 user_id，游客优先邮箱，
+    // 无邮箱按昵称。
+    global $wpdb;
     $month_start = current_time('Y-m-01 00:00:00');
-    $monthly = 0;
-    foreach ($comments as $c) {
-        if ($c->comment_date >= $month_start) {
-            $monthly++;
-        }
-    }
+
+    $row = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT
+                COUNT(DISTINCT c.comment_ID) AS comments,
+                COUNT(DISTINCT c.comment_post_ID) AS posts,
+                COUNT(DISTINCT CASE
+                    WHEN c.user_id > 0 THEN CONCAT('u_', c.user_id)
+                    WHEN c.comment_author_email <> '' THEN CONCAT('e_', LOWER(c.comment_author_email))
+                    ELSE CONCAT('n_', c.comment_author)
+                END) AS users,
+                COUNT(DISTINCT CASE WHEN c.comment_date >= %s THEN c.comment_ID END) AS monthly
+             FROM {$wpdb->comments} c
+             INNER JOIN {$wpdb->commentmeta} m
+                     ON m.comment_id = c.comment_ID
+                    AND m.meta_key = %s
+                    AND m.meta_value = '1'
+             WHERE c.comment_approved = '1'",
+            $month_start,
+            KRATOS_HEART_META_KEY
+        ),
+        ARRAY_A
+    );
 
     $stats = array(
-        'comments' => count($comments),
-        'posts'    => count($post_ids),
-        'users'    => count($user_keys),
-        'monthly'  => $monthly,
+        'comments' => isset($row['comments']) ? (int) $row['comments'] : 0,
+        'posts'    => isset($row['posts']) ? (int) $row['posts'] : 0,
+        'users'    => isset($row['users']) ? (int) $row['users'] : 0,
+        'monthly'  => isset($row['monthly']) ? (int) $row['monthly'] : 0,
     );
 
     set_transient($cache_key, $stats, 5 * MINUTE_IN_SECONDS);
@@ -424,6 +432,22 @@ function kratos_heart_shortcode($atts)
 
     $offset = $per_page > 0 ? ($current_page - 1) * $per_page : 0;
     $comments = kratos_heart_get_comments($per_page, $offset);
+
+    // 下面每条卡片都要 get_the_title() / get_comment_link()，二者都会 get_post()。
+    // 不预热的话本页 N 条评论就是 N 次单行查询（默认每页 100 条）；这里用一条
+    // IN 查询把涉及的文章一次性灌进对象缓存，term / meta 都不需要，关掉预热。
+    if (!empty($comments)) {
+        $heart_post_ids = array();
+        foreach ($comments as $c) {
+            $pid = (int) $c->comment_post_ID;
+            if ($pid > 0) {
+                $heart_post_ids[$pid] = true;
+            }
+        }
+        if ($heart_post_ids) {
+            _prime_post_caches(array_keys($heart_post_ids), false, false);
+        }
+    }
 
     $title    = (string) $atts['title'];
     $subtitle = (string) $atts['subtitle'];

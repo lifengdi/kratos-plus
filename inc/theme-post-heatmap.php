@@ -149,16 +149,19 @@ function kratos_heatmap_get_data($post_type = 'post', $year = null, $time_range 
     $monthly_data  = array();
     $weekday_count = array_fill(0, 7, 0);
 
+    // 日期条件一律写成 post_date 的半开区间（>= 下界 AND < 上界），不要用
+    // DATE(post_date)：对列套函数会让 MySQL 放弃 type_status_date 索引，退化成
+    // 全表扫描；写成裸列比较才能走索引 range。
     if ($year) {
         $start_date = "$year-01-01";
         $end_date   = "$year-12-31";
-        $date_where = "DATE(post_date) BETWEEN %s AND %s";
-        $date_args  = array($start_date, $end_date);
+        $date_where = "post_date >= %s AND post_date < %s";
+        $date_args  = array($start_date . ' 00:00:00', ($year + 1) . '-01-01 00:00:00');
         $total_days = (strtotime($end_date) - strtotime($start_date)) / 86400 + 1;
     } else {
         $start_date = wp_date('Y-m-d', current_time('timestamp', true) - $time_range * DAY_IN_SECONDS);
-        $date_where = "DATE(post_date) >= %s";
-        $date_args  = array($start_date);
+        $date_where = "post_date >= %s";
+        $date_args  = array($start_date . ' 00:00:00');
         $total_days = $time_range;
     }
 

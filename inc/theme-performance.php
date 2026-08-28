@@ -368,7 +368,11 @@ function kratos_lean_query_args(array $args, array $opts = array())
     if (!isset($args['lazy_load_term_meta'])) {
         $args['lazy_load_term_meta'] = false;
     }
-    if ($opts['no_terms'] && !isset($args['update_post_term_cache'])) {
+    // no_terms 只在「固定链接不含 %category%」时才敢关：含 %category% 时
+    // get_permalink() 会去查每篇文章的分类，关掉批量预热等于把 1 条查询
+    // 换成每篇 1 条（列表页几乎都要出链接，必踩）。
+    if ($opts['no_terms'] && !isset($args['update_post_term_cache'])
+        && strpos((string) get_option('permalink_structure'), '%category%') === false) {
         $args['update_post_term_cache'] = false;
     }
     if ($opts['no_meta'] && !isset($args['update_post_meta_cache'])) {

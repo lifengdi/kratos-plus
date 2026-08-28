@@ -149,6 +149,17 @@ function latest_comments($list_number = 5, $cut_length = 50)
 {
     global $wpdb, $output;
     $comments = $wpdb->get_results($wpdb->prepare("SELECT comment_ID, comment_post_ID, comment_author, comment_author_email, comment_date_gmt, comment_content FROM {$wpdb->comments} LEFT OUTER JOIN {$wpdb->posts} ON {$wpdb->comments}.comment_post_ID = {$wpdb->posts}.ID WHERE comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment') AND post_password = '' ORDER BY comment_date_gmt DESC LIMIT %d", $list_number));
+    // 每条都要 get_the_permalink($comment_post_ID)，逐条就是 N 次单行查询；
+    // 这个小工具挂在侧栏、几乎每个页面都会渲染，先用一条 IN 查询预热。
+    $wc_pids = array();
+    foreach ($comments as $comment) {
+        $pid = (int) $comment->comment_post_ID;
+        if ($pid > 0) $wc_pids[$pid] = true;
+    }
+    if ($wc_pids) {
+        _prime_post_caches(array_keys($wc_pids), false, false);
+    }
+
     foreach ($comments as $comment) {
         $nickname = esc_attr($comment->comment_author) ?: __('匿名', 'kratos');
         $output .= '<a href="' . get_the_permalink($comment->comment_post_ID) . '#commentform">

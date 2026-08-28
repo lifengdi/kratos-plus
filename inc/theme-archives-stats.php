@@ -25,27 +25,65 @@
 defined('ABSPATH') || exit;
 
 /**
- * 按年份统计文章数。
- * 直接走 SQL 一次性聚合，比循环 get_posts 高效得多。
+ * 按「年-月」一次性聚合文章数。
+ *
+ * 年份榜与月份榜原先是两条各自 GROUP BY 的 SQL，对 wp_posts 扫两遍；
+ * 月粒度是年粒度的下级，一条 GROUP BY y,m 就够（最多 12×年数 行），
+ * 年份榜在 PHP 里按年求和即可。结果按时间倒序。
+ *
+ * 注意：不要在 WHERE 里对 post_date 套 YEAR()/DATE()（会失去索引）；
+ * 这里只在 SELECT / GROUP BY 用函数，过滤仍然只走 post_type + post_status，
+ * 可命中 type_status_date 索引做覆盖扫描。
+ *
+ * @return array<int, array{year:int, month:int, count:int}>
+ */
+function kratos_archives_stats_get_monthly_rows()
+{
+    static $cache = null;
+    if (is_array($cache)) {
+        return $cache;
+    }
+
+    global $wpdb;
+    $rows = $wpdb->get_results(
+        "SELECT YEAR(post_date) AS y, MONTH(post_date) AS m, COUNT(*) AS c
+         FROM {$wpdb->posts}
+         WHERE post_type = 'post' AND post_status = 'publish'
+         GROUP BY y, m ORDER BY y DESC, m DESC",
+        ARRAY_A
+    );
+
+    $cache = array();
+    foreach ((array) $rows as $r) {
+        $cache[] = array(
+            'year'  => (int) $r['y'],
+            'month' => (int) $r['m'],
+            'count' => (int) $r['c'],
+        );
+    }
+    return $cache;
+}
+
+/**
+ * 按年份统计文章数（由年-月聚合折叠而来，不再单独查库）。
  *
  * @return array<int, array{year:int, count:int}>  按年份倒序
  */
 function kratos_archives_stats_get_yearly()
 {
-    global $wpdb;
-    $rows = $wpdb->get_results(
-        "SELECT YEAR(post_date) AS y, COUNT(*) AS c
-         FROM {$wpdb->posts}
-         WHERE post_type = 'post' AND post_status = 'publish'
-         GROUP BY y ORDER BY y DESC",
-        ARRAY_A
-    );
-    if (!$rows) {
-        return array();
+    $years = array();
+    foreach (kratos_archives_stats_get_monthly_rows() as $row) {
+        $y = $row['year'];
+        if (!isset($years[$y])) {
+            $years[$y] = 0;
+        }
+        $years[$y] += $row['count'];
     }
+    krsort($years);
+
     $out = array();
-    foreach ($rows as $r) {
-        $out[] = array('year' => (int) $r['y'], 'count' => (int) $r['c']);
+    foreach ($years as $y => $c) {
+        $out[] = array('year' => (int) $y, 'count' => (int) $c);
     }
     return $out;
 }
@@ -57,27 +95,8 @@ function kratos_archives_stats_get_yearly()
  */
 function kratos_archives_stats_get_monthly($limit = 24)
 {
-    global $wpdb;
-    $sql = "SELECT YEAR(post_date) AS y, MONTH(post_date) AS m, COUNT(*) AS c
-            FROM {$wpdb->posts}
-            WHERE post_type = 'post' AND post_status = 'publish'
-            GROUP BY y, m ORDER BY y DESC, m DESC";
-    if ($limit > 0) {
-        $sql .= $wpdb->prepare(' LIMIT %d', $limit);
-    }
-    $rows = $wpdb->get_results($sql, ARRAY_A);
-    if (!$rows) {
-        return array();
-    }
-    $out = array();
-    foreach ($rows as $r) {
-        $out[] = array(
-            'year'  => (int) $r['y'],
-            'month' => (int) $r['m'],
-            'count' => (int) $r['c'],
-        );
-    }
-    return $out;
+    $rows = kratos_archives_stats_get_monthly_rows();
+    return $limit > 0 ? array_slice($rows, 0, $limit) : $rows;
 }
 
 /** 统计四项总数。 */
@@ -94,6 +113,8 @@ function kratos_archives_stats_get_totals()
         'hide_empty' => true,
     ));
 
+    // 这里保持 get_bookmarks()：它的结果带缓存，页面别处（友链模块）还会复用，
+    // 换成独立的 SELECT COUNT(*) 反而会多出一条查询（实测 +1）。
     $links = get_bookmarks(array('hide_invisible' => 1));
     $link_total = is_array($links) ? count($links) : 0;
 

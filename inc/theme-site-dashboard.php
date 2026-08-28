@@ -55,18 +55,33 @@ function kratos_dash_total_words()
     }
 
     global $wpdb;
-    $rows = $wpdb->get_col(
-        "SELECT post_content FROM {$wpdb->posts}
-         WHERE post_type = 'post' AND post_status = 'publish'"
-    );
-    if (!is_array($rows)) {
-        return 0;
-    }
 
-    $total = 0;
-    foreach ($rows as $content) {
-        $total += (int) kratos_read_word_count($content);
-    }
+    // 字数要靠 PHP 端的 CJK 计数函数算，正文没法在 SQL 里统计；
+    // 但不必一次把全站正文都拉进内存——按 ID 升序分批取（每批 200 篇），
+    // 每批算完即释放，峰值内存与文章总数解耦。
+    $total     = 0;
+    $batch     = 200;
+    $last_id   = 0;
+    do {
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT ID, post_content FROM {$wpdb->posts}
+                 WHERE post_type = 'post' AND post_status = 'publish' AND ID > %d
+                 ORDER BY ID ASC LIMIT %d",
+                $last_id,
+                $batch
+            )
+        );
+        if (!is_array($rows) || !$rows) {
+            break;
+        }
+        foreach ($rows as $row) {
+            $total  += (int) kratos_read_word_count($row->post_content);
+            $last_id = (int) $row->ID;
+        }
+        unset($rows);
+    } while (true);
+
     return $total;
 }
 
@@ -88,9 +103,9 @@ function kratos_dash_recent_days($days = 30)
             "SELECT DATE(post_date) AS d, COUNT(*) AS c
              FROM {$wpdb->posts}
              WHERE post_type = 'post' AND post_status = 'publish'
-               AND DATE(post_date) >= %s
+               AND post_date >= %s
              GROUP BY d",
-            $since
+            $since . ' 00:00:00'
         ),
         ARRAY_A
     );
@@ -146,16 +161,15 @@ function kratos_dash_aggregate($force = false)
     }
 
     // 首篇 / 末篇发布时间 —— 用于建站天数兜底与平均更新间隔
-    $first_ts = (int) strtotime((string) $wpdb->get_var(
-        "SELECT post_date FROM {$wpdb->posts}
-         WHERE post_type = 'post' AND post_status = 'publish'
-         ORDER BY post_date ASC LIMIT 1"
-    ));
-    $last_ts = (int) strtotime((string) $wpdb->get_var(
-        "SELECT post_date FROM {$wpdb->posts}
-         WHERE post_type = 'post' AND post_status = 'publish'
-         ORDER BY post_date DESC LIMIT 1"
-    ));
+    // 一条 MIN/MAX 聚合搞定两端，别用两次 ORDER BY ... LIMIT 1
+    $edge = $wpdb->get_row(
+        "SELECT MIN(post_date) AS first_date, MAX(post_date) AS last_date
+         FROM {$wpdb->posts}
+         WHERE post_type = 'post' AND post_status = 'publish'",
+        ARRAY_A
+    );
+    $first_ts = (int) strtotime((string) (isset($edge['first_date']) ? $edge['first_date'] : ''));
+    $last_ts  = (int) strtotime((string) (isset($edge['last_date']) ? $edge['last_date'] : ''));
 
     // 建站日期优先取主题选项（与年度回顾共用），未填则回落到首篇发布时间
     $birthday = trim((string) kratos_option('site_birthday', ''));

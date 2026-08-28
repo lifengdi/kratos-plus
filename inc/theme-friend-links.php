@@ -165,11 +165,26 @@ function kratos_friend_recent_visitors($limit = 20)
          LIMIT 200"
     );
 
+    // 候选池 200 条，循环里要按 user_id 查角色、按 comment_post_ID 取标题/链接。
+    // 逐条查就是最多 400 次单行查询，这里先各用一条 IN 查询把用户与文章
+    // 灌进对象缓存（文章的 term / meta 都不读，关掉预热）。
+    $prime_uids = array();
+    $prime_pids = array();
+    foreach ((array) $rows as $r) {
+        $uid = (int) $r->user_id;
+        if ($uid > 0) $prime_uids[$uid] = true;
+        $pid = (int) $r->comment_post_ID;
+        if ($pid > 0) $prime_pids[$pid] = true;
+    }
+    if ($prime_uids) cache_users(array_keys($prime_uids));
+    if ($prime_pids) _prime_post_caches(array_keys($prime_pids), false, false);
+
     $seen = array();
     $items = array();
     foreach ((array) $rows as $r) {
         $uid   = (int) $r->user_id;
         $email = (string) $r->comment_author_email;
+        $u     = null;
         if ($uid > 0) {
             $u = get_userdata($uid);
             if ($u && in_array('administrator', (array) $u->roles, true)) continue;
@@ -187,7 +202,14 @@ function kratos_friend_recent_visitors($limit = 20)
         if ($post_title === '') $post_title = __('（无标题）', 'kratos');
         $post_url = get_permalink($post_id);
 
-        $author = $r->comment_author !== '' ? $r->comment_author : ($uid > 0 ? (get_userdata($uid) ? get_userdata($uid)->display_name : __('用户', 'kratos')) : __('匿名', 'kratos'));
+        // $u 在上面按 uid 取过一次，别再连查三次 get_userdata()
+        if ($r->comment_author !== '') {
+            $author = $r->comment_author;
+        } elseif ($uid > 0 && !empty($u)) {
+            $author = $u->display_name;
+        } else {
+            $author = $uid > 0 ? __('用户', 'kratos') : __('匿名', 'kratos');
+        }
 
         $avatar_seed = $email !== '' ? $email : $uid;
         $avatar = get_avatar($avatar_seed, 44, '', $author, array('class' => 'kfl-visitor-avatar-img'));

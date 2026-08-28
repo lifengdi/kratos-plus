@@ -723,6 +723,15 @@ function kratos_home_render_comment()
         return $html . '<div class="khf-empty kr-card">' . esc_html__('暂无评论', 'kratos') . '</div></section>';
     }
 
+    // 每条都要 get_comment_link() + get_the_title()，两者都会 get_post()；
+    // 一条 IN 查询把涉及的文章预热掉，省下逐条单行查询
+    $cmt_pids = array();
+    foreach ($comments as $c) {
+        $pid = (int) $c->comment_post_ID;
+        if ($pid > 0) $cmt_pids[$pid] = true;
+    }
+    if ($cmt_pids) _prime_post_caches(array_keys($cmt_pids), false, false);
+
     $html .= '<div class="khf-cmts khf-cmts-' . $cols . '">';
     foreach ($comments as $c) {
         // 表情是 WP smilies 形式的 :name: 文本码（见 inc/theme-article.php 的

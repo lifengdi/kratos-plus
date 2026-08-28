@@ -57,7 +57,9 @@ function kratos_top_commenters_get($limit = 20)
 
     // 分两条 SQL：登录用户按 user_id 归并 + 游客按邮箱归并；再合并排序取前 N。
     // 只统计已审核的普通评论（不含 trackback/pingback），排除管理员。
-    $admin_ids = get_users(array('role' => 'Administrator', 'fields' => 'ID'));
+    // ID 与邮箱一次取齐，别取回 ID 再逐个 get_userdata() 拿邮箱
+    $admins = get_users(array('role' => 'Administrator', 'fields' => array('ID', 'user_email')));
+    $admin_ids = wp_list_pluck($admins, 'ID');
     $exclude_sql = '';
     if (!empty($admin_ids)) {
         $exclude_sql = ' AND user_id NOT IN (' . implode(',', array_map('intval', $admin_ids)) . ')';
@@ -82,10 +84,9 @@ function kratos_top_commenters_get($limit = 20)
 
     // 游客：只统计未登录（user_id = 0）且填写了邮箱的评论，排除管理员邮箱
     $admin_emails = array();
-    if (!empty($admin_ids)) {
-        foreach ($admin_ids as $aid) {
-            $u = get_userdata((int) $aid);
-            if ($u) $admin_emails[] = strtolower($u->user_email);
+    foreach ($admins as $admin) {
+        if (!empty($admin->user_email)) {
+            $admin_emails[] = strtolower($admin->user_email);
         }
     }
     $exclude_email_sql = '';
@@ -114,6 +115,26 @@ function kratos_top_commenters_get($limit = 20)
          LIMIT %d",
         $limit * 2
     ), ARRAY_A);
+
+    // 下面两个循环要逐行 get_comment() / get_userdata()，行数是 limit*4，
+    // 不预热就是同样条数的单行查询。这里各用一条 IN 查询把评论与用户灌进
+    // 对象缓存（评论 meta 不用，关掉）。
+    $prime_cids = array();
+    foreach (array($rows_user, $rows_guest) as $rows_set) {
+        foreach ((array) $rows_set as $r) {
+            $cid = isset($r['last_cid']) ? (int) $r['last_cid'] : 0;
+            if ($cid > 0) $prime_cids[] = $cid;
+        }
+    }
+    if ($prime_cids) {
+        _prime_comment_caches(array_unique($prime_cids), false);
+    }
+    $prime_uids = array_filter(array_map(function ($r) {
+        return isset($r['user_id']) ? (int) $r['user_id'] : 0;
+    }, (array) $rows_user));
+    if ($prime_uids) {
+        cache_users(array_unique($prime_uids));
+    }
 
     $items = array();
 

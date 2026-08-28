@@ -90,6 +90,102 @@ function kratos_rank_levels()
  * @param WP_Comment $comment
  * @return int
  */
+/**
+ * 进程内计数缓存（引用返回，供批量预热与单条查询共用）。
+ * key 形如 u_<user_id> / e_<md5(lower(email))>。
+ *
+ * @return array<string,int>
+ */
+function &kratos_rank_count_cache()
+{
+    static $local = array();
+    return $local;
+}
+
+/**
+ * 批量预热本页评论作者的评论数。
+ *
+ * 挂在 comments_array 上：一页评论里有 N 个不同的评论者，逐个走
+ * kratos_rank_count_for_comment() 就是 N 条 COUNT(*)（外加 N 次 transient
+ * 读，也是查询）。这里改成登录用户 / 游客各一条 GROUP BY 聚合，结果只灌
+ * 进程内缓存。
+ *
+ * 注意：这里刻意**不写 transient**。每个作者一条 set_transient 就是一次
+ * option 写入，10 个作者的写入成本远超省下的 COUNT —— 实测那样做反而让
+ * 文章页多出 13 条查询。批量聚合本身只有 1 条，比「N 次 transient 命中读」
+ * 更便宜，不需要再加一层缓存。
+ *
+ * 计数口径与单条版本保持一致：登录用户按 user_id，游客按邮箱。
+ *
+ * @param WP_Comment[] $comments
+ * @return WP_Comment[] 原样返回（filter 要求）
+ */
+function kratos_rank_prime_counts($comments)
+{
+    if (!kratos_rank_enabled() || empty($comments) || !is_array($comments)) {
+        return $comments;
+    }
+
+    $local = &kratos_rank_count_cache();
+
+    $uids   = array();
+    $emails = array();
+    foreach ($comments as $c) {
+        if (!($c instanceof WP_Comment)) continue;
+        $uid   = (int) $c->user_id;
+        $email = (string) $c->comment_author_email;
+        if ($uid > 0) {
+            $key = 'u_' . $uid;
+            if (!isset($local[$key])) $uids[$uid] = $key;
+        } elseif ($email !== '') {
+            $key = 'e_' . md5(strtolower($email));
+            if (!isset($local[$key])) $emails[strtolower($email)] = $key;
+        }
+    }
+    if (!$uids && !$emails) {
+        return $comments;
+    }
+
+    global $wpdb;
+    $base = "comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment')";
+
+    if ($uids) {
+        $ph   = implode(',', array_fill(0, count($uids), '%d'));
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT user_id, COUNT(*) AS c FROM {$wpdb->comments}
+             WHERE $base AND user_id IN ($ph) GROUP BY user_id",
+            array_keys($uids)
+        ), ARRAY_A);
+        $found = array();
+        foreach ((array) $rows as $r) {
+            $found[(int) $r['user_id']] = (int) $r['c'];
+        }
+        foreach ($uids as $uid => $key) {
+            $local[$key] = isset($found[$uid]) ? $found[$uid] : 0;
+        }
+    }
+
+    if ($emails) {
+        $ph   = implode(',', array_fill(0, count($emails), '%s'));
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT LOWER(comment_author_email) AS e, COUNT(*) AS c FROM {$wpdb->comments}
+             WHERE $base AND comment_author_email IN ($ph)
+             GROUP BY LOWER(comment_author_email)",
+            array_keys($emails)
+        ), ARRAY_A);
+        $found = array();
+        foreach ((array) $rows as $r) {
+            $found[(string) $r['e']] = (int) $r['c'];
+        }
+        foreach ($emails as $email => $key) {
+            $local[$key] = isset($found[$email]) ? $found[$email] : 0;
+        }
+    }
+
+    return $comments;
+}
+add_filter('comments_array', 'kratos_rank_prime_counts', 5);
+
 function kratos_rank_count_for_comment($comment)
 {
     if (!($comment instanceof WP_Comment)) {
@@ -110,8 +206,8 @@ function kratos_rank_count_for_comment($comment)
         return 0;
     }
 
-    // 进程内缓存（单次请求 N 条评论只查一次）
-    static $local = array();
+    // 进程内缓存（单次请求同一个人只查一次）
+    $local = &kratos_rank_count_cache();
     if (isset($local[$key])) {
         return $local[$key];
     }

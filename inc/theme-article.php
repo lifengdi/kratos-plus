@@ -693,30 +693,85 @@ function kratos_carousel()
     }
 }
 
-// 获取文章评论数量
+/**
+ * 进程内缓存：post_id => array(独立评论者数, 评论总数)
+ * @return array<int, array{0:int,1:int}>
+ */
+function &kratos_comment_counts_cache()
+{
+    static $cache = array();
+    return $cache;
+}
+
+/**
+ * 一条聚合 SQL 批量算出多篇文章的「独立评论者数 / 评论总数」。
+ *
+ * @param int[] $post_ids
+ */
+function kratos_prime_comment_counts(array $post_ids)
+{
+    $cache = &kratos_comment_counts_cache();
+
+    $ids = array();
+    foreach ($post_ids as $pid) {
+        $pid = (int) $pid;
+        if ($pid > 0 && !isset($cache[$pid])) $ids[$pid] = true;
+    }
+    if (!$ids) return;
+    $ids = array_keys($ids);
+
+    global $wpdb;
+    $ph   = implode(',', array_fill(0, count($ids), '%d'));
+    $rows = $wpdb->get_results($wpdb->prepare(
+        "SELECT comment_post_ID AS pid,
+                COUNT(DISTINCT comment_author_email) AS users,
+                COUNT(*) AS total
+         FROM {$wpdb->comments}
+         WHERE comment_approved = '1'
+           AND (comment_type = '' OR comment_type = 'comment')
+           AND comment_post_ID IN ($ph)
+         GROUP BY comment_post_ID",
+        $ids
+    ), ARRAY_A);
+
+    foreach ($ids as $pid) {
+        $cache[$pid] = array(0, 0); // 没有评论的文章也写进缓存，避免反复查
+    }
+    foreach ((array) $rows as $r) {
+        $cache[(int) $r['pid']] = array((int) $r['users'], (int) $r['total']);
+    }
+}
+
+/**
+ * 获取文章评论数量。
+ *   $which = 0 → 独立评论者数；1 → 评论总数
+ *
+ * 早先是 get_comments() 把该文全部评论（含正文）取回 PHP 再遍历去重；
+ * 文章列表模板（pages/page-content.php 的「热门」角标判定）对每篇文章都调用
+ * 一次，一屏 10 篇就是 10 次全量评论查询。现在改为库里聚合，并且顺带把本次
+ * 主查询里其余文章一次算完，整页只剩一条查询。
+ */
 function findSinglecomments($postid = 0, $which = 0)
 {
-    $comments = get_comments('status=approve&type=comment&post_id=' . $postid);
-    if ($comments) {
-        $i = 0;
-        $j = 0;
-        $commentusers = array();
-        foreach ($comments as $comment) {
-            ++$i;
-            if ($i == 1) {
-                $commentusers[] = $comment->comment_author_email;
-                ++$j;
-            }
-            if (!in_array($comment->comment_author_email, $commentusers)) {
-                $commentusers[] = $comment->comment_author_email;
-                ++$j;
+    $postid = (int) $postid;
+    if (!$postid) return 0;
+
+    $cache = &kratos_comment_counts_cache();
+
+    if (!isset($cache[$postid])) {
+        $ids = array($postid);
+        // 列表页：把当前查询里其它文章一起捎上，摊平成一条查询
+        if (!empty($GLOBALS['wp_query']->posts) && is_array($GLOBALS['wp_query']->posts)) {
+            foreach ($GLOBALS['wp_query']->posts as $p) {
+                $pid = is_object($p) ? (int) $p->ID : (int) $p;
+                if ($pid > 0) $ids[] = $pid;
             }
         }
-        $output = array($j, $i);
-        $which = ($which == 0) ? 0 : 1;
-        return $output[$which];
+        kratos_prime_comment_counts($ids);
     }
-    return 0;
+
+    $pair = isset($cache[$postid]) ? $cache[$postid] : array(0, 0);
+    return (int) $pair[$which == 0 ? 0 : 1];
 }
 
 // 文章目录功能

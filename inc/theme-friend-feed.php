@@ -504,17 +504,24 @@ function kratos_friend_feed_get_stats()
     global $wpdb;
     $table = kratos_friend_feed_table();
 
-    $total  = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table");
-    $sites  = (int) $wpdb->get_var("SELECT COUNT(DISTINCT link_id) FROM $table");
-    $latest = (string) $wpdb->get_var("SELECT published_gmt FROM $table ORDER BY published_gmt DESC LIMIT 1");
-
     // 本月：按站点当地时区起点计算
     $month_start_local = date_i18n('Y-m-01 00:00:00');
     $month_start_gmt   = get_gmt_from_date($month_start_local, 'Y-m-d H:i:s');
-    $month = (int) $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM $table WHERE published_gmt >= %s",
+
+    // 四项都取自同一张表，合成一条聚合 SQL（原先是四次独立扫表）
+    $row = $wpdb->get_row($wpdb->prepare(
+        "SELECT COUNT(*) AS total,
+                COUNT(DISTINCT link_id) AS sites,
+                MAX(published_gmt) AS latest,
+                SUM(CASE WHEN published_gmt >= %s THEN 1 ELSE 0 END) AS month_cnt
+         FROM $table",
         $month_start_gmt
-    ));
+    ), ARRAY_A);
+
+    $total  = isset($row['total']) ? (int) $row['total'] : 0;
+    $sites  = isset($row['sites']) ? (int) $row['sites'] : 0;
+    $latest = isset($row['latest']) ? (string) $row['latest'] : '';
+    $month  = isset($row['month_cnt']) ? (int) $row['month_cnt'] : 0;
 
     $sources_total = (int) $wpdb->get_var(
         "SELECT COUNT(*) FROM {$wpdb->links} WHERE link_visible = 'Y' AND link_rss <> ''"

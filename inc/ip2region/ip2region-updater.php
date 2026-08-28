@@ -239,16 +239,25 @@ add_filter('cron_schedules', function ($schedules) {
 });
 
 function kratos_ip2region_reschedule_cron() {
-    wp_clear_scheduled_hook(KRATOS_IP2REGION_CRON_HOOK);
-
     $frequency = kratos_ip2region_get_frequency();
+
     if ($frequency === 'disabled') {
+        if (wp_next_scheduled(KRATOS_IP2REGION_CRON_HOOK)) {
+            wp_clear_scheduled_hook(KRATOS_IP2REGION_CRON_HOOK);
+        }
         return;
     }
 
-    if (!wp_next_scheduled(KRATOS_IP2REGION_CRON_HOOK)) {
-        wp_schedule_event(time() + HOUR_IN_SECONDS, $frequency, KRATOS_IP2REGION_CRON_HOOK);
+    // 现有排期已经是目标频率就什么都别做。
+    // 这个函数挂在 init 上，会在每个请求（含每个前台请求）跑一次；
+    // 早先无条件 clear + schedule，等于每请求两次 UPDATE wp_options
+    // 改写整个 cron 数组（那是个很大的 option）。
+    if (wp_get_schedule(KRATOS_IP2REGION_CRON_HOOK) === $frequency) {
+        return;
     }
+
+    wp_clear_scheduled_hook(KRATOS_IP2REGION_CRON_HOOK);
+    wp_schedule_event(time() + HOUR_IN_SECONDS, $frequency, KRATOS_IP2REGION_CRON_HOOK);
 }
 
 add_action('init', 'kratos_ip2region_reschedule_cron');
