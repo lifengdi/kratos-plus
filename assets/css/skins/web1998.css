@@ -24,13 +24,10 @@
  */
 
 html[data-weekday-skin="web1998"] {
-    /* 字体令牌 —— Web 1998 复古
-     * body = Tahoma/Verdana（复古 UI 字，Mac+Win 都是原生）
-     * head = Times New Roman/宋体（Latin 衬线 + 中文宋体）
-     * ui   = 与 body 同栈 */
-    --kr-skin-font:      var(--kr-user-font,) "Tahoma", "Verdana", "Segoe UI", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) "Times New Roman", "SimSun", "宋体", "Source Han Serif SC", "Noto Serif SC", Georgia, serif var(--kr-user-font-fallback,);
-    --kr-skin-font-ui:   var(--kr-user-font,) "Tahoma", "Verdana", "Microsoft YaHei", "PingFang SC", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font:      var(--kr-user-font,) "Verdana", "Tahoma", "Segoe UI", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Times New Roman", Georgia, "SimSun", "宋体", "Source Han Serif SC", "Noto Serif SC", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) "Verdana", "Tahoma", "Microsoft YaHei", "PingFang SC", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-num:  "Verdana", "Tahoma", ui-monospace, Consolas, "SF Mono", monospace;
     --kr-skin-bg:          #008080;   /* 深青桌面 */
     --kr-skin-card-bg:     #FFFFFF;   /* 窗口客户区 */
     --kr-skin-card-soft:   #C0C0C0;   /* 铁灰窗体 */

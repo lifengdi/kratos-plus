@@ -45,10 +45,12 @@
  * 达成"一处开关全站覆盖"。
  * ------------------------------------------------------------ */
 :root {
-    --kr-skin-font:      var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-ui:   var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font:      var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-num:  ui-monospace, "SF Mono", Menlo, Consolas, "Cascadia Mono", "Roboto Mono", monospace;
 }
+
 
 /* ------------------------------------------------------------
  * 皮肤关闭态（<html> 无 data-weekday-skin 属性）默认外观
@@ -61,6 +63,11 @@
 /* 卡片元素统一直角（标题卡 / 主体卡 / 内容卡） */
 html:not([data-weekday-skin]) :is(.kr-hd, .kr-body, .kr-card) {
     border-radius: 0;
+}
+
+body {
+    font-variant-numeric: slashed-zero;
+    font-feature-settings: "ss02", "zero";
 }
 
 /* ------------------------------------------------------------

@@ -8,13 +8,10 @@
 /* Kratos-plus 皮肤 · 羊皮 parchment（从 weekday-skins.css 抽出） */
 
 html[data-weekday-skin="parchment"] {
-    /* 字体令牌 —— 羊皮 · 霞鹜文楷
-     * body = 霞鹜文楷 Screen（若装有）+ 思源宋体/苹方/雅黑（跨平台屏读友好）
-     * head = 汉仪尚巍手书 + STKaiti/KaiTi（书法头图）
-     * ui   = 与 body 同栈 */
-    --kr-skin-font:      var(--kr-user-font,) "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版", "Source Han Serif SC", "Noto Serif SC", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) "汉仪尚巍手书", "HYShangWeiShouShuW", "STKaiti", "KaiTi", "Ma Shan Zheng", "LXGW WenKai Screen", serif var(--kr-user-font-fallback,);
-    --kr-skin-font-ui:   var(--kr-user-font,) "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font:      var(--kr-user-font,) "Iowan Old Style", "Charter", Georgia, "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版", "Source Han Serif SC", "Noto Serif SC", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Iowan Old Style", Georgia, "汉仪尚巍手书", "HYShangWeiShouShuW", "STKaiti", "KaiTi", "Ma Shan Zheng", "LXGW WenKai Screen", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) Verdana, "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-num:  "Iowan Old Style", "Charter", Georgia, ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --kr-skin-bg:          #F7F4EE;
     --kr-skin-card-bg:     #FBFAF7;
     --kr-skin-card-soft:   #F2EEE8;
@@ -32,7 +29,6 @@ html[data-weekday-skin="parchment"] {
     --kr-skin-banner-overlay: rgba(62, 57, 52, 0.55);
     --kr-skin-footer-bg:   #2E2820;
     --kr-skin-footer-fg:   #B8A890;
-    /* 形态令牌 shape tokens（零视觉变化重构） */
     --kr-shape-radius:      8px;
     --kr-shape-radius-sm:   6px;
     --kr-shape-radius-xs:   2px;
@@ -43,14 +39,8 @@ html[data-weekday-skin="parchment"] {
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) body {
     background-color: #F7F4EE;
     background-image:
-        /* 左侧竹丛：3 根高竹 + 9 片散叶
-         *   竹竿改用二次贝塞尔（单控制点），形成自然弓形 —— 整体几乎笔直，
-         *   仅中部~顶部有一个柔和的弧度（仿被风吹后的恒定单向弯）。
-         *   节横线按曲线 x 取值，与竹竿严丝合缝。 */
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 800' width='180' height='800'><g stroke='%233E3934' stroke-linecap='round' fill='none'><g stroke-opacity='0.18' stroke-width='3.5'><path d='M52 800 Q 50 400 58 0'/><path d='M50 670 L 54 670 M 50 540 L 54 540 M 51 410 L 55 410 M 52 290 L 56 290 M 53 180 L 57 180 M 55 80 L 59 80'/></g><g stroke-opacity='0.14' stroke-width='2.8'><path d='M110 800 Q 118 380 110 50'/><path d='M110 720 L 114 720 M 112 590 L 116 590 M 113 470 L 117 470 M 113 360 L 117 360 M 112 230 L 116 230 M 110 130 L 114 130'/></g><g stroke-opacity='0.10' stroke-width='2.2'><path d='M22 800 Q 14 380 18 140'/><path d='M17 620 L 21 620 M 16 500 L 20 500 M 15 390 L 19 390 M 15 290 L 19 290 M 15 200 L 19 200'/></g></g><g fill='%233E3934'><g fill-opacity='0.20'><path d='M58 60 Q 80 50 94 32 Q 80 60 62 66 Z'/><path d='M52 170 Q 30 158 18 140 Q 30 168 48 176 Z'/><path d='M56 300 Q 80 285 96 265 Q 80 300 60 310 Z'/></g><g fill-opacity='0.15'><path d='M114 130 Q 140 116 156 96 Q 138 130 118 138 Z'/><path d='M112 250 Q 88 238 74 218 Q 90 254 106 260 Z'/><path d='M118 370 Q 144 355 160 335 Q 144 372 122 380 Z'/><path d='M115 500 Q 91 488 77 468 Q 91 506 109 510 Z'/></g><g fill-opacity='0.12'><path d='M19 230 Q 40 215 52 196 Q 38 232 25 240 Z'/><path d='M15 360 Q -3 348 -11 328 Q -1 362 13 370 Z'/></g></g></svg>"),
-        /* 右侧竹丛：2 根细竹 + 6 片散叶（更疏朗） */
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 800' width='160' height='800'><g stroke='%233E3934' stroke-linecap='round' fill='none'><g stroke-opacity='0.15' stroke-width='3'><path d='M48 800 Q 56 400 50 30'/><path d='M48 720 L 52 720 M 49 600 L 53 600 M 50 470 L 54 470 M 50 340 L 54 340 M 50 210 L 54 210 M 49 100 L 53 100'/></g><g stroke-opacity='0.10' stroke-width='2.2'><path d='M120 800 Q 110 460 116 180'/><path d='M113 600 L 117 600 M 112 470 L 116 470 M 112 350 L 116 350 M 113 240 L 117 240'/></g></g><g fill='%233E3934'><g fill-opacity='0.17'><path d='M52 100 Q 28 88 12 70 Q 28 106 46 112 Z'/><path d='M56 230 Q 80 218 96 198 Q 82 234 62 240 Z'/><path d='M52 370 Q 28 358 12 338 Q 28 372 46 380 Z'/></g><g fill-opacity='0.12'><path d='M113 260 Q 90 248 78 230 Q 90 264 106 270 Z'/><path d='M115 400 Q 138 388 152 370 Q 138 406 120 412 Z'/><path d='M113 530 Q 90 518 78 498 Q 90 534 106 540 Z'/></g></g></svg>"),
-        /* 角落晕染 */
         radial-gradient(ellipse 60% 40% at 0% 0%, rgba(62, 57, 52, 0.04), transparent 70%),
         radial-gradient(ellipse 60% 40% at 100% 100%, rgba(62, 57, 52, 0.04), transparent 70%);
     background-position:
@@ -65,7 +55,6 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) body {
         160px 800px,
         auto,
         auto;
-    /* 中式字体栈 —— 与 Riven 同源：霞鹜文楷 / 思源宋体 / 系统楷宋 */
     font-family: var(--kr-skin-font);
 }
 @media (max-width: 1280px) {

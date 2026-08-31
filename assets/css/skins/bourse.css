@@ -34,18 +34,11 @@ html[data-weekday-skin="bourse"] {
     --kr-skin-footer-bg:   #14202C;
     --kr-skin-footer-fg:   #96A5B4;
 
-    /* 字体：全站无衬线（终端可读性优先），数字等宽 */
-    /* 字体令牌 —— 金融 · Inter
-     * 覆盖 bourse 原有 --kr-skin-font/--kr-skin-font-head/--kr-skin-font-num，
-     * 并对齐跨皮肤命名（新增 --kr-skin-font-ui = 与 body 同栈）。
-     * Inter 优先，Segoe UI/Helvetica Neue 兜底 Mac/Win 系统字。 */
     --kr-skin-font:      var(--kr-user-font,) "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-head: var(--kr-user-font,) "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-ui:   var(--kr-user-font,) "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-num:  "SF Mono", "JetBrains Mono", "Menlo", "Consolas", "Cascadia Code", monospace;
 
-    /* 形状语言令牌（本皮肤所有圆角/阴影/描边的单一来源；改这里即全局生效）。
-     * 亮/暗通用：颜色走 --kr-skin-* 主题变量，自动随亮暗切换。 */
     --kr-shape-radius:        2px;
     --kr-shape-radius-sm:     1px;
     --kr-shape-shadow:        0 1px 2px rgba(20, 32, 44, .06);
@@ -54,11 +47,9 @@ html[data-weekday-skin="bourse"] {
     --kr-shape-shadow-accent: 0 2px 8px rgba(200, 16, 46, .18);
     --kr-shape-border:        1px solid var(--kr-skin-card-line);
     --kr-shape-border-strong: 1px solid var(--kr-skin-card-line-strong);
-    /* 按钮/胶囊的实心底压边（终端质感，取代复古硬投影） */
     --kr-shape-inset:         inset 0 -1px 0 rgba(0, 0, 0, .16);
 }
 
-/* ===== 主区：极淡坐标网格（终端坐标纸的暗示，不抢内容） ===== */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main {
     background-image:
         linear-gradient(to right, rgba(20, 32, 44, .028) 1px, transparent 1px),
@@ -66,7 +57,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main {
     background-size: 56px 56px !important;
 }
 
-/* ===== 数字等宽对齐（表格 / 元信息 / 计数 / 分页） ===== */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table td,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .header .meta,
@@ -120,15 +110,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comm
     font-weight: 900;
 }
 
-/* ===== 顶部导航（红底白字 + 下沿细金线，与 demo 的行情页头一致） =====
- * demo：linear-gradient(180deg,#C8102E,#A80A24) + 2px 金色下沿，
- *      菜单白字（未选中 86% 透明度），hover/当前项加深色蒙版，
- *      当前项再补一条金色下边线。
- * 注：header.php 的内联样式会在两种情况下强制 nav 背景（吸顶态、以及
- *     「图片导航关闭」时的常态），且与本文件同特异性但后加载，故那两处
- *     已在 header.php 内为本皮肤补了 bourse 分支；这里负责其余状态与
- *     全部前景色/形态。
- */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-nav {
     background: linear-gradient(180deg, var(--kr-skin-accent) 0%, var(--kr-skin-accent-hover) 100%) !important;
     border-bottom: 2px solid var(--kr-skin-decor) !important;
