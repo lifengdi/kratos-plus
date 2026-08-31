@@ -195,6 +195,73 @@ function kratos_csf_filter_unavailable_icons($icon_lists)
 add_filter('csf_field_icon_add_icons', 'kratos_csf_filter_unavailable_icons');
 
 /**
+ * 图标选择器按字族分组，Solid 置顶，并把「要额外拉一份字体」写进分组标题。
+ *
+ * 上游那份 `fa5-icons.php` 是一个 1600 多项的**平铺**列表，fas / far / fab 混在
+ * 一起按字母序排。后果是很容易在挑一个「标题装饰图标」时顺手选到品牌图标：
+ * 浏览器只要页面上出现一个 `fab`，就会为它下载整份 `fa-brands-400.woff2`
+ * （113KB，woff2 已压缩、gzip 再压不动），`far` 同理是 19KB。而 solid 那份
+ * 主题本身到处在用，早就下载了，选它等于零成本。
+ *
+ * 这里不删任何图标 —— 社交链接（GitHub / 微博 / 支付宝…）本来就只有品牌图标能表达。
+ * 只是把顺序和代价摆明，让「随手一选」落在 solid 上。
+ *
+ * 只想留 solid 的话（会导致「自定义社交图标」挑不到品牌 logo，慎用）：
+ *
+ *     add_filter('kratos_icon_picker_families', function () { return array('fas'); });
+ *
+ * @param array $icon_lists CSF 的分组结构：[ ['title'=>..,'icons'=>[..]], .. ]
+ * @return array
+ */
+function kratos_csf_group_icons_by_family($icon_lists)
+{
+    $families = (array) apply_filters('kratos_icon_picker_families', array('fas', 'far', 'fab'));
+
+    $labels = array(
+        'fas' => __('Solid 实心 · 推荐（字体已加载，选它不增加请求）', 'kratos'),
+        'far' => __('Regular 线性 · 前台会额外加载 19KB 字体', 'kratos'),
+        'fab' => __('Brands 品牌 · 前台会额外加载 113KB 字体，建议只用于社交图标', 'kratos'),
+    );
+
+    // 收集所有图标，按前缀归组
+    $buckets = array_fill_keys($families, array());
+    $other   = array();
+
+    foreach ((array) $icon_lists as $list) {
+        if (empty($list['icons']) || !is_array($list['icons'])) {
+            continue;
+        }
+        foreach ($list['icons'] as $icon) {
+            $prefix = strtok(trim((string) $icon), ' ');
+            if (isset($buckets[$prefix])) {
+                $buckets[$prefix][] = $icon;
+            } elseif ($prefix !== '' && !in_array($prefix, array('fas', 'far', 'fab'), true)) {
+                // 非 FA 字族（主题/插件自己 append 的），原样留在最后
+                $other[] = $icon;
+            }
+        }
+    }
+
+    $out = array();
+    foreach ($families as $family) {
+        if (empty($buckets[$family])) {
+            continue;
+        }
+        $out[] = array(
+            'title' => isset($labels[$family]) ? $labels[$family] : strtoupper($family),
+            'icons' => $buckets[$family],
+        );
+    }
+    if (!empty($other)) {
+        $out[] = array('title' => __('其它', 'kratos'), 'icons' => $other);
+    }
+
+    return $out ? $out : $icon_lists;
+}
+// 20：在 kratos_csf_filter_unavailable_icons（10）之后跑，先剔除失效图标再分组
+add_filter('csf_field_icon_add_icons', 'kratos_csf_group_icons_by_family', 20);
+
+/**
  * 后台代码编辑器字段（`type => code_editor`）改用主题内置的 CodeMirror，
  * 不再从 jsDelivr 拉 lib/ 与 addon/。
  *

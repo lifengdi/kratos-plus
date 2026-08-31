@@ -64,6 +64,156 @@ function kratos_perf_needs_player()
 }
 
 /* ============================================================
+ *  A1b 按页面卸载弹层 / 灯箱 / 代码高亮
+ * ============================================================ */
+
+/** 当前请求的正文（非单页返回空串）。 */
+function kratos_perf_current_content()
+{
+    if (!is_singular()) {
+        return '';
+    }
+    $post = get_post();
+    return $post ? (string) $post->post_content : '';
+}
+
+/**
+ * 把「这一页用不到」的资源摘掉。
+ *
+ * 特色首页实测要等 15 个渲染阻塞 CSS，其中灯箱、弹层、代码高亮三套都是这页
+ * 根本不会用到的 —— 弱网下省的不是那点字节，是十来次串行往返。
+ *
+ * 判定都取自正文，不做 UA / 页面类型的猜测：
+ *   - 灯箱（lightgallery）：正文没有 <img>、没有 [gallery] 就不需要；
+ *   - layer 弹层：只有点赞提示、打赏面板、说说点赞会用，全在单页；
+ *   - 代码高亮（Prism / highlight.js）：正文没有 <pre>/<code> 就不需要
+ *     （codehl 只挂在 the_content 上，不处理评论，所以看正文是准的）。
+ */
+function kratos_perf_dequeue_page_assets()
+{
+    if (is_admin() || !kratos_perf_on('g_perf_asset_ondemand', true)) {
+        return;
+    }
+
+    $content = kratos_perf_current_content();
+
+    // 灯箱绑在 #lightgallery（整个内容区）上，正文/说说里有图才有意义。
+    // 判定不到的情况（短代码渲染出来的图）由下面 the_content 阶段的兜底补回来。
+    $needs_lightbox = strpos($content, '<img') !== false
+        || has_shortcode($content, 'gallery')
+        || is_page_template('page-shuoshuo.php')
+        || is_singular('shuoshuo');
+    if (!$needs_lightbox) {
+        wp_dequeue_script('lightgallery');
+        wp_dequeue_style('lightgallery');
+    }
+
+    // layer 弹层的三个用处：文章点赞提示、打赏面板、说说点赞。
+    // 注意不能写 is_singular()：特色首页本身就是「页面」，会被判成需要。
+    $needs_layer = is_single()
+        || is_page_template('page-shuoshuo.php')
+        || is_singular('shuoshuo');
+    if (!$needs_layer) {
+        wp_dequeue_script('layer');
+        wp_dequeue_style('layer');
+    }
+
+    if (!preg_match('/<(?:pre|code)[\s>]/i', $content)) {
+        foreach (array('kratos-prism', 'kratos-prism-toolbar', 'kratos-prism-linenum', 'kratos-hljs', 'kratos-hljs-style') as $handle) {
+            wp_dequeue_style($handle);
+        }
+        foreach (array('kratos-prism-core', 'kratos-prism-autoloader', 'kratos-prism-toolbar', 'kratos-prism-copy', 'kratos-prism-linenum', 'kratos-hljs') as $handle) {
+            wp_dequeue_script($handle);
+        }
+    }
+}
+// 100：晚于 codehl 的 30，也晚于 theme_autoload
+add_action('wp_enqueue_scripts', 'kratos_perf_dequeue_page_assets', 100);
+
+/**
+ * 灯箱的兜底入队。
+ *
+ * 上面按「原始正文里有没有 <img>」判定，短代码渲染出来的图片判不到。
+ * 短代码运行在 the_content 阶段，此时页脚脚本还没打印，入队仍然有效
+ * （与 DPlayer 的按需加载同一套路）。
+ *
+ * @param string $content 已渲染的正文
+ * @return string 原样返回
+ */
+function kratos_perf_lightbox_fallback($content)
+{
+    if (is_admin() || !kratos_perf_on('g_perf_asset_ondemand', true)) {
+        return $content;
+    }
+    if (!is_singular() || wp_script_is('lightgallery', 'enqueued')) {
+        return $content;
+    }
+    if (strpos((string) $content, '<img') === false) {
+        return $content;
+    }
+    if (!wp_script_is('lightgallery', 'registered')) {
+        return $content;
+    }
+
+    wp_enqueue_script('lightgallery');
+    wp_enqueue_style('lightgallery');
+
+    return $content;
+}
+add_filter('the_content', 'kratos_perf_lightbox_fallback', 99);
+
+/* ============================================================
+ *  A1c 把 jQuery 挪到页脚
+ * ============================================================ */
+
+/**
+ * 让 jQuery 跟着依赖它的脚本一起进页脚。
+ *
+ * WordPress 有个反直觉的行为：**依赖项不会被提升到页脚组**。核心注册 jquery 时
+ * 没有 in_footer，`WP_Scripts::set_group()` 对「递归进来的依赖」不执行提升，
+ * 于是即使主题所有脚本（layer / kratos.js …）都声明了 in_footer=true，jQuery
+ * 仍然打印在 <head> 里，而且是同步 <script> —— 阻塞解析与首次绘制。
+ * 表现就是「浏览器标题已经变了，正文还是白的」，实测这一个文件 gzip 后 31KB。
+ *
+ * 只有在「没有任何 head 组脚本依赖 jQuery」时才搬，避免把某个插件在 <head>
+ * 里就要用 $ 的脚本搞坏。
+ */
+function kratos_perf_jquery_to_footer()
+{
+    if (is_admin() || !kratos_perf_on('g_perf_jquery_footer', true)) {
+        return;
+    }
+
+    $scripts = wp_scripts();
+
+    // head 组里还有人依赖 jQuery 就不动它
+    foreach ($scripts->queue as $handle) {
+        if (!isset($scripts->registered[$handle])) {
+            continue;
+        }
+        $obj = $scripts->registered[$handle];
+        $grp = isset($obj->extra['group']) ? (int) $obj->extra['group'] : 0;
+        if ($grp === 0 && in_array('jquery', (array) $obj->deps, true)) {
+            return;
+        }
+    }
+
+    foreach (array('jquery', 'jquery-core', 'jquery-migrate') as $handle) {
+        if (!isset($scripts->registered[$handle])) {
+            continue;
+        }
+        $scripts->add_data($handle, 'group', 1);
+        // 光设 group 数据不够：如果分组已经被算过一轮（某些插件会提前触发
+        // all_deps），WP_Dependencies::set_group() 里的
+        // `if ($this->groups[$handle] <= $group) return false;` 会拒绝把它
+        // 往后挪，jQuery 就永远钉在 head 里。清掉缓存的分组，让打印时重算。
+        unset($scripts->groups[$handle]);
+    }
+}
+// 101：晚于本文件其它 dequeue（100），此时 queue 已成形
+add_action('wp_enqueue_scripts', 'kratos_perf_jquery_to_footer', 101);
+
+/* ============================================================
  *  A2 卸载 Gutenberg 前台样式
  * ============================================================ */
 
@@ -211,6 +361,17 @@ function kratos_perf_resource_hints($urls, $relation_type)
             }
         } elseif (isset($map[$srv])) {
             $hosts[] = 'https://' . $map[$srv];
+        }
+    }
+
+    // 上传目录所在域（图床 / 对象存储回源域，与站点主域不同才有意义）。
+    // 首屏最大的那张图基本都在这个域上，只做 dns-prefetch 的话还要多等一次 TLS
+    // 握手；preconnect 会把 DNS + TCP + TLS 一起提前做掉。
+    $up = wp_get_upload_dir();
+    if (!empty($up['baseurl'])) {
+        $up_host = wp_parse_url($up['baseurl'], PHP_URL_HOST);
+        if ($up_host && $up_host !== wp_parse_url(home_url(), PHP_URL_HOST)) {
+            $hosts[] = 'https://' . $up_host;
         }
     }
 

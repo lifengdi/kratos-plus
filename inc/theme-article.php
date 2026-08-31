@@ -243,10 +243,23 @@ function pagelist($range = 5)
     }
 }
 
-// 文章评论
+/**
+ * 文章评论提交脚本。
+ *
+ * 两个要点：
+ *   1. 必须 $in_footer = true。此前没传这个参数，脚本落在 <head> 里同步执行，
+ *      连带把 jQuery（gzip 后 31KB）也拽进 <head> —— 这是同步脚本，会阻塞解析
+ *      与首次绘制，表现为「标题已经变了、页面还是白的」。
+ *   2. 只在真正有评论表单的页面入队。此前挂在 wp_enqueue_scripts 上无条件执行，
+ *      首页、列表页、归档页都白背一份。
+ */
 function comment_scripts()
 {
-    wp_enqueue_script('comment', ASSET_PATH . '/assets/js/comments.min.js', array('jquery'), THEME_VERSION);
+    if (!is_singular() || !comments_open()) {
+        return;
+    }
+
+    wp_enqueue_script('comment', ASSET_PATH . '/assets/js/comments.min.js', array('jquery'), THEME_VERSION, true);
     wp_localize_script('comment', 'ajaxcomment', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'order' => get_option('comment_order'),

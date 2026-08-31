@@ -23,7 +23,14 @@
         echo '<link rel="shortcut icon" href="' . kratos_option("g_icon") . '">';
     }
     wp_head();
-    wp_print_scripts('jquery');
+    // 这行是 Kratos 原有写法：它无视分组，把 jQuery 强行打印在 </head> 之前，
+    // 且是同步 <script>，会阻塞解析与首次绘制（gzip 后 31KB）——「标题已经变了、
+    // 正文还是白的」就来自这里。主题自己的脚本全都在页脚，头部没人用 $，
+    // 因此默认不再打印，改由页脚随依赖一起加载。
+    // 若有插件在 <head> 里就要用 jQuery，关掉「性能优化 → jQuery 移到页脚」即可恢复。
+    if (!function_exists('kratos_perf_on') || !kratos_perf_on('g_perf_jquery_footer', true)) {
+        wp_print_scripts('jquery');
+    }
     mourning();
     if (kratos_option('seo_statistical')) {
         echo kratos_option('seo_statistical');

@@ -750,6 +750,13 @@ CSF::createSection($prefix, array(
             'default' => true,
         ),
         array(
+            'id' => 'g_perf_jquery_footer',
+            'type' => 'switcher',
+            'title' => __('jQuery 移到页脚', 'kratos'),
+            'subtitle' => __('WordPress 默认把它打印在 <head> 且同步执行，会阻塞首屏渲染；若有插件在头部就要用 $ 则关掉', 'kratos'),
+            'default' => true,
+        ),
+        array(
             'id' => 'g_perf_heartbeat_front',
             'type' => 'switcher',
             'title' => __('前台禁用 Heartbeat', 'kratos'),
