@@ -32,6 +32,25 @@
  * ============================================================ */
 
 /* ------------------------------------------------------------
+ * 全站字体令牌（跨皮肤统一命名，跨平台阅读友好）
+ * ------------------------------------------------------------
+ * 三个字体令牌供皮肤覆盖 & 供「自定义字体」一处改全站生效：
+ *   --kr-skin-font       正文/主内容字体（承担绝大多数阅读文本）
+ *   --kr-skin-font-head  标题/装饰字体（大标题、封面标题、卡片主标题）
+ *   --kr-skin-font-ui    UI/元信息字体（时间、按钮、徽章、meta 小字）
+ * 默认值走"苹方 + 微软雅黑 + Segoe UI"跨平台无衬线栈，Mac / Windows
+ * 两端首字都是系统默认 UI 字，行内 Latin/中文均能保持一致的现代感。
+ * 皮肤如需接手正文/标题字体，只需在自己的根规则里覆盖这三个令牌，
+ * 不必再逐 selector 声明 font-family；「自定义字体」也统一改这三个变量，
+ * 达成"一处开关全站覆盖"。
+ * ------------------------------------------------------------ */
+:root {
+    --kr-skin-font:      var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif var(--kr-user-font-fallback,);
+}
+
+/* ------------------------------------------------------------
  * 皮肤关闭态（<html> 无 data-weekday-skin 属性）默认外观
  * ------------------------------------------------------------
  * 皮肤开启时 <html data-weekday-skin="..."> 由各皮肤文件接管卡片形态，

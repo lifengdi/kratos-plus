@@ -24,6 +24,13 @@
  */
 
 html[data-weekday-skin="web1998"] {
+    /* 字体令牌 —— Web 1998 复古
+     * body = Tahoma/Verdana（复古 UI 字，Mac+Win 都是原生）
+     * head = Times New Roman/宋体（Latin 衬线 + 中文宋体）
+     * ui   = 与 body 同栈 */
+    --kr-skin-font:      var(--kr-user-font,) "Tahoma", "Verdana", "Segoe UI", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Times New Roman", "SimSun", "宋体", "Source Han Serif SC", "Noto Serif SC", Georgia, serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) "Tahoma", "Verdana", "Microsoft YaHei", "PingFang SC", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-bg:          #008080;   /* 深青桌面 */
     --kr-skin-card-bg:     #FFFFFF;   /* 窗口客户区 */
     --kr-skin-card-soft:   #C0C0C0;   /* 铁灰窗体 */
@@ -79,7 +86,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main > * {
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) body,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo {
-    font-family: "Times New Roman", "SimSun", "宋体", serif;
+    font-family: var(--kr-skin-font-head);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h1,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main h2,
@@ -92,7 +99,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .widget-title
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .title,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .comments-title,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .title {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 1px;
     font-weight: 900;
 }
@@ -124,7 +131,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-header .k-nav.nav-
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) :is(.k-nav.nav-sticky, .k-header:not(:has(.banner)) .k-nav:not(.nav-sticky)) .navbar-brand,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) :is(.k-nav.nav-sticky, .k-header:not(:has(.banner)) .k-nav:not(.nav-sticky)) .navbar-brand h1 {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif;
+    font-family: var(--kr-skin-font);
     font-weight: 700;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) :is(.k-nav.nav-sticky, .k-header:not(:has(.banner)) .k-nav:not(.nav-sticky)) .navbar-brand:hover,
@@ -137,7 +144,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) :is(.k-nav.nav-sticky
     background: var(--kr-skin-card-soft) !important;
     box-shadow: var(--kr-shape-shadow) !important;     /* bevel-btn 浮起 */
     color: var(--kr-skin-text) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     font-weight: 400;
     font-size: 14px;
     letter-spacing: 0;
@@ -295,7 +302,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main blockquote::b
     font-size: 44px;
     color: var(--kr-skin-accent);
     opacity: 0.4;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 
 /* ===== 标签（硬边直角 + hover 反色） ===== */
@@ -309,7 +316,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-t
     border: 1px solid var(--kr-skin-accent);
     border-radius: var(--kr-shape-radius) !important;
     letter-spacing: 1px;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .article-tags a:hover,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .tagcloud a:hover,
@@ -330,7 +337,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .pagin
     border: var(--kr-shape-border-strong);
     background: var(--kr-skin-card-bg);
     color: var(--kr-skin-heading);
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .board .paginations {
     display: flex;
@@ -441,7 +448,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer p,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer p a {
     color: var(--kr-skin-footer-fg);
     letter-spacing: 1px;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-footer p a {
     color: var(--kr-skin-accent);
@@ -529,7 +536,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .art
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .header .meta {
     color: var(--kr-skin-muted);
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -606,7 +613,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .art
     font-weight: normal;
     line-height: 1;
     transition: all .2s ease;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
     background: var(--kr-skin-card-bg);
@@ -662,7 +669,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .chi
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name a {
     color: var(--kr-skin-accent-hover);
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     font-weight: 900;
     letter-spacing: 1px;
 }
@@ -762,7 +769,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .com
     color: #000000 !important;
     border-radius: var(--kr-shape-radius);
     box-shadow: var(--kr-shape-shadow-sm);
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 1px;
     text-transform: none;
     font-weight: 400;
@@ -921,7 +928,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .w-about-plus a.w-abo
     border: var(--kr-shape-border-strong);
     border-radius: var(--kr-shape-radius);
     box-shadow: var(--kr-shape-shadow-sm);
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 1px;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-primary:hover,
@@ -939,7 +946,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .w-about-plus a.w-abo
     border: var(--kr-shape-border-strong);
     border-radius: var(--kr-shape-radius);
     box-shadow: var(--kr-shape-shadow-sm);
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 1px;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .sidebar .w-about-plus a.w-about-cta-btn.is-ghost:hover,
@@ -1056,7 +1063,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .art
     font-size: 56px;
     line-height: 0.9;
     padding: 6px 10px 0 0;
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif;
+    font-family: var(--kr-skin-font);
     font-weight: 900;
     color: var(--kr-skin-accent-hover);
 }
@@ -1342,7 +1349,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shor
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-title,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h1,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h2 {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 900 !important;
     letter-spacing: 3px !important;
     color: var(--kr-skin-heading) !important;
@@ -1351,7 +1358,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-featured-titl
 /* 副标题（斜体老报纸味）—— 统一走公共类 .kr-hd-sub */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-hd-sub {
     color: var(--kr-skin-muted) !important;
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     font-style: italic !important;
     letter-spacing: 1px !important;
 }
@@ -1366,7 +1373,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kr-hd-divider {
 
 /* ---------- 走心评论 khs ---------- */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat-num {
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     color: var(--kr-skin-accent-hover) !important;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card {
@@ -1386,7 +1393,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortco
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-from {
     color: var(--kr-skin-accent-hover) !important;
     font-weight: 700;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-time {
     color: var(--kr-skin-muted) !important;
@@ -1397,7 +1404,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortco
     background: var(--kr-skin-card-bg) !important;
     color: var(--kr-skin-heading) !important;
     border: var(--kr-shape-border-strong) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-page:hover,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-current {
@@ -1432,7 +1439,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo .kss
     pointer-events: none;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     letter-spacing: 3px;
     text-transform: uppercase;
 }
@@ -1445,7 +1452,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters
     box-shadow: var(--kr-shape-shadow-sm);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank {
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     color: var(--kr-skin-heading) !important;
     background: var(--kr-skin-bg) !important;
     border-radius: var(--kr-shape-radius) !important;
@@ -1459,14 +1466,14 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     font-weight: 700;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link:hover {
     color: var(--kr-skin-accent-hover) !important;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     color: var(--kr-skin-accent-hover) !important;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-lasttime {
@@ -1484,12 +1491,12 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links 
     border-radius: var(--kr-shape-radius) !important;
     background: var(--kr-skin-accent-hover) !important;
     color: var(--kr-skin-card-bg) !important;
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     font-weight: 900;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     font-weight: 700;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-desc {
@@ -1498,7 +1505,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links 
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-title,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     letter-spacing: 2px;
     color: var(--kr-skin-heading) !important;
 }
@@ -1508,7 +1515,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-links 
     border: var(--kr-shape-border) !important;
     background: var(--kr-skin-accent-hover) !important;
     color: var(--kr-skin-card-bg) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 700;
@@ -1542,7 +1549,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-site {
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     color: var(--kr-skin-heading) !important;
     font-weight: 700;
 }
@@ -1551,10 +1558,10 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-meta {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat-num {
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     color: var(--kr-skin-accent-hover) !important;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .kff-badge {
@@ -1562,20 +1569,20 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-friend-feed .
     background: var(--kr-skin-tag-bg) !important;
     color: var(--kr-skin-accent-hover) !important;
     border: 1px solid var(--kr-skin-accent) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 1px;
 }
 
 /* ---------- 归档 kas ---------- */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-num,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count {
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     color: var(--kr-skin-accent-hover) !important;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-label,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-label {
     color: var(--kr-skin-muted) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -1584,7 +1591,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shor
     background: var(--kr-skin-card-bg) !important;
     border: var(--kr-shape-border-strong) !important;
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     box-shadow: 2px 2px 0 var(--kr-skin-card-line);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill:hover,
@@ -1598,7 +1605,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shor
     background: var(--kr-skin-card-bg) !important;
     border: var(--kr-shape-border-strong) !important;
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -1610,7 +1617,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shor
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section-title,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-time-head {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     color: var(--kr-skin-heading) !important;
     letter-spacing: 2px;
 }
@@ -1621,13 +1628,13 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-archives-shor
 /* ---------- 时间轴 ktl（.kratos-timeline） ---------- */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-year {
     color: var(--kr-skin-accent-hover) !important;
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     font-weight: 900 !important;
     letter-spacing: 3px !important;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-month {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 700 !important;
     letter-spacing: 2px !important;
     border-bottom: 1px dashed var(--kr-skin-card-line-strong) !important;
@@ -1644,7 +1651,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-date {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 
 /* ---------- 特色标题页（page-featured-title） ---------- */
@@ -1705,7 +1712,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortco
 }
 /* .khs-title-icon 走统一图标胶囊规则（见文件底部） */
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 900 !important;
     letter-spacing: 3px !important;
     text-transform: uppercase;
@@ -1732,7 +1739,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl
     border: var(--kr-shape-border) !important;
     border-radius: var(--kr-shape-radius) !important;
     box-shadow: var(--kr-shape-shadow-sm) !important;
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     letter-spacing: 2px !important;
 }
 /* 时间轴中轴线：换成金线 */
@@ -1742,7 +1749,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-title {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -1756,7 +1763,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-comments {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 /* .ktl-title-icon / .ktl-item-icon 走统一图标胶囊规则（见文件底部） */
 
@@ -1786,7 +1793,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-icon {
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-title {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 900 !important;
     letter-spacing: 2px !important;
 }
@@ -1798,7 +1805,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-pos {
     color: var(--kr-skin-accent-hover) !important;
     border: 1px solid var(--kr-skin-accent) !important;
     border-radius: var(--kr-shape-radius) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 1px;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-toggle {
@@ -1815,7 +1822,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-toggle
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumbs,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumbs a {
     color: var(--kr-skin-muted) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     font-style: italic;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-crumbs a:hover {
@@ -1852,7 +1859,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-num {
     background: var(--kr-skin-heading) !important;
     color: var(--kr-skin-accent) !important;
     border-radius: var(--kr-shape-radius) !important;
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     font-weight: 900 !important;
     /* 默认样式是 height:22px + line-height:22px 的圆形；本皮肤改成加宽方牌后
      * 若沿用那个 22px 行高，再叠 2px 上下内边距，border-box 下 22px 的行盒会
@@ -1872,7 +1879,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-item.i
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 0.5px;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) a.kratos-series-name:hover {
@@ -1883,7 +1890,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-badge 
     color: var(--kr-skin-card-bg) !important;
     border: var(--kr-shape-border) !important;
     border-radius: var(--kr-shape-radius) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 11px;
@@ -1921,14 +1928,14 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-w
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 900 !important;
     letter-spacing: 2px !important;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-desc {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-series-list-wrap [class*="ksl-level-"]:not(.ksl-level-0):not(.ksl-level-1) {
     border-left: 4px double var(--kr-skin-accent) !important;
@@ -1953,7 +1960,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related::befo
     pointer-events: none;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-title {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 900 !important;
     letter-spacing: 3px !important;
     text-transform: uppercase;
@@ -1983,13 +1990,13 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-thumb
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
     font-weight: 600;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .kratos-related-date {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Tahoma", "Verdana", sans-serif;
+    font-family: var(--kr-skin-font-ui);
 }
 
 /* ---------- 详情页评论区（.details .comments 主卡片） ---------- */
@@ -2012,7 +2019,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .com
     z-index: 2;
 }
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .comments .title {
-    font-family: "Tahoma", "Verdana", "Microsoft YaHei", sans-serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-weight: 900 !important;
     letter-spacing: 3px !important;
     text-transform: uppercase;
@@ -2028,7 +2035,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .com
 /*    background: var(--kr-skin-accent) !important;*/
 /*    color: var(--kr-skin-heading) !important;*/
 /*    border: var(--kr-shape-border) !important;*/
-/*    font-family: "Tahoma", "Verdana", sans-serif;*/
+/*    font-family: var(--kr-skin-font-ui);*/
 /*    letter-spacing: 1px;*/
 /*    box-shadow: 1px 1px 0 var(--kr-skin-heading);*/
 /*}*/
@@ -2072,7 +2079,7 @@ html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .k-main .details .pos
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous a,
 html[data-weekday-skin="web1998"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next a {
     color: var(--kr-skin-heading) !important;
-    font-family: "Tahoma", "Verdana", sans-serif !important;
+    font-family: var(--kr-skin-font-ui) !important;
     letter-spacing: 1px;
     text-decoration: none;
     font-weight: 600;

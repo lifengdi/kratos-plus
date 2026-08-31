@@ -16,6 +16,13 @@
  */
 
 html[data-weekday-skin="ebook"] {
+    /* 字体令牌（跨皮肤统一命名，跨平台阅读友好）
+     * body  = Bookerly/Iowan/Georgia + 思源/苹方/雅黑（长文衬线，Mac+Win 都有覆盖）
+     * head  = Playfair Display / 中松 / 思源宋体（书页封面感）
+     * ui    = 系统 UI 无衬线（Segoe UI + PingFang SC，跨平台一致） */
+    --kr-skin-font:      var(--kr-user-font,) "Bookerly", "Iowan Old Style", Georgia, "Source Han Serif SC", "Noto Serif SC", "Songti SC", "PingFang SC", "Microsoft YaHei", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Playfair Display", "STZhongsong", "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
     /* —— 规范色令牌（components.css 与本文件规则统一读取）—— */
     --kr-skin-bg:          #EDECE8;   /* 冷灰白 e-ink 纸底 */
     --kr-skin-card:        #F6F5F2;   /* 书页高光 */
@@ -84,7 +91,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main > * {
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) body,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-shuoshuo {
-    font-family: "Bookerly", "Iowan Old Style", "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 0.2px;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main h1,
@@ -98,7 +105,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .widget-title,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .sidebar .title,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .comments-title,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .comments .title {
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", "Noto Serif SC", serif;
+    font-family: var(--kr-skin-font-head);
     letter-spacing: 1px;
     font-weight: 800;
 }
@@ -128,7 +135,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-nav.nav-sticky::befo
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-brand h1 {
     color: var(--kr-skin-card) !important;
-    font-family: "Playfair Display", "STZhongsong", serif;
+    font-family: var(--kr-skin-font-head);
     font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -142,7 +149,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-nav.nav-sticky .navb
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:focus,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav > li.nav-item > a:focus {
     color: var(--kr-skin-card) !important;
-    font-family: "Helvetica Neue", "PingFang SC", system-ui, sans-serif;
+    font-family: var(--kr-skin-font-ui);
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 500;
@@ -239,7 +246,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .board .article
     top: 6px;
     right: 12px;
     color: var(--kr-skin-accent);
-    font-family: "Playfair Display", serif;
+    font-family: var(--kr-skin-font-head);
     font-size: 14px;
     opacity: .5;
     pointer-events: none;
@@ -290,7 +297,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main blockquote::bef
     font-size: 44px;
     color: var(--kr-skin-accent);
     opacity: 0.4;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 
 /* ===== 标签（发丝直角 + hover 反色） ===== */
@@ -304,7 +311,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .sidebar .w-tag
     border: 1px solid var(--kr-skin-accent);
     border-radius: var(--kr-shape-radius) !important;
     letter-spacing: 1px;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     font-style: italic;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .article-tags a:hover,
@@ -326,7 +333,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .board .paginat
     border: var(--kr-shape-border);
     background: var(--kr-skin-card);
     color: var(--kr-skin-heading);
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .board .paginations {
     display: flex;
@@ -422,7 +429,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-footer p,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-footer p a {
     color: var(--kr-skin-footer-fg);
     letter-spacing: 1px;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-footer p a {
     color: var(--kr-skin-accent);
@@ -509,7 +516,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .artic
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .article .header .meta {
     color: var(--kr-skin-muted);
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     text-transform: uppercase;
     letter-spacing: 1px;
     font-style: italic;
@@ -588,7 +595,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .artic
     font-weight: normal;
     line-height: 1;
     transition: all .2s ease;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span {
     background: var(--kr-skin-card);
@@ -644,7 +651,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .child
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name a {
     color: var(--kr-skin-heading);
-    font-family: "Playfair Display", "Georgia", serif;
+    font-family: var(--kr-skin-font-head);
     font-weight: 800;
     letter-spacing: 1px;
 }
@@ -742,7 +749,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .comme
     color: var(--kr-skin-card);
     border-radius: var(--kr-shape-radius);
     box-shadow: var(--kr-shape-shadow-hover);
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 700;
@@ -900,7 +907,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .w-about-plus a.w-about
     border: 1px solid var(--kr-skin-heading);
     border-radius: var(--kr-shape-radius);
     box-shadow: var(--kr-shape-shadow-hover);
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 700;
@@ -921,7 +928,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .w-about-plus a.w-about
     border: 1px solid var(--kr-skin-line-strong);
     border-radius: var(--kr-shape-radius);
     box-shadow: 0 2px 0 var(--kr-skin-line);
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 2px;
     text-transform: uppercase;
     transition: background .2s, box-shadow .2s, color .2s;
@@ -1040,7 +1047,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .artic
     font-size: 64px;
     line-height: 0.9;
     padding: 8px 12px 0 0;
-    font-family: "Playfair Display", "STZhongsong", serif;
+    font-family: var(--kr-skin-font-head);
     font-weight: 900;
     font-style: italic;
     color: var(--kr-skin-accent-2);
@@ -1365,7 +1372,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortc
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-title,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h1,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-featured-title .kft-content h2 {
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", "Noto Serif SC", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 800 !important;
     letter-spacing: 3px !important;
     color: var(--kr-skin-heading) !important;
@@ -1374,7 +1381,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-featured-title 
 /* 副标题（Georgia 斜体书刊味）—— 统一走公共类 .kr-hd-sub */
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kr-hd-sub {
     color: var(--kr-skin-muted) !important;
-    font-family: "Georgia", serif !important;
+    font-family: var(--kr-skin-font) !important;
     font-style: italic !important;
     letter-spacing: 1px !important;
 }
@@ -1389,7 +1396,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kr-hd-divider {
 
 /* ---------- 走心评论 khs ---------- */
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat-num {
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-style: italic;
     color: var(--kr-skin-accent-2) !important;
 }
@@ -1402,7 +1409,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode
     top: 6px;
     right: 10px;
     color: var(--kr-skin-accent);
-    font-family: "Playfair Display", serif;
+    font-family: var(--kr-skin-font-head);
     font-size: 13px;
     opacity: .5;
     pointer-events: none;
@@ -1411,7 +1418,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-from {
     color: var(--kr-skin-heading) !important;
     font-weight: 700;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-time {
     color: var(--kr-skin-muted) !important;
@@ -1422,7 +1429,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode
     background: var(--kr-skin-card) !important;
     color: var(--kr-skin-heading) !important;
     border: var(--kr-shape-border) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-page:hover,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-current {
@@ -1452,13 +1459,13 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-i
     top: 6px;
     right: 10px;
     color: var(--kr-skin-accent);
-    font-family: "Playfair Display", serif;
+    font-family: var(--kr-skin-font-head);
     font-size: 13px;
     opacity: .5;
     pointer-events: none;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
-    font-family: "Playfair Display", "STZhongsong", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     letter-spacing: 3px;
     text-transform: uppercase;
 }
@@ -1471,7 +1478,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-topcommenters .
     box-shadow: var(--kr-shape-shadow-sm);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank {
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-style: italic;
     color: var(--kr-skin-heading) !important;
     background: var(--kr-skin-bg) !important;
@@ -1486,14 +1493,14 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-topcommenters .
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link {
     color: var(--kr-skin-heading) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     font-weight: 700;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-name-link:hover {
     color: var(--kr-skin-accent-2) !important;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-style: italic;
     color: var(--kr-skin-accent-2) !important;
 }
@@ -1512,13 +1519,13 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-links .k
     border-radius: var(--kr-shape-radius) !important;
     background: var(--kr-skin-heading) !important;
     color: var(--kr-skin-card) !important;
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 900;
     font-style: italic;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-links .kfl-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     font-weight: 700;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-links .kfl-desc {
@@ -1527,7 +1534,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-links .k
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-title,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
-    font-family: "Playfair Display", "STZhongsong", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     letter-spacing: 2px;
     color: var(--kr-skin-heading) !important;
 }
@@ -1537,7 +1544,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-links .k
     border: 1px solid var(--kr-skin-heading) !important;
     background: var(--kr-skin-heading) !important;
     color: var(--kr-skin-card) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 700;
@@ -1571,7 +1578,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kf
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kff-title,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kff-site {
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     color: var(--kr-skin-heading) !important;
     font-weight: 700;
 }
@@ -1580,10 +1587,10 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kf
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kff-meta {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kff-stat-num {
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-style: italic;
     color: var(--kr-skin-accent-2) !important;
 }
@@ -1592,7 +1599,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kf
     background: var(--kr-skin-tag-bg) !important;
     color: var(--kr-skin-accent) !important;
     border: 1px solid var(--kr-skin-accent) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     font-style: italic;
     letter-spacing: 1px;
 }
@@ -1600,14 +1607,14 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-friend-feed .kf
 /* ---------- 归档 kas ---------- */
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-num,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count {
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-style: italic;
     color: var(--kr-skin-accent-2) !important;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total-label,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-label {
     color: var(--kr-skin-muted) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -1616,7 +1623,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortc
     background: var(--kr-skin-card) !important;
     border: var(--kr-shape-border) !important;
     color: var(--kr-skin-heading) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     box-shadow: var(--kr-shape-shadow-sm);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill:hover,
@@ -1630,7 +1637,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortc
     background: var(--kr-skin-card) !important;
     border: var(--kr-shape-border) !important;
     color: var(--kr-skin-heading) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -1642,7 +1649,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortc
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-section-title,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-time-head {
-    font-family: "Playfair Display", "STZhongsong", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     color: var(--kr-skin-heading) !important;
     letter-spacing: 2px;
 }
@@ -1653,14 +1660,14 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-archives-shortc
 /* ---------- 时间轴 ktl（.kratos-timeline） ---------- */
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-year {
     color: var(--kr-skin-heading) !important;
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 900 !important;
     font-style: italic;
     letter-spacing: 3px !important;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-month {
     color: var(--kr-skin-heading) !important;
-    font-family: "Playfair Display", "STZhongsong", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 700 !important;
     letter-spacing: 2px !important;
     border-bottom: 1px solid var(--kr-skin-line-strong) !important;
@@ -1677,7 +1684,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-i
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-date {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 
 /* ---------- 特色标题页（page-featured-title） ---------- */
@@ -1691,7 +1698,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-featured-title 
     top: 6px;
     right: 12px;
     color: var(--kr-skin-accent);
-    font-family: "Playfair Display", serif;
+    font-family: var(--kr-skin-font-head);
     font-size: 14px;
     opacity: .5;
     pointer-events: none;
@@ -1740,7 +1747,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode
 }
 /* .khs-title-icon 走统一图标胶囊规则（见文件底部） */
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-title {
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 800 !important;
     letter-spacing: 3px !important;
     text-transform: uppercase;
@@ -1767,7 +1774,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-y
     border: 1px solid var(--kr-skin-accent) !important;
     border-radius: var(--kr-shape-radius) !important;
     box-shadow: var(--kr-shape-shadow-sm) !important;
-    font-family: "Playfair Display", "STZhongsong", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     letter-spacing: 2px !important;
 }
 /* 时间轴中轴线：换成中性灰线 */
@@ -1777,7 +1784,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-s
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-title {
     color: var(--kr-skin-heading) !important;
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -1791,7 +1798,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-i
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-timeline .ktl-item-comments {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 /* .ktl-title-icon / .ktl-item-icon 走统一图标胶囊规则（见文件底部） */
 
@@ -1809,7 +1816,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series::before 
     top: 6px;
     right: 10px;
     color: var(--kr-skin-accent);
-    font-family: "Playfair Display", serif;
+    font-family: var(--kr-skin-font-head);
     font-size: 13px;
     opacity: .5;
     pointer-events: none;
@@ -1822,7 +1829,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-icon {
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-title {
     color: var(--kr-skin-heading) !important;
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 800 !important;
     letter-spacing: 2px !important;
 }
@@ -1834,7 +1841,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-pos {
     color: var(--kr-skin-accent) !important;
     border: 1px solid var(--kr-skin-accent) !important;
     border-radius: var(--kr-shape-radius) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     font-style: italic;
     letter-spacing: 1px;
 }
@@ -1852,7 +1859,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-toggle:h
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-crumbs,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-crumbs a {
     color: var(--kr-skin-muted) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     font-style: italic;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-crumbs a:hover {
@@ -1889,7 +1896,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-num {
     background: var(--kr-skin-heading) !important;
     color: var(--kr-skin-card) !important;
     border-radius: var(--kr-shape-radius) !important;
-    font-family: "Playfair Display", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 900 !important;
     font-style: italic;
     /* 默认样式是 height:22px + line-height:22px 的圆形；本皮肤改成加宽方牌后
@@ -1910,7 +1917,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-item.is-
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 0.5px;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) a.kratos-series-name:hover {
@@ -1921,7 +1928,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-badge {
     color: var(--kr-skin-card) !important;
     border: 1px solid var(--kr-skin-accent-2) !important;
     border-radius: var(--kr-shape-radius) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 11px;
@@ -1958,14 +1965,14 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-list-wra
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 800 !important;
     letter-spacing: 2px !important;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-list-wrap .ksl-desc {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-series-list-wrap [class*="ksl-level-"]:not(.ksl-level-0):not(.ksl-level-1) {
     border-left: 3px solid var(--kr-skin-accent) !important;
@@ -1985,13 +1992,13 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related::before
     top: 6px;
     right: 10px;
     color: var(--kr-skin-accent);
-    font-family: "Playfair Display", serif;
+    font-family: var(--kr-skin-font-head);
     font-size: 13px;
     opacity: .5;
     pointer-events: none;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related-title {
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 800 !important;
     letter-spacing: 3px !important;
     text-transform: uppercase;
@@ -2024,13 +2031,13 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related-thumb.k
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related-name {
     color: var(--kr-skin-heading) !important;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
     font-weight: 600;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .kratos-related-date {
     color: var(--kr-skin-muted) !important;
     font-style: italic;
-    font-family: "Georgia", serif;
+    font-family: var(--kr-skin-font);
 }
 
 /* ---------- 详情页评论区（.details .comments 主卡片） ---------- */
@@ -2047,14 +2054,14 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .comme
     top: 6px;
     right: 12px;
     color: var(--kr-skin-accent);
-    font-family: "Playfair Display", serif;
+    font-family: var(--kr-skin-font-head);
     font-size: 14px;
     opacity: .5;
     pointer-events: none;
     z-index: 2;
 }
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .comments .title {
-    font-family: "Playfair Display", "STZhongsong", "Songti SC", serif !important;
+    font-family: var(--kr-skin-font-head) !important;
     font-weight: 800 !important;
     letter-spacing: 3px !important;
     text-transform: uppercase;
@@ -2070,7 +2077,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .comme
 /*    background: var(--kr-skin-accent) !important;*/
 /*    color: var(--kr-skin-card) !important;*/
 /*    border: 1px solid var(--kr-skin-accent) !important;*/
-/*    font-family: "Georgia", serif;*/
+/*    font-family: var(--kr-skin-font);*/
 /*    letter-spacing: 1px;*/
 /*    box-shadow: var(--kr-shape-shadow-sm);*/
 /*}*/
@@ -2109,7 +2116,7 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .details .post-
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .navigation.post-navigation .nav-previous a,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .navigation.post-navigation .nav-next a {
     color: var(--kr-skin-heading) !important;
-    font-family: "Georgia", serif !important;
+    font-family: var(--kr-skin-font) !important;
     letter-spacing: 1px;
     text-decoration: none;
     font-weight: 600;

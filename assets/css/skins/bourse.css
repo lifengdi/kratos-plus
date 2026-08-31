@@ -35,9 +35,14 @@ html[data-weekday-skin="bourse"] {
     --kr-skin-footer-fg:   #96A5B4;
 
     /* 字体：全站无衬线（终端可读性优先），数字等宽 */
-    --kr-skin-font:      "Inter", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-    --kr-skin-font-head: "Inter", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-    --kr-skin-font-num:  "SF Mono", "JetBrains Mono", "Menlo", "Consolas", monospace;
+    /* 字体令牌 —— 金融 · Inter
+     * 覆盖 bourse 原有 --kr-skin-font/--kr-skin-font-head/--kr-skin-font-num，
+     * 并对齐跨皮肤命名（新增 --kr-skin-font-ui = 与 body 同栈）。
+     * Inter 优先，Segoe UI/Helvetica Neue 兜底 Mac/Win 系统字。 */
+    --kr-skin-font:      var(--kr-user-font,) "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-num:  "SF Mono", "JetBrains Mono", "Menlo", "Consolas", "Cascadia Code", monospace;
 
     /* 形状语言令牌（本皮肤所有圆角/阴影/描边的单一来源；改这里即全局生效）。
      * 亮/暗通用：颜色走 --kr-skin-* 主题变量，自动随亮暗切换。 */

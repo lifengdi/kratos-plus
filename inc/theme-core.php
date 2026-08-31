@@ -106,15 +106,38 @@ function theme_autoload()
         if (!empty($g_font['g_font_enable'])) {
             $font_family = trim((string)($g_font['g_font_family'] ?? ''));
             $font_url = trim((string)($g_font['g_font_url'] ?? ''));
-            $font_fallback = trim((string)($g_font['g_font_fallback'] ?? 'sans-serif'));
+            // 注意：CSF fieldset 的 'default' 只在字段首次显示时套用，用户保存过
+            // 但没填过这一栏时存的是空串，故这里再兜一次空串 → 'sans-serif'。
+            $font_fallback = trim((string)($g_font['g_font_fallback'] ?? ''));
+            if ($font_fallback === '') { $font_fallback = 'sans-serif'; }
             if ($font_family !== '') {
-                $stack = '"' . str_replace('"', '', $font_family) . '"' . ($font_fallback !== '' ? ', ' . $font_fallback : '');
-                $css = '';
+                $stack = '"' . str_replace('"', '', $font_family) . '"';
+                // 字体表独立入队，与主样式表并行下载，避免 @import 的串行阻塞。
+                // font-display 的 swap 行为由字体表自身声明（Google Fonts / 主流 CDN 默认 swap），
+                // 主题这层无法从外部改写 @font-face 描述符，只在加载路径上做优化。
                 if ($font_url !== '') {
-                    $css .= '@import url("' . esc_url($font_url) . '");';
+                    $font_host = wp_parse_url($font_url, PHP_URL_HOST);
+                    if ($font_host) {
+                        // 预连接字体域，缩短 DNS/TLS 握手（对跨域字体文件尤其有效）。
+                        add_filter('wp_resource_hints', function ($hints, $relation) use ($font_host) {
+                            if ($relation === 'preconnect') {
+                                $hints[] = array('href' => '//' . $font_host, 'crossorigin');
+                            }
+                            return $hints;
+                        }, 10, 2);
+                    }
+                    wp_enqueue_style('kratos-custom-font', $font_url, array(), null);
                 }
-                // 全站强制使用自定义字体，但排除代码块 / 图标 / 高亮 token，避免破坏 Prism / hljs / iconfont 显示
-                $css .= '*:not([class*="icon"]):not(i):not(pre):not(code):not([class*="language-"]):not([class*="token"]){font-family:' . $stack . ';}';
+                // 走「字体令牌头尾注入」层，两个变量都用逗号做接缝：
+                //   --kr-user-font           "<用户字体>",       （尾逗号，插到皮肤栈头）
+                //   --kr-user-font-fallback  , <用户 fallback>   （前导逗号，接在皮肤栈尾）
+                // 皮肤内 --kr-skin-font: var(--kr-user-font,) <皮肤栈> var(--kr-user-font-fallback,);
+                // 最终展开：<用户字体>, <皮肤栈>, <用户 fallback>
+                // ——用户字体优先，中间落回皮肤原栈（保留皮肤观感与中文回落链），
+                //   最外层再回落到用户配置的通用族（sans-serif/serif/...）。
+                // 未启用自定义字体时两变量均未定义，var() 各自回退为空，皮肤栈原样。
+                $css = 'html{--kr-user-font:' . $stack . ',;'
+                     . '--kr-user-font-fallback:, ' . $font_fallback . ';}';
                 wp_add_inline_style('kratos', $css);
             }
         }

@@ -8,6 +8,13 @@
 /* Kratos-plus 皮肤 · 羊皮 parchment（从 weekday-skins.css 抽出） */
 
 html[data-weekday-skin="parchment"] {
+    /* 字体令牌 —— 羊皮 · 霞鹜文楷
+     * body = 霞鹜文楷 Screen（若装有）+ 思源宋体/苹方/雅黑（跨平台屏读友好）
+     * head = 汉仪尚巍手书 + STKaiti/KaiTi（书法头图）
+     * ui   = 与 body 同栈 */
+    --kr-skin-font:      var(--kr-user-font,) "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版", "Source Han Serif SC", "Noto Serif SC", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "汉仪尚巍手书", "HYShangWeiShouShuW", "STKaiti", "KaiTi", "Ma Shan Zheng", "LXGW WenKai Screen", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-bg:          #F7F4EE;
     --kr-skin-card-bg:     #FBFAF7;
     --kr-skin-card-soft:   #F2EEE8;
@@ -59,9 +66,7 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) body {
         auto,
         auto;
     /* 中式字体栈 —— 与 Riven 同源：霞鹜文楷 / 思源宋体 / 系统楷宋 */
-    font-family: "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版",
-                 "Noto Serif SC", "Source Han Serif SC",
-                 "Songti SC", "STSong", "宋体", serif;
+    font-family: var(--kr-skin-font);
 }
 @media (max-width: 1280px) {
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) body {
@@ -79,9 +84,7 @@ html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .a
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title,
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .sidebar .widget .title,
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main .details .comments .title {
-    font-family: "汉仪尚巍手书", "HYShangWeiShouShuW",
-                 "STKaiti", "Kaiti SC", "KaiTi", "楷体",
-                 "Songti SC", "STSong", "宋体", serif;
+    font-family: var(--kr-skin-font-head);
     letter-spacing: 0.02em;
 }
 html[data-weekday-skin="parchment"]:not([data-theme="dark"]) .k-main {
