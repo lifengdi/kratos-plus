@@ -127,6 +127,22 @@ function theme_autoload()
                         }, 10, 2);
                     }
                     wp_enqueue_style('kratos-custom-font', $font_url, array(), null);
+                    // 非阻塞加载：把 <link> 的 media 改成 "print"，浏览器不当首屏关键
+                    // 资源→不阻塞 First Paint；onload 后切回 "all" 让 @font-face 生效。
+                    // <noscript> 兜底禁用 JS 的环境仍能正常加载（此时回到阻塞式，但可接受）。
+                    // 字体表内 @font-face 若声明 font-display: swap（Google Fonts 等默认），
+                    // 文字先用后备栈绘制、字体到货再替换，感官上无 FOIT / 无白屏。
+                    add_filter('style_loader_tag', function ($html, $handle) {
+                        if ($handle !== 'kratos-custom-font') { return $html; }
+                        // WP 核心输出可能是单引号或双引号，两种都处理一遍。
+                        $async = preg_replace(
+                            '/rel=([\'"])stylesheet\1/',
+                            "rel=$1stylesheet$1 media=$1print$1 onload=\"this.media='all';this.onload=null\"",
+                            $html,
+                            1
+                        );
+                        return $async . '<noscript>' . $html . '</noscript>';
+                    }, 10, 2);
                 }
                 // 走「字体令牌头尾注入」层，两个变量都用逗号做接缝：
                 //   --kr-user-font           "<用户字体>",       （尾逗号，插到皮肤栈头）
