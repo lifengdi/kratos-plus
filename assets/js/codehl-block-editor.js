@@ -201,9 +201,18 @@
             parts.push( { type: 'fence', lang: lang, code: m[ 3 ] } );
             lastIndex = fenceRe.lastIndex;
         }
-        if ( ! hasFence ) return { parts: [], hasFence: false };
+        if ( ! hasFence ) return { parts: [], hasFence: false, pureFence: false };
         if ( lastIndex < md.length ) appendMdText( parts, md.slice( lastIndex ) );
-        return { parts: parts, hasFence: true };
+        // pureFence = 除代码围栏外没有实质内容（允许围栏之间少量空白/短标题/短段落）。
+        // 用途：混合内容（含列表 / 表格 / 链接 / 粗体等）交回 Gutenberg 自己的 markdown pipeline，
+        // 避免我们这个极简 parser 把非 fence 内容降级成裸段落。
+        var nonFenceChars = 0;
+        for ( var i = 0; i < parts.length; i++ ) {
+            if ( parts[ i ].type !== 'fence' ) {
+                nonFenceChars += String( parts[ i ].text || '' ).length;
+            }
+        }
+        return { parts: parts, hasFence: true, pureFence: nonFenceChars === 0 };
     }
 
     function appendMdText( parts, text ) {
@@ -254,6 +263,82 @@
      *   3) 走 wp.blocks.pasteHandler 自己生成 block 并 insert。
      * 这样 showdown / 内部 cleaner 都越过去了，class 一路保留到我们的 core/code transform。
      */
+    /**
+     * 混合内容路径：把 plainText 交给 Gutenberg 自己的 pasteHandler 解析（列表/表格/链接/引用等它都会做），
+     * 拿到 block 数组后按顺序把 core/code 的 className 补上 language-xxx。
+     * 顺序对齐依据：pasteHandler 与我们对同一段 plainText 里的围栏识别顺序一致（都从上到下扫）。
+     * 返回 block[] 或 null（pasteHandler 不可用 / 输出为 HTML 字符串等异常情况）。
+     */
+    function handleMixedFencePaste( plain, parsedParts ) {
+        var ph = wp.blocks && wp.blocks.pasteHandler;
+        if ( typeof ph !== 'function' ) return null;
+        var out;
+        try {
+            out = ph( { HTML: '', plainText: plain, mode: 'BLOCKS' } );
+        } catch ( e ) {
+            return null;
+        }
+        if ( ! Array.isArray( out ) || ! out.length ) return null;
+        var fenceLangs = [];
+        parsedParts.forEach( function ( p ) {
+            if ( p.type === 'fence' ) fenceLangs.push( p.lang || '' );
+        } );
+        if ( ! fenceLangs.length ) return out;
+        var idx = 0;
+        var walk = function ( blocks ) {
+            blocks.forEach( function ( b ) {
+                if ( ! b ) return;
+                if ( b.name === 'core/code' && idx < fenceLangs.length ) {
+                    var lang = fenceLangs[ idx++ ];
+                    if ( lang ) {
+                        b.attributes = b.attributes || {};
+                        b.attributes.className = ( ( b.attributes.className || '' )
+                            .replace( /\s*\blanguage-[\w+#-]+\b/g, '' ).trim()
+                            + ' language-' + lang ).trim();
+                    }
+                }
+                if ( b.innerBlocks && b.innerBlocks.length ) walk( b.innerBlocks );
+            } );
+        };
+        walk( out );
+        return out;
+    }
+
+    /**
+     * 统一的 paste 事件处理：三条 path 共用，避免各处逻辑漂移。
+     * 返回 true 表示已接管（调用方应视为 event 已处理）。
+     */
+    function handlePasteEvent( e ) {
+        try {
+            var dt = e.clipboardData;
+            if ( ! dt ) return false;
+            var plain = dt.getData( 'text/plain' );
+            var clipHtml = dt.getData( 'text/html' );
+            // 有 text/html 时让 Gutenberg 走富文本粘贴路径；纯文本才可能是 markdown
+            if ( clipHtml || ! plain ) return false;
+            var parsed = parseMarkdownParts( plain );
+            if ( ! parsed.hasFence ) return false;
+            var dispatch = wp.data && wp.data.dispatch && wp.data.dispatch( 'core/block-editor' );
+            if ( ! dispatch || ! dispatch.insertBlocks ) return false;
+            var blocks;
+            if ( parsed.pureFence ) {
+                // 纯围栏：走自家极简 parser（跳过 pasteHandler schema 清洗，class 100% 保留）
+                blocks = partsToBlocks( parsed.parts );
+            } else {
+                // 混合 markdown：交给 Gutenberg pasteHandler 处理列表/表格/链接等，再把语言标签打回 code block
+                blocks = handleMixedFencePaste( plain, parsed.parts );
+            }
+            if ( ! blocks || ! blocks.length ) return false;
+            e.preventDefault();
+            e.stopPropagation();
+            dispatch.insertBlocks( blocks );
+            return true;
+        } catch ( err ) {
+            console.warn( '[kratos-codehl] paste interceptor failed', err );
+            return false;
+        }
+    }
+
     function installPasteInterceptor( root ) {
         if ( ! root || root.__kratosCodehlPasteBound ) return;
         root.__kratosCodehlPasteBound = true;
@@ -264,40 +349,30 @@
             target.addEventListener( 'paste', onPaste, { capture: true, passive: false } );
         };
         bind( root );
-        if ( win && win !== root ) bind( win );
-        function onPaste( e ) {
-            try {
-                var dt = e.clipboardData;
-                if ( ! dt ) return;
-                var plain = dt.getData( 'text/plain' );
-                var clipHtml = dt.getData( 'text/html' );
-                // 仅在没有 HTML（纯 markdown 文本粘贴）且含围栏时介入；
-                // 有 HTML 时让 Gutenberg 走正常路径，避免破坏富文本粘贴
-                if ( clipHtml || ! plain ) return;
-                var parsed = parseMarkdownParts( plain );
-                if ( ! parsed.hasFence ) return;
-                e.preventDefault();
-                e.stopPropagation();
-                var blocks = partsToBlocks( parsed.parts );
-                if ( ! blocks.length ) return;
-                var dispatch = wp.data && wp.data.dispatch && wp.data.dispatch( 'core/block-editor' );
-                if ( ! dispatch || ! dispatch.insertBlocks ) return;
-                dispatch.insertBlocks( blocks );
-            } catch ( err ) {
-                console.warn( '[kratos-codehl] paste interceptor failed', err );
-            }
+        // iframe reload 时 doc 换新但 contentWindow 通常复用，win 单独打 flag 避免同一 window
+        // 累积多份 paste 监听（否则粘一次围栏会 insertBlocks 多次）。
+        if ( win && win !== root && ! win.__kratosCodehlPasteBound ) {
+            win.__kratosCodehlPasteBound = true;
+            bind( win );
         }
+        function onPaste( e ) { handlePasteEvent( e ); }
     }
 
+    // iframe 画布：初始 contentDocument 是 about:blank，Gutenberg 之后会把真正的 doc 换进来。
+    // 只在 readyState !== 'loading' 时绑一次会绑到空 doc 上，新 doc 换进来后监听全丢；
+    // 用不 once 的 load 事件反复补绑（每次拿到的都是当前活跃的 doc）。
     function tryBindIframe( frame ) {
-        try {
-            var doc = frame.contentDocument || ( frame.contentWindow && frame.contentWindow.document );
-            if ( doc && doc.readyState !== 'loading' ) {
-                installPasteInterceptor( doc );
-            } else if ( frame.contentWindow ) {
-                frame.addEventListener( 'load', function () { tryBindIframe( frame ); }, { once: true } );
-            }
-        } catch ( e ) { /* cross-origin iframe，忽略 */ }
+        var rebind = function () {
+            try {
+                var doc = frame.contentDocument || ( frame.contentWindow && frame.contentWindow.document );
+                if ( doc ) {
+                    installPasteInterceptor( doc );
+                    watchSubtree( doc );
+                }
+            } catch ( e ) { /* cross-origin，忽略 */ }
+        };
+        rebind();
+        frame.addEventListener( 'load', rebind );
     }
     function bindPasteInterceptors() {
         installPasteInterceptor( document );
@@ -313,26 +388,7 @@
     function bindEditable( el ) {
         if ( ! el || el.__kratosCodehlPasteBound ) return;
         el.__kratosCodehlPasteBound = true;
-        el.addEventListener( 'paste', function ( e ) {
-            try {
-                var dt = e.clipboardData;
-                if ( ! dt ) return;
-                var plain = dt.getData( 'text/plain' );
-                var clipHtml = dt.getData( 'text/html' );
-                if ( clipHtml || ! plain ) return;
-                var parsed = parseMarkdownParts( plain );
-                if ( ! parsed.hasFence ) return;
-                e.preventDefault();
-                e.stopPropagation();
-                var blocks = partsToBlocks( parsed.parts );
-                if ( ! blocks.length ) return;
-                var dispatch = wp.data && wp.data.dispatch && wp.data.dispatch( 'core/block-editor' );
-                if ( ! dispatch || ! dispatch.insertBlocks ) return;
-                dispatch.insertBlocks( blocks );
-            } catch ( err ) {
-                console.warn( '[kratos-codehl] editable paste failed', err );
-            }
-        }, true );
+        el.addEventListener( 'paste', function ( e ) { handlePasteEvent( e ); }, true );
     }
     function bindEditablesIn( root ) {
         if ( ! root || ! root.querySelectorAll ) return;
@@ -365,15 +421,7 @@
     }
 
     watchSubtree( document );
-    // iframe 加载后也对其内 doc 启动 observer
-    var origTryBindIframe = tryBindIframe;
-    tryBindIframe = function ( frame ) {
-        origTryBindIframe( frame );
-        try {
-            var doc = frame.contentDocument || ( frame.contentWindow && frame.contentWindow.document );
-            if ( doc ) watchSubtree( doc );
-        } catch ( e ) {}
-    };
-    // 已存在 iframe 也走一遍新版（绑 observer）
+    // tryBindIframe 已内置 install + watchSubtree + load 反复补绑，
+    // 走一遍现存 iframe 即可，不需要再包一层。
     document.querySelectorAll( 'iframe' ).forEach( tryBindIframe );
 } )( window.wp );
