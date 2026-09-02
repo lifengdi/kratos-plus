@@ -8,7 +8,7 @@
 /* Kratos-plus 皮肤 · 朱砂 vermilion（架构与 retro 一致：kr-shape 令牌 + kr- 公共类） */
 
 html[data-weekday-skin="vermilion"] {
-    --kr-skin-font:      var(--kr-user-font,) "Iowan Old Style", "Charter", Georgia, "KaiTi", "STKaiti", "Kaiti SC", "楷体", "楷体_GB2312", "Source Han Serif SC", "Noto Serif SC", "PingFang SC", "Microsoft YaHei", serif var(--kr-user-font-fallback,);
+    --kr-skin-font:      var(--kr-user-font,) "Iowan Old Style", "Charter", Georgia, "KaiTi", "STKaiti", "Kaiti SC", "楷体", "楷体_GB2312", "Source Han Serif SC", "Noto Serif SC", "PingFang SC", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-head: var(--kr-user-font,) "Iowan Old Style", Georgia, "KaiTi", "STKaiti", "Ma Shan Zheng", "汉仪尚巍手书", "Source Han Serif SC", "Noto Serif SC", serif var(--kr-user-font-fallback,);
     --kr-skin-font-ui:   var(--kr-user-font,) Verdana, "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-num:  "Iowan Old Style", "Charter", Georgia, ui-monospace, "SF Mono", Menlo, Consolas, monospace;

@@ -13,11 +13,7 @@
  */
 
 html[data-weekday-skin="retro"] {
-    /* 字体令牌 —— 复古/铁锈
-     * body = Georgia + 思源宋体（衬线厚重，Windows 侧靠 Georgia + 思源）
-     * head = Playfair Display + 中松（Latin 衬线 + 中文宋体）
-     * ui   = Tahoma/Verdana（复古 UI 语言） */
-    --kr-skin-font:      var(--kr-user-font,) Georgia, "Source Han Serif SC", "Noto Serif SC", "Songti SC", "PingFang SC", "Microsoft YaHei", serif var(--kr-user-font-fallback,);
+    --kr-skin-font:      var(--kr-user-font,) Georgia, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-head: var(--kr-user-font,) "Playfair Display", "STZhongsong", Georgia, "Source Han Serif SC", "Noto Serif SC", serif var(--kr-user-font-fallback,);
     --kr-skin-font-ui:   var(--kr-user-font,) "Tahoma", "Verdana", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-bg:          #E8DCC4;   /* 牛皮 */

@@ -16,11 +16,8 @@
  */
 
 html[data-weekday-skin="ebook"] {
-    /* 字体令牌（跨皮肤统一命名，跨平台阅读友好）
-     * body  = Bookerly/Iowan/Georgia + 思源/苹方/雅黑（长文衬线，Mac+Win 都有覆盖）
-     * head  = Playfair Display / 中松 / 思源宋体（书页封面感）
-     * ui    = 系统 UI 无衬线（Segoe UI + PingFang SC，跨平台一致） */
-    --kr-skin-font:      var(--kr-user-font,) "Bookerly", "Iowan Old Style", Georgia, "Source Han Serif SC", "Noto Serif SC", "Songti SC", "PingFang SC", "Microsoft YaHei", serif var(--kr-user-font-fallback,);
+
+    --kr-skin-font:      var(--kr-user-font,) "Bookerly", "Iowan Old Style", Georgia, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-head: var(--kr-user-font,) "Playfair Display", "STZhongsong", "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, serif var(--kr-user-font-fallback,);
     --kr-skin-font-ui:   var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
     /* —— 规范色令牌（components.css 与本文件规则统一读取）—— */
