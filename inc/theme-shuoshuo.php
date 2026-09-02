@@ -194,6 +194,249 @@ function kratos_shuoshuo_auto_title($post_id, $post, $update)
 add_action('save_post_' . KRATOS_SHUOSHUO_CPT, 'kratos_shuoshuo_auto_title', 20, 3);
 
 /* ============================================================
+ *  图片网格：缩略图 + srcset + LQIP，灯箱开原图
+ * ============================================================ */
+
+if (!defined('KRATOS_MEDIA_ATTACH_META')) {
+    define('KRATOS_MEDIA_ATTACH_META', '_kratos_media_ids');
+}
+
+/**
+ * 一条说说 / Now 的「图片 URL => 附件 ID」映射，结果存在文章 meta 上。
+ *
+ * 九宫格格子只有 ~140px，铺原图意味着一条九宫格说说要下十几张全尺寸图；拿到附件 ID
+ * 后就能走 wp_get_attachment_image()，和特色首页一样自动带 srcset / sizes / LQIP 渐显。
+ *
+ * 但 URL 反查附件（attachment_url_to_postid）是一次 meta 查询，列表页十条说说 ×
+ * 每条十几张图会打出上百条查询。所以整条映射写进 post meta：第二次起随文章 meta 被
+ * WordPress 批量预热，不再产生额外查询（同 kratos_img_first_content_image_id 的思路）。
+ * 反查不到的外链图记 0，避免反复白查。
+ *
+ * @param int      $post_id
+ * @param string[] $images
+ * @return array<string,int>
+ */
+function kratos_media_attachment_map($post_id, $images)
+{
+    $images = array_values(array_filter((array) $images));
+    if (!$images) {
+        return array();
+    }
+
+    $resolve = function ($urls, $map) {
+        foreach ($urls as $src) {
+            $map[$src] = function_exists('kratos_img_id_from_url') ? (int) kratos_img_id_from_url($src) : 0;
+        }
+        return $map;
+    };
+
+    $post_id = (int) $post_id;
+    if (!$post_id) {
+        return $resolve($images, array());
+    }
+
+    $map     = get_post_meta($post_id, KRATOS_MEDIA_ATTACH_META, true);
+    $map     = is_array($map) ? $map : array();
+    $missing = array_diff($images, array_keys($map));
+    if ($missing) {
+        $map = $resolve($missing, $map);
+        update_post_meta($post_id, KRATOS_MEDIA_ATTACH_META, $map);
+    }
+
+    return $map;
+}
+
+/**
+ * 灯箱要打开的原图地址。
+ *
+ * 正文里存的常常已经是带尺寸后缀的地址（编辑器插图默认插 -300x300 之类），
+ * 直接拿它当灯箱链接就等于「点开还是缩略图」。能反查到附件时换成 full 尺寸。
+ *
+ * @param string $url
+ * @param int    $id
+ * @return string
+ */
+function kratos_media_full_url($url, $id)
+{
+    if ($id) {
+        $full = wp_get_attachment_image_url($id, 'full');
+        if ($full) {
+            return $full;
+        }
+    }
+
+    return $url;
+}
+
+/**
+ * 输出一张网格 / 单图用的 <img>：本地附件走注册尺寸（自带 srcset + LQIP），
+ * 外链图退到 CDN 改写后的地址。灯箱链接（外层 <a href>）始终指向原图。
+ *
+ * @param string $url   原图 URL
+ * @param int    $id    附件 ID，0 表示反查不到
+ * @param string $size  注册尺寸名
+ * @param string $sizes sizes 属性（图位真实宽度，避免手机挑最大候选图）
+ * @param string $class
+ * @return string
+ */
+function kratos_media_img_tag($url, $id, $size, $sizes, $class = 'kss-img-el')
+{
+    $attrs = array(
+        'class'    => $class,
+        'alt'      => '',
+        'loading'  => 'lazy',
+        'decoding' => 'async',
+        'sizes'    => $sizes,
+    );
+
+    if ($id) {
+        $html = wp_get_attachment_image($id, $size, false, $attrs);
+        if ($html) {
+            // WP 6.7+ 会在 sizes 前插 `auto,`。auto 只在 loading=lazy 时有效，而本页首图
+            // 会被 LCP 标记改成 eager —— 那时整条 sizes 被浏览器判无效、回落 100vw，
+            // 140px 的格子照样去挑 768w 的候选图。这里去掉 auto，保留申报的真实宽度。
+            $html = str_replace('sizes="auto, ', 'sizes="', $html);
+            return $html;
+        }
+    }
+
+    $src = function_exists('kratos_img_url_at_width')
+        ? kratos_img_url_at_width($url, $size === 'medium' ? 300 : 768)
+        : $url;
+
+    $out = '<img src="' . esc_url($src) . '"';
+    foreach ($attrs as $k => $v) {
+        if ($v === '' || $v === null) {
+            continue;
+        }
+        $out .= ' ' . $k . '="' . esc_attr($v) . '"';
+    }
+
+    return $out . ' />';
+}
+
+/** 正文改了图片就丢掉映射，下次渲染重新反查 */
+add_action('save_post', 'kratos_media_attachment_flush');
+
+function kratos_media_attachment_flush($post_id)
+{
+    delete_post_meta((int) $post_id, KRATOS_MEDIA_ATTACH_META);
+}
+
+/**
+ * 图片 / 视频媒体块的唯一渲染出口：说说列表、说说详情、Now 页面共用。
+ *
+ * 这块 markup 此前在三处各抄了一份（page 列表短码、single-shuoshuo.php、
+ * kratos_now_render_media()），改缩略图逻辑时漏掉详情页就是这么来的。
+ *
+ * 输出（外层容器由调用方负责）：
+ *   - 只有一个视频      → .kss-single-media.kss-single-video
+ *   - 只有一张图        → .kss-single-media.kss-single-image
+ *   - 多图              → .kss-images.kss-grid-N，第 10 张起 .kss-img-hidden
+ *                         （不占版面但留在 DOM，灯箱能继续翻），第 9 格叠 +N 蒙版
+ *   - 多图 + 视频       → 网格之后再列视频
+ *
+ * 图片一律「格子放缩略图、灯箱开原图」：<img> 走注册尺寸（自带 srcset / sizes /
+ * LQIP 渐显），外层 <a href> 指向附件 full 尺寸。
+ *
+ * @param int      $post_id
+ * @param string[] $images
+ * @param string[] $videos
+ * @param array    $opts grid_id / grid_size / grid_sizes / single_size / single_sizes / data_src
+ */
+function kratos_media_render($post_id, $images, $videos, $opts = array())
+{
+    $images = is_array($images) ? array_values(array_filter($images)) : array();
+    $videos = is_array($videos) ? array_values(array_filter($videos)) : array();
+    $img_count   = count($images);
+    $video_count = count($videos);
+    if ($img_count === 0 && $video_count === 0) {
+        return;
+    }
+
+    $opts = wp_parse_args($opts, array(
+        'grid_id'      => '',
+        'grid_size'    => 'medium',
+        'grid_sizes'   => '(max-width: 640px) 31vw, 140px',
+        'single_size'  => 'medium_large',
+        'single_sizes' => '(max-width: 640px) 92vw, 360px',
+        'data_src'     => false, // 详情页 / Now 的锚点额外带 data-src
+    ));
+
+    // 灯箱资源兜底：Now 页与短码嵌入场景不在说说的入队判定里，且性能模块会按
+    // 「正文有没有 <img>」卸掉灯箱 —— 这些图是渲染期才产生的，必然被判成不需要。
+    if ($img_count > 0 && function_exists('kratos_shuoshuo_ensure_lightgallery')) {
+        kratos_shuoshuo_ensure_lightgallery();
+    }
+
+    $ids = $img_count > 0 ? kratos_media_attachment_map($post_id, $images) : array();
+    $id_of   = function ($src) use ($ids) { return isset($ids[$src]) ? (int) $ids[$src] : 0; };
+    $full_of = function ($src) use ($id_of) { return kratos_media_full_url($src, $id_of($src)); };
+
+    if ($video_count === 1 && $img_count === 0) {
+        ?>
+        <div class="kss-single-media kss-single-video">
+            <video class="kss-video" src="<?php echo esc_url($videos[0]); ?>" controls preload="metadata" playsinline></video>
+        </div>
+        <?php
+        return;
+    }
+
+    if ($img_count === 1 && $video_count === 0) {
+        $src  = $images[0];
+        $full = $full_of($src);
+        ?>
+        <div class="kss-single-media kss-single-image">
+            <a class="kss-img-single" href="<?php echo esc_url($full); ?>"<?php echo $opts['data_src'] ? ' data-src="' . esc_url($full) . '"' : ''; ?>>
+                <?php echo kratos_media_img_tag($src, $id_of($src), $opts['single_size'], $opts['single_sizes'], 'kss-img-fit'); ?>
+            </a>
+        </div>
+        <?php
+        return;
+    }
+
+    if ($img_count > 0) {
+        $extra = $img_count > 9 ? ($img_count - 9) : 0;
+        if ($img_count === 1)     $grid_class = 'kss-grid-1';
+        elseif ($img_count === 2) $grid_class = 'kss-grid-2';
+        elseif ($img_count === 3) $grid_class = 'kss-grid-3';
+        elseif ($img_count === 4) $grid_class = 'kss-grid-4';
+        else                      $grid_class = 'kss-grid-9';
+        ?>
+        <div class="kss-images <?php echo esc_attr($grid_class); ?>"<?php echo $opts['grid_id'] !== '' ? ' id="' . esc_attr($opts['grid_id']) . '"' : ''; ?>>
+            <?php foreach ($images as $i => $src) {
+                $is_hidden = ($i >= 9);
+                $with_more = ($extra > 0 && $i === 8);
+                $full      = $full_of($src);
+            ?>
+                <a class="kss-img-cell<?php echo $is_hidden ? ' kss-img-hidden' : ''; ?><?php echo $with_more ? ' kss-img-more' : ''; ?>" href="<?php echo esc_url($full); ?>"<?php echo $opts['data_src'] ? ' data-src="' . esc_url($full) . '"' : ''; ?><?php echo $with_more ? ' title="' . esc_attr(sprintf(__('还有 %d 张，点击查看全部', 'kratos'), $extra)) . '"' : ''; ?><?php echo $is_hidden ? ' aria-hidden="true"' : ''; ?>>
+                    <?php
+                    // 隐藏的格子不渲染缩略图：灯箱只用 <a href> 的原图地址，没必要多下一张
+                    if (!$is_hidden) {
+                        echo kratos_media_img_tag($src, $id_of($src), $opts['grid_size'], $opts['grid_sizes']);
+                    }
+                    if ($with_more) {
+                        echo '<span class="kss-img-more-mask">+' . (int) $extra . '</span>';
+                    }
+                    ?>
+                </a>
+            <?php } ?>
+        </div>
+        <?php
+    }
+
+    if ($video_count > 0 && $img_count > 0) {
+        ?>
+        <div class="kss-single-media kss-single-video" style="margin-top:10px;">
+            <?php foreach ($videos as $vsrc) { ?>
+                <video class="kss-video" src="<?php echo esc_url($vsrc); ?>" controls preload="metadata" playsinline style="margin-top:6px;"></video>
+            <?php } ?>
+        </div>
+        <?php
+    }
+}
+
+/* ============================================================
  *  内容解析：把正文里的图片抽出来当九宫格，剩余文本单独显示
  * ============================================================ */
 
@@ -335,35 +578,15 @@ function kratos_shuoshuo_feed_shortcode($atts)
                     $images = $parts['images'];
                     $videos = isset($parts['videos']) ? $parts['videos'] : array();
                     $text   = $parts['text_html'];
-                    $img_count = count($images);
-                    $video_count = count($videos);
-
-                    // 单媒体（单张图 / 单个视频，且没有其他媒体）走朋友圈原比例样式
-                    $is_single_image = ($img_count === 1 && $video_count === 0);
-                    $is_single_video = ($video_count === 1 && $img_count === 0);
-
                     // 没有图片时如果有特色图，把特色图当成单图
-                    if ($img_count === 0 && $video_count === 0 && has_post_thumbnail($post_id)) {
+                    if (!$images && !$videos && has_post_thumbnail($post_id)) {
                         $thumb = wp_get_attachment_image_url(get_post_thumbnail_id($post_id), 'large');
                         if ($thumb) {
                             $images = array($thumb);
-                            $img_count = 1;
                         }
                     }
 
-                    // 九宫格 layout 类
-                    if ($img_count === 1) {
-                        $grid_class = 'kss-grid-1';
-                    } elseif ($img_count === 2) {
-                        $grid_class = 'kss-grid-2';
-                    } elseif ($img_count === 3) {
-                        $grid_class = 'kss-grid-3';
-                    } elseif ($img_count === 4) {
-                        $grid_class = 'kss-grid-4';
-                    } else {
-                        $grid_class = 'kss-grid-9';
-                    }
-
+                    // 单媒体判定 / 九宫格 layout 类 / 缩略图都在 kratos_media_render() 里
                     $love = (int) get_post_meta($post_id, 'love', true);
                     $comment_count = (int) get_comments_number($post_id);
                     $has_loved = isset($_COOKIE['love_' . $post_id]);
@@ -398,36 +621,9 @@ function kratos_shuoshuo_feed_shortcode($atts)
                                 <?php } ?>
                             <?php } ?>
 
-                            <?php if ($is_single_video) { ?>
-                                <div class="kss-single-media kss-single-video">
-                                    <video class="kss-video" src="<?php echo esc_url($videos[0]); ?>" controls preload="metadata" playsinline></video>
-                                </div>
-                            <?php } elseif ($is_single_image) { ?>
-                                <div class="kss-single-media kss-single-image">
-                                    <a class="kss-img-single" href="<?php echo esc_url($images[0]); ?>">
-                                        <img src="<?php echo esc_url($images[0]); ?>" alt="" loading="lazy">
-                                    </a>
-                                </div>
-                            <?php } elseif ($img_count > 0) {
-                                $extra = $img_count > 9 ? ($img_count - 9) : 0;
-                            ?>
-                                <div class="kss-images <?php echo esc_attr($grid_class); ?>">
-                                    <?php foreach ($images as $i => $src) {
-                                        // 第 10 张起不占版面（display:none），但仍留在 DOM 里 ——
-                                        // 灯箱按 querySelectorAll 收集，所以能一路翻到最后一张，
-                                        // 与 Now 页一致；第 9 格叠一层 +N 蒙版提示还有多少张。
-                                        $is_hidden = ($i >= 9);
-                                        $is_last_with_more = ($extra > 0 && $i === 8);
-                                    ?>
-                                        <a class="kss-img-cell<?php echo $is_hidden ? ' kss-img-hidden' : ''; ?><?php echo $is_last_with_more ? ' kss-img-more' : ''; ?>" href="<?php echo esc_url($src); ?>"<?php echo $is_last_with_more ? ' title="' . esc_attr(sprintf(__('还有 %d 张，点击查看全部', 'kratos'), $extra)) . '"' : ''; ?><?php echo $is_hidden ? ' aria-hidden="true"' : ''; ?>>
-                                            <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
-                                            <?php if ($is_last_with_more) { ?>
-                                                <span class="kss-img-more-mask">+<?php echo (int) $extra; ?></span>
-                                            <?php } ?>
-                                        </a>
-                                    <?php } ?>
-                                </div>
-                            <?php } ?>
+                            <?php kratos_media_render($post_id, $images, $videos, array(
+                                'single_sizes' => '(max-width: 640px) 92vw, 360px',
+                            )); ?>
 
                             <div class="kss-meta">
                                 <span class="kss-time" title="<?php echo esc_attr($time_full); ?>"><?php echo esc_html($time_human); ?></span>
@@ -541,8 +737,9 @@ function kratos_shuoshuo_assets()
         .kratos-shuoshuo .kss-images.kss-grid-4{grid-template-columns:repeat(2,1fr);max-width:280px;}
         .kratos-shuoshuo .kss-images.kss-grid-9{grid-template-columns:repeat(3,1fr);}
         .kratos-shuoshuo .kss-img-cell{position:relative;display:block;aspect-ratio:1/1;border-radius:2px;overflow:hidden;background:#f1f1f1;cursor:zoom-in;}
-        .kratos-shuoshuo .kss-img-bg{position:absolute;inset:0;width:100%;height:100%;background-size:cover;background-position:center center;background-repeat:no-repeat;transition:transform .25s ease;}
-        .kratos-shuoshuo .kss-img-cell:hover .kss-img-bg{transform:scale(1.04);}
+        /* 格子里是真正的 <img>（带 srcset / LQIP），铺满格子并裁切；.kss-img-bg 是旧结构的背景图写法，一并保留 */
+        .kratos-shuoshuo .kss-img-el,.kratos-shuoshuo .kss-img-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background-size:cover;background-position:center center;background-repeat:no-repeat;transition:transform .25s ease;}
+        .kratos-shuoshuo .kss-img-cell:hover .kss-img-el,.kratos-shuoshuo .kss-img-cell:hover .kss-img-bg{transform:scale(1.04);}
         .kratos-shuoshuo .kss-img-more-mask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:22px;font-weight:600;letter-spacing:1px;pointer-events:none;}
         .kratos-shuoshuo .kss-img-hidden{display:none !important;}
 
@@ -550,6 +747,8 @@ function kratos_shuoshuo_assets()
         .kratos-shuoshuo .kss-single-media{margin-top:10px;max-width:360px;}
         .kratos-shuoshuo .kss-img-single{display:inline-block;max-width:100%;border-radius:2px;overflow:hidden;background:#f1f1f1;cursor:zoom-in;line-height:0;}
         .kratos-shuoshuo .kss-img-single img{display:block;max-width:100%;max-height:420px;width:auto;height:auto;object-fit:contain;transition:transform .25s ease;}
+        /* wp_get_attachment_image() 会输出真实 width/height 属性，别让它撑破容器 */
+        .kratos-shuoshuo .kss-img-single img.kss-img-fit{height:auto;}
         .kratos-shuoshuo .kss-img-single:hover img{transform:scale(1.02);}
         .kratos-shuoshuo .kss-video{display:block;max-width:100%;max-height:480px;width:auto;height:auto;border-radius:2px;background:#000;}
         .kratos-shuoshuo .kss-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#999;}

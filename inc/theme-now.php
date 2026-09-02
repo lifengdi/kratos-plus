@@ -262,59 +262,14 @@ function kratos_now_render_media($images, $videos, $post_id, $variant = 'hero')
     $video_count = count($videos);
     if ($img_count === 0 && $video_count === 0) return;
 
-    // 灯箱资源兜底：Now 页面不在说说的入队判定里，且这些图是 span 背景图（无 <img>），
-    // 会被性能模块按「正文无图」卸掉灯箱。渲染时补一次。
-    if ($img_count > 0 && function_exists('kratos_shuoshuo_ensure_lightgallery')) {
-        kratos_shuoshuo_ensure_lightgallery();
-    }
-
-    $is_single_image = ($img_count === 1 && $video_count === 0);
-    $is_single_video = ($video_count === 1 && $img_count === 0);
-
-    if ($img_count === 1)      $grid_class = 'kss-grid-1';
-    elseif ($img_count === 2)  $grid_class = 'kss-grid-2';
-    elseif ($img_count === 3)  $grid_class = 'kss-grid-3';
-    elseif ($img_count === 4)  $grid_class = 'kss-grid-4';
-    else                       $grid_class = 'kss-grid-9';
-
     $wrap_class = 'kratos-shuoshuo knw-media knw-media-' . esc_attr($variant);
     ?>
     <div class="<?php echo $wrap_class; ?>" data-lightbox-host="1">
-        <?php if ($is_single_video) { ?>
-            <div class="kss-single-media kss-single-video">
-                <video class="kss-video" src="<?php echo esc_url($videos[0]); ?>" controls preload="metadata" playsinline></video>
-            </div>
-        <?php } elseif ($is_single_image) { ?>
-            <div class="kss-single-media kss-single-image">
-                <a class="kss-img-single" href="<?php echo esc_url($images[0]); ?>" data-src="<?php echo esc_url($images[0]); ?>">
-                    <img src="<?php echo esc_url($images[0]); ?>" alt="" loading="lazy">
-                </a>
-            </div>
-        <?php } else {
-            $extra = $img_count > 9 ? ($img_count - 9) : 0;
-            if ($img_count > 0) { ?>
-                <div class="kss-images <?php echo esc_attr($grid_class); ?>" id="knw-gallery-<?php echo (int) $post_id; ?>-<?php echo esc_attr($variant); ?>">
-                    <?php foreach ($images as $i => $src) {
-                        $is_hidden = ($i >= 9);
-                        $is_last_visible_with_more = ($extra > 0 && $i === 8);
-                    ?>
-                        <a class="kss-img-cell<?php echo $is_hidden ? ' kss-img-hidden' : ''; ?><?php echo $is_last_visible_with_more ? ' kss-img-more' : ''; ?>" href="<?php echo esc_url($src); ?>" data-src="<?php echo esc_url($src); ?>"<?php echo $is_hidden ? ' aria-hidden="true"' : ''; ?>>
-                            <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
-                            <?php if ($is_last_visible_with_more) { ?>
-                                <span class="kss-img-more-mask">+<?php echo (int) $extra; ?></span>
-                            <?php } ?>
-                        </a>
-                    <?php } ?>
-                </div>
-            <?php }
-            if ($video_count > 0) { ?>
-                <div class="kss-single-media kss-single-video" style="margin-top:10px;">
-                    <?php foreach ($videos as $vsrc) { ?>
-                        <video class="kss-video" src="<?php echo esc_url($vsrc); ?>" controls preload="metadata" playsinline style="margin-top:6px;"></video>
-                    <?php } ?>
-                </div>
-            <?php }
-        } ?>
+        <?php kratos_media_render($post_id, $images, $videos, array(
+            'grid_id'      => 'knw-gallery-' . (int) $post_id . '-' . $variant,
+            'single_sizes' => '(max-width: 640px) 92vw, 420px',
+            'data_src'     => true,
+        )); ?>
     </div>
     <?php
 }

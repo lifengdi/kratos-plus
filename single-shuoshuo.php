@@ -55,26 +55,13 @@ if (!empty($kratos_ss_back_pages)) {
                     $images = $parts['images'];
                     $videos = isset($parts['videos']) ? $parts['videos'] : array();
                     $text   = $parts['text_html'];
-                    $img_count = count($images);
-                    $video_count = count($videos);
-
-                    $is_single_image = ($img_count === 1 && $video_count === 0);
-                    $is_single_video = ($video_count === 1 && $img_count === 0);
-
-                    if ($img_count === 0 && $video_count === 0 && has_post_thumbnail($post_id)) {
+                    // 没有媒体但有特色图时，把特色图当单图展示
+                    if (!$images && !$videos && has_post_thumbnail($post_id)) {
                         $thumb = wp_get_attachment_image_url(get_post_thumbnail_id($post_id), 'large');
                         if ($thumb) {
                             $images = array($thumb);
-                            $img_count = 1;
-                            $is_single_image = true;
                         }
                     }
-
-                    if ($img_count === 1)      $grid_class = 'kss-grid-1';
-                    elseif ($img_count === 2)  $grid_class = 'kss-grid-2';
-                    elseif ($img_count === 3)  $grid_class = 'kss-grid-3';
-                    elseif ($img_count === 4)  $grid_class = 'kss-grid-4';
-                    else                       $grid_class = 'kss-grid-9';
 
                     $love          = (int) get_post_meta($post_id, 'love', true);
                     $comment_count = (int) get_comments_number($post_id);
@@ -93,33 +80,17 @@ if (!empty($kratos_ss_back_pages)) {
                                     <?php if ($text !== '') { ?>
                                         <div class="kss-text"><?php echo $text; ?></div>
                                     <?php } ?>
-                                    <?php if ($is_single_video) { ?>
-                                        <div class="kss-single-media kss-single-video">
-                                            <video class="kss-video" src="<?php echo esc_url($videos[0]); ?>" controls preload="metadata" playsinline></video>
-                                        </div>
-                                    <?php } elseif ($is_single_image) { ?>
-                                        <div class="kss-single-media kss-single-image">
-                                            <a class="kss-img-single" href="<?php echo esc_url($images[0]); ?>" data-src="<?php echo esc_url($images[0]); ?>">
-                                                <img src="<?php echo esc_url($images[0]); ?>" alt="" loading="lazy">
-                                            </a>
-                                        </div>
-                                    <?php } elseif ($img_count > 0) {
-                                        $extra = $img_count > 9 ? ($img_count - 9) : 0;
+                                    <?php
+                                    // 详情页容器更宽（.kss-images 520px / 单图 560px），
+                                    // 所以申报的图位宽度比列表页大一档
+                                    kratos_media_render($post_id, $images, $videos, array(
+                                        'grid_id'      => 'kss-gallery-' . (int) $post_id,
+                                        'grid_sizes'   => '(max-width: 640px) 31vw, 172px',
+                                        'single_size'  => 'large',
+                                        'single_sizes' => '(max-width: 640px) 92vw, 560px',
+                                        'data_src'     => true,
+                                    ));
                                     ?>
-                                        <div class="kss-images <?php echo esc_attr($grid_class); ?>" id="kss-gallery-<?php echo (int) $post_id; ?>">
-                                            <?php foreach ($images as $i => $src) {
-                                                $is_hidden = ($i >= 9);
-                                                $is_last_visible_with_more = ($extra > 0 && $i === 8);
-                                            ?>
-                                                <a class="kss-img-cell<?php echo $is_hidden ? ' kss-img-hidden' : ''; ?><?php echo $is_last_visible_with_more ? ' kss-img-more' : ''; ?>" href="<?php echo esc_url($src); ?>" data-src="<?php echo esc_url($src); ?>"<?php echo $is_hidden ? ' aria-hidden="true"' : ''; ?>>
-                                                    <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
-                                                    <?php if ($is_last_visible_with_more) { ?>
-                                                        <span class="kss-img-more-mask">+<?php echo (int) $extra; ?></span>
-                                                    <?php } ?>
-                                                </a>
-                                            <?php } ?>
-                                        </div>
-                                    <?php } ?>
                                     <div class="kss-meta">
                                         <span class="kss-time" title="<?php echo esc_attr($time_full); ?>"><?php echo esc_html($time_full); ?> · <?php echo esc_html($time_human); ?></span>
                                         <span class="kss-actions">
