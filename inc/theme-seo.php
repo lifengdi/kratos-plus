@@ -9,11 +9,27 @@
  * @license GPL-3.0 License
  */
 
+/**
+ * 已装 SEO 插件（Yoast / Rank Math / AIOSEO / SEOPress）时主题整体让位。
+ *
+ * 这些插件都会自己输出 canonical、description、Open Graph、Twitter Card 和 JSON-LD，
+ * 主题再输出一份就会出现两条 description、两个不同的 og:image、以及两份
+ * BreadcrumbList —— 后者是 Search Console 明确会报冲突的重复实体。
+ */
+function kratos_seo_plugin_active()
+{
+    return defined('WPSEO_VERSION') || defined('RANK_MATH_VERSION') || defined('AIOSEO_VERSION') || defined('SEOPRESS_VERSION');
+}
+
 // 统一在 wp_head 早期输出 SEO meta，避免与其他插件抢位置
 add_action('wp_head', 'kratos_seo_meta', 2);
 
 function kratos_seo_meta()
 {
+    if (kratos_seo_plugin_active()) {
+        return;
+    }
+
     // 只有单篇（文章/页面/CPT）才能用全局 $post 取 URL 与标题：归档页的全局 $post
     // 被 WP::register_globals() 设成了本页第一篇文章，直接用会让分类页自称某篇文章。
     $is_singular = is_singular();
@@ -108,13 +124,13 @@ function kratos_seo_current_url()
  *
  * theme-core.php 移除了 WP 自带的 rel_canonical()（它也只覆盖单篇），因此这里统一输出：
  * 单篇交回核心函数处理（含评论分页 / 多页文章的 cpage、page 逻辑），归档/首页用干净 URL。
- * 已装 SEO 插件（Yoast / Rank Math / AIOSEO / SEOPress）时让位，避免两条 canonical。
+ * 已装 SEO 插件时让位（见 kratos_seo_plugin_active()），避免两条 canonical。
  */
 add_action('wp_head', 'kratos_seo_canonical', 1);
 
 function kratos_seo_canonical()
 {
-    if (defined('WPSEO_VERSION') || defined('RANK_MATH_VERSION') || defined('AIOSEO_VERSION') || defined('SEOPRESS_VERSION')) {
+    if (kratos_seo_plugin_active()) {
         return;
     }
 
@@ -137,6 +153,10 @@ add_action('wp_head', 'kratos_seo_jsonld', 3);
 
 function kratos_seo_jsonld()
 {
+    if (kratos_seo_plugin_active()) {
+        return;
+    }
+
     $site_name = get_bloginfo('name');
     $site_url  = home_url('/');
     $logo      = kratos_option('g_icon', kratos_option('seo_shareimg', ASSET_PATH . '/assets/img/default.jpg'));
