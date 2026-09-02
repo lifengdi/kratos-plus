@@ -12,6 +12,22 @@
             .append($('<span>').css('color', color || '#666').text(msg));
     }
 
+    // 新文章正文还没落库，取编辑器现场内容随请求带上
+    function editorContent() {
+        try {
+            if (window.wp && wp.data && wp.data.select('core/editor')) {
+                var c = wp.data.select('core/editor').getEditedPostContent();
+                if (c) return c;
+            }
+        } catch (e) {}
+        if (window.tinymce) {
+            var ed = window.tinymce.get('content');
+            if (ed && !ed.isHidden()) return ed.getContent();
+        }
+        var $c = $('#content');
+        return $c.length ? String($c.val() || '') : '';
+    }
+
     function payload() {
         var $b = $box();
         return {
@@ -47,7 +63,7 @@
         e.preventDefault();
         var d = payload();
         setStatus(K.i18n.generating, '#666');
-        post('summary/generate', { post_id: d.post_id, style: d.style }, $(this), function (r) {
+        post('summary/generate', { post_id: d.post_id, style: d.style, content: editorContent() }, $(this), function (r) {
             $box().find('.kratos-ai-sum-html').val(r.html);
             setStatus('✓ ' + (r.state || 'fresh'), '#2b7a2b');
         });

@@ -9,11 +9,15 @@ class Kratos_AI_Chunker {
     /**
      * @param WP_Post|int $post
      * @param string $strategy 'summary'|'tags'
+     * @param string|null $raw_override 编辑器未保存的正文（新文章）
      * @return array{chunks:string[], strategy:string}
      */
-    public static function chunk($post, $strategy = 'summary') {
+    public static function chunk($post, $strategy = 'summary', $raw_override = null) {
         $p = is_object($post) ? $post : get_post($post);
-        $raw = $p ? (string)$p->post_content : '';
+        // 新文章尚未落库，编辑器现场内容优先
+        $raw = ($raw_override !== null && trim((string)$raw_override) !== '')
+            ? (string)$raw_override
+            : ($p ? (string)$p->post_content : '');
         $text = self::normalize($raw);
         $result = apply_filters('kratos_ai_content_chunk', null, $p, $strategy, $text);
         if (is_array($result) && !empty($result['chunks'])) return $result;

@@ -73,6 +73,22 @@
         });
     }
 
+    // 新文章正文还没落库，取编辑器现场内容随请求带上
+    function editorContent() {
+        try {
+            if (window.wp && wp.data && wp.data.select('core/editor')) {
+                var c = wp.data.select('core/editor').getEditedPostContent();
+                if (c) return c;
+            }
+        } catch (e) {}
+        if (window.tinymce) {
+            var ed = window.tinymce.get('content');
+            if (ed && !ed.isHidden()) return ed.getContent();
+        }
+        var $c = $('#content');
+        return $c.length ? String($c.val() || '') : '';
+    }
+
     $(document).on('click', '.kratos-ai-tags-gen', function (e) {
         e.preventDefault();
         var $b = $box();
@@ -84,7 +100,7 @@
             url: K.restRoot + 'tags/suggest',
             method: 'POST',
             headers: { 'X-WP-Nonce': K.nonce, 'Content-Type': 'application/json' },
-            data: JSON.stringify({ post_id: post_id })
+            data: JSON.stringify({ post_id: post_id, content: editorContent() })
         }).done(function (r) {
             if (r && r.ok) {
                 lastSource = r.source || '';

@@ -123,7 +123,12 @@ class Kratos_AI_Tags {
             return new WP_REST_Response(array('code' => 'ai_quota_exhausted', 'message' => __('本月 token 已达上限', 'kratos')), 429);
         }
 
-        $chunks = Kratos_AI_Chunker::chunk($post, 'tags');
+        $raw = (string) $req->get_param('content');
+        if ($raw === '' || trim($raw) === '') $raw = (string) $post->post_content;
+        if (!Kratos_AI_Chunker::normalize($raw)) {
+            return new WP_REST_Response(array('code' => 'ai_content_too_short', 'message' => __('正文为空', 'kratos')), 400);
+        }
+        $chunks = Kratos_AI_Chunker::chunk($post, 'tags', $raw);
         $content = $chunks['chunks'][0];
 
         $r = Kratos_AI_Client::generate(array(

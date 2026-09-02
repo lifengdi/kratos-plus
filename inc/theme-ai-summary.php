@@ -199,7 +199,7 @@ class Kratos_AI_Summary {
         if (Kratos_AI_Client::monthly_exceeded() && !current_user_can('manage_options')) {
             return new WP_REST_Response(array('code' => 'ai_quota_exhausted', 'message' => __('本月 token 已达上限', 'kratos')), 429);
         }
-        $result = self::generate_for_post($post_id, $style);
+        $result = self::generate_for_post($post_id, $style, (string) $req->get_param('content'));
         if (is_wp_error($result)) {
             return new WP_REST_Response(array('code' => $result->get_error_code(), 'message' => $result->get_error_message()), 400);
         }
@@ -260,10 +260,11 @@ class Kratos_AI_Summary {
     // ---------------- 核心生成 ----------------
 
     /** @return array{html:string}|WP_Error */
-    public static function generate_for_post($post_id, $style) {
+    public static function generate_for_post($post_id, $style, $content = null) {
         $post = get_post($post_id);
         if (!$post) return new WP_Error('ai_forbidden', 'no post');
-        $normalized = Kratos_AI_Chunker::normalize($post->post_content);
+        $raw = ($content !== null && trim((string)$content) !== '') ? (string)$content : $post->post_content;
+        $normalized = Kratos_AI_Chunker::normalize($raw);
         if (!$normalized) return new WP_Error('ai_content_too_short', __('正文为空', 'kratos'));
 
         $per_task = (int) kratos_ai_opt('g_ai_input_token_cap_per_task', 128000);
@@ -271,7 +272,7 @@ class Kratos_AI_Summary {
             return new WP_Error('ai_content_too_long', __('正文超出单任务 token 上限', 'kratos'));
         }
 
-        $chunks = Kratos_AI_Chunker::chunk($post, 'summary');
+        $chunks = Kratos_AI_Chunker::chunk($post, 'summary', $raw);
         // base_url / api_key / model 交给 Client 按 provider slug 自己取，模块层不传
         $provider_slug = kratos_ai_opt('g_ai_module_summary_provider', 'openai');
         $fallback_slug = kratos_ai_opt('g_ai_module_summary_fallback', '');
