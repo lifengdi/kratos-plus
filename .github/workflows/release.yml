@@ -57,6 +57,18 @@ jobs:
                  "$STAGE_DIR/kratos-plus/CLAUDE.md" \
                  "$STAGE_DIR/kratos-plus/crowdin.yml" \
                  "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"
+          # 压缩 assets 下的 css/js：就地覆盖，文件名不变，PHP 的 enqueue 路径无需改动。
+          # 只处理 assets/ —— 根目录 style.css 必须原样保留（WP 靠其文件头注释识别主题）。
+          # 跳过 *.min.* （bootstrap/layer/DPlayer 等第三方件上游已压缩）。
+          npm install -g --silent esbuild@0.24.0
+          find "$STAGE_DIR/kratos-plus/assets" -type f \( -name '*.css' -o -name '*.js' \) \
+               ! -name '*.min.*' -print0 |
+          while IFS= read -r -d '' f; do
+            # 临时文件必须保留原扩展名，esbuild 据此判定 loader
+            tmp="${f%.*}.__m.${f##*.}"
+            esbuild --minify --outfile="$tmp" "$f" >/dev/null
+            mv "$tmp" "$f"
+          done
           (cd "$STAGE_DIR" && zip -r "$RUNNER_TEMP/$ZIP_NAME" "kratos-plus")
           ls -lh "$RUNNER_TEMP/$ZIP_NAME"
           echo "zip_path=$RUNNER_TEMP/$ZIP_NAME" >> "$GITHUB_OUTPUT"
