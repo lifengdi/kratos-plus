@@ -175,6 +175,20 @@
      *
      * 必须 wrap 而不是替换：否则会跳过 WP 的 markdown→区块标准转换流程。
      */
+    /**
+     * 代码内容归一化，用于把「我们解析出的围栏」与「pasteHandler 产出的 code block」对上：
+     * 后者已做 HTML 转义、缩进也可能被 showdown 动过，所以解实体 + 抹掉全部空白再比。
+     */
+    function normCode( s ) {
+        return String( s == null ? '' : s )
+            .replace( /&lt;/g, '<' )
+            .replace( /&gt;/g, '>' )
+            .replace( /&quot;/g, '"' )
+            .replace( /&#0?39;/g, "'" )
+            .replace( /&amp;/g, '&' )
+            .replace( /\s+/g, '' );
+    }
+
     function escapeHtml( s ) {
         return String( s )
             .replace( /&/g, '&amp;' )
@@ -190,15 +204,19 @@
         if ( typeof md !== 'string' ) return { parts: [], hasFence: false };
         var parts = [];
         var lastIndex = 0;
-        var fenceRe = /(^|\n)```([\w+#.-]*)[ \t]*\r?\n([\s\S]*?)\r?\n```(?=\r?\n|$)/g;
+        // 宽松匹配围栏，任何一种漏掉都会导致整篇 fallback（全部代码块丢语言）：
+        //   [ \t]{0,3}  列表项里缩进的围栏
+        //   `{3,}|~{3,} 三个以上反引号，或波浪号围栏（\2 回引保证首尾同号）
+        //   [^\n]*      info string 后面的附加参数（```php {1,3} / ```js title="a.js"）
+        var fenceRe = /(^|\n)[ \t]{0,3}(`{3,}|~{3,})[ \t]*([\w+#.-]*)[^\n]*\r?\n([\s\S]*?)\r?\n[ \t]{0,3}\2`*~*[ \t]*(?=\r?\n|$)/g;
         var hasFence = false;
         var m;
         while ( ( m = fenceRe.exec( md ) ) !== null ) {
             hasFence = true;
             var pre = md.slice( lastIndex, m.index + m[ 1 ].length );
             if ( pre ) appendMdText( parts, pre );
-            var lang = ( m[ 2 ] || '' ).toLowerCase();
-            parts.push( { type: 'fence', lang: lang, code: m[ 3 ] } );
+            var lang = ( m[ 3 ] || '' ).toLowerCase();
+            parts.push( { type: 'fence', lang: lang, code: m[ 4 ] } );
             lastIndex = fenceRe.lastIndex;
         }
         if ( ! hasFence ) return { parts: [], hasFence: false, pureFence: false };
@@ -284,12 +302,22 @@
             if ( p.type === 'fence' ) fenceLangs.push( p.lang || '' );
         } );
         if ( ! fenceLangs.length ) return out;
+        // 先按「代码内容」匹配，序号只作兜底：pasteHandler 会把引用块内的围栏、4 空格缩进代码
+        // 也变成 core/code，而这些我们的 parser 数不到，纯按序号对齐会整体错位一格（语言标错）。
+        var byCode = {};
+        parsedParts.forEach( function ( p ) {
+            if ( p.type !== 'fence' || ! p.lang ) return;
+            var k = normCode( p.code );
+            if ( k && ! ( k in byCode ) ) byCode[ k ] = p.lang;
+        } );
         var idx = 0;
         var walk = function ( blocks ) {
             blocks.forEach( function ( b ) {
                 if ( ! b ) return;
-                if ( b.name === 'core/code' && idx < fenceLangs.length ) {
-                    var lang = fenceLangs[ idx++ ];
+                if ( b.name === 'core/code' ) {
+                    var key = normCode( b.attributes && b.attributes.content );
+                    var lang = ( key && byCode[ key ] ) || ( idx < fenceLangs.length ? fenceLangs[ idx ] : '' );
+                    idx++;
                     if ( lang ) {
                         b.attributes = b.attributes || {};
                         b.attributes.className = ( ( b.attributes.className || '' )
@@ -313,11 +341,19 @@
             var dt = e.clipboardData;
             if ( ! dt ) return false;
             var plain = dt.getData( 'text/plain' );
-            var clipHtml = dt.getData( 'text/html' );
-            // 有 text/html 时让 Gutenberg 走富文本粘贴路径；纯文本才可能是 markdown
-            if ( clipHtml || ! plain ) return false;
+            if ( ! plain ) return false;
+            // 判定只看 plainText 里有没有 ``` 围栏，不能因为剪贴板同时带 text/html 就放手：
+            // 聊天窗口 / 编辑器复制 markdown 时一定会附一份带 inline style 的 html flavor，
+            // 而 Gutenberg 见到非 plain 的 HTML 就不再跑 markdown 转换，围栏语言会被丢成裸 <pre><code>。
             var parsed = parseMarkdownParts( plain );
             if ( ! parsed.hasFence ) return false;
+            // 光标已经在代码块/预格式/自定义 HTML 里时，用户是想把 markdown 当文本贴进去，
+            // 不能替他拆成一堆区块。
+            var sel = wp.data && wp.data.select && wp.data.select( 'core/block-editor' );
+            var cur = sel && sel.getSelectedBlock && sel.getSelectedBlock();
+            if ( cur && ( cur.name === 'core/code' || cur.name === 'core/preformatted' || cur.name === 'core/html' ) ) {
+                return false;
+            }
             var dispatch = wp.data && wp.data.dispatch && wp.data.dispatch( 'core/block-editor' );
             if ( ! dispatch || ! dispatch.insertBlocks ) return false;
             var blocks;
