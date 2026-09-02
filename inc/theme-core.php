@@ -276,10 +276,23 @@ add_action('wp_enqueue_scripts', 'theme_autoload');
 // 后台资源加载
 function kratos_admin_enqueue()
 {
+    // 区块编辑器屏幕不挂：admin.css 现在只管 wp-admin 文档（主题设置页吸顶等），
+    // 而编辑器屏幕上 core 会把后台样式表整批复制进画布 iframe 并告警
+    // 「X was added to the iframe incorrectly」。画布内样式见 editor-content.css。
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if ($screen && method_exists($screen, 'is_block_editor') && $screen->is_block_editor()) {
+        return;
+    }
     wp_enqueue_style('admin-custom-css', get_template_directory_uri() . '/assets/css/admin.css', array(), filemtime(get_template_directory() . '/assets/css/admin.css'));
 }
 
 add_action('admin_enqueue_scripts', 'kratos_admin_enqueue', 20);
+
+// 编辑器画布（iframe）内的内容样式：add_editor_style 是 core 认可的注入通道
+add_action('after_setup_theme', function () {
+    add_theme_support('editor-styles');
+    add_editor_style('assets/css/editor-content.css');
+});
 
 /**
  * 主题设置页的两处交互补丁（CSF 框架本身没有，写在这里避免改 vendored 源码）：

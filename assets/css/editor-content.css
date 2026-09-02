@@ -1,0 +1,23 @@
+/*
+ * 编辑器「画布内」样式（iframe 内生效）。
+ *
+ * 必须通过 add_editor_style() 注入（见 inc/theme-core.php）：WP 6.9 起区块编辑器
+ * 一律 iframe 化，靠 admin_enqueue_scripts 挂的后台样式表被 core 复制进 iframe 时会报
+ * 「X was added to the iframe incorrectly」。add_editor_style / enqueue_block_assets
+ * 是 core 认可的两条通道。后台文档（非画布）的样式留在 assets/css/admin.css。
+ *
+ * @author Dylan Li
+ * @license GPL-3.0 License
+ */
+
+.editor-styles-wrapper .wp-site-blocks,
+.editor-styles-wrapper>.is-root-container,
+.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper,
+.editor-styles-wrapper .wp-block-group.alignfull,
+.editor-styles-wrapper .wp-block-group.has-background,
+.editor-styles-wrapper .wp-block-cover.alignfull,
+.editor-styles-wrapper .is-root-container .wp-block[data-align="full"]>.wp-block-group,
+.editor-styles-wrapper .is-root-container .wp-block[data-align="full"]>.wp-block-cover {
+    padding-left: max(1.25rem, 5vw);
+    padding-right: max(1.25rem, 5vw);
+}

@@ -105,7 +105,9 @@ function kratos_blocks_register()
         }
 
         register_block_type('kratos/' . $name, array(
-            'attributes' => $attributes,
+            // 3 = 画布 iframe 化（WP 6.9 起 2 及以下已废弃，会把整个编辑器拉回非 iframe 模式）
+            'api_version' => 3,
+            'attributes'  => $attributes,
             'render_callback' => function ($attrs) use ($def) {
                 return kratos_blocks_render($attrs, $def);
             },
@@ -184,6 +186,7 @@ function kratos_block_search_register()
         return;
     }
     register_block_type('kratos/search', array(
+        'api_version' => 3,
         'attributes' => array(
             'title' => array('type' => 'string', 'default' => ''),
         ),
@@ -219,10 +222,8 @@ add_filter('block_categories', 'kratos_blocks_register_category');
  */
 function kratos_blocks_enqueue_editor()
 {
-    $js_rel  = '/assets/js/blocks/blocks.js';
-    $css_rel = '/assets/css/blocks-editor.css';
-    $js_abs  = get_template_directory() . $js_rel;
-    $css_abs = get_template_directory() . $css_rel;
+    $js_rel = '/assets/js/blocks/blocks.js';
+    $js_abs = get_template_directory() . $js_rel;
 
     wp_enqueue_script(
         'kratos-blocks-editor',
@@ -232,14 +233,34 @@ function kratos_blocks_enqueue_editor()
         true
     );
 
+}
+add_action('enqueue_block_editor_assets', 'kratos_blocks_enqueue_editor');
+
+/**
+ * 区块预览样式。apiVersion 3 后区块渲染在画布 iframe 内，样式必须走
+ * enqueue_block_assets（core 认可的 iframe 通道）；挂 enqueue_block_editor_assets
+ * 只会进外层后台文档，画布里的 .kratos-block 预览会裸奔，且 core 会告警
+ * 「kratos-blocks-editor-css was added to the iframe incorrectly」。
+ * 该钩子前后台都跑，所以自己判一次 is_admin()。
+ */
+function kratos_blocks_enqueue_editor_css()
+{
+    if (!is_admin()) {
+        return;
+    }
+    $css_rel = '/assets/css/blocks-editor.css';
+    $css_abs = get_template_directory() . $css_rel;
+    if (!file_exists($css_abs)) {
+        return;
+    }
     wp_enqueue_style(
         'kratos-blocks-editor',
         get_template_directory_uri() . $css_rel,
         array(),
-        THEME_VERSION . '.' . (file_exists($css_abs) ? filemtime($css_abs) : '0')
+        THEME_VERSION . '.' . filemtime($css_abs)
     );
 }
-add_action('enqueue_block_editor_assets', 'kratos_blocks_enqueue_editor');
+add_action('enqueue_block_assets', 'kratos_blocks_enqueue_editor_css');
 
 /**
  * 前台样式：让 [success]/[info]/... 等短码渲染出的 .alert / .card 与

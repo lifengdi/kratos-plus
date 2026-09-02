@@ -59,7 +59,7 @@
         }
 
         registerBlockType( 'kratos/' + def.name, {
-            apiVersion: 2,
+            apiVersion: 3,
             title: def.title,
             description: '[' + def.name + '] 短码',
             category: CATEGORY,
@@ -157,7 +157,7 @@
     /* 设置项，渲染走 PHP render_callback                                */
     /* -------------------------------------------------------------- */
     registerBlockType( 'kratos/search', {
-        apiVersion: 2,
+        apiVersion: 3,
         title: '搜索（Kratos-plus）',
         description: '主题自带样式的搜索小工具，与侧栏 Search widget 输出一致',
         category: 'widgets',
