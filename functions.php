@@ -8,7 +8,7 @@
  * @version 2025.02.08
  */
 
-define('THEME_VERSION', '1.1.19');
+define('THEME_VERSION', '1.1.20');
 // 内置 Font Awesome Free 版本（assets/css/fontawesome.min.css + assets/fonts/webfonts/）
 define('FA_VERSION', '7.3.1');
 // 内置 CodeMirror 版本（assets/codemirror/，取自 npm codemirror@5.62.2，
