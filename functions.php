@@ -128,6 +128,11 @@ require get_template_directory() . '/inc/theme-smtp.php';
 
 require get_template_directory() . '/inc/theme-extends.php';
 
+// AI 工具箱（摘要 / 标签）—— 由主题选项 g_ai_enable 控制是否 boot SDK
+require get_template_directory() . '/inc/theme-ai.php';
+require get_template_directory() . '/inc/theme-ai-summary.php';
+require get_template_directory() . '/inc/theme-ai-tags.php';
+
 // 性能优化（资源按需加载 / 查询瘦身 / 数据库清理 / 运行指标）
 require get_template_directory() . '/inc/theme-performance.php';
 

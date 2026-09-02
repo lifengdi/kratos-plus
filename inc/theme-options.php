@@ -5260,6 +5260,310 @@ CSF::createSection($prefix, array(
     ),
 ));
 
+// ============================================================================
+// AI 工具箱（M1：核心 SDK + 通用配置）
+// ============================================================================
+CSF::createSection($prefix, array(
+    'id' => 'kp_ai',
+    'title' => __('AI 工具箱', 'kratos'),
+    'icon' => 'fas fa-robot',
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_ai',
+    'title' => __('通用设置', 'kratos'),
+    'icon' => 'fas fa-cogs',
+    'fields' => array(
+        array(
+            'id' => 'g_ai_enable',
+            'type' => 'switcher',
+            'title' => __('AI 工具箱总开关', 'kratos'),
+            'subtitle' => __('关闭时 SDK 不加载，所有 hook / REST 均不注册', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_ai_compliance_ack',
+            'type' => 'switcher',
+            'title' => __('生成式 AI 服务备案确认', 'kratos'),
+            'subtitle' => __('中国大陆站点：勾选前请确保已完成《生成式人工智能服务管理暂行办法》备案；未勾选时仅管理员可调用（本地调试）', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('Provider · 主端点（OpenAI 兼容协议）', 'kratos'),
+        ),
+        array(
+            'id' => 'g_ai_provider_openai_base',
+            'type' => 'text',
+            'title' => __('base_url', 'kratos'),
+            'subtitle' => __('例：https://api.openai.com / https://api.deepseek.com / https://api.moonshot.cn 等；必须 https；保存时会做 SSRF 校验', 'kratos'),
+            'default' => '',
+            'attributes' => array('placeholder' => 'https://api.deepseek.com'),
+        ),
+        array(
+            'id' => 'g_ai_provider_openai_key',
+            'type' => 'text',
+            'title' => __('API Key', 'kratos'),
+            'subtitle' => __('保存后立即信封加密写入独立 option（wp_options.kratos_ai_key_openai），本字段随即清空且不回显；留空保存不会清掉已存的 Key，需要更换时直接填新的即可', 'kratos'),
+            'default' => '',
+            'attributes' => array('type' => 'password', 'placeholder' => 'sk-...'),
+        ),
+        array(
+            'id' => 'g_ai_provider_openai_model',
+            'type' => 'text',
+            'title' => __('默认 Model', 'kratos'),
+            'subtitle' => __('例：gpt-4o-mini / deepseek-chat / moonshot-v1-8k / glm-4-flash', 'kratos'),
+            'default' => 'gpt-4o-mini',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('Provider · 备用端点（可留空）', 'kratos'),
+        ),
+        array(
+            'type' => 'content',
+            'content' => '<div style="padding:10px 14px;background:#fffbea;border:1px solid #f0e0a0;border-radius:8px;color:#7a5c00;line-height:1.6;">'
+                . __('填写后可在下方「模块 Provider 选择」里作为备用端点：主端点返回 5xx / 超时 / 429 时自动切换。留空则备用选项不生效。', 'kratos')
+                . '</div>',
+        ),
+        array(
+            'id' => 'g_ai_provider_alt_base',
+            'type' => 'text',
+            'title' => __('备用 base_url', 'kratos'),
+            'subtitle' => __('同样必须 https；保存时做 SSRF 校验', 'kratos'),
+            'default' => '',
+            'attributes' => array('placeholder' => 'https://api.moonshot.cn'),
+        ),
+        array(
+            'id' => 'g_ai_provider_alt_key',
+            'type' => 'text',
+            'title' => __('备用 API Key', 'kratos'),
+            'subtitle' => __('与主端点各存一份（wp_options.kratos_ai_key_openai_alt），保存后本字段清空', 'kratos'),
+            'default' => '',
+            'attributes' => array('type' => 'password', 'placeholder' => 'sk-...'),
+        ),
+        array(
+            'id' => 'g_ai_provider_alt_model',
+            'type' => 'text',
+            'title' => __('备用 Model', 'kratos'),
+            'subtitle' => __('备用端点自己的模型名，不会沿用主端点', 'kratos'),
+            'default' => '',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('模块 Provider 选择', 'kratos'),
+        ),
+        array(
+            'id' => 'g_ai_module_summary_provider',
+            'type' => 'select',
+            'title' => __('摘要模块 · 主 Provider', 'kratos'),
+            'options' => array('openai' => __('主端点', 'kratos'), 'openai_alt' => __('备用端点', 'kratos')),
+            'default' => 'openai',
+        ),
+        array(
+            'id' => 'g_ai_module_summary_fallback',
+            'type' => 'select',
+            'title' => __('摘要模块 · 备用 Provider', 'kratos'),
+            'options' => array('' => __('无', 'kratos'), 'openai' => __('主端点', 'kratos'), 'openai_alt' => __('备用端点', 'kratos')),
+            'default' => '',
+        ),
+        array(
+            'id' => 'g_ai_module_tags_provider',
+            'type' => 'select',
+            'title' => __('标签模块 · 主 Provider', 'kratos'),
+            'options' => array('openai' => __('主端点', 'kratos'), 'openai_alt' => __('备用端点', 'kratos')),
+            'default' => 'openai',
+        ),
+        array(
+            'id' => 'g_ai_module_tags_fallback',
+            'type' => 'select',
+            'title' => __('标签模块 · 备用 Provider', 'kratos'),
+            'options' => array('' => __('无', 'kratos'), 'openai' => __('主端点', 'kratos'), 'openai_alt' => __('备用端点', 'kratos')),
+            'default' => '',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('限流与配额', 'kratos'),
+        ),
+        array(
+            'id' => 'g_ai_temperature',
+            'type' => 'slider',
+            'title' => __('temperature', 'kratos'),
+            'min' => 0, 'max' => 1, 'step' => 0.1,
+            'default' => 0.4,
+        ),
+        array(
+            'id' => 'g_ai_input_token_cap_per_request',
+            'type' => 'number',
+            'title' => __('单次调用输入 token 上限', 'kratos'),
+            'subtitle' => __('默认 32000，超过直接 ai_content_too_long', 'kratos'),
+            'default' => 32000,
+        ),
+        array(
+            'id' => 'g_ai_input_token_cap_per_task',
+            'type' => 'number',
+            'title' => __('单任务累计输入 token 上限', 'kratos'),
+            'subtitle' => __('默认 128000，防止 map-reduce 切片打爆额度', 'kratos'),
+            'default' => 128000,
+        ),
+        array(
+            'id' => 'g_ai_monthly_token_limit',
+            'type' => 'number',
+            'title' => __('月度 token 上限', 'kratos'),
+            'subtitle' => __('0 = 不限；超限后仅管理员可调用', 'kratos'),
+            'default' => 0,
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('成本核算', 'kratos'),
+        ),
+        array(
+            'type' => 'content',
+            'content' => '<div style="padding:10px 14px;background:#f6f6f6;border:1px solid #e0e0e0;border-radius:8px;color:#555;line-height:1.6;">'
+                . __('按你实际的计费标准填写每个模型的单价，未在此列出的模型走下方默认单价。', 'kratos')
+                . '</div>',
+        ),
+        array(
+            'id' => 'g_ai_pricing',
+            'type' => 'group',
+            'title' => __('模型单价（USD / 1K tokens）', 'kratos'),
+            'button_title' => __('添加模型', 'kratos'),
+            'fields' => array(
+                array(
+                    'id' => 'model',
+                    'type' => 'text',
+                    'title' => __('Model', 'kratos'),
+                    'subtitle' => __('与 API 返回的模型名一致，例：deepseek-chat', 'kratos'),
+                ),
+                array(
+                    'id' => 'input',
+                    'type' => 'text',
+                    'title' => __('输入单价 / 1K tokens', 'kratos'),
+                    'attributes' => array('placeholder' => '0.00014'),
+                ),
+                array(
+                    'id' => 'output',
+                    'type' => 'text',
+                    'title' => __('输出单价 / 1K tokens', 'kratos'),
+                    'attributes' => array('placeholder' => '0.00028'),
+                ),
+            ),
+        ),
+        array(
+            'id' => 'g_ai_pricing_default_in',
+            'type' => 'text',
+            'title' => __('默认输入单价 / 1K tokens', 'kratos'),
+            'subtitle' => __('未在上表列出的模型按此计价', 'kratos'),
+            'default' => '0.001',
+        ),
+        array(
+            'id' => 'g_ai_pricing_default_out',
+            'type' => 'text',
+            'title' => __('默认输出单价 / 1K tokens', 'kratos'),
+            'default' => '0.003',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('日志与合规', 'kratos'),
+        ),
+        array(
+            'id' => 'g_ai_log_retention_days',
+            'type' => 'number',
+            'title' => __('日志保留天数', 'kratos'),
+            'subtitle' => __('每日 cron 清理超期行，默认 90 天', 'kratos'),
+            'default' => 90,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_ai',
+    'title' => __('AI 摘要', 'kratos'),
+    'icon' => 'fas fa-align-left',
+    'fields' => array(
+        array(
+            'id' => 'g_ai_sum_enable',
+            'type' => 'switcher',
+            'title' => __('摘要模块开关', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_ai_sum_frontend_show',
+            'type' => 'switcher',
+            'title' => __('前端摘要卡片', 'kratos'),
+            'subtitle' => __('在正文之前渲染 .kratos-ai-summary 卡片；未生成不占位', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_ai_sum_style_default',
+            'type' => 'select',
+            'title' => __('默认预设', 'kratos'),
+            'options' => array(
+                'classic' => __('classic · 一段式（80–140 字）', 'kratos'),
+                'guide'   => __('guide · 引导式 + 3 点收益', 'kratos'),
+                'tldr'    => __('tldr · 三行速读（≤60 字）', 'kratos'),
+            ),
+            'default' => 'classic',
+        ),
+        array(
+            'id' => 'g_ai_sum_on_update',
+            'type' => 'radio',
+            'title' => __('正文更新联动', 'kratos'),
+            'options' => array(
+                'flag' => __('flag · 标记为 stale，作者手动重生成', 'kratos'),
+                'off'  => __('off · 完全手动', 'kratos'),
+            ),
+            'default' => 'flag',
+        ),
+        array(
+            'id' => 'g_ai_sum_sync_excerpt',
+            'type' => 'switcher',
+            'title' => __('默认同步到 post_excerpt', 'kratos'),
+            'subtitle' => __('决定文章编辑页「同步为文章摘录」复选框的初始状态；单篇仍可自行改（默认关闭，避免覆盖作者已写的 excerpt）', 'kratos'),
+            'default' => false,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_ai',
+    'title' => __('AI 标签', 'kratos'),
+    'icon' => 'fas fa-tags',
+    'fields' => array(
+        array(
+            'id' => 'g_ai_tag_enable',
+            'type' => 'switcher',
+            'title' => __('标签模块开关', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_ai_tag_max_count',
+            'type' => 'number',
+            'title' => __('单次建议标签上限', 'kratos'),
+            'default' => 8,
+        ),
+        array(
+            'id' => 'g_ai_tag_seo_fill',
+            'type' => 'switcher',
+            'title' => __('同步写入 term SEO meta', 'kratos'),
+            'subtitle' => __('新建 term 时自动写入 SEO title / description，默认「待审」标记（_kratos_ai_pending=1），编辑确认后前端才生效', 'kratos'),
+            'default' => true,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_ai',
+    'title' => __('AI 用量', 'kratos'),
+    'icon' => 'fas fa-chart-line',
+    'fields' => array(
+        array(
+            'type' => 'callback',
+            'function' => 'kratos_ai_render_usage_panel',
+        ),
+    ),
+));
+
+// ============================================================================
 CSF::createSection($prefix, array(
     'id' => 'kp_system',
     'title' => __('系统维护', 'kratos'),

@@ -45,9 +45,9 @@
  * 达成"一处开关全站覆盖"。
  * ------------------------------------------------------------ */
 :root {
-    --kr-skin-font:      var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-ui:   var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font:      var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-num:  ui-monospace, "SF Mono", Menlo, Consolas, "Cascadia Mono", "Roboto Mono", monospace;
 }
 
@@ -112,7 +112,7 @@ html[data-weekday-skin]:not([data-theme="dark"]) :is(
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
     .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
     .kratos-home, .kratos-search, .kratos-comment-geo, .kratos-dashboard,
-    .kratos-cmdk, .kratos-lpv, .kratos-series-text) {
+    .kratos-cmdk, .kratos-lpv, .kratos-series-text, .kratos-ai-summary) {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -140,7 +140,7 @@ html[data-theme="dark"][data-weekday-skin] :is(
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
     .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
     .kratos-home, .kratos-search, .kratos-comment-geo, .kratos-dashboard,
-    .kratos-cmdk, .kratos-lpv, .kratos-series-text) {
+    .kratos-cmdk, .kratos-lpv, .kratos-series-text, .kratos-ai-summary) {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;
@@ -151,4 +151,165 @@ html[data-theme="dark"][data-weekday-skin] :is(
     --khs-stat-post-2: var(--kr-link-hover) !important;
     --khs-stat-user-1: var(--kr-accent) !important;
     --khs-stat-user-2: var(--kr-link-hover) !important;
+}
+
+/* ------------------------------------------------------------
+ * AI 摘要卡片（M2 · 简约版）
+ * ------------------------------------------------------------
+ * 外壳承担全部视觉：左侧 2px 渐变亮条 + 极浅 accent 渐变底 + 圆角。
+ * 内部 .kratos-ai-summary-hd / -body 一律透明、无边框、无描边。
+ * 注意：markup 上刻意不挂公共类 kr-hd / kr-body（避免皮肤卡片规则套成"卡中卡"），
+ * 只把根容器登记进上面两处 --khs-* 别名列表，让配色跟皮肤走。
+ * ------------------------------------------------------------ */
+.kratos-ai-summary {
+    --kai-accent: var(--khs-accent, var(--kr-skin-accent, #4b7bec));
+    --kai-accent-soft: color-mix(in srgb, var(--kai-accent) 8%, transparent);
+    --kai-accent-fade: color-mix(in srgb, var(--kai-accent) 2%, transparent);
+    --kai-fg: var(--khs-fg, var(--kr-skin-text, #1f2933));
+    --kai-fg-dim: var(--khs-fg-dim, var(--kr-skin-muted, #6b7683));
+
+    position: relative;
+    margin: 0 0 24px;
+    padding: 18px 22px 18px 24px;
+    background:
+        linear-gradient(180deg, var(--kai-accent-soft) 0%, var(--kai-accent-fade) 60%, transparent 100%);
+    border: 0;
+    border-radius: 10px;
+    box-shadow: none;
+    overflow: hidden;
+    isolation: isolate;
+}
+.kratos-ai-summary::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--kai-accent) 0%, color-mix(in srgb, var(--kai-accent) 20%, transparent) 100%);
+}
+
+/* 头部：透明、无背景、无边框 */
+.kratos-ai-summary .kratos-ai-summary-hd {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 8px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+.kratos-ai-summary .kratos-ai-summary-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    color: var(--kai-fg-dim);
+    text-transform: uppercase;
+    background: transparent;
+}
+.kratos-ai-summary .kratos-ai-summary-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px; height: 4px;
+    margin-right: 8px;
+    vertical-align: 2px;
+    background: var(--kai-accent);
+    border-radius: 50%;
+}
+
+/* 正文：字号刻意小于文章正文、颜色走 muted，不与正文抢焦点。
+ * 显式给内层 <p><li> 也设 font-size / line-height，因为主题 .details p / .entry-content p
+ * 特异性 (0,1,1) 会盖过 .kratos-ai-summary-body 的 (0,2,0)。这里给到 (0,3,1) 且 !important。 */
+.kratos-ai-summary .kratos-ai-summary-body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    font: 400 clamp(12.5px, 0.86em, 14px)/1.7 inherit;
+    color: var(--kai-fg-dim);
+}
+.kratos-ai-summary .kratos-ai-summary-body p,
+.kratos-ai-summary .kratos-ai-summary-body li,
+.kratos-ai-summary .kratos-ai-summary-body ul,
+.kratos-ai-summary .kratos-ai-summary-body ol,
+.kratos-ai-summary .kratos-ai-summary-body blockquote {
+    font-size: clamp(12.5px, 0.86em, 14px) !important;
+    line-height: 1.7 !important;
+    color: var(--kai-fg-dim) !important;
+}
+/* strong/em 在 muted 底色上略提亮，保证语义可见但仍低于正文 */
+.kratos-ai-summary .kratos-ai-summary-body strong {
+    color: var(--kai-fg);
+    font-weight: 600;
+}
+.kratos-ai-summary .kratos-ai-summary-body em {
+    color: var(--kai-fg-dim);
+    font-style: normal;
+}
+
+/* 打字机效果：无光标 */
+.kratos-ai-summary .kratos-ai-summary-body > *:first-child { margin-top: 0; }
+.kratos-ai-summary .kratos-ai-summary-body > *:last-child  { margin-bottom: 0; }
+.kratos-ai-summary .kratos-ai-summary-body p {
+    margin: 0 0 10px;
+    color: var(--kai-fg);
+}
+.kratos-ai-summary .kratos-ai-summary-body strong { color: var(--kai-fg); font-weight: 600; }
+.kratos-ai-summary .kratos-ai-summary-body em { color: var(--kai-fg-dim); font-style: normal; }
+.kratos-ai-summary .kratos-ai-summary-body a {
+    color: var(--kai-accent);
+    text-decoration: none;
+    border-bottom: 1px dashed color-mix(in srgb, var(--kai-accent) 50%, transparent);
+}
+.kratos-ai-summary .kratos-ai-summary-body a:hover { border-bottom-style: solid; }
+
+/* guide 预设的收益列表 */
+.kratos-ai-summary .kratos-ai-summary-body ul {
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 6px;
+}
+.kratos-ai-summary .kratos-ai-summary-body li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 20px;
+    font-size: .95em;
+    color: var(--kai-fg);
+}
+.kratos-ai-summary .kratos-ai-summary-body li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: .72em;
+    width: 6px; height: 6px;
+    border-top: 1.5px solid var(--kai-accent);
+    border-right: 1.5px solid var(--kai-accent);
+    transform: rotate(45deg);
+}
+
+/* tldr 预设：更紧凑 */
+.kratos-ai-summary--tldr .kratos-ai-summary-body { font-size: clamp(13.5px, 0.98em, 14.5px); line-height: 1.7; }
+
+/* stale 提示：极简小字，无背景 */
+.kratos-ai-summary .kratos-ai-summary-stale {
+    display: block;
+    margin: 8px 0 0;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--kai-fg-dim);
+}
+.kratos-ai-summary .kratos-ai-summary-stale::before {
+    content: "· ";
+    color: var(--kai-accent);
+}
+
+/* ---- 小屏 ---- */
+@media (max-width: 640px) {
+    .kratos-ai-summary { margin: 0 0 18px; padding: 14px 16px 14px 18px; border-radius: 8px; }
+    .kratos-ai-summary .kratos-ai-summary-body,
+    .kratos-ai-summary .kratos-ai-summary-body p,
+    .kratos-ai-summary .kratos-ai-summary-body li { font-size: 13px !important; line-height: 1.7 !important; }
+    .kratos-ai-summary .kratos-ai-summary-title { font-size: 10.5px; letter-spacing: .14em; }
 }
