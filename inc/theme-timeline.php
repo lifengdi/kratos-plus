@@ -104,12 +104,7 @@ function kratos_timeline_shortcode($atts = array())
     $per_page     = max(0, (int) $atts['per_page']);
     $exclude_cats = kratos_timeline_parse_exclude_cats($atts['exclude_cats']);
 
-    $current_page = 1;
-    if ($per_page > 0) {
-        if (isset($_GET['tl_page'])) {
-            $current_page = max(1, (int) $_GET['tl_page']);
-        }
-    }
+    $current_page = $per_page > 0 ? kratos_featured_current_page('page-timeline.php', 'tl_page') : 1;
 
     $query = kratos_timeline_query($current_page, $per_page, $exclude_cats);
     $total_pages = $per_page > 0 ? (int) $query->max_num_pages : 1;
@@ -224,9 +219,8 @@ function kratos_timeline_shortcode($atts = array())
             </div>
 
             <?php if ($total_pages > 1) {
-                $base_url = remove_query_arg('tl_page');
-                $build = function ($page) use ($base_url) {
-                    return esc_url(add_query_arg('tl_page', $page, $base_url) . '#kratos-timeline-list');
+                $build = function ($page) {
+                    return esc_url(kratos_featured_page_url($page, 'page-timeline.php', 'tl_page', '#kratos-timeline-list'));
                 };
                 $window = 2;
                 $start  = max(1, $current_page - $window);

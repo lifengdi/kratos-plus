@@ -617,7 +617,7 @@ function kratos_friend_feed_shortcode($atts)
     ), $atts, 'friend_feed');
 
     $per_page = max(0, (int) $atts['per_page']);
-    $page     = isset($_GET['ffd_page']) ? max(1, (int) $_GET['ffd_page']) : 1;
+    $page     = kratos_featured_current_page('page-friend-feed.php', 'ffd_page');
 
     $stats = kratos_friend_feed_get_stats();
     $paged = kratos_friend_feed_get_items($per_page, $page);
@@ -760,9 +760,8 @@ function kratos_friend_feed_shortcode($atts)
             </div>
 
             <?php if ($paged['total_pages'] > 1) {
-                $base_url = remove_query_arg('ffd_page');
-                $build = function ($p) use ($base_url) {
-                    return esc_url(add_query_arg('ffd_page', $p, $base_url) . '#kratos-friend-feed-list');
+                $build = function ($p) {
+                    return esc_url(kratos_featured_page_url($p, 'page-friend-feed.php', 'ffd_page', '#kratos-friend-feed-list'));
                 };
                 $window = 2;
                 $cur    = $paged['page'];

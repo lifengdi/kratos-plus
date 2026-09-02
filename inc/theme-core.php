@@ -42,7 +42,12 @@ add_action('after_setup_theme', 'theme_languages');
  * 的选择器（a[href$=".jpg/.png/..."]）能命中所有图片。
  *
  * 触发条件：图片的 src 后缀是 jpg/jpeg/png/gif/bmp/webp（与 kratos.js
- * lightGalleryConfig 选择器一致）；如果 <img> 已经被 <a> 包裹，跳过。
+ * lightGalleryConfig 选择器一致）；**位于任何 <a>…</a> 内部的图片一律跳过**。
+ *
+ * 「在锚点内就跳过」不只是省事：走心评论、博友圈这类短代码的卡片外壳本身就是
+ * <a>，插进正文时若给卡内的头像/表情/友链 logo 再套一层 <a>，就成了嵌套锚点 ——
+ * 浏览器会在内层 <a> 处提前闭合外层卡片，卡片之后的内容全部溢出到卡外，表现为
+ * 「空卡 + 文字散落」。此前只检查了紧邻的 <a><img></a>，隔一层标签就漏判。
  *
  * 兼容：经典编辑器粘贴的图片、外链 <img>、Markdown 转换的 <img>。
  * Gutenberg 插入并显式选了"链接到媒体文件"的图片自带 <a>，不会被二次处理。
@@ -53,23 +58,30 @@ function kratos_wrap_image_with_anchor($content)
         return $content;
     }
 
-    return preg_replace_callback(
-        '#(<a\b[^>]*>\s*)?(<img\b[^>]*?\bsrc=([\'"])([^\'"]+?)\3[^>]*>)(\s*</a>)?#i',
-        function ($m) {
-            // 已经有 <a> 包裹（前后都匹配到），直接保留
-            if (!empty($m[1]) && !empty($m[5])) {
-                return $m[0];
-            }
-            $src = $m[4];
-            // 抽掉 query/fragment 再判后缀，避免被 ?x-tos-process=... 干扰
-            $clean = preg_replace('/[?#].*$/', '', $src);
-            if (!preg_match('/\.(jpe?g|png|gif|bmp|webp)$/i', $clean)) {
-                return $m[0];
-            }
-            return '<a href="' . esc_url($src) . '">' . $m[2] . '</a>';
-        },
-        $content
-    );
+    // 先把整段按 <a …>…</a> 切开：奇数项是完整锚点，整块原样跳过，
+    // 只在锚点之外的片段里给裸 <img> 补链接。
+    $parts = preg_split('#(<a\b[^>]*>.*?</a>)#is', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+    foreach ($parts as $i => $part) {
+        if ($i % 2 === 1 || stripos($part, '<img') === false) {
+            continue;
+        }
+        $parts[$i] = preg_replace_callback(
+            '#<img\b[^>]*?\bsrc=([\'"])([^\'"]+?)\1[^>]*>#i',
+            function ($m) {
+                $src = $m[2];
+                // 抽掉 query/fragment 再判后缀，避免被 ?x-tos-process=... 干扰
+                $clean = preg_replace('/[?#].*$/', '', $src);
+                if (!preg_match('/\.(jpe?g|png|gif|bmp|webp)$/i', $clean)) {
+                    return $m[0];
+                }
+                return '<a href="' . esc_url($src) . '">' . $m[0] . '</a>';
+            },
+            $part
+        );
+    }
+
+    return implode('', $parts);
 }
 add_filter('the_content', 'kratos_wrap_image_with_anchor', 99);
 
@@ -290,6 +302,10 @@ add_action('admin_enqueue_scripts', 'kratos_admin_enqueue', 20);
 
 // 编辑器画布（iframe）内的内容样式：add_editor_style 是 core 认可的注入通道
 add_action('after_setup_theme', function () {
+    // <title> 交给核心（wp_head 里的 _wp_render_title_tag）输出：
+    // 手写 <title> + 已弃用的 wp_title 过滤器会让实际标题与 wp_get_document_title()
+    // 不一致（OG title / JSON-LD 用的是后者），归档页尤其明显。
+    add_theme_support('title-tag');
     add_theme_support('editor-styles');
     add_editor_style('assets/css/editor-content.css');
 });

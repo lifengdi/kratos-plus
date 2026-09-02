@@ -13,7 +13,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <title><?php wp_title('-', true, 'right'); ?></title>
     <?php
     echo '<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">';
     echo '<meta name="format-detection" content="telphone=no, date=no, address=no, email=no">';

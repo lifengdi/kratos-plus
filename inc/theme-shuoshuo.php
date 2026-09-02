@@ -30,6 +30,23 @@ function kratos_shuoshuo_enqueue_lightgallery()
     if (!$need) {
         return;
     }
+    kratos_shuoshuo_ensure_lightgallery();
+}
+
+/**
+ * 渲染期兜底入队灯箱资源。
+ *
+ * 说说风格的图片网格（.kss-img-cell / .kss-img-single）不止出现在说说页：
+ * Now 页面、[now] / [shuoshuo_feed] 短代码插进任意页面时都会用到，而上面那个
+ * wp_enqueue_scripts 判定只认说说 CPT 与 page-shuoshuo.php 模板；同时
+ * theme-performance.php 会按「正文里有没有 <img>」卸掉灯箱 —— 这些网格的图片是
+ * span 背景图，不含 <img>，一定会被判成不需要。
+ *
+ * 短代码运行在 the_content 阶段，此时页脚脚本尚未打印，入队仍然有效（脚本注册时
+ * 已是 in_footer=true），故渲染时调一次即可，且晚于性能模块的 dequeue。
+ */
+function kratos_shuoshuo_ensure_lightgallery()
+{
     if (!wp_script_is('lightgallery', 'enqueued')) {
         wp_enqueue_script('lightgallery', ASSET_PATH . '/assets/js/lightgallery.min.js', array(), '1.4.0', true);
     }
@@ -276,11 +293,7 @@ function kratos_shuoshuo_feed_shortcode($atts)
     ), $atts, 'shuoshuo_feed');
 
     $per_page = max(1, (int) $atts['per_page']);
-    $paged    = max(1, (int) get_query_var('paged') ?: (int) get_query_var('page') ?: 1);
-    if ($paged < 1) $paged = 1;
-    if (isset($_GET['ss_page'])) {
-        $paged = max(1, (int) $_GET['ss_page']);
-    }
+    $paged    = kratos_featured_current_page('page-shuoshuo.php', 'ss_page');
 
     // 折叠阈值（可见字符数，剥 HTML 标签后再算）；0 = 关闭折叠
     $collapse_limit = (int) kratos_option('shuoshuo_collapse_limit', 300);
@@ -400,19 +413,18 @@ function kratos_shuoshuo_feed_shortcode($atts)
                             ?>
                                 <div class="kss-images <?php echo esc_attr($grid_class); ?>">
                                     <?php foreach ($images as $i => $src) {
-                                        if ($i >= 9) break; // 列表页仅显示 9 格，超出走详情页
+                                        // 第 10 张起不占版面（display:none），但仍留在 DOM 里 ——
+                                        // 灯箱按 querySelectorAll 收集，所以能一路翻到最后一张，
+                                        // 与 Now 页一致；第 9 格叠一层 +N 蒙版提示还有多少张。
+                                        $is_hidden = ($i >= 9);
                                         $is_last_with_more = ($extra > 0 && $i === 8);
                                     ?>
-                                        <?php if ($is_last_with_more) { ?>
-                                            <a class="kss-img-more-link" href="<?php echo esc_url($permalink); ?>" title="<?php echo esc_attr(sprintf(__('还有 %d 张，查看详情', 'kratos'), $extra)); ?>">
-                                                <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
+                                        <a class="kss-img-cell<?php echo $is_hidden ? ' kss-img-hidden' : ''; ?><?php echo $is_last_with_more ? ' kss-img-more' : ''; ?>" href="<?php echo esc_url($src); ?>"<?php echo $is_last_with_more ? ' title="' . esc_attr(sprintf(__('还有 %d 张，点击查看全部', 'kratos'), $extra)) . '"' : ''; ?><?php echo $is_hidden ? ' aria-hidden="true"' : ''; ?>>
+                                            <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
+                                            <?php if ($is_last_with_more) { ?>
                                                 <span class="kss-img-more-mask">+<?php echo (int) $extra; ?></span>
-                                            </a>
-                                        <?php } else { ?>
-                                            <a class="kss-img-cell" href="<?php echo esc_url($src); ?>">
-                                                <span class="kss-img-bg" style="background-image:url('<?php echo esc_url($src); ?>');"></span>
-                                            </a>
-                                        <?php } ?>
+                                            <?php } ?>
+                                        </a>
                                     <?php } ?>
                                 </div>
                             <?php } ?>
@@ -439,9 +451,8 @@ function kratos_shuoshuo_feed_shortcode($atts)
             <?php
             $total_pages = (int) $q->max_num_pages;
             if ($total_pages > 1) {
-                $base_url = remove_query_arg('ss_page');
-                $build = function ($p) use ($base_url) {
-                    return esc_url(add_query_arg('ss_page', $p, $base_url) . '#kratos-shuoshuo-feed');
+                $build = function ($p) {
+                    return esc_url(kratos_featured_page_url($p, 'page-shuoshuo.php', 'ss_page', '#kratos-shuoshuo-feed'));
                 };
                 $window = 2;
                 $start  = max(1, $paged - $window);
@@ -529,10 +540,9 @@ function kratos_shuoshuo_assets()
         .kratos-shuoshuo .kss-images.kss-grid-3{grid-template-columns:repeat(3,1fr);}
         .kratos-shuoshuo .kss-images.kss-grid-4{grid-template-columns:repeat(2,1fr);max-width:280px;}
         .kratos-shuoshuo .kss-images.kss-grid-9{grid-template-columns:repeat(3,1fr);}
-        .kratos-shuoshuo .kss-img-cell,.kratos-shuoshuo .kss-img-more-link{position:relative;display:block;aspect-ratio:1/1;border-radius:2px;overflow:hidden;background:#f1f1f1;cursor:zoom-in;}
+        .kratos-shuoshuo .kss-img-cell{position:relative;display:block;aspect-ratio:1/1;border-radius:2px;overflow:hidden;background:#f1f1f1;cursor:zoom-in;}
         .kratos-shuoshuo .kss-img-bg{position:absolute;inset:0;width:100%;height:100%;background-size:cover;background-position:center center;background-repeat:no-repeat;transition:transform .25s ease;}
-        .kratos-shuoshuo .kss-img-cell:hover .kss-img-bg,.kratos-shuoshuo .kss-img-more-link:hover .kss-img-bg{transform:scale(1.04);}
-        .kratos-shuoshuo .kss-img-more-link{cursor:pointer;}
+        .kratos-shuoshuo .kss-img-cell:hover .kss-img-bg{transform:scale(1.04);}
         .kratos-shuoshuo .kss-img-more-mask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:22px;font-weight:600;letter-spacing:1px;pointer-events:none;}
         .kratos-shuoshuo .kss-img-hidden{display:none !important;}
 
@@ -620,7 +630,47 @@ function kratos_shuoshuo_assets()
         html[data-theme="dark"] .kratos-shuoshuo-header .kss-h-subtitle,body.dark .kratos-shuoshuo-header .kss-h-subtitle{color:#999;}
     </style>
 
-    <script>
+    <?php
+    // JS 从内容里剥离，改走 wp_add_inline_script：内联在正文里的 (function($){…})(jQuery)
+    // 在解析时就要求 jQuery 已就绪，而 jQuery 现在默认在页脚（性能优化 → jQuery 移到页脚），
+    // 于是整块脚本抛 ReferenceError —— 灯箱、折叠、点赞一起失效。注册成依赖 jquery +
+    // lightgallery 的页脚脚本后，加载顺序由 WP 保证。
+    kratos_shuoshuo_enqueue_js();
+    ?>
+    <?php
+    return ob_get_clean();
+}
+
+/*
+ * 注：说说页面的图片灯箱、点赞 AJAX 都直接复用主题原生能力——
+ *   - lightGallery：主题在 is_page() / is_single() 自动入队 + 初始化（theme-core.php、kratos.js），
+ *     只要把容器套在 id="lightgallery" 内、链接是图片后缀即可。
+ *   - 点赞：套用 .btn-thumbs / data-id / data-action="love"，由 kratos.js 的 postLikeConfig() 接管。
+ */
+
+/**
+ * 给说说列表页 / 单条说说详情页注入 body class `is-kratos-shuoshuo-page`，
+ * 让皮肤层精准豁免 §15 / §18 对外层 .details 的装饰，避免说说卡片外面再套一层皮肤卡。
+ */
+function kratos_shuoshuo_body_class($classes)
+{
+    if (is_singular('shuoshuo')) {
+        $classes[] = 'is-kratos-shuoshuo-page';
+    } elseif (is_page() && function_exists('is_page_template') && is_page_template('page-shuoshuo.php')) {
+        $classes[] = 'is-kratos-shuoshuo-page';
+    }
+    return $classes;
+}
+add_filter('body_class', 'kratos_shuoshuo_body_class');
+
+/**
+ * 说说 / Now 图片网格的前端脚本（灯箱初始化、长文折叠、点赞）。
+ *
+ * 注册为依赖 jquery + lightgallery 的页脚脚本，避免内联在正文里时 jQuery 尚未加载。
+ */
+function kratos_shuoshuo_js()
+{
+    return <<<'JS'
         (function ($) {
             if (window.kratosShuoshuoLikeBound) return;
             window.kratosShuoshuoLikeBound = true;
@@ -629,14 +679,26 @@ function kratos_shuoshuo_assets()
                  * lightGallery 绑定：主题原生只对 id="lightgallery" 且 href 后缀命中
                  * .jpg/.png/... 的锚点生效。说说列表容器 id 是 kratos-shuoshuo-feed，
                  * 且 CDN 图片经常带 ?x-tos-process=... 之类查询串，两条都会漏掉。
-                 * 这里对每个 [data-lightbox-host] 主动初始化，用 .kss-img-cell 类作为
-                 * 选择器，绕开 href 后缀限制。
+                 * 这里对每个 [data-lightbox-host] 主动初始化，用 .kss-img-cell / .kss-img-single
+                 * 类作为选择器，绕开 href 后缀限制。第 10 张起的格子带 .kss-img-hidden
+                 * （display:none）只是不占版面，仍在 querySelectorAll 结果里，因此灯箱
+                 * 里能继续往后翻。
                  */
                 if (typeof lightGallery === 'function') {
+                    var KSS_LG_SEL = '.kss-img-cell, .kss-img-single';
                     document.querySelectorAll('[data-lightbox-host]').forEach(function (host) {
-                        if (host.__kssLg) return;
-                        host.__kssLg = true;
-                        try { lightGallery(host, { selector: '.kss-img-cell' }); } catch (e) {}
+                        // 按「一组图片」分别成集：说说列表整个 feed 共用一个 host，
+                        // 若直接绑在 host 上，左右翻页会翻到隔壁那条说说的图片。
+                        // 每条说说 / 每张 Now 卡片的图片都在自己的 .kss-images 或
+                        // .kss-single-media 里，绑到组上即可各自独立。
+                        var groups = host.querySelectorAll('.kss-images, .kss-single-media');
+                        var targets = groups.length ? groups : [host];
+                        Array.prototype.forEach.call(targets, function (group) {
+                            // 纯视频的 .kss-single-media 里没有图片锚点，跳过
+                            if (group.__kssLg || !group.querySelector(KSS_LG_SEL)) return;
+                            group.__kssLg = true;
+                            try { lightGallery(group, { selector: KSS_LG_SEL }); } catch (e) {}
+                        });
                     });
                 }
 
@@ -678,29 +740,22 @@ function kratos_shuoshuo_assets()
                 });
             });
         })(jQuery);
-    </script>
-    <?php
-    return ob_get_clean();
+JS;
 }
 
-/*
- * 注：说说页面的图片灯箱、点赞 AJAX 都直接复用主题原生能力——
- *   - lightGallery：主题在 is_page() / is_single() 自动入队 + 初始化（theme-core.php、kratos.js），
- *     只要把容器套在 id="lightgallery" 内、链接是图片后缀即可。
- *   - 点赞：套用 .btn-thumbs / data-id / data-action="love"，由 kratos.js 的 postLikeConfig() 接管。
- */
-
-/**
- * 给说说列表页 / 单条说说详情页注入 body class `is-kratos-shuoshuo-page`，
- * 让皮肤层精准豁免 §15 / §18 对外层 .details 的装饰，避免说说卡片外面再套一层皮肤卡。
- */
-function kratos_shuoshuo_body_class($classes)
+function kratos_shuoshuo_enqueue_js()
 {
-    if (is_singular('shuoshuo')) {
-        $classes[] = 'is-kratos-shuoshuo-page';
-    } elseif (is_page() && function_exists('is_page_template') && is_page_template('page-shuoshuo.php')) {
-        $classes[] = 'is-kratos-shuoshuo-page';
+    static $added = false;
+
+    kratos_shuoshuo_ensure_lightgallery();
+
+    if (!wp_script_is('kratos-shuoshuo', 'registered')) {
+        wp_register_script('kratos-shuoshuo', false, array('jquery', 'lightgallery'), THEME_VERSION, true);
     }
-    return $classes;
+    wp_enqueue_script('kratos-shuoshuo');
+
+    if (!$added) {
+        $added = true;
+        wp_add_inline_script('kratos-shuoshuo', kratos_shuoshuo_js());
+    }
 }
-add_filter('body_class', 'kratos_shuoshuo_body_class');

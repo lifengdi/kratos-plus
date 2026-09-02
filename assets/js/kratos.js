@@ -442,14 +442,33 @@
         typeof lightGallery !==
         "undefined"
       ) {
+        // 排除 [data-lightbox-host] 内的图片网格（说说 / Now 卡片）：
+        // 那些图片由 theme-shuoshuo.php 按「每组图片」单独初始化，若这里再把整个
+        // #lightgallery 绑成一个图集，左右翻页会翻到隔壁那条说说的图。
+        var lgExclude =
+          ":not([data-lightbox-host] *)";
+        var lgSelector = [
+          ".jpg",
+          ".jpeg",
+          ".png",
+          ".gif",
+          ".bmp",
+          ".webp",
+        ]
+          .map(function (ext) {
+            return (
+              'a[href$="' +
+              ext +
+              '"]' +
+              lgExclude
+            );
+          })
+          .join(", ");
         lightGallery(
           document.getElementById(
             "lightgallery"
           ),
-          {
-            selector:
-              'a[href$=".jpg"], a[href$=".jpeg"], a[href$=".png"], a[href$=".gif"], a[href$=".bmp"], a[href$=".webp"]',
-          }
+          { selector: lgSelector }
         );
       }
     };

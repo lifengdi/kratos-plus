@@ -262,6 +262,12 @@ function kratos_now_render_media($images, $videos, $post_id, $variant = 'hero')
     $video_count = count($videos);
     if ($img_count === 0 && $video_count === 0) return;
 
+    // 灯箱资源兜底：Now 页面不在说说的入队判定里，且这些图是 span 背景图（无 <img>），
+    // 会被性能模块按「正文无图」卸掉灯箱。渲染时补一次。
+    if ($img_count > 0 && function_exists('kratos_shuoshuo_ensure_lightgallery')) {
+        kratos_shuoshuo_ensure_lightgallery();
+    }
+
     $is_single_image = ($img_count === 1 && $video_count === 0);
     $is_single_video = ($video_count === 1 && $img_count === 0);
 

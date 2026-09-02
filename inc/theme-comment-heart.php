@@ -427,7 +427,7 @@ function kratos_heart_shortcode($atts)
 
     // 分页
     $total_pages = ($per_page > 0 && $total > 0) ? (int) ceil($total / $per_page) : 1;
-    $current_page = isset($_GET['khc_page']) ? max(1, (int) $_GET['khc_page']) : 1;
+    $current_page = kratos_featured_current_page('page-heart-comments.php', 'khc_page');
     if ($current_page > $total_pages) $current_page = $total_pages;
 
     $offset = $per_page > 0 ? ($current_page - 1) * $per_page : 0;
@@ -549,9 +549,8 @@ function kratos_heart_shortcode($atts)
             </div>
 
             <?php if ($total_pages > 1) {
-                $base_url = remove_query_arg('khc_page');
-                $build = function ($page) use ($base_url) {
-                    return esc_url(add_query_arg('khc_page', $page, $base_url) . '#kratos-heart-list');
+                $build = function ($page) {
+                    return esc_url(kratos_featured_page_url($page, 'page-heart-comments.php', 'khc_page', '#kratos-heart-list'));
                 };
                 // 滑动窗口最多 5 个页码
                 $window = 2;

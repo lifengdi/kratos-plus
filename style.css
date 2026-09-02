@@ -1548,31 +1548,11 @@ p::after {
     content: "";
 }
 
-.k-main
-.details
-.article
-.content
-h2,
-.k-main
-.details
-.article
-.content
-h3,
-.k-main
-.details
-.article
-.content
-h4,
-.k-main
-.details
-.article
-.content
-h5,
-.k-main
-.details
-.article
-.content
-h6 {
+.k-main .details .article .content h2:not([class^="kratos-"] *),
+.k-main .details .article .content h3:not([class^="kratos-"] *),
+.k-main .details .article .content h4:not([class^="kratos-"] *),
+.k-main .details .article .content h5:not([class^="kratos-"] *),
+.k-main .details .article .content h6:not([class^="kratos-"] *) {
     margin-top: 24px;
     margin-bottom: 16px;
     font-weight: 500;
@@ -1588,13 +1568,7 @@ h1 {
     font-weight: 500;
 }
 
-.k-main
-.details
-.article
-.content
-h2:not(
-    :first-child
-  ) {
+.k-main .details .article .content h2:not(:first-child):not([class^="kratos-"] *) {
     margin-top: 32px;
     margin-bottom: 12px;
     font-size: 28px;
@@ -1626,43 +1600,23 @@ h2.title {
     width: 64px;
 }
 
-.k-main
-.details
-.article
-.content
-h3:not(
-    :first-child
-  ) {
+.k-main .details .article .content h3:not(:first-child):not([class^="kratos-"] *) {
     margin-top: 32px;
     margin-bottom: 12px;
     font-size: 20px;
 }
 
-.k-main
-.details
-.article
-.content
-h4:not(
-    :first-child
-  ) {
+.k-main .details .article .content h4:not(:first-child):not([class^="kratos-"] *) {
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
 }
 
-.k-main
-.details
-.article
-.content
-h5 {
+.k-main .details .article .content h5:not([class^="kratos-"] *) {
     font-size: 14px;
 }
 
-.k-main
-.details
-.article
-.content
-h6 {
+.k-main .details .article .content h6:not([class^="kratos-"] *) {
     font-size: 12px;
 }
 
@@ -2290,32 +2244,16 @@ span {
         font-size: 24px;
     }
 
-    .k-main
-    .details
-    .article
-    .content
-    h1 {
+    .k-main .details .article .content h1:not([class^="kratos-"] *) {
         font-weight: 500;
         font-size: 22px;
     }
 
-    .k-main
-    .details
-    .article
-    .content
-    h2:not(
-      :first-child
-    ) {
+    .k-main .details .article .content h2:not(:first-child):not([class^="kratos-"] *) {
         font-size: 20px;
     }
 
-    .k-main
-    .details
-    .article
-    .content
-    h3:not(
-      :first-child
-    ) {
+    .k-main .details .article .content h3:not(:first-child):not([class^="kratos-"] *) {
         font-size: 18px;
     }
 

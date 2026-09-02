@@ -8,24 +8,17 @@
  * @version 2023.04.05
  */
 
-// 标题配置
-function title($title, $sep)
-{
-    global $paged, $page;
-    if (is_feed()) {
-        return $title;
+// 标题配置：核心 title-tag 的分段（title / page / tagline / site），
+// 站点名与「第 N 页」由核心按同样顺序拼装，这里只补首页的副标题回落。
+add_filter('document_title_parts', function ($parts) {
+    if ((is_home() || is_front_page()) && empty($parts['tagline'])) {
+        $tagline = get_bloginfo('description', 'display');
+        if ($tagline) {
+            $parts['tagline'] = $tagline;
+        }
     }
-    $title .= get_bloginfo('name');
-    $site_description = get_bloginfo('description', 'display');
-    if ($site_description && (is_home() || is_front_page())) {
-        $title = "{$title} {$sep} {$site_description}";
-    }
-    if ($paged >= 2 || $page >= 2) {
-        $title = "{$title} {$sep} " . sprintf(__('第 %s 页', 'kratos'), max($paged, $page));
-    }
-    return $title;
-}
-add_filter('wp_title', 'title', 10, 2);
+    return $parts;
+});
 
 // Keywords 配置
 function keywords()
@@ -91,10 +84,18 @@ add_filter('robots_txt', function ($output, $public) {
     if ('0' == $public) {
         return "User-agent: *\nDisallow: /\n";
     } else {
-        if (!empty(kratos_option('seo_robots_fieldset')['seo_robots'])) {
-            $output = esc_attr(strip_tags(kratos_option('seo_robots_fieldset')['seo_robots']));
+        $custom = kratos_option('seo_robots_fieldset')['seo_robots'] ?? '';
+        if (empty($custom)) {
+            return $output;
         }
-        return $output;
+        $custom = esc_attr(strip_tags($custom));
+        // 核心的 WP_Sitemaps::add_robots() 挂在本 filter 的 priority 0，已经把
+        // 「Sitemap: .../wp-sitemap.xml」写进 $output；自定义内容整体替换会把它一起吃掉，
+        // 站点地图从此不再被声明。这里把原有的 Sitemap 行显式续回去。
+        if (stripos($custom, 'sitemap:') === false && preg_match_all('/^[ \t]*Sitemap:.*$/mi', $output, $m)) {
+            $custom = rtrim($custom, "\r\n") . "\n\n" . implode("\n", array_map('trim', $m[0])) . "\n";
+        }
+        return $custom;
     }
 }, 10, 2);
 
@@ -135,4 +136,66 @@ function upload_svg($existing_mimes = array())
 {
     $existing_mimes['svg'] = 'image/svg+xml';
     return $existing_mimes;
+}
+
+/**
+ * 特色页面的分页地址：专属模板页走路径（/slug/page/2/），短代码插在别处走参数（?xx_page=2）。
+ *
+ * 说说 / 走心评论 / 时间轴 / 博友圈 的内容虽由短代码渲染，但用专属模板建出来的页面
+ * 本身就是一个独立列表页，URL 应当和文章列表一致。而同一个短代码可以插进任意页面，
+ * 甚至一页插两个（两个独立分页器），路径里放不下两个页码 —— 那种场景继续用参数。
+ *
+ * 路径分页要求站点启用了固定链接：朴素结构（?p=123）下没有 /page/N/ 可用。
+ * 注意 Page 的 /slug/2/ 形式不能用 —— 核心 redirect_canonical() 会按正文
+ * <!--nextpage--> 的分页数判定「页码越界」并 301 回第一页；/slug/page/N/ 才落到 paged。
+ */
+function kratos_featured_pagers()
+{
+    return (array) apply_filters('kratos_featured_pagers', array(
+        'ss_page'  => 'page-shuoshuo.php',
+        'khc_page' => 'page-heart-comments.php',
+        'tl_page'  => 'page-timeline.php',
+        'ffd_page' => 'page-friend-feed.php',
+    ));
+}
+
+/** 当前请求是否处于「专属模板页 + 可用路径分页」状态 */
+function kratos_featured_path_paging($template)
+{
+    return (bool) get_option('permalink_structure')
+        && is_page()
+        && function_exists('is_page_template')
+        && is_page_template($template);
+}
+
+/** 当前页码：路径式读 paged，参数式读 $_GET[$param] */
+function kratos_featured_current_page($template, $param)
+{
+    if (kratos_featured_path_paging($template)) {
+        return max(1, (int) get_query_var('paged'));
+    }
+
+    return isset($_GET[$param]) ? max(1, (int) $_GET[$param]) : 1;
+}
+
+/**
+ * 分页链接（未转义，调用方自己 esc_url）。
+ *
+ * @param int    $page     目标页码
+ * @param string $template 专属模板文件名
+ * @param string $param    参数式分页的参数名
+ * @param string $anchor   锚点，形如 '#kratos-shuoshuo-feed'
+ */
+function kratos_featured_page_url($page, $template, $param, $anchor = '')
+{
+    $page = max(1, (int) $page);
+
+    if (kratos_featured_path_paging($template)) {
+        $base = get_permalink();
+        $url  = $page > 1 ? user_trailingslashit(trailingslashit($base) . 'page/' . $page, 'paged') : $base;
+    } else {
+        $url = $page > 1 ? add_query_arg($param, $page, remove_query_arg($param)) : remove_query_arg($param);
+    }
+
+    return $url . $anchor;
 }
