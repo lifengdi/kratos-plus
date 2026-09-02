@@ -14,10 +14,23 @@ add_action('wp_head', 'kratos_seo_meta', 2);
 
 function kratos_seo_meta()
 {
-    $is_front = is_home() || !have_posts();
-    $og_image = $is_front ? kratos_option('seo_shareimg', ASSET_PATH . '/assets/img/default.jpg') : share_thumbnail_url();
-    $og_url   = $is_front ? get_site_url() : get_the_permalink();
-    $og_title = (is_home() && is_front_page()) ? get_bloginfo('name') : get_the_title();
+    // 只有单篇（文章/页面/CPT）才能用全局 $post 取 URL 与标题：归档页的全局 $post
+    // 被 WP::register_globals() 设成了本页第一篇文章，直接用会让分类页自称某篇文章。
+    $is_singular = is_singular();
+    $is_front    = is_front_page() || is_home();
+
+    $og_image = $is_singular ? share_thumbnail_url() : kratos_option('seo_shareimg', ASSET_PATH . '/assets/img/default.jpg');
+
+    if ($is_singular) {
+        $og_url   = get_permalink();
+        $og_title = get_the_title();
+    } elseif ($is_front) {
+        $og_url   = home_url('/');
+        $og_title = get_bloginfo('name');
+    } else {
+        $og_url   = kratos_seo_current_url();
+        $og_title = wp_get_document_title();
+    }
 
     $desc = description();
 
@@ -75,8 +88,50 @@ function kratos_seo_meta()
     }
 }
 
-// canonical：WordPress 自带 rel_canonical() 已挂在 wp_head，这里不重复输出。
-// 归档/首页需要 canonical 时通过 wp_head 的默认行为覆盖，避免与 SEO 插件冲突。
+/**
+ * 当前请求的「干净」URL：保留分页，丢掉 ?replytocom / ?utm_* 之类的查询串。
+ */
+function kratos_seo_current_url()
+{
+    $paged = max(1, (int) get_query_var('paged'), (int) get_query_var('page'));
+    $url   = $paged > 1 ? get_pagenum_link($paged) : home_url(add_query_arg(array(), $GLOBALS['wp']->request));
+
+    if (is_search()) {
+        $url = get_search_link();
+    }
+
+    return $url;
+}
+
+/**
+ * canonical。
+ *
+ * theme-core.php 移除了 WP 自带的 rel_canonical()（它也只覆盖单篇），因此这里统一输出：
+ * 单篇交回核心函数处理（含评论分页 / 多页文章的 cpage、page 逻辑），归档/首页用干净 URL。
+ * 已装 SEO 插件（Yoast / Rank Math / AIOSEO / SEOPress）时让位，避免两条 canonical。
+ */
+add_action('wp_head', 'kratos_seo_canonical', 1);
+
+function kratos_seo_canonical()
+{
+    if (defined('WPSEO_VERSION') || defined('RANK_MATH_VERSION') || defined('AIOSEO_VERSION') || defined('SEOPRESS_VERSION')) {
+        return;
+    }
+
+    if (is_singular()) {
+        rel_canonical();
+        return;
+    }
+
+    if (is_404()) {
+        return;
+    }
+
+    $url = is_front_page() && !is_paged() ? home_url('/') : kratos_seo_current_url();
+    if ($url) {
+        echo '<link rel="canonical" href="' . esc_url($url) . '">' . "\n";
+    }
+}
 
 add_action('wp_head', 'kratos_seo_jsonld', 3);
 

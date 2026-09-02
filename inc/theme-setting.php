@@ -79,6 +79,10 @@ function description()
             $description = kratos_option('seo_description');
         }
     }
+    // 作者页 / 日期归档 / 搜索页等无专属描述的场景，回落到站点描述，避免空 meta
+    if (trim(strip_tags((string) $description)) === '') {
+        $description = kratos_option('seo_description', get_bloginfo('description'));
+    }
     return trim(esc_attr(strip_tags($description)));
 }
 
