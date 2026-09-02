@@ -28,13 +28,13 @@ $GLOBALS['UA_ICON']['Unknown'] = '<svg viewBox="0 0 1024 1024" version="1.1" xml
  * @return array 包含platform/browser/version的解析结果
  * @throws InvalidArgumentException
  */
-function parse_user_agent( $u_agent = null ) {
+function kratos_parse_user_agent( $u_agent = null ) {
 	if( $u_agent === null && isset($_SERVER['HTTP_USER_AGENT']) ) {
 		$u_agent = $_SERVER['HTTP_USER_AGENT'];
 	}
 
 	if( $u_agent === null ) {
-		throw new \InvalidArgumentException('parse_user_agent requires a user agent');
+		throw new \InvalidArgumentException('kratos_parse_user_agent requires a user agent');
 	}
 
 	$platform = null;
@@ -201,9 +201,9 @@ function wpcdi_get_svg_icon($type, $name) {
     $size = 14;
     $icon_key = '';
 
-    // 匹配浏览器/系统对应的GLOBALS键名（适配parse_user_agent返回值）
+    // 匹配浏览器/系统对应的GLOBALS键名（适配kratos_parse_user_agent返回值）
     if ($type === 'browser') {
-        // 适配parse_user_agent返回的浏览器名称
+        // 适配kratos_parse_user_agent返回的浏览器名称
         if (strpos($name, 'Chrome') !== false || strpos($name, 'HeadlessChrome') !== false || strpos($name, 'CriOS') !== false) {
             $icon_key = 'Chrome';
         } elseif (strpos($name, 'Firefox') !== false || strpos($name, 'Iceweasel') !== false || strpos($name, 'IceCat') !== false) {
@@ -226,7 +226,7 @@ function wpcdi_get_svg_icon($type, $name) {
             $icon_key = 'Unknown';
         }
     } elseif ($type === 'os') {
-        // 适配parse_user_agent返回的系统名称
+        // 适配kratos_parse_user_agent返回的系统名称
         if (strpos($name, 'Windows') !== false) {
             $icon_key = 'Windows';
         } elseif (strpos($name, 'macOS') !== false || strpos($name, 'Macintosh') !== false) {
@@ -484,9 +484,9 @@ function wpcdi_get_comment_info($comment_ip, $user_agent) {
         'location'=> '未知位置'
     );
 
-    // 1. 使用新的parse_user_agent解析UA
+    // 1. 使用新的kratos_parse_user_agent解析UA
     try {
-        $parsed = parse_user_agent($user_agent);
+        $parsed = kratos_parse_user_agent($user_agent);
 
         // 拼接浏览器信息
         if (!empty($parsed['browser'])) {

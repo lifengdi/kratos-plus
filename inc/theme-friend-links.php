@@ -1530,7 +1530,7 @@ function kratos_friend_admin_pending_notice()
     $n = kratos_friend_pending_count();
     if ($n <= 0) return;
     $pending_url = add_query_arg('kfl_filter', 'pending', admin_url('link-manager.php'));
-    echo '<div class="notice notice-warning"><p>' . sprintf(
+    echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf(
         esc_html__('你有 %1$s 条友链申请待审核，%2$s', 'kratos'),
         '<strong>' . (int) $n . '</strong>',
         '<a href="' . esc_url($pending_url) . '">' . esc_html__('立即查看 →', 'kratos') . '</a>'
