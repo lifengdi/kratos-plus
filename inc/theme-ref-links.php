@@ -55,6 +55,16 @@ function kratos_ref_links_content($content)
             continue;
         }
 
+        // 锚内容是图片/视频等媒体（灯箱图、视频封面），不是文字引用，跳过
+        if (preg_match('/<(img|picture|video|audio|source|svg|iframe|figure)\b/i', $m[2])) {
+            continue;
+        }
+
+        // 直链媒体/文档附件跳过（图片原图、下载链接）
+        if (preg_match('/\.(jpe?g|png|gif|webp|avif|bmp|svg|ico|mp4|webm|ogv|mov|m4v|mp3|wav|ogg|flac|m4a|aac|pdf|zip|rar|7z|tar|gz|bz2|xz|docx?|xlsx?|pptx?|odt|ods|odp|csv|epub|mobi|dmg|pkg|exe|msi|apk|deb|rpm|iso)$/i', (string) ($parsed['path'] ?? ''))) {
+            continue;
+        }
+
         // 去重（按完整 URL）
         $clean_url = strtok($href, '#');
         if (isset($seen[$clean_url])) {
