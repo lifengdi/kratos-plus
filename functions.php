@@ -230,3 +230,15 @@ require get_template_directory() . '/inc/theme-site-dashboard.php';
 // 自定义登录页（接管 wp-login.php）
 require get_template_directory() . '/inc/theme-login.php';
 
+// 以下模块延迟加载：after_setup_theme 时 options 已可用且 filter 链开销更低
+add_action('after_setup_theme', function () {
+    $opts = get_option('kratos_options');
+    $dir  = get_template_directory() . '/inc/';
+    if (!empty($opts['g_copy_copyright']))   require $dir . 'theme-copy-copyright.php';
+    if (!empty($opts['g_reading_mode']))     require $dir . 'theme-reading-mode.php';
+    if (!empty($opts['g_text_share']))       require $dir . 'theme-text-share.php';
+    if (!empty($opts['g_comment_markdown'])) require $dir . 'theme-comment-markdown.php';
+    if (!empty($opts['g_social_share']))     require $dir . 'theme-social-share.php';
+    if (!empty($opts['g_ref_links']))        require $dir . 'theme-ref-links.php';
+}, 1);
+

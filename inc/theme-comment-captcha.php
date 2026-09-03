@@ -100,34 +100,48 @@ function kratos_captcha_render()
         }
         // 公共刷新函数：拉一道新题填进 DOM。focusInput=true 时同时清空答案并 focus。
         var ajaxUrl = <?php echo wp_json_encode(admin_url('admin-ajax.php')); ?>;
+        // 用 fetch 而不是 jQuery.post：本段是 comment_form_after 内联输出，位置在 </body> 之前的
+        // jQuery 之上（jQuery 在页脚，见 g_perf_jquery_footer），执行时 window.jQuery 还不存在，
+        // 首次拉题会被 !window.jQuery 直接 return 掉，题面永远停在占位符 "…"。
         function refreshCaptcha(focusInput){
-            if (!window.jQuery) return;
-            jQuery.post(ajaxUrl, { action: 'kratos_captcha_refresh' }).done(function(resp){
-                if (!resp || !resp.success || !resp.data) return;
-                var f = document.getElementById('commentform');
-                if (!f) return;
-                var qEl = f.querySelector('.kratos-captcha-q');
-                var tokEl = f.querySelector('input[name="kratos_captcha_token"]');
-                var ansEl = f.querySelector('input[name="kratos_captcha"]');
-                if (qEl) qEl.textContent = resp.data.question;
-                if (tokEl) tokEl.value = resp.data.token;
-                if (ansEl) {
-                    ansEl.value = '';
-                    if (focusInput) ansEl.focus();
-                }
-            });
+            var body = new FormData();
+            body.append('action', 'kratos_captcha_refresh');
+            fetch(ajaxUrl, { method: 'POST', body: body, credentials: 'same-origin' })
+                .then(function(r){ return r.json(); })
+                .then(function(resp){
+                    if (!resp || !resp.success || !resp.data) return;
+                    var f = document.getElementById('commentform');
+                    if (!f) return;
+                    var qEl = f.querySelector('.kratos-captcha-q');
+                    var tokEl = f.querySelector('input[name="kratos_captcha_token"]');
+                    var ansEl = f.querySelector('input[name="kratos_captcha"]');
+                    if (qEl) qEl.textContent = resp.data.question;
+                    if (tokEl) tokEl.value = resp.data.token;
+                    if (ansEl) {
+                        ansEl.value = '';
+                        if (focusInput) ansEl.focus();
+                    }
+                })
+                .catch(function(){});
         }
         // 静态缓存友好：页面加载后立即拉一次新题（HTML 中是空占位符）
         refreshCaptcha(false);
         // 评论 ajax 提交结束（无论成功/失败/验证码错误）后都刷新一道新题。
         // 失败时让用户立刻可以重试（focus 到输入框）；成功时静默换题，避免下次提交时复用旧 token。
-        if (window.jQuery && !window.kratosCaptchaBound) {
+        // 绑定推迟到 DOMContentLoaded：评论提交本身走 jQuery.ajax，那时页脚 jQuery 已就绪。
+        function bindRefresh(){
+            if (!window.jQuery || window.kratosCaptchaBound) return;
             window.kratosCaptchaBound = true;
             jQuery(document).ajaxComplete(function(_e, xhr, settings){
                 if (!settings || !settings.data || settings.data.indexOf('action=ajax_comment') === -1) return;
                 var ok = xhr && xhr.status >= 200 && xhr.status < 300;
                 refreshCaptcha(!ok);
             });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bindRefresh);
+        } else {
+            bindRefresh();
         }
     })();
     </script>

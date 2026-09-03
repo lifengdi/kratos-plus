@@ -9,7 +9,7 @@
 
 html[data-weekday-skin="parchment"] {
     --kr-skin-font:      var(--kr-user-font,) "Iowan Old Style", "Charter", Georgia, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) "Iowan Old Style", Georgia, "汉仪尚巍手书", "HYShangWeiShouShuW", "STKaiti", "KaiTi", "Ma Shan Zheng", "LXGW WenKai Screen", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Iowan Old Style", Georgia, "汉仪尚巍手书", "HYShangWeiShouShuW", "STKaiti", "KaiTi", "Ma Shan Zheng", "LXGW WenKai Screen", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-ui:   var(--kr-user-font,) Verdana, "LXGW WenKai Screen", "霞鹜文楷 屏幕阅读版", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-num:  "Iowan Old Style", "Charter", Georgia, ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --kr-skin-bg:          #F7F4EE;

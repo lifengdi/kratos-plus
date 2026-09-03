@@ -45,9 +45,9 @@
  * 达成"一处开关全站覆盖"。
  * ------------------------------------------------------------ */
 :root {
-    --kr-skin-font:      var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-ui:   var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font:      var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
+    --kr-skin-font-ui:   var(--kr-user-font,) Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-num:  ui-monospace, "SF Mono", Menlo, Consolas, "Cascadia Mono", "Roboto Mono", monospace;
 }
 
@@ -112,7 +112,8 @@ html[data-weekday-skin]:not([data-theme="dark"]) :is(
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
     .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
     .kratos-home, .kratos-search, .kratos-comment-geo, .kratos-dashboard,
-    .kratos-cmdk, .kratos-lpv, .kratos-series-text, .kratos-ai-summary) {
+    .kratos-cmdk, .kratos-lpv, .kratos-series-text, .kratos-ai-summary,
+    .kratos-ref-links) {
     --khs-bg-1: var(--kr-skin-bg) !important;
     --khs-bg-2: var(--kr-skin-bg) !important;
     --khs-bg-3: var(--kr-skin-bg) !important;
@@ -140,7 +141,8 @@ html[data-theme="dark"][data-weekday-skin] :is(
     .kratos-timeline, .kratos-heatmap, .kratos-friend-feed, .kratos-now, .kratos-otd,
     .kratos-now-header, .kratos-now-history, .kratos-otd-header, .kratos-otd-widget,
     .kratos-home, .kratos-search, .kratos-comment-geo, .kratos-dashboard,
-    .kratos-cmdk, .kratos-lpv, .kratos-series-text, .kratos-ai-summary) {
+    .kratos-cmdk, .kratos-lpv, .kratos-series-text, .kratos-ai-summary,
+    .kratos-ref-links) {
     --khs-accent: var(--kr-accent) !important;
     --khs-accent-2: var(--kr-link-hover) !important;
     --khs-line-strong: var(--kr-accent) !important;

@@ -74,6 +74,10 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                                     edit_post_link(__('编辑文章', 'kratos'));
                                     echo '</span>';
                                 }; ?>
+                                <?php if (function_exists('kratos_reading_mode_button')) {
+                                    $rm_btn = kratos_reading_mode_button();
+                                    if ($rm_btn) echo '<span>' . $rm_btn . '</span>';
+                                } ?>
                             </div>
                         </div>
                         <?php

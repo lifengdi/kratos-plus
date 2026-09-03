@@ -14,7 +14,7 @@
 
 html[data-weekday-skin="retro"] {
     --kr-skin-font:      var(--kr-user-font,) Georgia, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) "Playfair Display", "STZhongsong", Georgia, "Source Han Serif SC", "Noto Serif SC", serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Playfair Display", "STZhongsong", Georgia, "Source Han Serif SC", "Noto Serif SC", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-ui:   var(--kr-user-font,) "Tahoma", "Verdana", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
     --kr-skin-bg:          #E8DCC4;   /* 牛皮 */
     --kr-skin-card-bg:     #F2E8D0;   /* 卡纸 */

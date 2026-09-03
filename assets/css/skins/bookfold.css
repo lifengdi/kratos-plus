@@ -24,7 +24,7 @@ html[data-weekday-skin="bookfold"] {
      * head  = Playfair Display / 中松 / 思源宋体（书页封面感）
      * ui    = 系统 UI 无衬线（Segoe UI + PingFang SC，跨平台一致） */
     --kr-skin-font:      var(--kr-user-font,) "Bookerly", "Iowan Old Style", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif var(--kr-user-font-fallback,);
-    --kr-skin-font-head: var(--kr-user-font,) "Playfair Display", "STZhongsong", "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, serif var(--kr-user-font-fallback,);
+    --kr-skin-font-head: var(--kr-user-font,) "Playfair Display", "STZhongsong", "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, sans-serif var(--kr-user-font-fallback,);
     --kr-skin-font-ui:   var(--kr-user-font,) -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif var(--kr-user-font-fallback,);
     /* —— 规范色令牌（components.css 与本文件规则统一读取）—— */
     --kr-skin-bg:          #F3E7CC;   /* 暖米黄书页底 */

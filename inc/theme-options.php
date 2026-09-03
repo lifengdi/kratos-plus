@@ -3052,6 +3052,76 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
+    'title' => __('阅读模式', 'kratos'),
+    'icon' => 'fas fa-book-open',
+    'fields' => array(
+        array(
+            'id' => 'g_reading_mode',
+            'type' => 'switcher',
+            'title' => __('阅读模式', 'kratos'),
+            'subtitle' => __('文章页显示「阅读模式」按钮，点击后隐藏导航、侧栏、评论等干扰元素', 'kratos'),
+            'default' => false,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
+    'title' => __('复制与转载', 'kratos'),
+    'icon' => 'fas fa-copyright',
+    'fields' => array(
+        array(
+            'id' => 'g_copy_copyright',
+            'type' => 'switcher',
+            'title' => __('复制版权提示', 'kratos'),
+            'subtitle' => __('用户复制文章正文时，自动在剪贴板末尾追加来源链接和版权声明', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_copy_copyright_min',
+            'type' => 'number',
+            'title' => __('最少字符数', 'kratos'),
+            'subtitle' => __('选中文字少于此数时不追加，避免复制短词也带版权', 'kratos'),
+            'min' => 0,
+            'max' => 500,
+            'default' => 30,
+            'dependency' => array('g_copy_copyright', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_copy_copyright_text',
+            'type' => 'textarea',
+            'title' => __('版权文案', 'kratos'),
+            'subtitle' => __('占位符：%author% 作者、%url% 文章链接、%site% 站点名', 'kratos'),
+            'default' => "\n\n——\n作者：%author%\n链接：%url%\n来源：%site%\n著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。",
+            'dependency' => array('g_copy_copyright', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_post',
+    'title' => __('外链汇总', 'kratos'),
+    'icon' => 'fas fa-external-link-alt',
+    'fields' => array(
+        array(
+            'id' => 'g_ref_links',
+            'type' => 'switcher',
+            'title' => __('参考文献区', 'kratos'),
+            'subtitle' => __('自动提取文章中的外部链接，在文末生成「参考链接」汇总', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_ref_links_title',
+            'type' => 'text',
+            'title' => __('区块标题', 'kratos'),
+            'default' => __('参考链接', 'kratos'),
+            'dependency' => array('g_ref_links', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'comment_fields',
     'title' => __('评论互动', 'kratos'),
     'icon' => 'fas fa-comments',
@@ -3604,6 +3674,21 @@ CSF::createSection($prefix, array(
             'type' => 'switcher',
             'title' => __('启用 IPv6 数据库', 'kratos'),
             'subtitle' => __('多下一份 IPv6 库（约 36MB），移动网络访客多时才需要', 'kratos'),
+            'default' => false,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'comment_fields',
+    'title' => __('Markdown 支持', 'kratos'),
+    'icon' => 'fab fa-markdown',
+    'fields' => array(
+        array(
+            'id' => 'g_comment_markdown',
+            'type' => 'switcher',
+            'title' => __('评论 Markdown', 'kratos'),
+            'subtitle' => __('解析评论正文中的 Markdown 语法', 'kratos'),
             'default' => false,
         ),
     ),
@@ -5025,6 +5110,43 @@ CSF::createSection($prefix, array(
                 $html .= '</div>';
                 return $html;
             })(),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_social',
+    'title' => __('内容分享', 'kratos'),
+    'icon' => 'fas fa-share-alt',
+    'fields' => array(
+        array(
+            'id' => 'g_social_share',
+            'type' => 'switcher',
+            'title' => __('社交分享按钮', 'kratos'),
+            'subtitle' => __('文章底部显示社交平台分享按钮', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_social_share_platforms',
+            'type' => 'checkbox',
+            'title' => __('启用的平台', 'kratos'),
+            'options' => array(
+                'weibo'    => __('微博', 'kratos'),
+                'wechat'   => __('微信', 'kratos'),
+                'twitter'  => 'X (Twitter)',
+                'qq'       => 'QQ',
+                'douban'   => __('豆瓣', 'kratos'),
+                'linkedin' => 'LinkedIn',
+            ),
+            'default' => array('weibo', 'wechat', 'twitter', 'qq'),
+            'dependency' => array('g_social_share', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_text_share',
+            'type' => 'switcher',
+            'title' => __('文章锚点分享', 'kratos'),
+            'subtitle' => __('选中正文文字后弹出按钮，可复制带 Text Fragment 锚点的精确链接（类似 Medium）', 'kratos'),
+            'default' => false,
         ),
     ),
 ));
