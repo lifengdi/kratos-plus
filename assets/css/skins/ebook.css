@@ -297,6 +297,14 @@ html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main blockquote::bef
     font-family: var(--kr-skin-font);
 }
 
+/* 嵌套引用（markdown "> >"）与评论区引用不重画引号：内层 44px 引号会压在外层引号/左边框上；
+   评论区 blockquote 只有 8px/12px 内边距（inc/theme-comment-markdown.php），引号会盖住正文 */
+html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main blockquote blockquote::before,
+html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .comments blockquote::before {
+    content: none;
+}
+
+
 /* ===== 标签（发丝直角 + hover 反色） ===== */
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .article-tags a,
 html[data-weekday-skin="ebook"]:not([data-theme="dark"]) .k-main .tagcloud a,

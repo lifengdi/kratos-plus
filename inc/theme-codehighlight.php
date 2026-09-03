@@ -440,9 +440,14 @@ function kratos_codehl_assets()
         }
         // 仅设置 Prism autoloader 的语言组件路径（必需配置，不是兜底）。
         // 服务端 fenced/autodetect 过滤器已保证 <pre>/<code> 都带 language-xxx，前端不再做任何 class 兜底。
+        // Prism 只在 DOMContentLoaded 自动扫一遍全文，AJAX 后插入的节点（如异步提交的评论）不会被处理，
+        // 暴露一个统一入口给这些场景调用（assets/js/comments.min.js 提交成功后调）。
+        $rehl = 'window.kratosCodehlRehighlight=function(root){if(!window.Prism)return;root=root||document;'
+            . ($line_num ? 'root.querySelectorAll("pre > code").forEach(function(c){if(c.parentNode&&!c.parentNode.classList.contains("line-numbers")){c.parentNode.classList.add("line-numbers");}});' : '')
+            . 'Prism.highlightAllUnder(root);};';
         wp_add_inline_script(
             'kratos-prism-autoloader',
-            'if(window.Prism&&Prism.plugins&&Prism.plugins.autoloader){Prism.plugins.autoloader.languages_path="' . esc_js($components_path) . '";}',
+            'if(window.Prism&&Prism.plugins&&Prism.plugins.autoloader){Prism.plugins.autoloader.languages_path="' . esc_js($components_path) . '";}' . $rehl,
             'after'
         );
         if ($line_num) {
@@ -458,13 +463,15 @@ function kratos_codehl_assets()
         wp_enqueue_style('kratos-hljs', kratos_codehl_asset_url(kratos_codehl_hljs_theme_path($theme_key)), array(), KRATOS_HLJS_VER);
         // 用 @highlightjs/cdn-assets 包的 UMD 浏览器版（npm 主包 highlight.js 的 lib/*.js 是 CommonJS，浏览器用不了）
         wp_enqueue_script('kratos-hljs', kratos_codehl_hljs_js_url(), array(), KRATOS_HLJS_VER, true);
-        $inline = 'document.addEventListener("DOMContentLoaded",function(){if(!window.hljs)return;'
+        // 同 Prism：整个流程收进 window.kratosCodehlRehighlight(root)，DOMContentLoaded 只是它的第一次调用；
+        // AJAX 插入的节点（异步提交的评论）由调用方传 root 再走一遍，否则只能靠刷新页面才有高亮。
+        $inline = 'window.kratosCodehlRehighlight=function(root){if(!window.hljs)return;root=root||document;'
             . 'window.hljs.configure({ignoreUnescapedHTML:true});'
-            . 'document.querySelectorAll("pre code").forEach(function(b){window.hljs.highlightElement(b);if(b.parentNode&&b.parentNode.tagName==="PRE"){b.parentNode.classList.add("hljs");}});';
+            . 'root.querySelectorAll("pre code").forEach(function(b){window.hljs.highlightElement(b);if(b.parentNode&&b.parentNode.tagName==="PRE"){b.parentNode.classList.add("hljs");}});';
         if ($line_num) {
-            $inline .= 'document.querySelectorAll("pre code.hljs").forEach(function(b){var lines=b.innerHTML.split("\n");if(lines.length&&lines[lines.length-1]===""){lines.pop();}b.innerHTML=lines.map(function(l,i){return "<span class=\\"hljs-ln-line\\" data-line=\\""+(i+1)+"\\">"+l+"</span>";}).join("\n");});';
+            $inline .= 'root.querySelectorAll("pre code.hljs").forEach(function(b){if(b.querySelector(".hljs-ln-line"))return;var lines=b.innerHTML.split("\n");if(lines.length&&lines[lines.length-1]===""){lines.pop();}b.innerHTML=lines.map(function(l,i){return "<span class=\\"hljs-ln-line\\" data-line=\\""+(i+1)+"\\">"+l+"</span>";}).join("\n");});';
         }
-        $inline .= '});';
+        $inline .= '};document.addEventListener("DOMContentLoaded",function(){window.kratosCodehlRehighlight(document);});';
         wp_add_inline_script('kratos-hljs', $inline);
         if ($line_num) {
             wp_add_inline_style('kratos-hljs', '.hljs-ln-line{display:inline-block;width:100%;}.hljs-ln-line::before{content:attr(data-line);display:inline-block;width:2.5em;padding-right:1em;margin-right:.5em;color:#888;text-align:right;border-right:1px solid #555;user-select:none;}');
@@ -479,6 +486,32 @@ function kratos_codehl_assets()
     }
 }
 add_action('wp_enqueue_scripts', 'kratos_codehl_assets', 30);
+
+/**
+ * 评论里的代码块补入队。
+ * 性能优化的 kratos_perf_dequeue_page_assets()（wp_enqueue_scripts@100）只看正文，
+ * 正文无 <pre>/<code> 时会把高亮资源全部卸掉；但评论 Markdown 也会产出代码块。
+ * comment_text 跑在 comments_template 阶段、页脚脚本打印之前，此时重新入队仍然有效。
+ * 只需按 handle 恢复：inline script 存在 handle 的 data 上，dequeue 不会丢。
+ */
+function kratos_codehl_comment_assets($text)
+{
+    if (!kratos_codehl_enabled() || strpos($text, '<code') === false) {
+        return $text;
+    }
+    foreach (array('kratos-prism', 'kratos-prism-toolbar', 'kratos-prism-linenum', 'kratos-hljs', 'kratos-hljs-style') as $handle) {
+        if (wp_style_is($handle, 'registered')) {
+            wp_enqueue_style($handle);
+        }
+    }
+    foreach (array('kratos-prism-core', 'kratos-prism-autoloader', 'kratos-prism-toolbar', 'kratos-prism-copy', 'kratos-prism-linenum', 'kratos-hljs') as $handle) {
+        if (wp_script_is($handle, 'registered')) {
+            wp_enqueue_script($handle);
+        }
+    }
+    return $text;
+}
+add_filter('comment_text', 'kratos_codehl_comment_assets', 20);
 
 /**
  * 给 Gutenberg 编辑器的 core/code 区块加一个"语言"下拉。
@@ -710,6 +743,9 @@ function kratos_codehl_normalize_lang_class($content)
     );
 }
 add_filter('the_content', 'kratos_codehl_normalize_lang_class', 11);
+// 评论 Markdown（comment_text@1）也会产出 <pre><code class="language-xxx">，但 class 只在 <code> 上。
+// 不同步到 <pre>，评论 CSS 的 pre:not([class*="language-"]) 灰底就会盖掉 Prism 主题背景（深色主题下看不清）。
+add_filter('comment_text', 'kratos_codehl_normalize_lang_class', 5);
 
 function kratos_codehl_server_render($content)
 {
@@ -761,6 +797,8 @@ function kratos_codehl_server_render($content)
     );
 }
 add_filter('the_content', 'kratos_codehl_server_render', 12);
+// highlight_php 引擎下评论代码块同样需要服务端上色，否则与正文观感割裂
+add_filter('comment_text', 'kratos_codehl_server_render', 6);
 
 /**
  * 给"代码高亮"section 的预览/缓存面板加点视觉细节（圆角、最大高度）。
