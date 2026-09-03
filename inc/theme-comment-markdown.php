@@ -32,11 +32,18 @@ function kratos_comment_markdown_filter($text)
             return $text;
         }
         $parsedown = new Parsedown();
-        // PUC 里 vendor 的 Parsedown 是 1.6.0，没有 1.7 才加入的 setSafeMode()（调用会 fatal）。
-        // 用 setMarkupEscaped() 挡住内联 HTML，剩下的 javascript: URL 等交给下面的 wp_kses_post()。
+        // safeMode 是 1.7 才有的；PUC 的 vendor 副本可能被上游回退到 1.6，故先探测再调。
+        if (method_exists($parsedown, 'setSafeMode')) {
+            $parsedown->setSafeMode(true);
+        }
         $parsedown->setMarkupEscaped(true);
         $parsedown->setBreaksEnabled(true);
     }
+
+    // preprocess_comment 阶段 comment_post()（theme-article.php）已对全文跑过 htmlspecialchars，
+    // 入库的是 &gt; / &lt; / &quot;。不先还原，Parsedown 认不出 "> 引用" 和 "<autolink>"。
+    // 还原后仍有 setMarkupEscaped + wp_kses_post 两道兜底，不降低安全性。
+    $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
     return wp_kses_post($parsedown->text($text));
 }
@@ -68,21 +75,49 @@ function kratos_comment_markdown_assets()
         return;
     }
 
-    $css = '
-.comment-content pre { background: #f5f5f5; padding: 12px; border-radius: 4px; overflow-x: auto; margin: 8px 0; }
-.comment-content code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: .9em; }
-.comment-content pre code { background: none; padding: 0; }
-.comment-content blockquote { border-left: 3px solid var(--kr-skin-accent, #0abbef); padding: 4px 12px; margin: 8px 0; color: #666; }
-.comment-content table { border-collapse: collapse; margin: 8px 0; }
-.comment-content th, .comment-content td { border: 1px solid #ddd; padding: 6px 10px; }
-.comment-content img { max-width: 100%; height: auto; }
-html[data-theme="dark"] .comment-content pre { background: #2a2a2a; }
-html[data-theme="dark"] .comment-content code { background: #333; }
-html[data-theme="dark"] .comment-content blockquote { color: #aaa; }
-html[data-theme="dark"] .comment-content th, html[data-theme="dark"] .comment-content td { border-color: #444; }
+    // 取值逐项对齐正文（style.css 的 .k-main .details .article .content *
+    // 与 dark.css 的暗色覆盖），只是选择器换成评论正文容器。
+    // 间距按评论区收一半（正文 16/24px → 8/12px），字号用 em 从评论的 13px 基准
+    // 按正文的比例缩放（正文 15px 基准下 h1 22px ≈ 1.47em），否则标题会比作者名还大。
+    // 改动正文这些取值时，这里要同步。
+    $c = '.k-main .details .comments .comment .info .content';
+    $d = 'html[data-theme="dark"] ' . $c;
+    $css = <<<CSS
+$c h1, $c h2, $c h3, $c h4, $c h5, $c h6 { margin: 12px 0 8px; font-weight: 500; line-height: 1.25; }
+$c h1 { font-size: 1.47em; }
+$c h2 { font-size: 1.33em; }
+$c h3 { font-size: 1.2em; }
+$c h4 { font-size: 1.07em; }
+$c h5 { font-size: 1em; }
+$c h6 { font-size: .87em; }
+$c > *:first-child { margin-top: 0; }
+$c ul, $c ol { margin: 0 0 8px; padding-left: 22px; }
+$c p { margin-bottom: 8px; }
+$c > *:last-child { margin-bottom: 0; }
+$c li p { margin-bottom: 4px; line-height: inherit; }
+$c blockquote { margin: 8px 0; padding: 8px 12px; border-left: 6px solid #dce6f0; background: #f2f7fb; color: #819198; font-size: 1em; }
+$c blockquote p { margin-bottom: 8px; }
+$c blockquote p:last-child { margin-bottom: 0; }
+$c hr { margin: 12px 0; height: 1px; border: none; border-top: 1px solid #a5a5a5; }
+$c pre:not([class*="language-"]):not(.hljs) { margin: 8px 0; padding: 11px 16px; border-radius: 4px; background-color: #f8f8f8; overflow-x: auto; word-wrap: break-word; word-break: break-all; font-size: 14px; line-height: 1.7; }
+$c code:not([class*="language-"]):not(.hljs) { margin: 0 3px; padding: 2px 4px; border-radius: 4px; background-color: #eff0f1; color: #e83e8c; word-break: inherit; }
+$c pre code:not([class*="language-"]):not(.hljs) { margin: 0; padding: 0; background-color: transparent; color: inherit; }
+$c kbd { display: inline-block; margin: -3px 1.6px 0; padding: 2.4px 9.6px; border: 1px solid #adb3b9; border-radius: 3px; background-color: #e1e3e5; box-shadow: 0 1px 0 rgba(12, 13, 14, .2), 0 0 0 2px #fff inset; color: #242729; vertical-align: middle; text-shadow: 0 1px 0 #fff; white-space: nowrap; font-size: 10px; line-height: 1.5; }
+$c table { display: block; overflow: auto; margin: 8px 0; width: 100%; border-collapse: collapse; word-break: keep-all; }
+$c table th, $c table td { padding: 8px 16px; border: 1px solid #e9ebec; }
+$c table th { font-weight: bold; }
+$c table tr:nth-child(2n) { background-color: #f8f8f8; }
+$c img { max-width: 100%; height: auto; }
+$d blockquote { background: #1a2129; border-left-color: #2c3a4a; color: var(--kr-fg-muted); }
+$d hr { border-top-color: var(--kr-border); }
+$d pre:not([class*="language-"]):not(.hljs) { background-color: var(--kr-code-bg); color: var(--kr-fg); }
+$d code:not([class*="language-"]):not(.hljs) { background-color: var(--kr-code-bg); color: var(--kr-code-fg); }
+$d kbd { background-color: #2a2f37; border-color: #3a4150; color: var(--kr-fg-strong); box-shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 0 0 2px #14171a inset; text-shadow: none; }
+$d table th, $d table td { border-color: var(--kr-border); }
+$d table tr:nth-child(2n) { background-color: rgba(255, 255, 255, .03); }
 .kratos-md-hint { font-size: 12px; color: #999; margin-top: 4px; }
 .kratos-md-hint i { margin-right: 3px; }
-';
+CSS;
     wp_add_inline_style('kratos', $css);
 
     // 评论框下方加 Markdown 提示
