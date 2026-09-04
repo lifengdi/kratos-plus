@@ -23,15 +23,16 @@ function kratos_social_share_platforms()
 }
 
 /**
- * 输出分享按钮 HTML（在 the_content 末尾追加）。
+ * 分享按钮与两个弹层的 HTML。由 single.php 在知识共享声明之后输出，
+ * 不再挂 the_content —— 挂在正文上只能排在版权/CC 声明之前。
  */
-function kratos_social_share_content($content)
+function kratos_social_share_html()
 {
     if (!kratos_option('g_social_share', false)) {
-        return $content;
+        return '';
     }
-    if (!is_singular('post') || !is_main_query()) {
-        return $content;
+    if (!is_singular('post')) {
+        return '';
     }
 
     $enabled = (array) kratos_option('g_social_share_platforms', array('weibo', 'wechat', 'twitter', 'qq'));
@@ -39,8 +40,8 @@ function kratos_social_share_content($content)
 
     $title   = rawurlencode(get_the_title());
     $url     = rawurlencode(get_permalink());
-    // 不能用 get_the_excerpt()：无手写摘要时 wp_trim_excerpt() 会再跑一遍 the_content
-    // 过滤器链，本函数就挂在 the_content 上，会无限递归直到内存耗尽。
+    // 用 post_excerpt/post_content 而不是 get_the_excerpt()：后者无手写摘要时会跑一遍
+    // the_content 过滤器链（渲染短码、拉图），只为一句摘要不值当。
     $raw     = get_post_field('post_excerpt');
     if ($raw === '') {
         $raw = get_post_field('post_content');
@@ -121,9 +122,8 @@ function kratos_social_share_content($content)
             . '</div></div>';
     }
 
-    return $content . $html;
+    return $html;
 }
-add_filter('the_content', 'kratos_social_share_content', 98);
 
 function kratos_social_share_assets()
 {
@@ -135,7 +135,7 @@ function kratos_social_share_assets()
     }
 
     $css = '
-.post-share-buttons { display: flex; align-items: center; gap: 10px; margin: 24px 0 16px; padding-top: 16px; border-top: 1px solid #eee; flex-wrap: wrap; }
+.post-share-buttons { display: flex; align-items: center; gap: 10px; margin: 8px 20px 16px; padding-top: 16px; border-top: 1px solid #eee; flex-wrap: wrap; }
 .post-share-label { font-size: 13px; color: #999; }
 .post-share-btn {
     display: inline-flex; align-items: center; justify-content: center;

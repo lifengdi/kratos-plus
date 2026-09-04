@@ -145,7 +145,8 @@ $kratos_cols = kratos_layout_cols();
                             echo '<div class="copyright"><span class="text-center">';
                             printf(__('本作品采用 %s 进行许可', 'kratos'), $cc_array[kratos_option('g_cc_fieldset')['g_cc']]);
                             echo '</span></div>';
-                        } ?>
+                        }
+                        if (function_exists('kratos_social_share_html')) echo kratos_social_share_html(); ?>
                         <div class="footer clearfix">
                             <div class="tags float-start">
                                 <span><?php _e('标签：', 'kratos'); ?></span>
