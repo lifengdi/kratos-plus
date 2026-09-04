@@ -172,7 +172,9 @@ function kratos_featured_path_paging($template)
 function kratos_featured_current_page($template, $param)
 {
     if (kratos_featured_path_paging($template)) {
-        return max(1, (int) get_query_var('paged'));
+        // 静态首页下 WP_Query::parse_query 会把 paged 搬到 page（核心为
+        // <!--nextpage--> 做的修正），所以两个变量都要读。
+        return max(1, (int) get_query_var('paged'), (int) get_query_var('page'));
     }
 
     return isset($_GET[$param]) ? max(1, (int) $_GET[$param]) : 1;
