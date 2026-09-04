@@ -99,7 +99,10 @@ function kratos_captcha_render()
             smile.insertAdjacentElement('afterend', captcha);
         }
         // 公共刷新函数：拉一道新题填进 DOM。focusInput=true 时同时清空答案并 focus。
-        var ajaxUrl = <?php echo wp_json_encode(admin_url('admin-ajax.php')); ?>;
+        // 相对地址（不是 admin_url() 的绝对地址）：绝对地址锁死 siteurl 里的主机与协议，
+        // 用户从别名域名访问时（www / 非 www、localhost 与 127.0.0.1、http 与 https）就是跨源，
+        // fetch 被 CORS 拦掉，题面永远停在占位符 "…"。
+        var ajaxUrl = <?php echo wp_json_encode(admin_url('admin-ajax.php', 'relative')); ?>;
         // 用 fetch 而不是 jQuery.post：本段是 comment_form_after 内联输出，位置在 </body> 之前的
         // jQuery 之上（jQuery 在页脚，见 g_perf_jquery_footer），执行时 window.jQuery 还不存在，
         // 首次拉题会被 !window.jQuery 直接 return 掉，题面永远停在占位符 "…"。
@@ -109,7 +112,7 @@ function kratos_captcha_render()
             fetch(ajaxUrl, { method: 'POST', body: body, credentials: 'same-origin' })
                 .then(function(r){ return r.json(); })
                 .then(function(resp){
-                    if (!resp || !resp.success || !resp.data) return;
+                    if (!resp || !resp.success || !resp.data) { showRetry(); return; }
                     var f = document.getElementById('commentform');
                     if (!f) return;
                     var qEl = f.querySelector('.kratos-captcha-q');
@@ -122,7 +125,16 @@ function kratos_captcha_render()
                         if (focusInput) ansEl.focus();
                     }
                 })
-                .catch(function(){});
+                .catch(showRetry);
+        }
+        // 拉题失败（离线 / 被安全插件或 CDN 拦掉 admin-ajax）时给出可点击的重试入口，
+        // 否则用户只看到一串 "…"，而 token 为空的提交会被服务端直接拒掉。
+        function showRetry(){
+            var qEl = document.querySelector('#commentform .kratos-captcha-q');
+            if (!qEl) return;
+            qEl.textContent = <?php echo wp_json_encode(__('验证码加载失败，点此重试', 'kratos')); ?>;
+            qEl.style.cursor = 'pointer';
+            qEl.onclick = function(){ qEl.textContent = '…'; qEl.onclick = null; refreshCaptcha(false); };
         }
         // 静态缓存友好：页面加载后立即拉一次新题（HTML 中是空占位符）
         refreshCaptcha(false);

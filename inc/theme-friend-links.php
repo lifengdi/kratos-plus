@@ -303,9 +303,9 @@ function kratos_friend_shortcode($atts)
     $total_links = 0;
     foreach ($groups as $g) $total_links += count($g['links']);
 
-    // 表单校验码（防跨站）
-    $nonce   = wp_create_nonce('kratos_friend_apply');
-    $post_url = admin_url('admin-post.php');
+    // 表单校验码与回跳地址都不在此处内联，由前端首屏 ajax 现拉（见下方 nonce 脚本）：
+    // 整页被全页缓存后，内联的 nonce 会随缓存一起过期，所有游客提交都撞「会话已过期」
+    $post_url = admin_url('admin-post.php', 'relative');
 
     ob_start();
     ?>
@@ -522,6 +522,8 @@ function kratos_friend_shortcode($atts)
                         <p class="kfl-section-desc"><?php echo esc_html($form_intro); ?></p>
                     <?php } ?>
                 </header>
+                <?php // ajax 提交后由 JS 就地填充；无 JS 时服务端按 ?kfl_status 回显（保持原样） ?>
+                <div class="kfl-alert-slot" aria-live="polite"></div>
                 <?php if ($submit_msg !== '') { ?>
                     <div class="kfl-alert kfl-alert-<?php echo esc_attr($submit_status === 'ok' ? 'ok' : 'err'); ?>" role="status" aria-live="polite">
                         <span class="kfl-alert-icon" aria-hidden="true">
@@ -536,8 +538,9 @@ function kratos_friend_shortcode($atts)
                 <?php } ?>
                 <form class="kfl-form" method="post" action="<?php echo esc_url($post_url); ?>" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="kratos_friend_apply" />
-                    <input type="hidden" name="_wpnonce" value="<?php echo esc_attr($nonce); ?>" />
-                    <input type="hidden" name="_kfl_redirect" value="<?php echo esc_url((is_ssl() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" />
+                    <input type="hidden" name="_wpnonce" value="" />
+                    <?php // 回跳地址同样不内联：缓存会把首个访客的 REQUEST_URI（可能带 ?kfl_status）固化给所有人 ?>
+                    <input type="hidden" name="_kfl_redirect" value="" />
                     <!-- honeypot：机器人爱填 -->
                     <div class="kfl-hp" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
                         <label>Website<input type="text" name="kfl_hp_website" tabindex="-1" autocomplete="off" /></label>
@@ -573,19 +576,19 @@ function kratos_friend_shortcode($atts)
                         </div>
                     </div>
 
-                    <?php if (function_exists('kratos_captcha_enabled') && kratos_captcha_enabled()) {
-                        list($cap_token, $cap_x, $cap_y, $cap_op) = kratos_captcha_new_question();
-                    ?>
+                    <?php if (function_exists('kratos_captcha_enabled') && kratos_captcha_enabled()) { ?>
                         <div class="kfl-form-row">
                             <div class="kfl-field kfl-field-full">
                                 <label class="kfl-label" for="kfl-captcha"><?php esc_html_e('验证码', 'kratos'); ?> <span class="kfl-required">*</span></label>
                                 <div class="kfl-captcha-row">
-                                    <span class="kfl-captcha-q" aria-hidden="true"><?php echo esc_html($cap_x . ' ' . $cap_op . ' ' . $cap_y . ' ='); ?></span>
+                                    <?php // 静态缓存友好：题目与 token 不内联，由前端首屏 ajax 现拉（同评论验证码），
+                                    // 否则整页被全页缓存后所有访客共享同一个 token，且 transient 到期即集体失效 ?>
+                                    <span class="kfl-captcha-q" aria-hidden="true">…</span>
                                     <input class="kfl-input kfl-captcha-input" type="text" id="kfl-captcha" name="kratos_captcha" inputmode="numeric" pattern="-?\d+" required maxlength="4" autocomplete="off" placeholder="<?php esc_attr_e('答案', 'kratos'); ?>" />
                                     <button type="button" class="kfl-captcha-refresh" aria-label="<?php esc_attr_e('换一题', 'kratos'); ?>" title="<?php esc_attr_e('换一题', 'kratos'); ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                                     </button>
-                                    <input type="hidden" name="kratos_captcha_token" value="<?php echo esc_attr($cap_token); ?>" />
+                                    <input type="hidden" name="kratos_captcha_token" value="" />
                                 </div>
                             </div>
                         </div>
@@ -1126,6 +1129,93 @@ function kratos_friend_shortcode($atts)
             background:rgba(207,34,46,.10);color:#ff8b95;border-color:rgba(207,34,46,.35);
         }
     </style>
+    <script>
+    (function(){
+        var form = document.querySelector('#kratos-friend-links .kfl-form');
+        if (!form) return;
+        var nonceEl = form.querySelector('input[name="_wpnonce"]');
+        var backEl  = form.querySelector('input[name="_kfl_redirect"]');
+        // 回跳地址取当前实际 URL（去掉上一次提交留下的 kfl_status/kfl_reason 参数）
+        if (backEl) {
+            var u = new URL(location.href);
+            u.hash = '';
+            u.searchParams.delete('kfl_status');
+            u.searchParams.delete('kfl_reason');
+            backEl.value = u.toString();
+        }
+        // ajax 提交：不刷新页面，就地出 alert。fetch 不可用（老浏览器）时直接放行原生提交，
+        // 服务端同一个处理函数会走 admin-post 分支回跳，功能不丢。
+        var slot = form.parentNode.querySelector('.kfl-alert-slot');
+        var ICON_OK  = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+        var ICON_ERR = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+        function alertMsg(ok, msg){
+            if (!slot) return;
+            slot.innerHTML = '';
+            var box = document.createElement('div');
+            box.className = 'kfl-alert kfl-alert-' + (ok ? 'ok' : 'err');
+            box.setAttribute('role', 'status');
+            box.innerHTML = '<span class="kfl-alert-icon" aria-hidden="true">' + (ok ? ICON_OK : ICON_ERR) + '</span>';
+            var t = document.createElement('span');
+            t.className = 'kfl-alert-text';
+            t.textContent = msg;
+            box.appendChild(t);
+            slot.appendChild(box);
+            // 服务端回显的那条（无 JS 兜底用）此时已过时，移掉避免两条并排
+            var stale = form.parentNode.querySelector(':scope > .kfl-alert');
+            if (stale) stale.parentNode.removeChild(stale);
+        }
+        var submitBtn = form.querySelector('.kfl-submit');
+        var sending = false;
+        form.addEventListener('submit', function(e){
+            if (!window.fetch || !window.FormData) return;
+            e.preventDefault();
+            if (sending) return;
+            sending = true;
+            if (submitBtn) submitBtn.disabled = true;
+            var body = new FormData(form); // 含 action=kratos_friend_apply，admin-ajax 直接认
+            fetch(<?php echo wp_json_encode(admin_url('admin-ajax.php', 'relative')); ?>, {
+                method: 'POST', body: body, credentials: 'same-origin'
+            })
+                .then(function(r){ return r.json(); })
+                .then(function(r){
+                    var d = (r && r.data) || {};
+                    var ok = !!(r && r.success);
+                    alertMsg(ok, d.message || <?php echo wp_json_encode(__('提交失败，请检查填写内容后重试。', 'kratos')); ?>);
+                    if (ok) {
+                        var keepNonce = nonceEl ? nonceEl.value : '';
+                        var keepBack  = backEl ? backEl.value : '';
+                        form.reset();
+                        // reset() 把隐藏域也还原成 HTML 初始值（都是空串），得把 JS 填过的两项补回去
+                        if (nonceEl) nonceEl.value = keepNonce;
+                        if (backEl) backEl.value = keepBack;
+                    }
+                    // nonce 一次性不消耗（wp_verify_nonce 不作废），但验证码 token 已被服务端删掉，
+                    // 无论成功失败都必须换新题，否则下一次提交必然「已过期」
+                    if (window.kratosKflReloadCaptcha) window.kratosKflReloadCaptcha(!ok);
+                })
+                .catch(function(){
+                    alertMsg(false, <?php echo wp_json_encode(__('网络异常，请稍后重试。', 'kratos')); ?>);
+                })
+                .then(function(){
+                    sending = false;
+                    if (submitBtn) submitBtn.disabled = false;
+                });
+        });
+        if (!nonceEl) return;
+        // 用原生 XHR 而不是 jQuery：本段是短代码内联输出，位置在页脚 jQuery 之上（见 g_perf_jquery_footer）
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', <?php echo wp_json_encode(admin_url('admin-ajax.php', 'relative')); ?>, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function(){
+            if (xhr.status < 200 || xhr.status >= 300) return;
+            try{
+                var r = JSON.parse(xhr.responseText);
+                if (r && r.success && r.data && r.data.nonce) nonceEl.value = r.data.nonce;
+            } catch(e){}
+        };
+        xhr.send('action=kratos_friend_nonce');
+    })();
+    </script>
     <?php if (function_exists('kratos_captcha_enabled') && kratos_captcha_enabled()) { ?>
     <script>
     (function(){
@@ -1136,28 +1226,46 @@ function kratos_friend_shortcode($atts)
         var tokEl = root.querySelector('input[name="kratos_captcha_token"]');
         var ansEl = root.querySelector('input[name="kratos_captcha"]');
         if (!btn || !qEl || !tokEl || !ansEl) return;
-        var ajaxUrl = <?php echo wp_json_encode(admin_url('admin-ajax.php')); ?>;
+        // 相对地址：绝对地址会锁死 siteurl 的主机/协议，别名域名访问时换题请求变跨源被拦
+        var ajaxUrl = <?php echo wp_json_encode(admin_url('admin-ajax.php', 'relative')); ?>;
+        // 拉题失败（离线 / admin-ajax 被安全插件或 CDN 拦掉）时给出可点击的重试入口，
+        // 否则用户只看到 "…"，而 token 为空的提交会被服务端直接拒掉
+        function showRetry(){
+            qEl.textContent = <?php echo wp_json_encode(__('验证码加载失败，点此重试', 'kratos')); ?>;
+            qEl.style.cursor = 'pointer';
+            qEl.onclick = function(){ qEl.onclick = null; qEl.style.cursor = ''; load(false); };
+        }
+        // 用原生 XHR 而不是 jQuery：本段是短代码内联输出，位置在页脚 jQuery 之上
+        // （见 g_perf_jquery_footer），执行时 window.jQuery 还不存在
+        function load(focusInput){
+            qEl.textContent = '…';
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', ajaxUrl, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function(){
+                if (xhr.status < 200 || xhr.status >= 300) { showRetry(); return; }
+                try{
+                    var r = JSON.parse(xhr.responseText);
+                    if (!r || !r.success || !r.data) { showRetry(); return; }
+                    qEl.textContent = r.data.question;
+                    tokEl.value = r.data.token;
+                    ansEl.value = '';
+                    if (focusInput) ansEl.focus();
+                } catch(e){ showRetry(); }
+            };
+            xhr.onerror = showRetry;
+            xhr.send('action=kratos_captcha_refresh');
+        }
+        // 供提交逻辑在 ajax 结束后换题（token 已被服务端一次性作废）
+        window.kratosKflReloadCaptcha = load;
         btn.addEventListener('click', function(){
             btn.classList.remove('is-spinning');
             // 强制回流触发动画重放
             void btn.offsetWidth;
             btn.classList.add('is-spinning');
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', ajaxUrl, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onload = function(){
-                if (xhr.status < 200 || xhr.status >= 300) return;
-                try{
-                    var r = JSON.parse(xhr.responseText);
-                    if (!r || !r.success || !r.data) return;
-                    qEl.textContent = r.data.question;
-                    tokEl.value = r.data.token;
-                    ansEl.value = '';
-                    ansEl.focus();
-                } catch(e){}
-            };
-            xhr.send('action=kratos_captcha_refresh');
+            load(true);
         });
+        load(false);
     })();
     </script>
     <?php } ?>
@@ -1338,8 +1446,9 @@ function kratos_friend_reason_msg($key)
         'name_len'        => __('网站名称最长 120 字符。', 'kratos'),
         'db'              => __('保存失败，请稍后再试或联系站长。', 'kratos'),
         'captcha_empty'   => __('请填写验证码后再提交。', 'kratos'),
-        'captcha_expired' => __('验证码已过期，请点击「换一题」后重新填写。', 'kratos'),
-        'captcha_wrong'   => __('验证码答案错误，请点击「换一题」后重新填写。', 'kratos'),
+        // 提交后（ajax 与整页回跳都一样）会自动换一道新题，不需要用户手点「换一题」
+        'captcha_expired' => __('验证码已过期，已为你换一道新题，请重新填写。', 'kratos'),
+        'captcha_wrong'   => __('验证码答案错误，已为你换一道新题，请重新填写。', 'kratos'),
     );
     return isset($map[$key]) ? $map[$key] : __('提交失败，请检查填写内容后重试。', 'kratos');
 }
@@ -1347,7 +1456,21 @@ function kratos_friend_reason_msg($key)
 function kratos_friend_handle_apply()
 {
     $redirect = isset($_POST['_kfl_redirect']) ? esc_url_raw(wp_unslash($_POST['_kfl_redirect'])) : home_url('/');
+    // 同一个处理函数挂两条路：admin-ajax（前端 fetch，返回 JSON、不刷新页面）与
+    // admin-post（无 JS 时表单原生提交，回跳带 kfl_status 参数）。除返回方式外逻辑完全一致。
     $back = function ($status, $reason = '') use ($redirect) {
+        if (wp_doing_ajax()) {
+            wp_send_json(array(
+                'success' => ($status === 'ok'),
+                'data'    => array(
+                    'status'  => $status,
+                    'reason'  => $reason,
+                    'message' => ($status === 'ok')
+                        ? __('申请已提交，等待站长审核通过后即可展示 🎉', 'kratos')
+                        : kratos_friend_reason_msg($reason),
+                ),
+            ));
+        }
         $url = add_query_arg(array(
             'kfl_status' => $status,
             'kfl_reason' => $reason,
@@ -1482,6 +1605,19 @@ function kratos_friend_handle_apply()
 
     $back('ok');
 }
+/**
+ * AJAX：返回申请表单的 nonce。表单 HTML 里不内联 nonce（全页缓存会把它一起缓存到过期），
+ * 由前端首屏现拉。这个端点本身不需要 nonce 保护 —— 它返回的就是给匿名访客用的公开 nonce。
+ */
+function kratos_friend_nonce_ajax()
+{
+    wp_send_json_success(array('nonce' => wp_create_nonce('kratos_friend_apply')));
+}
+add_action('wp_ajax_nopriv_kratos_friend_nonce', 'kratos_friend_nonce_ajax');
+add_action('wp_ajax_kratos_friend_nonce',        'kratos_friend_nonce_ajax');
+
+add_action('wp_ajax_nopriv_kratos_friend_apply', 'kratos_friend_handle_apply');
+add_action('wp_ajax_kratos_friend_apply',        'kratos_friend_handle_apply');
 add_action('admin_post_kratos_friend_apply',        'kratos_friend_handle_apply');
 add_action('admin_post_nopriv_kratos_friend_apply', 'kratos_friend_handle_apply');
 
