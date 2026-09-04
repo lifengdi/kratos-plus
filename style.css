@@ -3259,18 +3259,19 @@ img {
 }
 
 @media screen and (max-width: 768px) {
+    /* 单列堆叠时回到 Bootstrap 栅格默认内边距，否则邮箱列会比昵称/网址列右移 3px */
     .k-main
     .details
     .comments
     .comment-form-author {
-        padding-right: 15px;
+        padding-right: calc(var(--bs-gutter-x) * .5);
     }
 
     .k-main
     .details
     .comments
     .comment-form-email {
-        padding-left: 15px;
+        padding-left: calc(var(--bs-gutter-x) * .5);
     }
 }
 

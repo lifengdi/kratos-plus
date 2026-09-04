@@ -79,12 +79,12 @@ $kratos_cols = kratos_layout_cols();
                                 } ?>
                             </div>
                         </div>
-                        <?php
-                            if (function_exists('kratos_read_render_update_notice')) kratos_read_render_update_notice();
-                            if (function_exists('kratos_series_render_box')) kratos_series_render_box();
-                        ?>
                         <div class="content" id="lightgallery">
                             <?php
+                            // 更新提示与系列盒子放在 .content 内：左右内边距由
+                            // .details .article .content 提供，放在外面就与正文不齐
+                            if (function_exists('kratos_read_render_update_notice')) kratos_read_render_update_notice();
+                            if (function_exists('kratos_series_render_box')) kratos_series_render_box();
 
                             if (!empty(kratos_option('single_ad_top_group'))) {
                                 foreach (kratos_option('single_ad_top_group') as $group_item) {

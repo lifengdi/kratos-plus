@@ -115,7 +115,8 @@ $d code:not([class*="language-"]):not(.hljs) { background-color: var(--kr-code-b
 $d kbd { background-color: #2a2f37; border-color: #3a4150; color: var(--kr-fg-strong); box-shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 0 0 2px #14171a inset; text-shadow: none; }
 $d table th, $d table td { border-color: var(--kr-border); }
 $d table tr:nth-child(2n) { background-color: rgba(255, 255, 255, .03); }
-.kratos-md-hint { font-size: 12px; color: #999; margin-top: 4px; }
+/* 左边距 16px = .text-bar 的 padding-left 8px + .addbtn 的 padding 0 8px，与表情入口图标左沿对齐 */
+.kratos-md-hint { font-size: 12px; color: #999; margin: 4px 16px 0; }
 .kratos-md-hint i { margin-right: 3px; }
 CSS;
     wp_add_inline_style('kratos', $css);
