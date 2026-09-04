@@ -26,9 +26,39 @@ if (!function_exists('kratos_option')) {
     }
 }
 
+if (!function_exists('kratos_sidebar_off')) {
+    /**
+     * 当前请求是否被开关关掉了侧边栏。首页 / 页面 / 说说详情页 / 文章页各一个开关，
+     * 分类 / 标签 / 归档 / 搜索不受影响。
+     * 静态首页同时满足 is_page()，页面与说说也满足 is_singular()，故按此顺序判定。
+     */
+    function kratos_sidebar_off()
+    {
+        if (is_home() || is_front_page()) {
+            return !kratos_option('g_home_sidebar', true);
+        }
+        if (is_page()) {
+            return !kratos_option('g_page_sidebar', true);
+        }
+        if (is_singular('shuoshuo')) {
+            return !kratos_option('g_shuoshuo_sidebar', true);
+        }
+        if (is_singular()) {
+            // 兼容旧版的 g_article_widgets（one_side = 无侧栏），新开关优先
+            if (kratos_option('g_article_widgets', 'two_side') === 'one_side') {
+                return true;
+            }
+            return !kratos_option('g_single_sidebar', true);
+        }
+        return false;
+    }
+}
+
 if (!function_exists('kratos_layout_cols')) {
     function kratos_layout_cols($single_full = false)
     {
+        // 关掉侧栏时主体一律满宽，各模板无需各自判断
+        $single_full = $single_full || kratos_sidebar_off();
         $main = (int) kratos_option('g_main_col', 8);
         $side = (int) kratos_option('g_sidebar_col', 4);
         $main = max(1, min(12, $main));
@@ -432,6 +462,7 @@ CSF::createSection($prefix, array(
                 'magazine' => __('经典大图卡片（大图在上 / 标题摘要在下）', 'kratos'),
                 'grid'     => __('网格卡片（双列图上文下）', 'kratos'),
                 'minimal'  => __('极简列表（无图 / 突出标题）', 'kratos'),
+                'chronicle' => __('时序流（左侧日历 · 右侧缩略图）', 'kratos'),
             ),
             'default' => 'classic',
         ),
@@ -688,6 +719,30 @@ CSF::createSection($prefix, array(
             'max' => 11,
             'step' => 1,
             'default' => 8,
+        ),
+        array(
+            'id' => 'g_home_sidebar',
+            'type' => 'switcher',
+            'title' => __('首页显示侧边栏', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_page_sidebar',
+            'type' => 'switcher',
+            'title' => __('页面显示侧边栏', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_single_sidebar',
+            'type' => 'switcher',
+            'title' => __('文章页显示侧边栏', 'kratos'),
+            'default' => true,
+        ),
+        array(
+            'id' => 'g_shuoshuo_sidebar',
+            'type' => 'switcher',
+            'title' => __('说说详情页显示侧边栏', 'kratos'),
+            'default' => true,
         ),
         array(
             'id' => 'g_sidebar_col',
@@ -2265,17 +2320,6 @@ CSF::createSection($prefix, array(
             'title' => __('文章图片灯箱', 'kratos'),
             'subtitle' => __('文章正文内的图片点击放大', 'kratos'),
             'default' => true,
-        ),
-        array(
-            'id' => 'g_article_widgets',
-            'type' => 'image_select',
-            'title' => __('页面布局', 'kratos'),
-            'subtitle' => __('仅文章页生效，区别在于用哪个侧边栏小工具区', 'kratos'),
-            'options' => array(
-                'one_side' => get_template_directory_uri() . '/assets/img/options/col-12.png',
-                'two_side' => get_template_directory_uri() . '/assets/img/options/col-8.png',
-            ),
-            'default' => 'two_side',
         ),
         array(
             'id' => 'g_cc_fieldset',

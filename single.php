@@ -9,13 +9,12 @@
  */
 
 get_header();
-$kratos_layout = kratos_option('g_article_widgets', 'two_side');
-$kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
+$kratos_cols = kratos_layout_cols();
 ?>
 <div class="k-main <?php echo kratos_option('top_img_switch', true) ? 'banner' : 'color' ?>" style="background:<?php echo kratos_option('g_background', '#f5f5f5'); ?>">
     <div class="container">
         <div class="row">
-            <div class="<?php echo $kratos_layout === 'one_side' ? $kratos_cols['main_full'] : $kratos_cols['main']; ?> details">
+            <div class="<?php echo $kratos_cols['main']; ?> details">
                 <?php if (have_posts()) : the_post();
                     update_post_caches($posts); ?>
                     <div class="article">
@@ -188,13 +187,11 @@ $kratos_cols = kratos_layout_cols($kratos_layout === 'one_side');
                 <?php } ?>
                 <?php comments_template(); ?>
             </div>
-            <?php if ($kratos_layout === 'two_side') { ?>
-                <?php if ( kratos_perf_show_sidebar() ) : ?>
-                <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
-                    <?php dynamic_sidebar('single_sidebar'); ?>
-                </div>
-                <?php endif; ?>
-            <?php } ?>
+            <?php if ( kratos_perf_show_sidebar() ) : ?>
+            <div class="<?php echo $kratos_cols['sidebar']; ?> sidebar sticky-sidebar d-none d-lg-block">
+                <?php dynamic_sidebar('single_sidebar'); ?>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

@@ -4902,6 +4902,172 @@ a
     opacity: 0.75;
 }
 
+/* 时序流 —— 左侧日历 / 中间标题摘要 / 右侧小缩略图。
+ * 底色/阴影仍留在 .article-panel 上（皮肤就是用 .article-panel 上色的，
+ * 搬到 .post-list 会被皮肤的高特异性规则反超），逐行零外边距贴合成一张连续卡 */
+.k-main .board .post-list.layout-chronicle .article-panel {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr) 14rem;
+    column-gap: 1.75rem;
+    row-gap: 0.75rem;
+    align-items: start;
+    margin: 0;
+    padding: 2.25rem 1.5rem;
+    border-radius: 0;
+}
+.k-main .board .post-list.layout-chronicle .article-panel + .article-panel {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+/* 关掉特色图时没有 .a-thumb，第三列会留一段死白，直接收掉该列 */
+.k-main .board .post-list.layout-chronicle .article-panel:not(:has(.a-thumb)) {
+    grid-template-columns: 8rem minmax(0, 1fr);
+}
+
+/* 日历列 */
+.k-main .board .post-list.layout-chronicle .article-panel .a-date {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    padding-top: 2px;
+}
+/* 贯穿的时间轴细线挂在日期列上（.article-panel::before 已被皮肤占用做卡片装饰）。
+ * left = 日历列宽 8rem + gap 一半 0.875rem；上下各外扩一个行 padding 2.25rem
+ * 把行间断口补上，视觉才连续 */
+.k-main .board .post-list.layout-chronicle .article-panel .a-date::before {
+    content: "";
+    position: absolute;
+    top: -2.25rem;
+    bottom: -2.25rem;
+    left: 8.875rem;
+    width: 1px;
+    background: currentColor;
+    opacity: 0.1;
+    pointer-events: none;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-date-day {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    /* 跟随皮肤标题色，无皮肤时回落到默认标题色 */
+    color: var(--kr-skin-heading, #333);
+    transition: transform 0.3s ease;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-date-ym {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    opacity: 0.5;
+}
+.k-main .board .post-list.layout-chronicle .article-panel:hover .a-date-day {
+    transform: translateY(-2px);
+}
+
+/* 置顶 / 热门文字标签（取代缎带图标，见 pages/page-content.php） */
+.k-main .board .post-list.layout-chronicle .article-panel .a-date-flag {
+    align-self: flex-start;
+    margin-top: 12px;
+    padding: 2px 7px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-date-flag.is-top {
+    color: #0092ee;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-date-flag.is-hot {
+    color: #dc3545;
+}
+
+/* 正文列 */
+.k-main .board .post-list.layout-chronicle .article-panel .a-post,
+.k-main .board .post-list.layout-chronicle .article-panel .a-post.a-none {
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 0;
+    padding: 0;
+    height: auto;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-post .header {
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0 0 10px;
+    overflow: visible;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-post .header .title {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+}
+/* 标题放开单行省略，改双行截断（四个属性必须同时给，否则 clamp 不生效）。
+ * 用 -webkit-inline-box 而不是 -webkit-box：块级盒会撑满整列，
+ * hover 的下划线（background-size）就永远是 100% 列宽而非标题实际宽度 */
+.k-main .board .post-list.layout-chronicle .article-panel .a-post .header .title a {
+    display: -webkit-inline-box;
+    overflow: hidden;
+    white-space: normal;
+    word-break: break-word;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 1px;
+    transition: background-size 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-post .header .title a:hover {
+    background-size: 100% 1px;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-post .content {
+    max-height: 5.4em;
+    font-size: 15px;
+    line-height: 1.8;
+    -webkit-line-clamp: 3;
+    opacity: 0.7;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-post .content p {
+    font-size: inherit;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-meta {
+    grid-column: 2;
+    grid-row: 2;
+    padding: 0;
+    border-top: none;
+    line-height: 1.6;
+    opacity: 0.6;
+}
+
+/* 缩略图列 */
+.k-main .board .post-list.layout-chronicle .article-panel .a-thumb {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    float: none;
+    margin: 3px 0 0;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 7 / 5;
+    border-radius: 4px;
+}
+.k-main .board .post-list.layout-chronicle .article-panel .a-thumb img {
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.k-main .board .post-list.layout-chronicle .article-panel:hover .a-thumb img {
+    transform: scale(1.04);
+}
+
 /* 响应式：网格在小屏改单列；增强版取消偶数行交替与左右浮动溢出 */
 @media (max-width: 991px) {
     .k-main .board .post-list.layout-grid .grid-col {
@@ -4928,6 +5094,102 @@ a
         font-size: 20px;
     }
 }
+
+/* 时序流响应式：平板收掉日历列与轴线，手机再堆成单列（图在标题下） */
+@media (max-width: 991px) {
+    .k-main .board .post-list.layout-chronicle::before,
+    .k-main .board .post-list.layout-chronicle .article-panel .a-date {
+        display: none;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel,
+    .k-main .board .post-list.layout-chronicle .article-panel:not(:has(.a-thumb)) {
+        grid-template-columns: minmax(0, 1fr) 12rem;
+        padding: 1.75rem 1.25rem;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel:not(:has(.a-thumb)) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-post,
+    .k-main .board .post-list.layout-chronicle .article-panel .a-post.a-none,
+    .k-main .board .post-list.layout-chronicle .article-panel .a-meta {
+        grid-column: 1;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-thumb {
+        grid-column: 2;
+    }
+}
+@media (max-width: 768px) {
+    /* 单列堆叠，顺序：日期 → 标题 → 缩略图 → 摘要 → meta。
+     * .a-post 用 display:contents 把 header/content 提升成同级 flex 项，
+     * 否则缩略图无法插到标题与摘要之间 */
+    .k-main .board .post-list.layout-chronicle .article-panel,
+    .k-main .board .post-list.layout-chronicle .article-panel:not(:has(.a-thumb)) {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        padding: 1.5rem 1rem;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-post,
+    .k-main .board .post-list.layout-chronicle .article-panel .a-post.a-none {
+        display: contents;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-date {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 0.4rem;
+        order: 1;
+        align-self: auto;
+        padding-top: 0;
+        font-size: 13px;
+        opacity: 0.55;
+    }
+    /* 991 档整列隐藏时轴线随之消失，768 档日期重新显示，轴线要单独关掉 */
+    .k-main .board .post-list.layout-chronicle .article-panel .a-date::before {
+        display: none;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-date-day {
+        font-size: 13px;
+        font-weight: 400;
+        color: inherit;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-date-ym {
+        margin-top: 0;
+        font-size: 13px;
+        opacity: 1;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-date-flag {
+        margin-top: 0;
+        opacity: 1;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-post .header {
+        order: 2;
+        margin: 0;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-post .header .title {
+        font-size: 19px;
+    }
+    /* 通用移动端把 .a-thumb 做成 height:0 + padding-bottom:53% 的等比盒，
+     * 这里改用 aspect-ratio，必须把那两项清掉，否则两套等比叠加高度翻倍 */
+    .k-main .board .post-list.layout-chronicle .article-panel .a-thumb {
+        order: 3;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-post .content {
+        order: 4;
+        max-height: none;
+        -webkit-line-clamp: 3;
+    }
+    .k-main .board .post-list.layout-chronicle .article-panel .a-meta {
+        order: 5;
+        font-size: 12px;
+    }
+}
+
 
 /* ============================================================
    个人简介小工具（增强版）w-about-plus

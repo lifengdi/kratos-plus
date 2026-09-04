@@ -632,3 +632,11 @@ html[data-theme="dark"] .kratos-series-crumbs a {
 html[data-theme="dark"] .kratos-series-crumb-current {
     color: var(--kr-fg-strong);
 }
+
+/* 时序流布局：行与行贴合成一张连续卡，分隔线与日期数字换成暗底可见的取值 */
+html[data-theme="dark"] .k-main .board .post-list.layout-chronicle .article-panel + .article-panel {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .k-main .board .post-list.layout-chronicle .article-panel .a-date-day {
+    color: #d8d8d8;
+}

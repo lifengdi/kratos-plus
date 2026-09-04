@@ -18,9 +18,12 @@ function kratos_perf_on($key, $default = true)
     return (bool) kratos_option($key, $default);
 }
 
-/** 是否在当前请求输出侧边栏。移动端 UA + 开关开启时返回 false。 */
+/** 是否在当前请求输出侧边栏。首页/页面的侧栏开关、移动端 UA 开关都会关掉它。 */
 function kratos_perf_show_sidebar()
 {
+    if (function_exists('kratos_sidebar_off') && kratos_sidebar_off()) {
+        return false;
+    }
     if (kratos_perf_on('g_perf_mobile_no_sidebar', true) && wp_is_mobile()) {
         return false;
     }
@@ -178,6 +181,26 @@ add_filter('the_content', 'kratos_perf_lightbox_fallback', 99);
  * 只有在「没有任何 head 组脚本依赖 jQuery」时才搬，避免把某个插件在 <head>
  * 里就要用 $ 的脚本搞坏。
  */
+/**
+ * $handle 的依赖闭包里是否含 jquery（含自身即为 true）。$seen 防循环依赖死递归。
+ */
+function kratos_perf_deps_jquery($handle, $scripts, &$seen = array())
+{
+    if (isset($seen[$handle]) || !isset($scripts->registered[$handle])) {
+        return false;
+    }
+    $seen[$handle] = true;
+    foreach ((array) $scripts->registered[$handle]->deps as $dep) {
+        if ($dep === 'jquery' || $dep === 'jquery-core') {
+            return true;
+        }
+        if (kratos_perf_deps_jquery($dep, $scripts, $seen)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function kratos_perf_jquery_to_footer()
 {
     if (is_admin() || !kratos_perf_on('g_perf_jquery_footer', true)) {
@@ -186,14 +209,16 @@ function kratos_perf_jquery_to_footer()
 
     $scripts = wp_scripts();
 
-    // head 组里还有人依赖 jQuery 就不动它
+    // head 组里还有人依赖 jQuery 就不动它。必须查**传递**依赖：插件常靠
+    // wp-util / thickbox 这类中间 handle 间接吃 jQuery，只比对直接 deps 会漏，
+    // 结果那个脚本留在 head、jQuery 去了页脚 → jQuery is not defined。
     foreach ($scripts->queue as $handle) {
         if (!isset($scripts->registered[$handle])) {
             continue;
         }
         $obj = $scripts->registered[$handle];
         $grp = isset($obj->extra['group']) ? (int) $obj->extra['group'] : 0;
-        if ($grp === 0 && in_array('jquery', (array) $obj->deps, true)) {
+        if ($grp === 0 && kratos_perf_deps_jquery($handle, $scripts)) {
             return;
         }
     }
