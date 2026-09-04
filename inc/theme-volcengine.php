@@ -21,6 +21,14 @@ if (!empty(kratos_option('g_imgx_fieldset')['g_imgx'])) {
         require_once __DIR__ . '/volcengine-imagex/vendor/symfony/deprecation-contracts/function.php';
     }
 
+    // 本模块的路径计算全靠 get_home_path()，它定义在 wp-admin/includes/file.php。
+    // WP 6.9 起 REST 的 /wp/v2/media 在 WP_REST_Attachments_Controller::finalize_item()
+    // 里触发 wp_generate_attachment_metadata，那条链路不加载 wp-admin/includes，于是
+    // imagex_upload_thumbs 调用时 fatal「Call to undefined function get_home_path()」。
+    if (!function_exists('get_home_path')) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
+
     function imagex_get_client()
     {
         $imagex_client = Volc\Service\ImageX::getInstance($region = kratos_option('g_imgx_fieldset')['g_imgx_region']);
@@ -42,12 +50,25 @@ if (!empty(kratos_option('g_imgx_fieldset')['g_imgx'])) {
             $params['UploadNum'] = 1;
             $params['StoreKeys'] = array($object);
             // 火山 SDK（inc/volcengine-imagex，vendored）在 uploadImages 里 echo 了三行
-            // "requsetID ... cost ...ms" 计时日志。上传走 REST /wp/v2/media，这些字节会
-            // 落在 JSON 之前，编辑器直接报「此响应不是合法的 JSON 响应」。不改 vendor（升级
-            // 会覆盖），在调用处丢弃其输出。
+            // "requsetID ... cost ...ms" 计时日志。上传走 REST /wp/v2/media 或
+            // async-upload.php，这些字节会落在 JSON 之前，编辑器报「此响应不是合法的 JSON
+            // 响应」、经典媒体库报「无法完成上传」。不改 vendor（升级会覆盖），在调用处丢弃。
             ob_start();
-            $response = $client->uploadImages($params, array($file));
+            try {
+                $response = $client->uploadImages($params, array($file));
+            } catch (\Throwable $e) {
+                // Guzzle 对 4xx/5xx 抛异常，SDK 不接。异常穿到 wp_handle_upload 会让整个
+                // 上传请求 500，图片连本地都存不下 —— CDN 失败不该拖垮本地上传。
+                $response = 'uploadImages exception: ' . $e->getMessage();
+            }
             ob_end_clean();
+
+            // 失败时 SDK 返回 "uploadImages: ..." 描述串（成功返回 commit 的 JSON）。
+            // 原本这个返回值被直接丢掉，出错时前台只有一个没有原因的报错。
+            if (is_string($response) && strpos($response, 'uploadImages') === 0) {
+                error_log('[kratos imagex] ' . $response . ' object=' . $object);
+                return false;
+            }
         } else {
             return false;
         }
@@ -111,7 +132,12 @@ if (!empty(kratos_option('g_imgx_fieldset')['g_imgx'])) {
         $file = str_replace(get_home_path(), '', $file);
         $del_file_path = str_replace("wp-content/uploads/", '', $file);
 
-        $client->deleteImages(kratos_option('g_imgx_fieldset')['g_imgx_serviceid'], array($del_file_path));
+        // 同 imagex_upload：SDK 不接 Guzzle 异常，删远端失败不该让删附件整体 500。
+        try {
+            $client->deleteImages(kratos_option('g_imgx_fieldset')['g_imgx_serviceid'], array($del_file_path));
+        } catch (\Throwable $e) {
+            error_log('[kratos imagex] deleteImages exception: ' . $e->getMessage() . ' object=' . $del_file_path);
+        }
 
         return $file;
     }

@@ -9,6 +9,14 @@
  */
 
 if (!empty(kratos_option('g_cos_fieldset')['g_cos'])) {
+
+    // 同 theme-volcengine.php：路径计算依赖 get_home_path()，而 WP 6.9 起 REST 的
+    // /wp/v2/media 触发 wp_generate_attachment_metadata 时不加载 wp-admin/includes，
+    // 不补这一句上传缩略图会 fatal。
+    if (!function_exists('get_home_path')) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
+
     function dogcloud_upload($object, $file, $mime)
     {
         if (!@file_exists($file)) {
