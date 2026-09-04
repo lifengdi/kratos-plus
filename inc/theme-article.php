@@ -579,7 +579,17 @@ if (!kratos_option('g_gutenberg', false)) {
 function comment_add_at($comment_text, $comment = null)
 {
     if ($comment->comment_parent > 0) {
-        $comment_text = '<span>@' . get_comment_author($comment->comment_parent) . '</span> ' . $comment_text;
+        // 用 get_comment_link 而不是裸 #comment-N：开了评论分页时父评论可能不在当前页，
+        // 它会带上 comment-page 参数再拼锚点。
+        $prefix = '<a class="comment-at" href="' . esc_url(get_comment_link($comment->comment_parent)) . '">@'
+            . get_comment_author($comment->comment_parent) . '</a> ';
+        // Markdown（comment_text@1）已经生成块级 <p>，前缀直接拼在最前面会被 <p> 顶到上一行，
+        // 所以塞进首段内部；无 <p> 时（未开 Markdown，wpautop 在 30 之后才跑）照旧前置。
+        if (preg_match('#^\s*<p>#', $comment_text, $m)) {
+            $comment_text = $m[0] . $prefix . substr($comment_text, strlen($m[0]));
+        } else {
+            $comment_text = $prefix . $comment_text;
+        }
     }
 
     return $comment_text;
