@@ -88,10 +88,28 @@ function kratos_social_share_content($content)
         return $content;
     }
 
-    $html = '<div class="post-share-buttons">'
+    // 原生分享按钮默认 hidden，由 JS 特性检测后放出——服务端不做 UA 判断，
+    // 否则页面缓存会把某一次访问的判定结果固定给所有设备。
+    $native = '<a class="post-share-btn post-share-native" href="#" hidden'
+        . ' style="--share-color:#6b7785" title="' . esc_attr__('分享', 'kratos') . '">'
+        . '<i class="fas fa-share-alt"></i></a>';
+
+    $html = '<div class="post-share-buttons" data-title="' . esc_attr(get_the_title())
+        . '" data-url="' . esc_attr(get_permalink()) . '">'
         . '<span class="post-share-label">' . __('分享到', 'kratos') . '</span>'
+        . $native
         . $buttons
         . '</div>';
+
+    // 回退弹层：Web Share API 不可用 / 调用失败时展示标题与链接供手动分享
+    $html .= '<div class="post-share-fb-overlay" style="display:none;">'
+        . '<div class="post-share-fb-card">'
+        . '<p class="post-share-fb-title">' . esc_html(get_the_title()) . '</p>'
+        . '<input class="post-share-fb-url" type="text" readonly value="' . esc_attr(get_permalink()) . '">'
+        . '<button class="post-share-fb-copy">' . __('复制链接', 'kratos') . '</button>'
+        . '<p class="post-share-fb-tip">' . __('也可使用浏览器菜单中的「分享」功能', 'kratos') . '</p>'
+        . '<button class="post-share-fb-close">&times;</button>'
+        . '</div></div>';
 
     // 微信二维码弹层（QR 用纯 CSS + table 实现，无外部依赖）
     if (in_array('wechat', $enabled, true)) {
@@ -143,6 +161,32 @@ html[data-theme="dark"] .post-share-buttons { border-top-color: #444; }
 .post-share-qr canvas { display: block; margin: 0 auto; }
 html[data-theme="dark"] .post-share-qr-card { background: #2a2a2a; }
 html[data-theme="dark"] .post-share-qr-card p { color: #ddd; }
+.post-share-fb-overlay {
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.post-share-fb-card {
+    background: #fff; padding: 24px 20px 16px; border-radius: 12px;
+    position: relative; width: 100%; max-width: 320px; text-align: center;
+}
+.post-share-fb-title { margin: 0 0 12px; font-size: 15px; font-weight: 600; color: #333; line-height: 1.5; }
+.post-share-fb-url {
+    width: 100%; box-sizing: border-box; padding: 8px 10px; margin: 0 0 12px;
+    border: 1px solid #ddd; border-radius: 6px; background: #f7f7f7;
+    font-size: 13px; color: #555;
+}
+.post-share-fb-copy {
+    width: 100%; padding: 9px 0; border: none; border-radius: 6px;
+    background: #6b7785; color: #fff; font-size: 14px; cursor: pointer;
+}
+.post-share-fb-tip { margin: 12px 0 0; font-size: 12px; color: #999; }
+.post-share-fb-close {
+    position: absolute; top: 6px; right: 12px; border: none; background: none;
+    font-size: 24px; color: #999; cursor: pointer; line-height: 1;
+}
+html[data-theme="dark"] .post-share-fb-card { background: #2a2a2a; }
+html[data-theme="dark"] .post-share-fb-title { color: #eee; }
+html[data-theme="dark"] .post-share-fb-url { background: #1f1f1f; border-color: #444; color: #bbb; }
 ';
     wp_add_inline_style('kratos', $css);
 
@@ -164,12 +208,48 @@ function krQR(){
 }
 document.addEventListener("click",function(e){
     var wb=e.target.closest("[data-share=wechat]");
-    if(wb){e.preventDefault();var o=document.querySelector(".post-share-qr-overlay");if(o){o.style.display="flex";krQR();}}
+    // 移动端扫不了自己屏幕上的二维码，改走链接回退弹层
+    if(wb){e.preventDefault();if(coarse)return fbOpen();
+        var o=document.querySelector(".post-share-qr-overlay");if(o){o.style.display="flex";krQR();}}
     if(e.target.closest(".post-share-qr-close")||e.target.classList.contains("post-share-qr-overlay")){
         var o=document.querySelector(".post-share-qr-overlay");if(o)o.style.display="none";
     }
 });';
     }
+    // 原生分享：全部判断放前端运行时，不受页面缓存影响
+    $js .= '
+var box=document.querySelector(".post-share-buttons");
+var fb=document.querySelector(".post-share-fb-overlay");
+function fbOpen(){if(fb)fb.style.display="flex";}
+function fbClose(){if(fb)fb.style.display="none";}
+// isSecureContext 一起判：HTTP 站点上 navigator.share 可能存在但一调用就抛
+var canShare=!!(navigator.share&&window.isSecureContext);
+var coarse=window.matchMedia&&matchMedia("(pointer:coarse)").matches;
+var nb=box&&box.querySelector(".post-share-native");
+if(nb&&coarse)nb.hidden=false;
+document.addEventListener("click",function(e){
+    if(e.target.closest(".post-share-native")){
+        e.preventDefault();
+        if(!canShare)return fbOpen();
+        // 必须在手势内同步调用，中间不能 await，否则 iOS 抛 NotAllowedError
+        navigator.share({title:box.getAttribute("data-title"),url:box.getAttribute("data-url")})
+            .catch(function(err){
+                if(err&&err.name==="AbortError")return; // 用户主动取消，不弹回退
+                fbOpen();
+            });
+        return;
+    }
+    if(e.target.closest(".post-share-fb-copy")){
+        var i=fb.querySelector(".post-share-fb-url");
+        i.select();i.setSelectionRange(0,i.value.length);
+        var ok=false;
+        try{ok=document.execCommand("copy");}catch(x){}
+        if(!ok&&navigator.clipboard)navigator.clipboard.writeText(i.value).then(function(){},function(){});
+        e.target.textContent="' . esc_js(__('已复制', 'kratos')) . '";
+        return;
+    }
+    if(e.target.closest(".post-share-fb-close")||e.target.classList.contains("post-share-fb-overlay"))fbClose();
+});';
     $js .= '})();';
     wp_add_inline_script('kratos', $js);
 }
