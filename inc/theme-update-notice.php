@@ -236,7 +236,9 @@ function kratos_render_update_section()
         add_thickbox();
     }
 
-    $refresh_url = esc_url(add_query_arg('kratos_check_update', '1')) . '#tab=' . sanitize_title(__('版本更新', 'kratos'));
+    // CSF 子分区 tab id = sanitize_title(父) . '/' . sanitize_title(子)，斜杠不能一起进 sanitize_title（会被剔除）
+    $refresh_url = esc_url(add_query_arg('kratos_check_update', '1'))
+        . '#tab=' . sanitize_title(__('系统维护', 'kratos')) . '/' . sanitize_title(__('版本更新', 'kratos'));
 
     ob_start(); ?>
     <div class="kratos-vu-wrap" style="margin-top:4px;">
