@@ -62,9 +62,9 @@ stages:
     - '# esbuild 用官方预编译二进制，不经 npm：build@nodejs 镜像内没有 npm'
     - '# （GitHub 那条流水线的 runner 有 npm，仍走 npm install，两处写法不同是有意的）'
     - ESBUILD_VER=0.24.0
-    - 'for R in https://registry.npmmirror.com https://registry.npmjs.org; do'
-    - '  curl -sL --retry 2 --max-time 120 "$R/@esbuild/linux-x64/-/linux-x64-${ESBUILD_VER}.tgz"
-      -o /tmp/esbuild.tgz || continue'
+    - for R in https://registry.npmmirror.com https://registry.npmjs.org; do
+    - "  curl -sL --retry 2 --max-time 120 \"$R/@esbuild/linux-x64/-/linux-x64-${ESBUILD_VER}.tgz\"\
+      \ -o /tmp/esbuild.tgz || continue"
     - '  tar -tzf /tmp/esbuild.tgz >/dev/null 2>&1 && break'
     - done
     - '# 上面两个源都没拿到有效包时，这一步会失败并中断流水线'
@@ -72,11 +72,11 @@ stages:
     - ESBUILD=/tmp/package/bin/esbuild
     - chmod +x "$ESBUILD"
     - '"$ESBUILD" --version'
-    - 'find "$STAGE_DIR/kratos-plus/assets" -type f \( -name "*.css" -o -name "*.js" \)
-      ! -name "*.min.*" -print0 |'
-    - 'while IFS= read -r -d "" f; do'
-    - '  # 临时文件必须保留原扩展名，esbuild 据此判定 loader'
-    - '  tmp="${f%.*}.__m.${f##*.}"'
+    - find "$STAGE_DIR/kratos-plus/assets" -type f \( -name "*.css" -o -name "*.js"
+      \) ! -name "*.min.*" -print0 |
+    - while IFS= read -r -d "" f; do
+    - "  # 临时文件必须保留原扩展名，esbuild 据此判定 loader"
+    - "  tmp=\"${f%.*}.__m.${f##*.}\""
     - '  "$ESBUILD" --minify --outfile="$tmp" "$f" >/dev/null'
     - '  mv "$tmp" "$f"'
     - done
@@ -180,12 +180,17 @@ stages:
       path:
       - ./dist
       type: .tar.gz
+    strategy:
+      retry: "0"
 triggers:
   trigger: auto
   push:
     tags:
       prefix:
-      - ""
+      - v
+      precise: []
+      include: []
+notify: []
 variables:
   global:
   - PUBLISH_TOKEN
