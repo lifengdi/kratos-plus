@@ -41,7 +41,13 @@ if (!empty(kratos_option('g_imgx_fieldset')['g_imgx'])) {
             $params["ServiceId"] = kratos_option('g_imgx_fieldset')['g_imgx_serviceid'];
             $params['UploadNum'] = 1;
             $params['StoreKeys'] = array($object);
+            // 火山 SDK（inc/volcengine-imagex，vendored）在 uploadImages 里 echo 了三行
+            // "requsetID ... cost ...ms" 计时日志。上传走 REST /wp/v2/media，这些字节会
+            // 落在 JSON 之前，编辑器直接报「此响应不是合法的 JSON 响应」。不改 vendor（升级
+            // 会覆盖），在调用处丢弃其输出。
+            ob_start();
             $response = $client->uploadImages($params, array($file));
+            ob_end_clean();
         } else {
             return false;
         }
