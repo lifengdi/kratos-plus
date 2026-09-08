@@ -815,4 +815,22 @@ html[data-theme="dark"] .kratos-home {
     .kratos-home .khf-cmts-3 {
         grid-template-columns: minmax(0, 1fr);
     }
+
+    .kratos-home .khf-hd {
+        flex-wrap: wrap;
+        row-gap: 6px;
+        align-items: flex-start;
+    }
+    .kratos-home .khf-hd .khf-hd-sub {
+        flex-basis: 100%;
+        color: var(--kr-skin-muted);
+    }
+    .kratos-home .khf-hd .khf-hd-divider {
+        display: none;
+    }
+    .kratos-home .khf-hd .khf-hd-more {
+        position: absolute;
+        right: 16px;
+        display: inline-flex;
+    }
 }
