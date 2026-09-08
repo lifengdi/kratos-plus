@@ -523,7 +523,7 @@ function kratos_home_render_category()
 
         // 分类归档入口
         $pane .= '<div class="khf-cat-foot"><a class="kr-btn" href="' . esc_url(get_category_link($term_id)) . '">'
-            . sprintf(esc_html__('查看「%s」全部文章 →', 'kratos'), esc_html($term->name)) . '</a></div>';
+            . sprintf(esc_html__('查看「%s」全部文章', 'kratos'), esc_html($term->name)) . '</a></div>';
         $pane .= '</div>';
 
         $panes .= $pane;
@@ -592,12 +592,13 @@ function kratos_home_render_hot()
     if (empty($posts)) {
         return '';
     }
-
+    $more = trim((string) kratos_option('hf_hot_more_url', ''));
     $html  = '<div class="khf-col khf-col-hot">';
     $html .= kratos_home_header_html(
         kratos_option('hf_hot_title', __('热门榜', 'kratos')),
         kratos_option('hf_hot_sub', $days > 0 ? sprintf(__('近 %d 天热度', 'kratos'), $days) : __('全站热度', 'kratos')),
-        kratos_option('hf_hot_icon', 'fas fa-fire')
+        kratos_option('hf_hot_icon', 'fas fa-fire'),
+        $more, '查看完整热榜'
     );
 
     $show_thumb = (bool) kratos_option('hf_hot_thumb', false);
@@ -618,10 +619,10 @@ function kratos_home_render_hot()
         $html .= '</article>';
     }
 
-    $more = trim((string) kratos_option('hf_hot_more_url', ''));
-    if ($more !== '') {
-        $html .= '<a class="khf-more kr-btn" href="' . esc_url($more) . '">' . esc_html__('查看完整热榜 →', 'kratos') . '</a>';
-    }
+//     $more = trim((string) kratos_option('hf_hot_more_url', ''));
+//     if ($more !== '') {
+//         $html .= '<a class="khf-more kr-btn" href="' . esc_url($more) . '">' . esc_html__('查看完整热榜 →', 'kratos') . '</a>';
+//     }
 
     return $html . '</div>';
 }
@@ -639,11 +640,20 @@ function kratos_home_render_latest()
         return '';
     }
 
+// 「进入文章列表」：优先后台填的地址，否则指向「文章页」（设置 → 阅读），最后回落首页
+    $more = trim((string) kratos_option('hf_latest_more_url', ''));
+    if ($more === '') {
+        $page_for_posts = (int) get_option('page_for_posts');
+        $more = $page_for_posts ? (string) get_permalink($page_for_posts) : home_url('/');
+    }
+//     $html .= '<a class="khf-more kr-btn" href="' . esc_url($more) . '">' . esc_html__('进入文章列表 →', 'kratos') . '</a>';
+
     $html  = '<div class="khf-col khf-col-latest">';
     $html .= kratos_home_header_html(
         kratos_option('hf_latest_title', __('最新文章', 'kratos')),
         kratos_option('hf_latest_sub', __('刚刚更新', 'kratos')),
-        kratos_option('hf_latest_icon', 'fas fa-pen-nib')
+        kratos_option('hf_latest_icon', 'fas fa-pen-nib'),
+        $more, '全部文章列表'
     );
 
     $show_thumb = (bool) kratos_option('hf_latest_thumb', true);
@@ -658,14 +668,6 @@ function kratos_home_render_latest()
         $html .= kratos_home_meta_html($p, array('cat', 'short_date', 'views', 'comments'));
         $html .= '</div></article>';
     }
-
-    // 「进入文章列表」：优先后台填的地址，否则指向「文章页」（设置 → 阅读），最后回落首页
-    $more = trim((string) kratos_option('hf_latest_more_url', ''));
-    if ($more === '') {
-        $page_for_posts = (int) get_option('page_for_posts');
-        $more = $page_for_posts ? (string) get_permalink($page_for_posts) : home_url('/');
-    }
-    $html .= '<a class="khf-more kr-btn" href="' . esc_url($more) . '">' . esc_html__('进入文章列表 →', 'kratos') . '</a>';
 
     return $html . '</div>';
 }
