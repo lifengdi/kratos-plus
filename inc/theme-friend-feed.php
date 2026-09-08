@@ -1076,7 +1076,7 @@ function kratos_friend_feed_shortcode($atts)
             .kratos-friend-feed .kff-stat{padding:16px 18px;}
             .kratos-friend-feed .kff-stat-num{font-size:24px;}
             .kratos-friend-feed .kff-stat-time{font-size:15px;}
-            .kratos-friend-feed .kff-list{grid-template-columns:1fr;}
+            .kratos-friend-feed .kff-list{grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));}
         }
 
         /* 暗夜模式；同步重写 --khs-bg-* 深卡色，避免 kff-title-icon / kff-stat-icon /

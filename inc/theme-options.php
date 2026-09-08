@@ -58,7 +58,7 @@ if (!function_exists('kratos_layout_cols')) {
     function kratos_layout_cols($single_full = false)
     {
         // 关掉侧栏时主体一律满宽，各模板无需各自判断
-        $single_full = $single_full || kratos_sidebar_off();
+        $single_full = $single_full || !kratos_perf_show_sidebar();
         $main = (int) kratos_option('g_main_col', 8);
         $side = (int) kratos_option('g_sidebar_col', 4);
         $main = max(1, min(12, $main));
