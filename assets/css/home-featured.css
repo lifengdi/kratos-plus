@@ -133,7 +133,7 @@ html[data-theme="dark"] .kratos-home {
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    padding: 8px 16px;
+    padding: 4px 16px;
     border-radius: 8px;
     border: 1px solid var(--khf-line);
     background: var(--khf-card);
