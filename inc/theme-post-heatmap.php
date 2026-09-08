@@ -662,7 +662,7 @@ function kratos_heatmap_js()
             stats.category_data.forEach(function(c){
                 cat+='<div class="kph-cat-item">'+
                     '<span class="kph-cat-name">'+esc(c.name)+'</span>'+
-                    '<span class="kph-cat-bar"><span class="kph-cat-fill" style="width:'+c.percent+'%;"></span></span>'+
+                    '<span class="kph-cat-bar"><div class="kph-cat-fill" style="width:'+c.percent+'%;"></div></span>'+
                     '<span class="kph-cat-percent">'+c.percent+'%</span></div>';
             });
             cat+='</div>';
