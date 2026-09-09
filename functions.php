@@ -136,6 +136,9 @@ require get_template_directory() . '/inc/theme-ai-tags.php';
 // 性能优化（资源按需加载 / 查询瘦身 / 数据库清理 / 运行指标）
 require get_template_directory() . '/inc/theme-performance.php';
 
+// CDN 域名重写（按文件后缀白 / 黑名单替换 host）
+require get_template_directory() . '/inc/theme-cdn.php';
+
 require get_template_directory() . '/inc/theme-comment-extends.php';
 
 // 评论用户等级
