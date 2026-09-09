@@ -352,7 +352,7 @@ function kratos_heatmap_css()
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    scrollbar-width: none;
     padding-bottom: 4px;
 }
 .kratos-heatmap .kph-graph::-webkit-scrollbar { height: 6px; }

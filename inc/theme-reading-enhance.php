@@ -161,10 +161,10 @@ function kratos_read_render_meta()
     $time_str  = str_replace('%minutes%', (string) $minutes, $time_tpl);
     // 图标只作为前缀，文案照后台「字数文案 / 阅读时间文案」原样展示；
     // 文字已经把语义说清楚，图标标记为 aria-hidden，避免读屏重复播报。
-    echo '<span class="kratos-read-words">'
+    echo '<span class="kratos-read-words a-meta-sm-hide">'
         . kratos_meta_icon('words')
         . esc_html($words_str) . '</span>';
-    echo '<span class="kratos-read-time">'
+    echo '<span class="kratos-read-time a-meta-sm-hide">'
         . kratos_meta_icon('time')
         . esc_html($time_str) . '</span>';
 }

@@ -412,7 +412,7 @@ function kratos_post_meta_items_html($post_id = null, $args = array())
 
             case 'comments':
                 if (!kratos_option('g_post_comments', true)) break;
-                $out .= '<span class="kr-meta-item a-meta-item a-meta-sm-hide">'
+                $out .= '<span class="kr-meta-item a-meta-item">'
                     . kratos_meta_icon('comments', __('条评论', 'kratos'))
                     . esc_html(number_format_i18n((int) get_comments_number($post->ID))) . '</span>';
                 break;

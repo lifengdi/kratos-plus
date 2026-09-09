@@ -5605,8 +5605,8 @@ html[data-theme="dark"] .w-about-plus .about-toggle {
 }
 
 @media (max-width: 767px) {
-    .k-main .board .article-panel .a-meta .a-meta-sm-hide {
-        display: none;
+    .a-meta-sm-hide {
+        display: none !important;
     }
 }
 

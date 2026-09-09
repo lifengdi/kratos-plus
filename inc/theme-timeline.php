@@ -163,6 +163,8 @@ function kratos_timeline_shortcode($atts = array())
             // 按 年 → 月 分组渲染（本页范围内）
             $current_year  = null;
             $current_month = null;
+            $icon_views    = kratos_meta_icon('views', __('点热度', 'kratos'));
+            $icon_comments = kratos_meta_icon('comments', __('条评论', 'kratos'));
             ?>
             <div class="ktl-body kr-body">
                 <div class="ktl-spine" aria-hidden="true"></div>
@@ -201,13 +203,13 @@ function kratos_timeline_shortcode($atts = array())
                             <span class="ktl-item-date"><?php echo esc_html($row['md']); ?></span>
                             <span class="ktl-item-sep">/</span>
                             <span class="ktl-item-views"><?php
-                                /* translators: %d: 热度数量 */
-                                printf(esc_html__('%d 点热度', 'kratos'), $row['views']);
+                                echo $icon_views;
+                                echo number_format_i18n($row['views']);
                             ?></span>
                             <span class="ktl-item-sep">/</span>
                             <span class="ktl-item-comments"><?php
-                                /* translators: %d: 评论数量 */
-                                printf(esc_html__('%d 条评论', 'kratos'), $row['comments']);
+                                echo $icon_comments;
+                                echo number_format_i18n($row['comments']);
                             ?></span>
                         </span>
                     </div>
