@@ -544,7 +544,7 @@ CSF::createSection($prefix, array(
             'id' => 'g_cdn_rewrite_host',
             'type' => 'text',
             'title' => __('CDN 域名', 'kratos'),
-            'subtitle' => __('可填 cdn.example.com、//cdn.example.com 或 https://cdn.example.com（可含路径前缀）', 'kratos'),
+            'subtitle' => __('只填域名，如 cdn.example.com；协议沿用页面自身的协议', 'kratos'),
             'default' => '',
             'dependency' => array('g_cdn_rewrite', '==', 'true'),
         ),
