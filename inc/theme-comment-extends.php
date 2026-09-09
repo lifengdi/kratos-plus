@@ -214,11 +214,14 @@ function wpcdi_get_svg_icon($type, $name) {
     } elseif ($type === 'os') {
         if (strpos($name, 'Windows') !== false) {
             $file = 'windows';
-        } elseif (strpos($name, 'macOS') !== false || strpos($name, 'Macintosh') !== false
-            || strpos($name, 'iPhone') !== false || strpos($name, 'iPad') !== false
-            || strpos($name, 'iPod') !== false || strpos($name, 'iOS') !== false) {
+        } elseif (strpos($name, 'macOS') !== false || strpos($name, 'Macintosh') !== false) {
+            $file = 'imac';
+        } elseif (strpos($name, 'iPhone') !== false || strpos($name, 'iPad') !== false
+            || strpos($name, 'iPod') !== false) {
+            $file = 'iphone';
+        } elseif (strpos($name, 'iOS') !== false) {
             $file = 'apple';
-        } elseif (strpos($name, '鸿蒙') !== false || strpos($name, 'HarmonyOS') !== false) {
+        }  elseif (strpos($name, '鸿蒙') !== false || strpos($name, 'HarmonyOS') !== false) {
             $file = 'harmonyos';
         } elseif (strpos($name, 'Android') !== false) {
             $file = 'android';
@@ -228,7 +231,7 @@ function wpcdi_get_svg_icon($type, $name) {
     }
 
     $url = get_template_directory_uri() . '/assets/img/svg/' . $file . '.svg';
-    return '<img src="' . esc_url($url) . '" width="14" height="14" alt="" style="vertical-align:middle;margin-right:2px;">';
+    return '<img src="' . esc_url($url) . '" alt="" style="vertical-align:middle;margin-right:2px;height:15px;">';
 }
 
 /**
@@ -572,11 +575,13 @@ function wpcdi_add_info_after_comment_content($comment_text, $comment) {
 
     if ($show_os) {
         $os_icon = wpcdi_get_svg_icon('os', $info['os']);
-        $items[] = '<span style="' . $item_style . '">' . $os_icon . '<span>' . esc_html($info['os']) . '</span></span>';
+//         $items[] = '<span style="' . $item_style . '">' . $os_icon . '<span>' . esc_html($info['os']) . '</span></span>';
+        $items[] = '<span style="' . $item_style . '">' . $os_icon . '</span>';
     }
     if ($show_browser) {
         $browser_icon = wpcdi_get_svg_icon('browser', $info['browser']);
-        $items[] = '<span style="' . $item_style . '">' . $browser_icon . '<span>' . esc_html($info['browser']) . '</span></span>';
+//         $items[] = '<span style="' . $item_style . '">' . $browser_icon . '<span>' . esc_html($info['browser']) . '</span></span>';
+        $items[] = '<span style="' . $item_style . '">' . $browser_icon . '</span>';
     }
     if ($show_location) {
         $items[] = '<span style="' . $item_style . '">' . $location_icon . '<span>' . esc_html($info['location']) . '</span></span>';
