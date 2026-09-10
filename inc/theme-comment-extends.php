@@ -215,7 +215,7 @@ function wpcdi_get_svg_icon($type, $name) {
         if (strpos($name, 'Windows') !== false) {
             $file = 'windows';
         } elseif (strpos($name, 'macOS') !== false || strpos($name, 'Macintosh') !== false) {
-            $file = 'imac';
+            $file = 'apple';
         } elseif (strpos($name, 'iPhone') !== false || strpos($name, 'iPad') !== false
             || strpos($name, 'iPod') !== false) {
             $file = 'iphone';
@@ -231,7 +231,7 @@ function wpcdi_get_svg_icon($type, $name) {
     }
 
     $url = get_template_directory_uri() . '/assets/img/svg/' . $file . '.svg';
-    return '<img src="' . esc_url($url) . '" alt="" style="vertical-align:middle;margin-right:2px;height:15px;">';
+    return '<img class="comment-svg-icon" src="' . esc_url($url) . '" alt="' . $name . '">';
 }
 
 /**
@@ -568,20 +568,20 @@ function wpcdi_add_info_after_comment_content($comment_text, $comment) {
 
     $info = wpcdi_get_comment_info($comment_ip, $user_agent);
 
-    $location_icon = '<img src="' . esc_url(get_template_directory_uri() . '/assets/img/svg/location.svg') . '" width="16" height="16" alt="" style="vertical-align:middle;">';
+    $location_icon = '<img src="' . esc_url(get_template_directory_uri() . '/assets/img/svg/location.svg') . '" alt="location" class="comment-svg-icon">';
 
     $item_style = 'white-space: nowrap;display: inline-flex; align-items: center;';
     $items = array();
 
     if ($show_os) {
         $os_icon = wpcdi_get_svg_icon('os', $info['os']);
-//         $items[] = '<span style="' . $item_style . '">' . $os_icon . '<span>' . esc_html($info['os']) . '</span></span>';
-        $items[] = '<span style="' . $item_style . '">' . $os_icon . '</span>';
+        $items[] = '<span style="' . $item_style . '">' . $os_icon . '<span class="a-meta-sm-hide">' . esc_html($info['os']) . '</span></span>';
+//         $items[] = '<span style="' . $item_style . '">' . $os_icon . '</span>';
     }
     if ($show_browser) {
         $browser_icon = wpcdi_get_svg_icon('browser', $info['browser']);
-//         $items[] = '<span style="' . $item_style . '">' . $browser_icon . '<span>' . esc_html($info['browser']) . '</span></span>';
-        $items[] = '<span style="' . $item_style . '">' . $browser_icon . '</span>';
+        $items[] = '<span style="' . $item_style . '">' . $browser_icon . '<span class="a-meta-sm-hide">' . esc_html($info['browser']) . '</span></span>';
+//         $items[] = '<span style="' . $item_style . '">' . $browser_icon . '</span>';
     }
     if ($show_location) {
         $items[] = '<span style="' . $item_style . '">' . $location_icon . '<span>' . esc_html($info['location']) . '</span></span>';
