@@ -187,7 +187,7 @@ function pagelist($range = 5)
         }
         echo "<div class='paginations'>";
         if ($paged > 1) {
-            echo '<a href="' . get_pagenum_link($paged - 1) . '" class="prev" title="上一页"><i class="kicon i-larrows"></i></a>';
+            echo '<a href="' . get_pagenum_link($paged - 1) . '" class="prev" title="上一页">' . kratos_icon('i-larrows') . '</a>';
         }
         if ($max_page > $range) {
             if ($paged < $range) {
@@ -237,7 +237,7 @@ function pagelist($range = 5)
             }
         }
         if ($paged < $max_page) {
-            echo '<a href="' . get_pagenum_link($paged + 1) . '" class="next" title="下一页"><i class="kicon i-rarrows"></i></a>';
+            echo '<a href="' . get_pagenum_link($paged + 1) . '" class="next" title="下一页">' . kratos_icon('i-rarrows') . '</a>';
         }
         echo "</div>";
     }
@@ -324,7 +324,7 @@ if (!function_exists('comment_callback')) :
                     <div class="tool reply ms-2 d-inline-block float-end">
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
-                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
+                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => kratos_icon('i-reply') . '<span class="ms-1">' . __('回复', 'kratos') . '</span>');
                         comment_reply_link(array_merge($defaults, array('depth' => 1, 'max_depth' => get_option('thread_comments_depth', 5))));
                         ?>
                     </div>
@@ -391,7 +391,7 @@ if (!function_exists('comment_callbacks')) :
                     <div class="tool reply ms-2 d-inline-block float-end">
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
-                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
+                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => kratos_icon('i-reply') . '<span class="ms-1">' . __('回复', 'kratos') . '</span>');
                         comment_reply_link(array_merge($defaults, array('depth' => $depth, 'max_depth' => $args['max_depth'])));
                         ?>
                     </div>

@@ -82,5 +82,5 @@ function kratos_reading_mode_button()
     if (!kratos_option('g_reading_mode', false)) {
         return '';
     }
-    return '<span class="kratos-reading-mode-btn" title="' . esc_attr__('阅读模式', 'kratos') . '"><i class="fas fa-book-open"></i> ' . __('阅读模式', 'kratos') . '</span>';
+    return '<span class="kratos-reading-mode-btn" title="' . esc_attr__('阅读模式', 'kratos') . '">' . kratos_fa_svg('fas fa-book-open') . ' ' . __('阅读模式', 'kratos') . '</span>';
 }

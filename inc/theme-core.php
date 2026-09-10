@@ -91,7 +91,7 @@ function theme_autoload()
     if (!is_admin()) {
         // css
         wp_enqueue_style('bootstrap', ASSET_PATH . '/assets/css/bootstrap.min.css', array(), '5.3.3');
-        wp_enqueue_style('kicon', ASSET_PATH . '/assets/css/iconfont.min.css', array(), THEME_VERSION);
+        // kicon 字体前台不再加载，图标统一由 kratos_icon() 输出 inline SVG（见 theme-svg-icons.php）。
         wp_enqueue_style('layer', ASSET_PATH . '/assets/css/layer.min.css', array(), '3.1.1');
         if ((kratos_option('g_article_lightgallery', true) && is_single()) || (kratos_option('g_page_lightgallery', true) && is_page())) {
             wp_enqueue_script('lightgallery', ASSET_PATH . '/assets/js/lightgallery.min.js', array(), '1.4.0', true);
@@ -100,11 +100,8 @@ function theme_autoload()
         if (kratos_option('g_animate', false)) {
             wp_enqueue_style('animate', ASSET_PATH . '/assets/css/animate.min.css', array(), '4.1.1');
         }
-        // Font Awesome 无条件加载：列表页 / 文章详情页 / 特色首页的元信息图标
-        // （热度、评论数、点赞数、作者、日期、字数、阅读时长，见 kratos_meta_icon()）
-        // 已经属于主题核心 UI，不存在开关（曾经的 g_fontawesome 选项已移除）：主题自带
-        // FA Free 实体，前台/后台都用本地这一份，页脚自定义社交图标同理无需按需入队。
-        wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
+        // FA 字体前台不再加载（~356KB），图标改为 kratos_fa_svg() 服务端输出 inline SVG。
+        // 后台仍由 theme-extends.php 的 kratos_csf_local_fontawesome() 加载（CSF icon picker 需要）。
         wp_enqueue_style('kratos', ASSET_PATH . '/style.css', array(), THEME_VERSION);
         // 短代码/特色页公共组件样式（kr-* 统一类的默认外观层）。
         // 必须在 style.css 之后、任何皮肤（kratos-weekday-skin）之前加载，

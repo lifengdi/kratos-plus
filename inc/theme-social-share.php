@@ -82,7 +82,7 @@ function kratos_social_share_html()
         $buttons .= '<a class="post-share-btn" href="' . $href . '"' . $target . $extra_attr
             . ' style="--share-color:' . esc_attr($p['color']) . '"'
             . ' title="' . esc_attr($p['label']) . '">'
-            . '<i class="' . esc_attr($p['icon']) . '"></i></a>';
+            . kratos_fa_svg($p['icon']) . '</a>';
     }
 
     if (empty($buttons)) {
@@ -93,7 +93,7 @@ function kratos_social_share_html()
     // 否则页面缓存会把某一次访问的判定结果固定给所有设备。
     $native = '<a class="post-share-btn post-share-native" href="#" hidden'
         . ' style="--share-color:#6b7785" title="' . esc_attr__('分享', 'kratos') . '">'
-        . '<i class="fas fa-share-alt"></i></a>';
+        . kratos_fa_svg('fas fa-share-alt') . '</a>';
 
     $html = '<div class="post-share-buttons" data-title="' . esc_attr(get_the_title())
         . '" data-url="' . esc_attr(get_permalink()) . '">'

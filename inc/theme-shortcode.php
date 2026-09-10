@@ -66,7 +66,7 @@ function bdbtn($atts, $content = null, $code = "")
 {
     $return = '<a class="downbtn" href="';
     $return .= $content;
-    $return .= '" target="_blank"><i class="kicon i-download me-1"></i>立即下载</a>';
+    $return .= '" target="_blank">' . kratos_icon('i-download', 'me-1') . '立即下载</a>';
     return $return;
 }
 add_shortcode('bdbtn', 'bdbtn');
@@ -217,7 +217,7 @@ add_shortcode('reply', 'reply');
 function accordion($atts, $content = null, $code = "")
 {
     extract(shortcode_atts(array("title" => __('标题内容', 'kratos')), $atts));
-    $return = '<div class="accordion"><div class="acheader"><div class="icon"><i class="kicon i-plus"></i></div><span>';
+    $return = '<div class="accordion"><div class="acheader"><div class="icon">' . kratos_icon('i-plus') . '</div><span>';
     $return .= $title;
     $return .= '</span></div><div class="contents"><div class="inner">';
     $return .= do_shortcode($content);

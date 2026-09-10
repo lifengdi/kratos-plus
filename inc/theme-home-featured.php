@@ -147,7 +147,11 @@ function kratos_home_icon_html($icon)
     if ($icon === '') {
         return '';
     }
-    return '<span class="khf-ico kr-ico"><i class="' . esc_attr($icon) . '"></i></span>';
+    $svg = kratos_fa_svg($icon);
+    if ($svg === '') {
+        return '';
+    }
+    return '<span class="khf-ico kr-ico">' . $svg . '</span>';
 }
 
 /**
@@ -949,10 +953,6 @@ function kratos_home_enqueue_assets()
     if (!kratos_option('hf_enabled', true) || !kratos_home_is_active()) {
         return;
     }
-
-    // 模块图标用 Font Awesome；主题「Font Awesome」开关未开时也要保证图标可见。
-    // 句柄与 theme-core.php 一致，重复入队会被 WP 去重。
-    wp_enqueue_style('fontawesome', ASSET_PATH . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
 
     wp_enqueue_style('kratos-home-featured', ASSET_PATH . '/assets/css/home-featured.css', array('kratos-components'), THEME_VERSION);
     wp_enqueue_script('kratos-home-featured', ASSET_PATH . '/assets/js/home-featured.js', array(), THEME_VERSION, true);

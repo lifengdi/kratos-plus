@@ -471,12 +471,12 @@ html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer p a:hover 
 html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a {
     border-bottom: none !important;
 }
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a .kicon,
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a .kratos-fa-svg,
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a > .kratos-fa-svg {
     color: var(--kr-skin-muted);
 }
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
-html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a:hover .kratos-fa-svg,
+html[data-weekday-skin="bookfold"]:not([data-theme="dark"]) .k-footer .social a:hover > .kratos-fa-svg {
     color: var(--kr-skin-accent-2);
 }
 

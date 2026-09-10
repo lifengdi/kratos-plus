@@ -30,19 +30,19 @@ if (comments_open()) { ?>
 							<div class="comment-info mb-3 row">
 								<div class="col-md-6 comment-form-author">
 									<div class="input-group">
-										<span class="input-group-text"><i class="kicon i-user"></i></span>
+										<span class="input-group-text"><?php echo kratos_icon('i-user'); ?></span>
 										<input class="form-control" id="author" placeholder="<?php _e('昵称', 'kratos'); ?>" name="author" type="text"<?php echo $req_attr; ?> value="<?php echo esc_attr($commenter['comment_author']); ?>">
 									</div>
 								</div>
 								<div class="col-md-6 mt-3 mt-md-0 comment-form-email">
 									<div class="input-group">
-										<span class="input-group-text"><i class="kicon i-cemail"></i></span>
+										<span class="input-group-text"><?php echo kratos_icon('i-cemail'); ?></span>
 										<input id="email" class="form-control" name="email" placeholder="<?php _e('邮箱', 'kratos'); ?>" type="email"<?php echo $req_attr; ?> value="<?php echo esc_attr($commenter['comment_author_email']); ?>">
 									</div>
 								</div>
 								<div class="col-md-6 mt-3 comment-form-author">
 									<div class="input-group">
-										<span class="input-group-text"><i class="kicon i-url"></i></span>
+										<span class="input-group-text"><?php echo kratos_icon('i-url'); ?></span>
 										<input class="form-control" id="url" placeholder="<?php _e('网址', 'kratos'); ?>" name="url" type="url" value="<?php echo esc_attr($commenter['comment_author_url']); ?>">
 									</div>
 								</div>
@@ -52,7 +52,7 @@ if (comments_open()) { ?>
 							<textarea class="form-control" id="comment" name="comment" rows="7" required="required" placeholder="<?php echo esc_attr((string) kratos_option('g_comment_placeholder', __('说点什么吧…', 'kratos'))); ?>"></textarea>
 							<div class="text-bar clearfix">
 								<div class="tool float-start">
-									<a class="addbtn" href="#" id="addsmile"><i class="kicon i-face"></i></a>
+									<a class="addbtn" href="#" id="addsmile"><?php echo kratos_icon('i-face'); ?></a>
 									<div class="smile">
 										<div class="clearfix">
 											<?php echo $smilies; ?>
@@ -91,8 +91,8 @@ if (comments_open()) { ?>
 		</div>
 		<div id="commentpage" class="paginations my-2">
 			<?php paginate_comments_links(array(
-				'prev_text' => '<i class="kicon i-larrows"></i>',
-				'next_text' => '<i class="kicon i-rarrows"></i>',
+				'prev_text' => kratos_icon('i-larrows'),
+				'next_text' => kratos_icon('i-rarrows'),
 				'type'      => 'plain',
 			)); ?>
 		</div>

@@ -241,12 +241,12 @@ html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer::before {
 html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer p a:hover {
     color: #fff !important;
 }
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a .kicon,
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a .kratos-fa-svg,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a > .kratos-fa-svg {
     color: #F8E7B8 !important;
 }
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
-html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a:hover .kratos-fa-svg,
+html[data-weekday-skin="vermilion"]:not([data-theme="dark"]) .k-footer .social a:hover > .kratos-fa-svg {
     color: #fff !important;
 }
 

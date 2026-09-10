@@ -93,7 +93,7 @@ function most_comm_posts($days = 30, $nums = 6)
             $title = esc_attr(strip_tags($topten->post_title));
             $commentcount = $topten->comment_count;
             if ($commentcount >= 0) {
-                $output .= '<a class="bookmark-item" title="' . $title . '" href="' . get_permalink($postid) . '" rel="bookmark"><i class="kicon i-book"></i>';
+                $output .= '<a class="bookmark-item" title="' . $title . '" href="' . get_permalink($postid) . '" rel="bookmark">' . kratos_icon('i-book');
                 $output .= $title;
                 $output .= '</a>';
             }
@@ -325,26 +325,8 @@ class widget_about extends WP_Widget
     }
 
     // 前台按需加载 FA CSS（当社交链接里存在 fa 图标 class 时才加载）
-    public function front_scripts()
-    {
-        if (!is_active_widget(false, false, $this->id_base)) {
-            return;
-        }
-        if (wp_style_is('fontawesome', 'enqueued') || wp_style_is('fontawesome', 'registered')) {
-            return;
-        }
-        $settings = $this->get_settings();
-        if (!is_array($settings)) return;
-        foreach ($settings as $instance) {
-            if (empty($instance['socials']) || !is_array($instance['socials'])) continue;
-            foreach ($instance['socials'] as $s) {
-                if (!empty($s['icon']) && stripos($s['icon'], 'fa') !== false && stripos($s['icon'], ' ') !== false) {
-                    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
-                    return;
-                }
-            }
-        }
-    }
+    // FA 字体前台不再加载，社交图标改为 kratos_fa_svg() 输出 inline SVG。
+    public function front_scripts() {}
 
     private function defaults()
     {
@@ -486,17 +468,11 @@ class widget_about extends WP_Widget
                 $qr     = isset($s['qrcode']) ? $s['qrcode'] : '';
                 if ($icon === '' && $label === '' && $url === '' && $qr === '') continue;
 
-                // 图标节点：kicon（i-xxx）或 fa（含空格视为 FA class）
                 $icon_html = '';
                 if ($icon !== '') {
-                    if (strpos($icon, 'i-') === 0) {
-                        $icon_html = '<i class="kicon ' . esc_attr($icon) . '"></i>';
-                    } elseif (strpos($icon, ' ') !== false) {
-                        $icon_html = '<i class="' . esc_attr($icon) . '"></i>';
-                    } else {
-                        $icon_html = '<i class="kicon i-' . esc_attr(ltrim($icon, 'i-')) . '"></i>';
-                    }
-                } else {
+                    $icon_html = kratos_icon($icon);
+                }
+                if ($icon_html === '') {
                     $icon_html = '<span class="w-about-social-letter">' . esc_html(mb_substr($label !== '' ? $label : '?', 0, 1, 'UTF-8')) . '</span>';
                 }
 
@@ -711,7 +687,7 @@ HTML;
                     ?>
                 </div>
                 <p class="wab-add"><button type="button" class="button button-secondary wab-add-btn">+ <?php _e('添加一项', 'kratos'); ?></button></p>
-                <p class="description" style="margin:2px 0 0"><?php _e('图标：主题内置 kicon（i-github/i-wechat…）', 'kratos'); ?></p>
+                <p class="description" style="margin:2px 0 0"><?php _e('图标：下拉选择或填写 FA class（如 fab fa-github）', 'kratos'); ?></p>
                 <template class="wab-social-tpl"><?php echo $render_row(9999, array('icon'=>'','label'=>'','url'=>'','newtab'=>1,'qrcode'=>'')); ?></template>
             </div>
         </details>
@@ -862,9 +838,9 @@ class widget_posts extends WP_Widget
         echo '<div class="widget w-recommended">';
     ?>
         <div class="nav nav-tabs d-none d-xl-flex" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link <?php echo $active = ($order == 'new') ? 'active' : null; ?>" id="nav-new-tab" data-bs-toggle="tab" href="#nav-new" role="tab" aria-controls="nav-new" aria-selected="<?php echo $selected = ($order == 'new') ? 'true' : 'false'; ?>"><i class="kicon i-tabnew"></i><?php _e('最新', 'kratos'); ?></a>
-            <a class="nav-item nav-link <?php echo $active = ($order == 'hot') ? 'active' : null; ?>" id="nav-hot-tab" data-bs-toggle="tab" href="#nav-hot" role="tab" aria-controls="nav-hot" aria-selected="<?php echo $selected = ($order == 'hot') ? 'true' : 'false'; ?>"><i class="kicon i-tabhot"></i><?php _e('热点', 'kratos'); ?></a>
-            <a class="nav-item nav-link <?php echo $active = ($order == 'random') ? 'active' : null; ?>" id="nav-random-tab" data-bs-toggle="tab" href="#nav-random" role="tab" aria-controls="nav-random" aria-selected="<?php echo $selected = ($order == 'random') ? 'true' : 'false'; ?>"><i class="kicon i-tabrandom"></i><?php _e('随机', 'kratos'); ?></a>
+            <a class="nav-item nav-link <?php echo $active = ($order == 'new') ? 'active' : null; ?>" id="nav-new-tab" data-bs-toggle="tab" href="#nav-new" role="tab" aria-controls="nav-new" aria-selected="<?php echo $selected = ($order == 'new') ? 'true' : 'false'; ?>"><?php echo kratos_icon('i-tabnew'); ?><?php _e('最新', 'kratos'); ?></a>
+            <a class="nav-item nav-link <?php echo $active = ($order == 'hot') ? 'active' : null; ?>" id="nav-hot-tab" data-bs-toggle="tab" href="#nav-hot" role="tab" aria-controls="nav-hot" aria-selected="<?php echo $selected = ($order == 'hot') ? 'true' : 'false'; ?>"><?php echo kratos_icon('i-tabhot'); ?><?php _e('热点', 'kratos'); ?></a>
+            <a class="nav-item nav-link <?php echo $active = ($order == 'random') ? 'active' : null; ?>" id="nav-random-tab" data-bs-toggle="tab" href="#nav-random" role="tab" aria-controls="nav-random" aria-selected="<?php echo $selected = ($order == 'random') ? 'true' : 'false'; ?>"><?php echo kratos_icon('i-tabrandom'); ?><?php _e('随机', 'kratos'); ?></a>
         </div>
         <div class="nav nav-tabs d-xl-none" id="nav-tab" role="tablist">
             <a class="nav-item nav-link <?php echo $active = ($order == 'new') ? 'active' : null; ?>" id="nav-new-tab" data-bs-toggle="tab" href="#nav-new" role="tab" aria-controls="nav-new" aria-selected="<?php echo $selected = ($order == 'new') ? 'true' : 'false'; ?>"><?php _e('最新', 'kratos'); ?></a>
@@ -875,7 +851,7 @@ class widget_posts extends WP_Widget
             <div class="tab-pane fade <?php echo $active = ($order == 'new') ? 'show active' : null; ?>" id="nav-new" role="tabpanel" aria-labelledby="nav-new-tab">
                 <?php $myposts = get_posts('numberposts=' . $number . ' & offset=0');
                 foreach ($myposts as $post) : ?>
-                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><i class="kicon i-book"></i><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
+                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><?php echo kratos_icon('i-book'); ?><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
                 <?php endforeach; ?>
             </div>
             <div class="tab-pane fade <?php echo $active = ($order == 'hot') ? 'show active' : null; ?>" id="nav-hot" role="tabpanel" aria-labelledby="nav-hot-tab">
@@ -886,7 +862,7 @@ class widget_posts extends WP_Widget
             <div class="tab-pane fade <?php echo $active = ($order == 'random') ? 'show active' : null; ?>" id="nav-random" role="tabpanel" aria-labelledby="nav-random-tab">
                 <?php $myposts = get_posts('numberposts=' . $number . ' & offset=0 & orderby=rand');
                 foreach ($myposts as $post) : ?>
-                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><i class="kicon i-book"></i><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
+                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><?php echo kratos_icon('i-book'); ?><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
                 <?php endforeach; ?>
             </div>
         </div>

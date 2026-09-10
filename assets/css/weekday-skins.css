@@ -976,12 +976,12 @@ html[data-weekday-skin]:not([data-theme="dark"]) .k-footer p a {
 html[data-weekday-skin]:not([data-theme="dark"]) .k-footer p a:hover {
     color: #fff;
 }
-html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a .kicon,
-html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a .kratos-fa-svg,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a > .kratos-fa-svg {
     color: var(--kr-skin-footer-fg);
 }
-html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
-html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a:hover .kratos-fa-svg,
+html[data-weekday-skin]:not([data-theme="dark"]) .k-footer .social a:hover > .kratos-fa-svg {
     color: #fff;
 }
 
@@ -1249,20 +1249,20 @@ html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
     box-shadow: 0 4px 16px rgba(31, 80, 130, 0.12);
 }
 
-html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch .cmdk-launch-ico,
-html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
-html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble a,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
 html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico,
-html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
-html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="mon"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch .cmdk-launch-ico,
-html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
-html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble a,
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
 html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico,
-html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span {
+html[data-weekday-skin="fri"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn {
     color: var(--kr-skin-heading);
 }
 
@@ -1293,11 +1293,11 @@ html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
     box-shadow: 3px 3px 0 #1A1A1A;
 }
 
-html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch .cmdk-launch-ico,
-html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
-html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
-html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble a,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
 html[data-weekday-skin="tue"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico {
     color: #1A1A1A;
@@ -1328,11 +1328,11 @@ html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
         -5px -5px 12px rgba(255, 255, 255, 0.85);
 }
 
-html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch .cmdk-launch-ico,
-html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
-html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
-html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble a,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
 html[data-weekday-skin="wed"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico {
     color: #5E7CA6;
@@ -1360,11 +1360,11 @@ html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .got
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search span,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch .cmdk-launch-ico,
-html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble span,
-html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat span,
-html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn span,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble a,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
+html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop .gotop-btn,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode .darkmode-ico,
 html[data-weekday-skin="thu"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher .skin-switcher-ico {
     color: #0A0A0A;

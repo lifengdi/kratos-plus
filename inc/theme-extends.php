@@ -218,9 +218,9 @@ function kratos_csf_group_icons_by_family($icon_lists)
     $families = (array) apply_filters('kratos_icon_picker_families', array('fas', 'far', 'fab'));
 
     $labels = array(
-        'fas' => __('Solid 实心 · 推荐（字体已加载，选它不增加请求）', 'kratos'),
-        'far' => __('Regular 线性 · 前台会额外加载 19KB 字体', 'kratos'),
-        'fab' => __('Brands 品牌 · 前台会额外加载 113KB 字体，建议只用于社交图标', 'kratos'),
+        'fas' => __('Solid 实心', 'kratos'),
+        'far' => __('Regular 线性', 'kratos'),
+        'fab' => __('Brands 品牌', 'kratos'),
     );
 
     // 收集所有图标，按前缀归组
@@ -328,41 +328,37 @@ add_filter('script_loader_src', 'kratos_cm_localize_src');
  * 元信息图标：列表页 / 文章详情页 / 特色首页的「热度、评论数、点赞数、作者、
  * 日期、字数、阅读时长」统一用图标代替文字标签。
  *
- * 图标取自主题内置的 Font Awesome Free（版本见 FA_VERSION，实体在
- * assets/css/fontawesome.min.css + assets/fonts/webfonts/），全部用 solid 风格，
- * 保证一行里的线条粗细一致。FA 由 theme_autoload() 无条件入队。
- *
- * 为什么不用主题自带的 iconfont（kicon）：它的字形墨迹没有在 em 方盒里居中，
- * 且每个字形偏移量不同（i-comments 偏下 0.089em、i-calendar 0.031em），
- * 混排时对不齐。FA solid 的墨迹中心基本落在行盒中心（实测最大偏差 0.031em），
- * 配合 .kratos-meta-icon 的 flex 居中即可与文字严格对齐。
+ * 图标用 FA solid 风格的 inline SVG（kratos_fa_svg()），保证一行里的线条粗细一致。
  *
  * @param string $name  语义名：category/date/comments/views/loves/author/words/time
- * @param string $label 无障碍描述，同时作为 hover 提示（原来的文字标签放这里）
+ * @param string $label 无障碍描述，同时作为 hover 提示
  * @return string
  */
 function kratos_meta_icon($name, $label = '')
 {
     $icons = array(
-        'category' => 'fa-folder-open', // 分类
-        'date'     => 'fa-calendar-days',
-        'comments' => 'fa-comment-dots',
-        'views'    => 'fa-fire',      // 热度
-        'loves'    => 'fa-thumbs-up',
-        'author'   => 'fa-user',
-        'words'    => 'fa-file-lines', // 字数（文档 + 文字行；备选 fa-align-left / fa-paragraph / fa-font）
-        'time'     => 'fa-clock',     // 阅读时长
+        'category' => 'fas fa-folder-open',
+        'date'     => 'fas fa-calendar-days',
+        'comments' => 'fas fa-comment-dots',
+        'views'    => 'fas fa-fire',
+        'loves'    => 'fas fa-thumbs-up',
+        'author'   => 'fas fa-user',
+        'words'    => 'fas fa-file-lines',
+        'time'     => 'fas fa-clock',
     );
 
     if (!isset($icons[$name])) {
         return '';
     }
 
-    $attr = $label !== ''
-        ? ' title="' . esc_attr($label) . '" aria-label="' . esc_attr($label) . '" role="img"'
-        : ' aria-hidden="true"';
+    $attrs = array();
+    if ($label !== '') {
+        $attrs['title']      = $label;
+        $attrs['aria-label'] = $label;
+        $attrs['role']       = 'img';
+    }
 
-    return '<i class="fa-solid ' . $icons[$name] . ' kratos-meta-icon"' . $attr . '></i>';
+    return kratos_fa_svg($icons[$name], 'kratos-meta-icon', $attrs);
 }
 
 /**

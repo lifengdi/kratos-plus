@@ -131,7 +131,7 @@ function kratos_read_build_update_notice()
         ),
         $tpl
     );
-    return '<div class="kratos-update-notice"><i class="fas fa-info-circle"></i><span>' . wp_kses_post($msg) . '</span></div>';
+    return '<div class="kratos-update-notice">' . kratos_fa_svg('fas fa-info-circle') . '<span>' . wp_kses_post($msg) . '</span></div>';
 }
 
 /**

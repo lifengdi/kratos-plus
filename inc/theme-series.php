@@ -485,37 +485,7 @@ function kratos_series_get_icon($term_id)
     return $icon !== '' ? $icon : 'fa-solid fa-layer-group';
 }
 
-/**
- * 系列页面（is_tax('kratos_series'))可能不属于主题原生资源逻辑，
- * 但若图标是 Font Awesome，前台单篇文章需要 FA 样式。
- * 若图标带 fa- 前缀且当前主题未启用 fontawesome，则临时入队。
- */
-add_action('wp_enqueue_scripts', function () {
-    if (is_admin()) return;
-    if (!kratos_option('g_series_enabled', true)) return;
-
-    $need_fa = false;
-    if (is_singular('post')) {
-        $term = kratos_series_get_current_term(get_the_ID());
-        if ($term) {
-            $icons = array(get_term_meta($term->term_id, 'kratos_series_icon', true));
-            // 开头 / 结尾文字的标题头图标同样可能是 FA
-            foreach (array('intro', 'outro') as $slot) {
-                $icons[] = get_term_meta($term->term_id, 'kratos_series_' . $slot . '_head_icon', true);
-                $icons[] = kratos_option('g_series_' . $slot . '_head_icon', '');
-            }
-            foreach ($icons as $icon) {
-                if (is_string($icon) && $icon !== '' && strpos($icon, 'fa') !== false) { $need_fa = true; break; }
-            }
-        }
-    } elseif (is_tax('kratos_series')) {
-        // 归档模板使用 fas fa-clock 展示日期，且 term 图标也是 FA
-        $need_fa = true;
-    }
-    if (!$need_fa) return;
-    if (wp_style_is('fontawesome', 'enqueued') || wp_style_is('fontawesome', 'registered')) return;
-    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
-}, 25);
+// FA 字体前台不再加载，系列图标改为 kratos_fa_svg() 输出 inline SVG。
 
 /**
  * 编辑器侧栏 metabox：系列内排序值
@@ -785,7 +755,7 @@ function kratos_series_render_text($slot)
     if ($data['head_text'] !== '') {
         echo '<div class="kratos-series-text-head kr-hd">';
         if ($data['head_icon'] !== '') {
-            echo '<i class="' . esc_attr($data['head_icon']) . ' kratos-series-text-icon kr-ico"></i>';
+            echo '<span class="kratos-series-text-icon kr-ico">' . kratos_fa_svg($data['head_icon']) . '</span>';
         }
         echo '<span class="kratos-series-text-title kr-hd-title">' . esc_html($data['head_text']) . '</span>';
         echo '</div>';
@@ -834,11 +804,11 @@ function kratos_series_render_box()
     echo '<div class="kratos-series' . ($open ? ' is-open' : '') . '">';
     echo '<div class="kratos-series-head kr-hd">';
     echo '<div class="kratos-series-titlewrap">';
-    echo '<i class="' . esc_attr(kratos_series_get_icon($term->term_id)) . ' kratos-series-icon kr-ico"></i>';
+    echo '<span class="kratos-series-icon kr-ico">' . kratos_fa_svg(kratos_series_get_icon($term->term_id)) . '</span>';
     echo '<a class="kratos-series-title kr-hd-title" href="' . esc_url(get_term_link($term)) . '">' . wp_kses_post($title) . '</a>';
     echo '<span class="kratos-series-pos">' . esc_html($pos) . '</span>';
     echo '</div>';
-    echo '<button type="button" class="kratos-series-toggle" aria-expanded="' . ($open ? 'true' : 'false') . '" aria-label="' . esc_attr__('展开/收起系列列表', 'kratos') . '"><i class="fas fa-chevron-down"></i></button>';
+    echo '<button type="button" class="kratos-series-toggle" aria-expanded="' . ($open ? 'true' : 'false') . '" aria-label="' . esc_attr__('展开/收起系列列表', 'kratos') . '">' . kratos_fa_svg('fas fa-chevron-down') . '</button>';
     echo '</div>';
 
     // 面包屑（仅有祖先时展示）
@@ -1170,17 +1140,6 @@ function kratos_series_list_shortcode($atts = array())
     foreach ($tree as $pid => $group) {
         $tree[$pid] = kratos_series_sort_terms($group);
     }
-    // 若任一 term 用了 FA 图标，且当前页未加载 FA，则临时入队
-    foreach ($terms as $t) {
-        $ic = get_term_meta($t->term_id, 'kratos_series_icon', true);
-        if ($ic && strpos($ic, 'fa') !== false) {
-            if (!wp_style_is('fontawesome', 'enqueued') && !wp_style_is('fontawesome', 'registered')) {
-                wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
-            }
-            break;
-        }
-    }
-
     ob_start();
     echo '<div class="kratos-series-list-wrap">';
     kratos_series_list_render_branch($tree, (int) $atts['parent'], 0, (int) $atts['depth']);
@@ -1203,7 +1162,7 @@ function kratos_series_list_render_branch($tree, $parent_id, $level, $max_depth)
 
         echo '<li class="ksl-item' . ($has_children ? ' has-children' : '') . '">';
         echo '<a class="ksl-card kr-card" href="' . esc_url(get_term_link($term)) . '">';
-        echo '<span class="ksl-icon" aria-hidden="true"><i class="' . esc_attr($icon) . '"></i></span>';
+        echo '<span class="ksl-icon" aria-hidden="true">' . kratos_fa_svg($icon) . '</span>';
         echo '<span class="ksl-body">';
         echo '<span class="ksl-name">' . esc_html($term->name);
         echo ' <span class="ksl-count">' . (int)$count . '</span>';

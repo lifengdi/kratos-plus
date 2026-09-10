@@ -34,7 +34,7 @@ function kratos_text_share_assets()
     border-left: 6px solid transparent; border-right: 6px solid transparent;
     border-top: 6px solid var(--kr-card-bg, #333);
 }
-.kratos-text-share i { margin-right: 4px; }
+.kratos-text-share .kratos-fa-svg { margin-right: 4px; vertical-align: -.1em; }
 html[data-theme="dark"] .kratos-text-share { background: #444; }
 html[data-theme="dark"] .kratos-text-share::after { border-top-color: #444; }
 ';
@@ -43,10 +43,13 @@ html[data-theme="dark"] .kratos-text-share::after { border-top-color: #444; }
     $copied_text = __('已复制', 'kratos');
     $copy_link_text = __('复制链接', 'kratos');
 
+    $svg_link  = esc_js(kratos_fa_svg('fas fa-link'));
+    $svg_check = esc_js(kratos_fa_svg('fas fa-check'));
+
     $js = '(function(){' .
         'var pop=document.createElement("div");' .
         'pop.className="kratos-text-share";' .
-        'pop.innerHTML=\'<i class="fas fa-link"></i> ' . esc_js($copy_link_text) . '\';' .
+        'pop.innerHTML=\'' . $svg_link . ' ' . esc_js($copy_link_text) . '\';' .
         'document.body.appendChild(pop);' .
         'var area=document.querySelector(".article-content,.entry-content,.details .content");' .
         'if(!area)return;' .
@@ -57,7 +60,7 @@ html[data-theme="dark"] .kratos-text-share::after { border-top-color: #444; }
         'var s=window.getSelection();' .
         'if(!s||s.isCollapsed||s.toString().trim().length<5||!area.contains(s.anchorNode)){hide();return;}' .
         'var r=s.getRangeAt(0).getBoundingClientRect();' .
-        'pop.innerHTML=\'<i class="fas fa-link"></i> ' . esc_js($copy_link_text) . '\';' .
+        'pop.innerHTML=\'' . $svg_link . ' ' . esc_js($copy_link_text) . '\';' .
         // display 必须先打开再测 offsetWidth/Height，display:none 时两者都是 0，居中会失效
         'pop.style.display="block";' .
         'pop.style.left=(r.left+r.width/2-pop.offsetWidth/2+window.scrollX)+"px";' .
@@ -68,7 +71,7 @@ html[data-theme="dark"] .kratos-text-share::after { border-top-color: #444; }
         'var t=s.toString().trim();' .
         'var url=location.href.split("#")[0]+"#:~:text="+encodeURIComponent(t.substring(0,100));' .
         'navigator.clipboard.writeText(url).then(function(){' .
-        'pop.innerHTML=\'<i class="fas fa-check"></i> ' . esc_js($copied_text) . '\';' .
+        'pop.innerHTML=\'' . $svg_check . ' ' . esc_js($copied_text) . '\';' .
         'hideTimer=setTimeout(hide,1500);' .
         '});' .
         '});' .

@@ -87,7 +87,7 @@ function kratos_ref_links_content($content)
     $title = kratos_option('g_ref_links_title', '参考链接');
     $html  = '<div class="kratos-ref-links kr-card krl-wrap">';
     $html .= '<div class="krl-head">';
-    $html .= '<span class="kr-ico krl-icon"><i class="fas fa-external-link-alt"></i></span>';
+    $html .= '<span class="kr-ico krl-icon">' . kratos_fa_svg('fas fa-external-link-alt') . '</span>';
     $html .= '<h4 class="krl-title">' . esc_html($title) . '</h4>';
     $html .= '<span class="kr-pill krl-count">' . count($links) . '</span>';
     $html .= '</div>';

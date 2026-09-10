@@ -126,6 +126,7 @@ require get_template_directory() . '/inc/theme-volcengine.php';
 // SMTP 配置
 require get_template_directory() . '/inc/theme-smtp.php';
 
+require get_template_directory() . '/inc/theme-svg-icons.php';
 require get_template_directory() . '/inc/theme-extends.php';
 
 // AI 工具箱（摘要 / 标签）—— 由主题选项 g_ai_enable 控制是否 boot SDK

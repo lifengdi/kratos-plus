@@ -12,7 +12,7 @@
     <div class="f-toolbox">
         <?php // flex column-reverse 堆叠：源码顺序自底向上（搜索在最底，回到顶部在最上） ?>
         <div class="search">
-            <span class="kicon i-find"></span>
+            <?php echo kratos_icon('i-find'); ?>
             <form class="search-form" role="search" method="get" action="<?php echo home_url('/'); ?>">
                 <input type="text" name="s" id="search-footer" placeholder="<?php _e('搜点什么呢?', 'kratos'); ?>" style="display:none" />
             </form>
@@ -21,13 +21,13 @@
         <?php if (kratos_option('g_stumble', true) && kratos_option('g_stumble_button', true)) { ?>
             <div class="stumble">
                 <a href="<?php echo kratos_stumble_url(); ?>" rel="nofollow" aria-label="<?php esc_attr_e('随机漫步 · 随机跳到一篇老文章', 'kratos'); ?>" title="<?php esc_attr_e('随机漫步 · 随机跳到一篇老文章', 'kratos'); ?>">
-                    <span class="kicon i-tabrandom"></span>
+                    <?php echo kratos_icon('i-tabrandom'); ?>
                 </a>
             </div>
         <?php } ?>
         <?php if (!empty(kratos_option('g_wechat_fieldset')['g_wechat'])) { ?>
             <div class="wechat">
-                <span class="kicon i-wechat"></span>
+                <?php echo kratos_icon('i-wechat'); ?>
                 <div class="wechat-pic">
                     <img src="<?php echo kratos_option('g_wechat_fieldset')['g_wechat_img']; ?>">
                 </div>
@@ -45,7 +45,7 @@
         <?php } ?>
         <div class="gotop">
             <div class="gotop-btn">
-                <span class="kicon i-up"></span>
+                <?php echo kratos_icon('i-up'); ?>
             </div>
         </div>
     </div>
@@ -57,7 +57,7 @@
                     if (!empty(kratos_option('s_social_fieldset'))) {
                         foreach (kratos_option('s_social_fieldset') as $key => $value) {
                             if (kratos_option('s_social_fieldset')[$key]) {
-                                echo '<a target="_blank" rel="nofollow" href="' . kratos_option('s_social_fieldset')[$key] . '"><i class="kicon i-' . str_replace(array("s_", "_url"), array('', ''), $key) . '"></i></a>';
+                                echo '<a target="_blank" rel="nofollow" href="' . kratos_option('s_social_fieldset')[$key] . '">' . kratos_icon('i-' . str_replace(array("s_", "_url"), array('', ''), $key)) . '</a>';
                             }
                         }
                     }
@@ -76,7 +76,7 @@
                             } else {
                                 $cls = isset($item['icon']) ? trim((string) $item['icon']) : '';
                                 if ($cls === '') continue;
-                                $inner = '<i class="' . esc_attr($cls) . '"></i>';
+                                $inner = kratos_fa_svg($cls);
                             }
                             echo '<a target="_blank" rel="nofollow" href="' . esc_url($url) . '"'
                                 . ($title !== '' ? ' title="' . esc_attr($title) . '" aria-label="' . esc_attr($title) . '"' : '')

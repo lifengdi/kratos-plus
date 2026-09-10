@@ -134,15 +134,7 @@ add_action('wp_ajax_nopriv_kratos_comment_vote', 'kratos_comment_vote_ajax');
 /* ============================================================
  * 在页面加载阶段入队 FontAwesome —— 单页 + 评论开启时
  * ============================================================ */
-function kratos_comment_reactions_enqueue_assets()
-{
-    if (!is_singular() || !comments_open()) return;
-    if (!kratos_option('g_comment_reactions_enabled', true)) return;
-    if (!wp_style_is('fontawesome', 'enqueued') && !wp_style_is('fontawesome', 'registered')) {
-        wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
-    }
-}
-add_action('wp_enqueue_scripts', 'kratos_comment_reactions_enqueue_assets', 20);
+// FA 字体前台不再加载，赞踩图标改为 kratos_fa_svg() 输出 inline SVG。
 
 /* ============================================================
  * 渲染赞踩按钮 —— 供 comment_callbacks 内部调用
@@ -168,9 +160,9 @@ function kratos_render_comment_reactions($comment_id)
 
     return '<span class="kc-vote" data-cid="' . intval($comment_id) . '">'
         . '<a href="javascript:;" class="kc-like' . $like_active . '" title="' . esc_attr($like_text) . '">'
-        . '<i class="' . esc_attr($like_icon) . '"></i><em>' . intval($likes) . '</em></a>'
+        . kratos_fa_svg($like_icon) . '<em>' . intval($likes) . '</em></a>'
         . '<a href="javascript:;" class="kc-dislike' . $dislike_active . '" title="' . esc_attr($dislike_text) . '">'
-        . '<i class="' . esc_attr($dislike_icon) . '"></i><em>' . intval($dislikes) . '</em></a>'
+        . kratos_fa_svg($dislike_icon) . '<em>' . intval($dislikes) . '</em></a>'
         . '</span>';
 }
 
@@ -260,8 +252,7 @@ function kratos_render_comment_group($post_id, $top_comments, $wrap_class, $titl
 
     ob_start();
     echo '<div class="' . esc_attr($wrap_class) . ' mb-3">';
-    $icon_class = (strpos($title_icon, 'fa') === 0) ? $title_icon : ('kicon ' . $title_icon);
-    echo '<h4 class="hot-comments-title"><i class="' . esc_attr($icon_class) . '"></i> ' . esc_html($title) . '</h4>';
+    echo '<h4 class="hot-comments-title">' . kratos_icon($title_icon) . ' ' . esc_html($title) . '</h4>';
     echo '<ul class="hot-comments-list list">';
     foreach ($top_comments as $c) {
         comment_callbacks($c, $render_args, 1);

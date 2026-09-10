@@ -96,19 +96,7 @@ JS
  * 使用「Kratos-plus 特色标题」模板时，若填了图标（Font Awesome class），
  * 自动加载 FA CSS（主题内置那一份，handle 与 theme_autoload() 一致，不会重复加载）。
  */
-add_action('wp_enqueue_scripts', function () {
-    if (!is_page_template('page-featured-title.php')) {
-        return;
-    }
-    if (wp_style_is('fontawesome', 'enqueued') || wp_style_is('fontawesome', 'registered')) {
-        return;
-    }
-    $icon = trim((string) get_post_meta(get_queried_object_id(), 'kft_icon', true));
-    if ($icon === '') {
-        return;
-    }
-    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/assets/css/fontawesome.min.css', array(), FA_VERSION);
-}, 20);
+// FA 字体前台不再加载，图标改为 kratos_fa_svg() 输出 inline SVG。
 
 /**
  * 读取当前页面的特色标题配置，未填时回退到页面标题 / 摘要 / 默认图标。

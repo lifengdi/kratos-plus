@@ -31,8 +31,7 @@ $kratos_cols = kratos_layout_cols(); ?>
                             <header class="kfl-header kr-hd">
                                 <?php if ($kft_title !== '') { ?>
                                     <span class="kfl-title-icon kr-ico" aria-hidden="true">
-                                        <?php // 未配置图标时回落 FA 的星形，和系列页等处的图标同一套字体
-                                        ?><i class="<?php echo esc_attr($kft_icon !== '' ? $kft_icon : 'fa-solid fa-star'); ?>"></i>
+                                        <?php echo kratos_fa_svg($kft_icon !== '' ? $kft_icon : 'fa-solid fa-star'); ?>
                                     </span>
                                     <span class="kfl-title kr-hd-title"><?php echo esc_html($kft_title); ?></span>
                                 <?php } ?>
@@ -72,7 +71,7 @@ $kratos_cols = kratos_layout_cols(); ?>
                             background:linear-gradient(135deg,var(--khs-bg-2) 0%,var(--khs-bg-3) 100%);
                             color:var(--khs-accent);
                         }
-                        .kratos-featured-title .kfl-title-icon i{font-size:18px;line-height:1;}
+                        .kratos-featured-title .kfl-title-icon .kratos-fa-svg{width:18px;height:18px;}
                         .kratos-featured-title .kfl-title{
                             margin:0;padding:0;font-size:22px;font-weight:700;line-height:1.3;
                             color:var(--khs-fg);

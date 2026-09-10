@@ -125,7 +125,7 @@ CSS;
     $js = '(function(){' .
         'var ta=document.getElementById("comment");if(!ta)return;' .
         'var h=document.createElement("div");h.className="kratos-md-hint";' .
-        'h.innerHTML=\'<i class="fab fa-markdown"></i> ' . esc_js(__('支持 Markdown 语法', 'kratos')) . '\';' .
+        'h.innerHTML=\'' . kratos_fa_svg('fab fa-markdown') . ' ' . esc_js(__('支持 Markdown 语法', 'kratos')) . '\';' .
         'ta.parentNode.insertBefore(h,ta.nextSibling);' .
         '})();';
     wp_add_inline_script('kratos', $js);

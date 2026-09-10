@@ -880,13 +880,13 @@ html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer p a:hover {
     color: #fff;
 }
 
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a .kicon,
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a > i:not(.kicon) {
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a .kratos-fa-svg,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a > .kratos-fa-svg {
     color: var(--kr-skin-footer-fg);
 }
 
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a:hover .kicon,
-html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a:hover > i:not(.kicon) {
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a:hover .kratos-fa-svg,
+html[data-weekday-skin="silk"]:not([data-theme="dark"]) .k-footer .social a:hover > .kratos-fa-svg {
     color: #fff;
 }
 

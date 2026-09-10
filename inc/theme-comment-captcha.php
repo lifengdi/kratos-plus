@@ -78,7 +78,7 @@ function kratos_captcha_render()
     /* 让工具栏整体按中线对齐，避免表情图标 baseline 与输入框中线错位 */
     #commentform .text-bar .tool { display: flex; align-items: center; }
     #commentform .text-bar .tool .smile { /* 表情面板是浮层，不参与 flex 排版 */ flex: 0 0 auto; }
-    .kratos-captcha { display: inline-flex; align-items: center; margin-left: 12px; }
+    .kratos-captcha { display: inline-flex; align-items: center; margin-left: 5px; }
     .kratos-captcha-q { color: #666; font-size: 14px; line-height: 1; margin-right: 6px; user-select: none; }
     .kratos-captcha-input {
         width: 64px; height: 28px; padding: 2px 8px; font-size: 13px; line-height: 1.4;
