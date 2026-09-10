@@ -37,3 +37,9 @@
  * 在 Windows 的实体滚动条下多出一条横向滚动条。菜单高于视口时的可达性改由
  * kratos_csf_sticky_offset_script()（inc/theme-core.php）处理：装不下就不吸顶，让它随
  * 页面滚动，而不是给它开内部滚动。 */
+
+.comment-svg-icon {
+    height:15px !important;
+    object-fit:contain;
+    vertical-align:middle;
+}
