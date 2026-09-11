@@ -57,7 +57,7 @@ html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .na
 }
 html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .nav-link:hover,
 html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .navbar-nav .active > .nav-link {
-    color: var(--kr-skin-heading) !important;
+    color: var(--kr-skin-accent) !important;
 }
 html[data-weekday-skin="morandi"]:not([data-theme="dark"]) .k-nav.nav-sticky .line {
     background: var(--kr-skin-heading) !important;
