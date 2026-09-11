@@ -44,7 +44,7 @@ class Kratos_AI_Summary {
         $types = get_post_types(array('public' => true), 'names');
         unset($types['attachment']);
         foreach ($types as $t) {
-            add_meta_box('kratos_ai_summary', __('AI摘要', 'kratos'), array(__CLASS__, 'render_meta_box'), $t, 'side', 'default');
+            add_meta_box('kratos_ai_summary', __('本文摘要', 'kratos'), array(__CLASS__, 'render_meta_box'), $t, 'side', 'default');
         }
     }
 
@@ -349,7 +349,7 @@ class Kratos_AI_Summary {
         $safe = Kratos_AI_Guards::sanitize_html($html);
         $safe = apply_filters('kratos_ai_summary_html', $safe, $post_id, $style);
         $out  = '<section class="kratos-ai-summary kratos-ai-summary--' . esc_attr($style) . '" data-post="' . (int)$post_id . '">';
-        $out .= '<div class="kratos-ai-summary-hd"><span class="kratos-ai-summary-title">' . esc_html__('AI摘要', 'kratos') . '</span></div>';
+        $out .= '<div class="kratos-ai-summary-hd"><span class="kratos-ai-summary-title">' . esc_html__('本文摘要', 'kratos') . '</span></div>';
         $out .= '<div class="kratos-ai-summary-body">' . $safe . $stale_note . '</div>';
         $out .= '</section>';
         return $out;
