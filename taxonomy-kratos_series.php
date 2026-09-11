@@ -66,7 +66,7 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                     <header class="kfl-header kr-hd">
                         <?php if ($series_icon !== '') { ?>
                             <span class="kfl-title-icon kr-ico" aria-hidden="true">
-                                <i class="<?php echo esc_attr($series_icon); ?>"></i>
+                                <?php echo kratos_fa_svg($series_icon); ?>
                             </span>
                         <?php } ?>
                         <span class="kfl-title kr-hd-title"><?php echo esc_html($series_title); ?></span>
@@ -87,7 +87,7 @@ $ksa_children = kratos_series_sort_terms($ksa_children);
                                     <li class="ksa-child-item">
                                         <a href="<?php echo esc_url(get_term_link($c)); ?>">
                                             <span class="ksa-child-icon" aria-hidden="true">
-                                                <i class="<?php echo esc_attr($c_icon); ?>"></i>
+                                                <?php echo kratos_fa_svg($c_icon); ?>
                                             </span>
                                             <span class="ksa-child-body">
                                                 <span class="ksa-child-name">
