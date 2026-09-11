@@ -12,7 +12,7 @@
     <div class="f-toolbox">
         <?php // flex column-reverse 堆叠：源码顺序自底向上（搜索在最底，回到顶部在最上） ?>
         <div class="search">
-            <?php echo kratos_icon('i-find'); ?>
+            <div><?php echo kratos_icon('i-find'); ?></div>
             <form class="search-form" role="search" method="get" action="<?php echo home_url('/'); ?>">
                 <input type="text" name="s" id="search-footer" placeholder="<?php _e('搜点什么呢?', 'kratos'); ?>" style="display:none" />
             </form>
@@ -34,16 +34,16 @@
             </div>
         <?php } ?>
         <?php if (kratos_option('g_darkmode', false) && kratos_option('g_darkmode_toggle', true)) { ?>
-            <div class="darkmode" role="button" tabindex="0" aria-pressed="false" aria-label="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>" title="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>">
+            <div class="darkmode wh-40" role="button" tabindex="0" aria-pressed="false" aria-label="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>" title="<?php esc_attr_e('切换为暗色模式', 'kratos'); ?>">
                 <span class="darkmode-ico" aria-hidden="true"></span>
             </div>
         <?php } ?>
         <?php if (kratos_weekday_switcher_enabled()) { ?>
-            <div class="skin-switcher" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e('切换皮肤', 'kratos'); ?>" title="<?php esc_attr_e('切换皮肤', 'kratos'); ?>">
+            <div class="skin-switcher wh-40" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e('切换皮肤', 'kratos'); ?>" title="<?php esc_attr_e('切换皮肤', 'kratos'); ?>">
                 <span class="skin-switcher-ico" aria-hidden="true"></span>
             </div>
         <?php } ?>
-        <div class="gotop">
+        <div class="gotop wh-40">
             <div class="gotop-btn">
                 <?php echo kratos_icon('i-up'); ?>
             </div>

@@ -4559,12 +4559,17 @@ a {
 
 .k-footer
 .f-toolbox
+.wh-40{
+    width: 40px;
+    height: 40px;
+}
+
+.k-footer
+.f-toolbox
 .search {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
     color: #fff;
     background: rgba(
             132,
@@ -4573,6 +4578,16 @@ a {
             0.7
     );
     cursor: pointer;
+}
+.k-footer
+.f-toolbox
+.search
+div {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .k-footer
