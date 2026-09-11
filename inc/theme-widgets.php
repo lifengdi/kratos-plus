@@ -93,7 +93,7 @@ function most_comm_posts($days = 30, $nums = 6)
             $title = esc_attr(strip_tags($topten->post_title));
             $commentcount = $topten->comment_count;
             if ($commentcount >= 0) {
-                $output .= '<a class="bookmark-item" title="' . $title . '" href="' . get_permalink($postid) . '" rel="bookmark">' . kratos_icon('i-book');
+                $output .= '<a class="bookmark-item" title="' . $title . '" href="' . get_permalink($postid) . '" rel="bookmark"><i class="kicon i-book"></i>';
                 $output .= $title;
                 $output .= '</a>';
             }
@@ -838,9 +838,9 @@ class widget_posts extends WP_Widget
         echo '<div class="widget w-recommended">';
     ?>
         <div class="nav nav-tabs d-none d-xl-flex" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link <?php echo $active = ($order == 'new') ? 'active' : null; ?>" id="nav-new-tab" data-bs-toggle="tab" href="#nav-new" role="tab" aria-controls="nav-new" aria-selected="<?php echo $selected = ($order == 'new') ? 'true' : 'false'; ?>"><?php echo kratos_icon('i-tabnew'); ?><?php _e('最新', 'kratos'); ?></a>
-            <a class="nav-item nav-link <?php echo $active = ($order == 'hot') ? 'active' : null; ?>" id="nav-hot-tab" data-bs-toggle="tab" href="#nav-hot" role="tab" aria-controls="nav-hot" aria-selected="<?php echo $selected = ($order == 'hot') ? 'true' : 'false'; ?>"><?php echo kratos_icon('i-tabhot'); ?><?php _e('热点', 'kratos'); ?></a>
-            <a class="nav-item nav-link <?php echo $active = ($order == 'random') ? 'active' : null; ?>" id="nav-random-tab" data-bs-toggle="tab" href="#nav-random" role="tab" aria-controls="nav-random" aria-selected="<?php echo $selected = ($order == 'random') ? 'true' : 'false'; ?>"><?php echo kratos_icon('i-tabrandom'); ?><?php _e('随机', 'kratos'); ?></a>
+            <a class="nav-item nav-link <?php echo $active = ($order == 'new') ? 'active' : null; ?>" id="nav-new-tab" data-bs-toggle="tab" href="#nav-new" role="tab" aria-controls="nav-new" aria-selected="<?php echo $selected = ($order == 'new') ? 'true' : 'false'; ?>"><i class="kicon i-tabnew"></i> <?php _e('最新', 'kratos'); ?></a>
+            <a class="nav-item nav-link <?php echo $active = ($order == 'hot') ? 'active' : null; ?>" id="nav-hot-tab" data-bs-toggle="tab" href="#nav-hot" role="tab" aria-controls="nav-hot" aria-selected="<?php echo $selected = ($order == 'hot') ? 'true' : 'false'; ?>"><i class="kicon i-tabhot"></i> <?php _e('热点', 'kratos'); ?></a>
+            <a class="nav-item nav-link <?php echo $active = ($order == 'random') ? 'active' : null; ?>" id="nav-random-tab" data-bs-toggle="tab" href="#nav-random" role="tab" aria-controls="nav-random" aria-selected="<?php echo $selected = ($order == 'random') ? 'true' : 'false'; ?>"><i class="kicon i-tabrandom"></i> <?php _e('随机', 'kratos'); ?></a>
         </div>
         <div class="nav nav-tabs d-xl-none" id="nav-tab" role="tablist">
             <a class="nav-item nav-link <?php echo $active = ($order == 'new') ? 'active' : null; ?>" id="nav-new-tab" data-bs-toggle="tab" href="#nav-new" role="tab" aria-controls="nav-new" aria-selected="<?php echo $selected = ($order == 'new') ? 'true' : 'false'; ?>"><?php _e('最新', 'kratos'); ?></a>
@@ -851,7 +851,7 @@ class widget_posts extends WP_Widget
             <div class="tab-pane fade <?php echo $active = ($order == 'new') ? 'show active' : null; ?>" id="nav-new" role="tabpanel" aria-labelledby="nav-new-tab">
                 <?php $myposts = get_posts('numberposts=' . $number . ' & offset=0');
                 foreach ($myposts as $post) : ?>
-                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><?php echo kratos_icon('i-book'); ?><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
+                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><i class="kicon i-book"></i><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
                 <?php endforeach; ?>
             </div>
             <div class="tab-pane fade <?php echo $active = ($order == 'hot') ? 'show active' : null; ?>" id="nav-hot" role="tabpanel" aria-labelledby="nav-hot-tab">
@@ -862,7 +862,7 @@ class widget_posts extends WP_Widget
             <div class="tab-pane fade <?php echo $active = ($order == 'random') ? 'show active' : null; ?>" id="nav-random" role="tabpanel" aria-labelledby="nav-random-tab">
                 <?php $myposts = get_posts('numberposts=' . $number . ' & offset=0 & orderby=rand');
                 foreach ($myposts as $post) : ?>
-                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><?php echo kratos_icon('i-book'); ?><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
+                    <a class="bookmark-item" rel="bookmark" title="<?php echo esc_attr(strip_tags($post->post_title)); ?>" href="<?php echo get_permalink($post->ID); ?>"><i class="kicon i-book"></i><?php echo esc_attr(strip_tags($post->post_title)); ?></a>
                 <?php endforeach; ?>
             </div>
         </div>

@@ -324,7 +324,7 @@ if (!function_exists('comment_callback')) :
                     <div class="tool reply ms-2 d-inline-block float-end">
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
-                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => kratos_icon('i-reply') . '<span class="ms-1">' . __('回复', 'kratos') . '</span>');
+                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
                         comment_reply_link(array_merge($defaults, array('depth' => 1, 'max_depth' => get_option('thread_comments_depth', 5))));
                         ?>
                     </div>
@@ -391,7 +391,7 @@ if (!function_exists('comment_callbacks')) :
                     <div class="tool reply ms-2 d-inline-block float-end">
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
-                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => kratos_icon('i-reply') . '<span class="ms-1">' . __('回复', 'kratos') . '</span>');
+                        $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
                         comment_reply_link(array_merge($defaults, array('depth' => $depth, 'max_depth' => $args['max_depth'])));
                         ?>
                     </div>

@@ -891,14 +891,14 @@ add_action('wp_enqueue_scripts', function () {
     $css .= '.kratos-series{margin:0 0 24px;padding:0;overflow:hidden;color:' . $text . '}';
     $css .= '.kratos-series-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:linear-gradient(90deg,' . $tag_bg . ',transparent);border-bottom:1px solid ' . $card_line . '}';
     $css .= '.kratos-series-titlewrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1;min-width:0}';
-    $css .= '.kratos-series-icon{color:' . $accent . ';font-size:16px}';
+    $css .= '.kratos-series-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;color:' . $accent . ';font-size:16px;}';
     $css .= '.kratos-series-title{font-size:16px;font-weight:600;color:inherit;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
     $css .= '.kratos-series-title:hover{color:' . $accent . '}';
     $css .= '.kratos-series-pos{font-size:12px;color:' . $muted . ';padding:2px 8px;background:' . $tag_bg . ';border-radius:10px}';
     $css .= '.kratos-series-toggle{flex:0 0 auto;background:none;border:none;color:' . $muted . ';cursor:pointer;padding:4px 6px;font-size:14px;transition:transform .25s}';
     $css .= '.kratos-series-toggle:hover{color:' . $accent . '}';
-    $css .= '.kratos-series:not(.is-open) .kratos-series-toggle i{transform:rotate(-90deg)}';
-    $css .= '.kratos-series-toggle i{transition:transform .25s;display:inline-block}';
+    $css .= '.kratos-series:not(.is-open) .kratos-series-toggle svg{transform:rotate(-90deg)}';
+    $css .= '.kratos-series-toggle svg{transition:transform .25s;display:inline-block}';
     $css .= '.kratos-series-list{list-style:none;margin:0;padding:6px 0;max-height:600px;overflow:auto;transition:max-height .3s ease,padding .3s ease,opacity .2s}';
     $css .= '.kratos-series:not(.is-open) .kratos-series-list{max-height:0;padding-top:0;padding-bottom:0;opacity:0;overflow:hidden}';
     $css .= '.kratos-series-item{display:flex;align-items:center;gap:10px;padding:8px 16px;font-size:14px;line-height:1.5;border-left:3px solid transparent}';

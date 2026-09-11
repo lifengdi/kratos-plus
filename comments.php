@@ -52,7 +52,7 @@ if (comments_open()) { ?>
 							<textarea class="form-control" id="comment" name="comment" rows="7" required="required" placeholder="<?php echo esc_attr((string) kratos_option('g_comment_placeholder', __('说点什么吧…', 'kratos'))); ?>"></textarea>
 							<div class="text-bar clearfix">
 								<div class="tool float-start">
-									<a class="addbtn" href="#" id="addsmile"><?php echo kratos_icon('i-face'); ?></a>
+									<a class="addbtn" href="#" id="addsmile"><i class="kicon i-face"></i></a>
 									<div class="smile">
 										<div class="clearfix">
 											<?php echo $smilies; ?>

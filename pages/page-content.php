@@ -31,7 +31,7 @@ $kratos_flag_layout = ($kratos_layout === 'chronicle'); ?>
     <?php }
     if (!$kratos_flag_layout) { ?>
         <span class="a-card">
-            <?php if ($kratos_is_top) { echo kratos_icon('i-card-top'); } elseif ($kratos_is_hot) { echo kratos_icon('i-card-hot'); } ?>
+            <?php if ($kratos_is_top) { ?><i class="kicon i-card-top"></i><?php } elseif ($kratos_is_hot) { ?><i class="kicon i-card-hot"></i><?php } ?>
         </span>
     <?php }
     if ($kratos_thumb) { ?>
