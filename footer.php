@@ -86,7 +86,8 @@
                     ?>
                 </p>
                 <?php
-                echo '<p>' . kratos_option('s_copyright', 'COPYRIGHT © ' . wp_date('Y') . ' ' . get_bloginfo('name') . '. ALL RIGHTS RESERVED.') . '</p>';
+                $s_copyright_raw = kratos_option('s_copyright', 'COPYRIGHT © {year} {sitename}. ALL RIGHTS RESERVED.');
+                echo '<p>' . strtr($s_copyright_raw, array('{year}' => wp_date('Y'), '{sitename}' => get_bloginfo('name'))) . '</p>';
                 echo '<p>Theme <a href="https://github.com/lifengdi/kratos-plus" target="_blank" rel="nofollow">Kratos-plus</a> By <a href="https://www.lifengdi.com" target="_blank" rel="nofollow">Dylan Li</a></p>';
                 if (kratos_option('s_icp')) {
                     echo '<p><a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow">' . kratos_option('s_icp') . '</a></p>';

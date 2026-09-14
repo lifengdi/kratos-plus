@@ -2042,7 +2042,8 @@ CSF::createSection($prefix, array(
             'id' => 's_copyright',
             'type' => 'textarea',
             'title' => __('版权信息', 'kratos'),
-            'default' => 'COPYRIGHT © ' . wp_date('Y') . ' ' . get_bloginfo('name') . '. ALL RIGHTS RESERVED.',
+            'subtitle' => __('支持占位符：<code>{year}</code> 当前年份，<code>{sitename}</code> 站点名称', 'kratos'),
+            'default' => 'COPYRIGHT © {year} {sitename}. ALL RIGHTS RESERVED.',
         ),
     ),
 ));
