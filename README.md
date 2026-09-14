@@ -1,7 +1,7 @@
 **English** | [简体中文](README.zh-CN.md)
 
 <p align="center">
-    <img src="assets/img/options/about.png">
+    <img src="document/about.png">
 </p>
 
 <p align="center">

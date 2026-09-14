@@ -54,6 +54,7 @@ stages:
     - '       "$STAGE_DIR/kratos-plus/.gitignore" \'
     - '       "$STAGE_DIR/kratos-plus/CLAUDE.md" \'
     - '       "$STAGE_DIR/kratos-plus/crowdin.yml" \'
+    - '       "$STAGE_DIR/kratos-plus/document" \'
     - '       "$STAGE_DIR/kratos-plus/CODE_OF_CONDUCT.md"'
     - ""
     - '# 压缩 assets 下的 css/js：就地覆盖，文件名不变，PHP 的 enqueue 路径无需改动。'
