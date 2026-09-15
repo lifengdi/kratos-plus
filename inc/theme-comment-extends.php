@@ -191,47 +191,138 @@ function kratos_parse_user_agent( $u_agent = null ) {
  * @return string <img> HTML
  */
 function wpcdi_get_svg_icon($type, $name) {
-    $file = 'unknown';
+    // 命中顺序：具体品牌先于通用内核；PNG 图标返回 .png，其余走 .svg
+    static $browser_rules = null;
+    static $os_rules = null;
 
-    if ($type === 'browser') {
-        if (strpos($name, 'Chrome') !== false || strpos($name, 'CriOS') !== false) {
-            $file = 'chrome';
-        } elseif (strpos($name, 'Firefox') !== false || strpos($name, 'Iceweasel') !== false || strpos($name, 'IceCat') !== false) {
-            $file = 'firefox';
-        } elseif (strpos($name, 'Safari') !== false) {
-            $file = 'safari';
-        } elseif (strpos($name, 'Edge') !== false || strpos($name, 'Edg') !== false) {
-            $file = 'edge';
-        } elseif (strpos($name, 'Opera') !== false || strpos($name, 'OPR') !== false) {
-            $file = 'opera';
-        } elseif (strpos($name, '华为浏览器') !== false || strpos($name, 'HuaweiBrowser') !== false) {
-            $file = 'huaweibrowser';
-        } elseif (strpos($name, 'UC Browser') !== false || strpos($name, 'UCBrowser') !== false) {
-            $file = 'uc';
-        } elseif (strpos($name, 'SamsungBrowser') !== false) {
-            $file = 'samsung';
-        }
-    } elseif ($type === 'os') {
-        if (strpos($name, 'Windows') !== false) {
-            $file = 'windows';
-        } elseif (strpos($name, 'macOS') !== false || strpos($name, 'Macintosh') !== false) {
-            $file = 'apple';
-        } elseif (strpos($name, 'iPhone') !== false || strpos($name, 'iPad') !== false
-            || strpos($name, 'iPod') !== false) {
-            $file = 'iphone';
-        } elseif (strpos($name, 'iOS') !== false) {
-            $file = 'apple';
-        }  elseif (strpos($name, '鸿蒙') !== false || strpos($name, 'HarmonyOS') !== false) {
-            $file = 'harmonyos';
-        } elseif (strpos($name, 'Android') !== false) {
-            $file = 'android';
-        } elseif (strpos($name, 'Linux') !== false || strpos($name, 'Chrome OS') !== false) {
-            $file = 'linux';
+    if ($browser_rules === null) {
+        // [子路径, 需要匹配的子串数组（任一命中即算命中）, 扩展名]
+        $browser_rules = [
+            ['browser/edge',                 ['Edge', 'Edg'],                    'svg'],
+            ['browser/opera_gx',             ['OPR/GX', 'Opera GX'],             'svg'],
+            ['browser/opera_touch',          ['OPT/'],                            'svg'],
+            ['browser/opera_mobile',         ['Opera Mini', 'Opera Mobi'],       'svg'],
+            ['browser/opera',                ['Opera', 'OPR'],                   'svg'],
+            ['browser/huawei_browser',       ['华为浏览器', 'HuaweiBrowser'],     'svg'],
+            ['browser/mi_browser',           ['MiuiBrowser', 'MiBrowser', 'XiaoMi/MiuiBrowser'], 'svg'],
+            ['browser/miui_browser',         ['MIUI'],                            'svg'],
+            ['browser/vivo_browser',         ['VivoBrowser'],                    'png'],
+            ['browser/heyTap_browser',       ['HeyTapBrowser', 'OppoBrowser'],   'png'],
+            ['browser/qq_browser',           ['QQBrowser', 'MQQBrowser'],        'png'],
+            ['browser/uc_browser',           ['UCBrowser', 'UC Browser', 'UBrowser'], 'svg'],
+            ['browser/samsung_internet',     ['SamsungBrowser'],                 'svg'],
+            ['browser/yandex_browser',       ['YaBrowser'],                      'svg'],
+            ['browser/vivaldi',              ['Vivaldi'],                        'svg'],
+            ['browser/brave',                ['Brave'],                          'svg'],
+            ['browser/whale_browser',        ['Whale'],                          'svg'],
+            ['browser/duckduckgo',           ['DuckDuckGo'],                     'svg'],
+            ['browser/tor_browser',          ['TorBrowser'],                     'svg'],
+            ['browser/maxthon',              ['Maxthon'],                        'svg'],
+            ['browser/sogou_explorer',       ['SE 2.X MetaSr', 'Sogou'],         'svg'],
+            ['browser/LieBao',               ['LBBROWSER', 'LieBao'],            'png'],
+            ['browser/2345Explorer',         ['2345Explorer'],                   'svg'],
+            ['browser/360se',                ['360SE'],                          'svg'],
+            ['browser/360ee',                ['360EE'],                          'svg'],
+            ['browser/wechat',               ['MicroMessenger'],                 'svg'],
+            ['browser/line',                 ['Line/'],                          'svg'],
+            ['browser/kakaotalk',            ['KAKAOTALK'],                      'svg'],
+            ['browser/instagram',            ['Instagram'],                      'svg'],
+            ['browser/facebook',             ['FBAV', 'FB_IAB'],                 'svg'],
+            ['browser/twitter',              ['TwitterAndroid', 'Twitter for'],  'svg'],
+            ['browser/mobile_safari',        ['Mobile/', 'CriOS', 'FxiOS'],      'svg'],
+            ['browser/safari',               ['Safari'],                         'svg'],
+            ['browser/chrome_mobile_ios',    ['CriOS'],                          'svg'],
+            ['browser/chrome_mobile',        ['Chrome Mobile'],                  'svg'],
+            ['browser/chromium',             ['Chromium'],                       'svg'],
+            ['browser/chrome',               ['Chrome'],                         'svg'],
+            ['browser/firefox_mobile',       ['Fennec', 'FxiOS'],                'svg'],
+            ['browser/firefox',              ['Firefox', 'Iceweasel', 'IceCat'], 'svg'],
+            ['browser/seamonkey',            ['SeaMonkey'],                      'svg'],
+            ['browser/waterfox',             ['Waterfox'],                       'svg'],
+            ['browser/internet_explorer',    ['MSIE', 'Trident'],                'svg'],
+        ];
+    }
+
+    if ($os_rules === null) {
+        $os_rules = [
+            ['operating-system/windows_phone', ['Windows Phone'],                   'svg'],
+            ['operating-system/windows',       ['Windows'],                         'svg'],
+            ['operating-system/ipados',        ['iPad'],                            'svg'],
+            ['operating-system/ios',           ['iOS', 'iPhone', 'iPod'],           'svg'],
+            ['operating-system/mac_os',        ['macOS', 'Macintosh', 'Mac OS'],    'svg'],
+            ['operating-system/harmony_os',    ['鸿蒙', 'HarmonyOS'],                'svg'],
+            ['operating-system/android',       ['Android'],                         'svg'],
+            ['operating-system/chrome_os',     ['Chrome OS', 'CrOS'],               'svg'],
+            ['operating-system/fire_os',       ['Kindle Fire', 'Silk', 'FireOS'],   'svg'],
+            ['operating-system/tizen',         ['Tizen'],                           'svg'],
+            ['operating-system/blackberry_os', ['BlackBerry'],                      'svg'],
+            ['operating-system/webos',         ['WebOS', 'webOS'],                  'svg'],
+            ['operating-system/ubuntu',        ['Ubuntu'],                          'svg'],
+            ['operating-system/fedora',        ['Fedora'],                          'svg'],
+            ['operating-system/debian',        ['Debian'],                          'svg'],
+            ['operating-system/centos',        ['CentOS'],                          'svg'],
+            ['operating-system/red_hat',       ['Red Hat', 'RedHat'],               'svg'],
+            ['operating-system/arch_linux',    ['Arch'],                            'svg'],
+            ['operating-system/mint',          ['Mint'],                            'svg'],
+            ['operating-system/gentoo',        ['Gentoo'],                          'svg'],
+            ['operating-system/freebsd',       ['FreeBSD'],                         'svg'],
+            ['operating-system/linux',         ['Linux', 'GNU'],                    'svg'],
+        ];
+    }
+
+    $rules = $type === 'browser' ? $browser_rules : ($type === 'os' ? $os_rules : []);
+
+    $file = $type === 'browser' ? 'browser/unknown' : 'operating-system/unknown';
+    $ext  = 'svg';
+    foreach ($rules as $rule) {
+        foreach ($rule[1] as $needle) {
+            if (stripos($name, $needle) !== false) {
+                $file = $rule[0];
+                $ext  = $rule[2];
+                break 2;
+            }
         }
     }
 
-    $url = get_template_directory_uri() . '/assets/img/svg/' . $file . '.svg';
-    return '<img class="comment-svg-icon" src="' . esc_url($url) . '" alt="' . $name . '">';
+    $url = get_template_directory_uri() . '/assets/img/svg/' . $file . '.' . $ext;
+    return '<img class="comment-svg-icon" src="' . esc_url($url) . '" alt="' . esc_attr($name) . '">';
+}
+
+/**
+ * 按本地化后的中文国家名返回国旗 <img>。未匹配走 000.svg（"位置国旗"占位）。
+ * 台湾地区按需求统一显示中国国旗。
+ */
+function wpcdi_get_flag_icon($country_zh) {
+    static $flag_map = [
+        '中国' => 'cn', '中国香港' => 'hk', '中国澳门' => 'mo', '中国台湾' => 'cn',
+        '日本' => 'jp', '韩国' => 'kr', '朝鲜' => 'kp',
+        '新加坡' => 'sg', '泰国' => 'th', '马来西亚' => 'my', '印度尼西亚' => 'id',
+        '菲律宾' => 'ph', '越南' => 'vn', '缅甸' => 'mm', '柬埔寨' => 'kh', '老挝' => 'la',
+        '印度' => 'in', '巴基斯坦' => 'pk', '孟加拉国' => 'bd', '斯里兰卡' => 'lk',
+        '尼泊尔' => 'np', '不丹' => 'bt', '马尔代夫' => 'mv',
+        '伊朗' => 'ir', '伊拉克' => 'iq', '沙特阿拉伯' => 'sa', '阿联酋' => 'ae',
+        '科威特' => 'kw', '阿曼' => 'om', '卡塔尔' => 'qa', '巴林' => 'bh',
+        '以色列' => 'il', '土耳其' => 'tr', '约旦' => 'jo', '黎巴嫩' => 'lb', '叙利亚' => 'sy',
+        '俄罗斯' => 'ru', '乌克兰' => 'ua', '白俄罗斯' => 'by',
+        '美国' => 'us', '加拿大' => 'ca', '墨西哥' => 'mx',
+        '英国' => 'gb', '德国' => 'de', '法国' => 'fr', '意大利' => 'it', '西班牙' => 'es',
+        '葡萄牙' => 'pt', '荷兰' => 'nl', '比利时' => 'be', '卢森堡' => 'lu',
+        '瑞士' => 'ch', '奥地利' => 'at', '瑞典' => 'se', '挪威' => 'no', '丹麦' => 'dk',
+        '芬兰' => 'fi', '爱尔兰' => 'ie', '希腊' => 'gr', '波兰' => 'pl', '捷克' => 'cz',
+        '匈牙利' => 'hu', '罗马尼亚' => 'ro', '保加利亚' => 'bg', '塞尔维亚' => 'rs',
+        '克罗地亚' => 'hr', '斯洛伐克' => 'sk', '斯洛文尼亚' => 'si', '冰岛' => 'is',
+        '澳大利亚' => 'au', '新西兰' => 'nz', '斐济' => 'fj',
+        '南非' => 'za', '埃及' => 'eg', '尼日利亚' => 'ng', '肯尼亚' => 'ke',
+        '摩洛哥' => 'ma', '阿尔及利亚' => 'dz', '突尼斯' => 'tn', '埃塞俄比亚' => 'et',
+        '巴西' => 'br', '阿根廷' => 'ar', '智利' => 'cl', '哥伦比亚' => 'co',
+        '秘鲁' => 'pe', '委内瑞拉' => 've', '乌拉圭' => 'uy', '古巴' => 'cu',
+    ];
+
+    $country_zh = trim((string) $country_zh);
+    $code = isset($flag_map[$country_zh]) ? $flag_map[$country_zh] : '000';
+
+    $url = get_template_directory_uri() . '/assets/img/svg/flags/' . $code . '.svg';
+    return '<img class="comment-svg-icon comment-flag-icon" src="' . esc_url($url) . '" alt="' . esc_attr($country_zh) . '">';
 }
 
 /**
@@ -451,9 +542,10 @@ function kratos_comment_geo_localize($raw)
  */
 function wpcdi_get_comment_info($comment_ip, $user_agent) {
     $info = array(
-        'browser' => '未知浏览器',
-        'os'      => '未知系统',
-        'location'=> '未知位置'
+        'browser'    => '未知浏览器',
+        'os'         => '未知系统',
+        'location'   => '未知位置',
+        'country_zh' => ''
     );
 
     // 1. 使用新的kratos_parse_user_agent解析UA
@@ -502,6 +594,7 @@ function wpcdi_get_comment_info($comment_ip, $user_agent) {
         if (!empty($location_data['country']) || !empty($location_data['region']) || !empty($location_data['city'])) {
 
             $localized = kratos_comment_geo_localize($location_data);
+            $info['country_zh'] = $localized['country'];
             $country = $localized['country'] !== '' ? $localized['country'] : '未知';
             $region  = $localized['region']  !== '' ? $localized['region']  : '未知';
             $city    = $localized['city']    !== '' ? $localized['city']    : '未知';
@@ -568,7 +661,7 @@ function wpcdi_add_info_after_comment_content($comment_text, $comment) {
 
     $info = wpcdi_get_comment_info($comment_ip, $user_agent);
 
-    $location_icon = '<img src="' . esc_url(get_template_directory_uri() . '/assets/img/svg/location.svg') . '" alt="location" class="comment-svg-icon">';
+    $location_icon = wpcdi_get_flag_icon($info['country_zh']);
 
     $item_style = 'white-space: nowrap;display: inline-flex; align-items: center;';
     $items = array();
