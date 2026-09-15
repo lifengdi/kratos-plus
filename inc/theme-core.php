@@ -264,19 +264,31 @@ function theme_autoload()
                 .kc-fold-collapsed .hc-fold-less{display:none;}
                 .comment:not(.kc-fold-collapsed) .hc-fold-more{display:none;}
                 html[data-theme="dark"] .hot-comments,body.dark .hot-comments,html[data-theme="dark"] .sticky-comments,body.dark .sticky-comments{--hc-bg:rgba(255,255,255,.04);}
+                .kc-deep-load,.kc-deep-collapse{display:inline-block;margin:6px 8px 6px 0;padding:4px 10px;background:transparent;border:1px dashed var(--kr-border,#dcdcdc);border-radius:6px;color:var(--kr-skin-accent,#efefef);font-size:12px;cursor:pointer;line-height:1.6;}
+                .kc-deep-load:hover,.kc-deep-collapse:hover{opacity:.85;}
+                .kc-deep-load:disabled{opacity:.6;cursor:wait;}
             ';
             wp_add_inline_style('kratos', $kc_css);
         }
 
         // 评论增强脚本（赞踩交互）—— 仅在单页且开启评论时加载
-        if (is_singular() && comments_open() && kratos_option('g_comment_reactions_enabled', true)) {
+        if (is_singular() && comments_open() && (
+            kratos_option('g_comment_reactions_enabled', true) ||
+            kratos_option('g_comment_flatten_enabled', false)
+        )) {
             wp_enqueue_script('kratos-comment-enhance', ASSET_PATH . '/assets/js/comment-enhance.js', array(), THEME_VERSION, true);
             wp_localize_script('kratos-comment-enhance', 'KratosCommentEnhance', array(
                 'ajax_url'       => admin_url('admin-ajax.php'),
                 'nonce'          => wp_create_nonce('kratos_comment_vote'),
                 'reply_collapse' => intval(kratos_option('g_comment_reply_collapse', 5)),
+                'flatten_on'     => (bool) kratos_option('g_comment_flatten_enabled', false),
+                'flatten_nonce'  => wp_create_nonce('kratos_load_deep'),
                 'i18n_more'      => __('展开剩余 %d 条回复', 'kratos'),
                 'i18n_less'      => __('收起回复', 'kratos'),
+                'i18n_deep_load'     => __('加载更多回复', 'kratos'),
+                'i18n_deep_loading'  => __('加载中…', 'kratos'),
+                'i18n_deep_collapse' => __('收起回复', 'kratos'),
+                'i18n_deep_expand'   => __('展开回复', 'kratos'),
             ));
         }
     }

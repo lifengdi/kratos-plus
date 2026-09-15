@@ -78,13 +78,29 @@ if (comments_open()) { ?>
 							} else {
 								_e('评论内容', 'kratos');
 							} ?></h3>
-		<?php if (is_singular()) {
+		<?php
+		// 扁平化开关下 deep_anchors 由置顶/热门/主列表三处共同累积，故提前初始化
+		if (kratos_option('g_comment_flatten_enabled', false)) {
+			$GLOBALS['kratos_deep_anchors'] = array();
+			$GLOBALS['kratos_deep_skipped'] = array();
+		}
+		if (is_singular()) {
 			if (function_exists('kratos_render_sticky_comments')) echo kratos_render_sticky_comments(get_the_ID());
 			if (function_exists('kratos_render_hot_comments'))    echo kratos_render_hot_comments(get_the_ID());
 		} ?>
 		<div class="list">
 			<?php if (get_comments_number() > 0) : ?>
-				<?php wp_list_comments('type=comment&callback=comment_callbacks'); ?>
+				<?php
+				$kratos_list_args = array('type' => 'comment', 'callback' => 'comment_callbacks');
+				if (kratos_option('g_comment_flatten_enabled', false)) {
+					$kratos_list_args['max_depth']    = max(2, (int) kratos_option('g_comment_flatten_depth', 3));
+					$kratos_list_args['end-callback'] = 'kratos_comment_callbacks_end';
+				}
+				wp_list_comments($kratos_list_args);
+				if (kratos_option('g_comment_flatten_enabled', false) && !empty($GLOBALS['kratos_deep_anchors'])) {
+					echo '<script>window.KratosDeepAnchors=' . wp_json_encode(array_map('intval', array_keys($GLOBALS['kratos_deep_anchors']))) . ';</script>';
+				}
+				?>
 			<?php else : ?>
 				<div class="comment-empty text-center"><?php _e('还没有评论，快来抢沙发吧~', 'kratos'); ?></div>
 			<?php endif; ?>

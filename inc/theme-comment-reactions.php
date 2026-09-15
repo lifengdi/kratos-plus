@@ -246,8 +246,11 @@ function kratos_render_comment_group($post_id, $top_comments, $wrap_class, $titl
 {
     if (empty($top_comments) || !function_exists('comment_callbacks')) return '';
 
+    // 扁平化开启时把 max_depth 传成 flatten_at；组内以每个 top comment 作 override 独立计数
+    $flatten_on = (bool) kratos_option('g_comment_flatten_enabled', false);
+    $flatten_at = max(1, (int) kratos_option('g_comment_flatten_depth', 3));
     $render_args = array(
-        'max_depth' => (int) get_option('thread_comments_depth', 5),
+        'max_depth' => $flatten_on ? $flatten_at : (int) get_option('thread_comments_depth', 5),
     );
 
     ob_start();
@@ -255,18 +258,25 @@ function kratos_render_comment_group($post_id, $top_comments, $wrap_class, $titl
     echo '<h4 class="hot-comments-title">' . kratos_icon($title_icon) . ' ' . esc_html($title) . '</h4>';
     echo '<ul class="hot-comments-list list">';
     foreach ($top_comments as $c) {
+        if ($flatten_on) {
+            $GLOBALS['kratos_thread_root_override'] = (int) $c->comment_ID;
+            $GLOBALS['kratos_thread_ord'] = array();
+        }
         comment_callbacks($c, $render_args, 1);
         $replies = kratos_collect_descendants($post_id, $c->comment_ID);
         if (!empty($replies)) {
             echo '<ul class="children">';
             foreach ($replies as $r) {
                 comment_callbacks($r, $render_args, 2);
-                echo '</li>';
+                if (empty($GLOBALS['kratos_deep_skipped'][(int) $r->comment_ID])) {
+                    echo '</li>';
+                }
             }
             echo '</ul>';
         }
 
         echo '</li>'; // 闭合 comment_callbacks 开的顶层 <li>
+        if ($flatten_on) unset($GLOBALS['kratos_thread_root_override']);
     }
     echo '</ul></div>';
     return ob_get_clean();

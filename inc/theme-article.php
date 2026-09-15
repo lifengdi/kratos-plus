@@ -298,8 +298,37 @@ if (!function_exists('comment_callback')) :
         } else {
             $moderation_note = __('Your comment is awaiting moderation. This is a preview; your comment will be visible after it has been approved.');
         }
+        // 与 comment_callbacks 一致的判定：找到顶层评论，统计线程中已有已通过评论数；新回复序数 = 现有 + 1，
+        // 超过阈值即挂 .kratos-deep-reply + data-flatten-anchor=顶层 ID，交给 JS 搬运到 anchor 的 ul.children。
+        $kratos_flatten_on = (bool) kratos_option('g_comment_flatten_enabled', false);
+        $kratos_flatten_at = max(1, (int) kratos_option('g_comment_flatten_depth', 3));
+        $kratos_is_deep = false; $kratos_anchor_id = 0;
+        if ($kratos_flatten_on && !empty($comment->comment_parent)) {
+            $ktop = (int) $comment->comment_ID; $p = (int) $comment->comment_parent; $guard = 0;
+            while ($p) {
+                $pc = get_comment($p); if (!$pc) break;
+                $ktop = $p; $p = (int) $pc->comment_parent;
+                if (++$guard > 50) break;
+            }
+            // 统计线程内已有的已通过后代（排除自身）
+            $all = get_comments(array('post_id' => (int) $comment->comment_post_ID, 'status' => 'approve'));
+            $by_id = array(); foreach ($all as $ac) $by_id[(int) $ac->comment_ID] = $ac;
+            $existing = 0;
+            foreach ($all as $ac) {
+                $acid = (int) $ac->comment_ID;
+                if ($acid === (int) $comment->comment_ID) continue;
+                $pp = (int) $ac->comment_parent; $g2 = 0;
+                while ($pp) {
+                    if ($pp === $ktop) { $existing++; break; }
+                    if (!isset($by_id[$pp])) break;
+                    $pp = (int) $by_id[$pp]->comment_parent;
+                    if (++$g2 > 50) break;
+                }
+            }
+            if (($existing + 1) > $kratos_flatten_at) { $kratos_is_deep = true; $kratos_anchor_id = $ktop; }
+        }
 ?>
-        <li class="comment cleanfix" id="comment-<?php echo esc_attr(comment_ID()); ?>">
+        <li class="comment cleanfix<?php echo $kratos_is_deep ? ' kratos-deep-reply' : ''; ?>" id="comment-<?php echo esc_attr(comment_ID()); ?>"<?php if ($kratos_anchor_id) echo ' data-flatten-anchor="' . $kratos_anchor_id . '"'; ?>>
             <div class="avatar float-start d-inline-block me-2">
                 <?php if (function_exists('get_avatar') && get_option('show_avatars')) {
                     echo get_avatar($comment, 50);
@@ -325,7 +354,8 @@ if (!function_exists('comment_callback')) :
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
                         $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
-                        comment_reply_link(array_merge($defaults, array('depth' => 1, 'max_depth' => get_option('thread_comments_depth', 5))));
+                        $kratos_ajax_reply_max = $kratos_flatten_on ? 999 : (int) get_option('thread_comments_depth', 5);
+                        comment_reply_link(array_merge($defaults, array('depth' => 1, 'max_depth' => $kratos_ajax_reply_max)));
                         ?>
                     </div>
                 </div>
@@ -362,8 +392,76 @@ if (!function_exists('comment_callbacks')) :
             $moderation_note = __('Your comment is awaiting moderation. This is a preview; your comment will be visible after it has been approved.');
         }
         $GLOBALS['comment'] = $comment;
-        $kratos_is_sticky = function_exists('kratos_comment_meta_int') && kratos_comment_meta_int($comment->comment_ID, 'kratos_sticky'); ?>
-        <li class="comment cleanfix<?php echo $kratos_is_sticky ? ' is-sticky' : ''; ?>" id="comment-<?php echo esc_attr(comment_ID()); ?>">
+        $kratos_is_sticky = function_exists('kratos_comment_meta_int') && kratos_comment_meta_int($comment->comment_ID, 'kratos_sticky');
+        // 深层折叠：以顶层评论为线程根，在线程内累计 DFS 序数（回溯父链找顶层，或用 sticky/hot 组的 override）；
+        // 序数 > 阈值即视为「深」，anchor = 顶层评论 ID。改成序数后即使全部回复都在同一层，只要数量过阈值也会折叠。
+        $kratos_flatten_on = (bool) kratos_option('g_comment_flatten_enabled', false);
+        $kratos_flatten_at = max(1, (int) kratos_option('g_comment_flatten_depth', 3));
+        $kratos_top_id = 0; $kratos_ord = 0; $kratos_is_deep = false; $kratos_anchor_id = 0;
+        if ($kratos_flatten_on && !empty($comment->comment_parent)) {
+            if (!empty($GLOBALS['kratos_thread_root_override'])) {
+                $kratos_top_id = (int) $GLOBALS['kratos_thread_root_override'];
+            } else {
+                $kratos_top_id = (int) $comment->comment_ID;
+                $p = (int) $comment->comment_parent; $guard = 0;
+                while ($p) {
+                    $pc = get_comment($p); if (!$pc) break;
+                    $kratos_top_id = $p;
+                    $p = (int) $pc->comment_parent;
+                    if (++$guard > 50) break;
+                }
+            }
+            if (!isset($GLOBALS['kratos_thread_ord'])) $GLOBALS['kratos_thread_ord'] = array();
+            if (!isset($GLOBALS['kratos_thread_ord'][$kratos_top_id])) $GLOBALS['kratos_thread_ord'][$kratos_top_id] = 0;
+            $GLOBALS['kratos_thread_ord'][$kratos_top_id]++;
+            $kratos_ord = $GLOBALS['kratos_thread_ord'][$kratos_top_id];
+            if ($kratos_ord > $kratos_flatten_at) { $kratos_is_deep = true; $kratos_anchor_id = $kratos_top_id; }
+        }
+        // AJAX 拉取深层回复时（kratos_force_render_deep=true）绕过 skip 分支，走正常渲染
+        if ($kratos_is_deep && !empty($GLOBALS['kratos_force_render_deep'])) {
+            $kratos_ajax_anchor = $kratos_anchor_id;
+            $kratos_reply_depth = 1; $kratos_reply_max = 999;
+            ?>
+            <li class="comment cleanfix kratos-deep-reply" id="comment-<?php echo esc_attr(comment_ID()); ?>" data-thread-ord="<?php echo (int) $kratos_ord; ?>"<?php if ($kratos_ajax_anchor) echo ' data-flatten-anchor="' . $kratos_ajax_anchor . '"'; ?>>
+                <div class="avatar float-start d-inline-block me-2">
+                    <?php if (function_exists('get_avatar') && get_option('show_avatars')) echo get_avatar($comment, 50); ?>
+                </div>
+                <div class="info clearfix">
+                    <cite class="author_name"><?php echo get_comment_author_link(); ?></cite>
+                    <?php if ('0' == $comment->comment_approved) : ?><em class="comment-awaiting-moderation"><?php echo $moderation_note; ?></em><?php endif; ?>
+                    <div class="content pb-2"><?php comment_text(); ?></div>
+                    <div class="meta clearfix">
+                        <div class="date d-inline-block float-start"><?php echo get_comment_date(); ?>
+                            <?php if (current_user_can('edit_posts')) {
+                                echo '<span class="ms-2">';
+                                edit_comment_link(__('编辑', 'kratos'));
+                                echo '</span>';
+                            } ?>
+                        </div>
+                        <div class="tool reply ms-2 d-inline-block float-end">
+                            <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
+                            <?php
+                            $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
+                            comment_reply_link(array_merge($defaults, array('depth' => 1, 'max_depth' => 999)));
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            <?php
+            return;
+        }
+        // 深层回复初始不渲染：登记 anchor（= 顶层评论 ID），AJAX 按钮点击时按 anchor 拉取
+        if ($kratos_is_deep) {
+            if (!isset($GLOBALS['kratos_deep_anchors'])) $GLOBALS['kratos_deep_anchors'] = array();
+            $GLOBALS['kratos_deep_anchors'][$kratos_anchor_id] = true;
+            $GLOBALS['kratos_deep_skipped'][(int) $comment->comment_ID] = 1;
+            return; // 交给 end-callback 一并跳过 </li>
+        }
+        // 回复按钮始终显示：折叠模式下把 max_depth 抬高，绕开 comment_reply_link 的 depth 检查
+        $kratos_reply_depth = $kratos_flatten_on ? 1 : $depth;
+        $kratos_reply_max   = $kratos_flatten_on ? 999 : (int) $args['max_depth'];
+        ?>
+        <li class="comment cleanfix<?php echo $kratos_is_sticky ? ' is-sticky' : ''; ?>" id="comment-<?php echo esc_attr(comment_ID()); ?>"<?php if ($kratos_flatten_on && $kratos_ord) echo ' data-thread-ord="' . (int) $kratos_ord . '"'; ?>>
             <div class="avatar float-start d-inline-block me-2">
                 <?php if (function_exists('get_avatar') && get_option('show_avatars')) {
                     echo get_avatar($comment, 50);
@@ -392,7 +490,7 @@ if (!function_exists('comment_callbacks')) :
                         <?php if (function_exists('kratos_render_comment_reactions')) echo kratos_render_comment_reactions($comment->comment_ID); ?>
                         <?php
                         $defaults = array('add_below' => 'comment', 'respond_id' => 'respond', 'reply_text' => '<i class="kicon i-reply"></i><span class="ms-1">' . __('回复', 'kratos') . '</span>');
-                        comment_reply_link(array_merge($defaults, array('depth' => $depth, 'max_depth' => $args['max_depth'])));
+                        comment_reply_link(array_merge($defaults, array('depth' => $kratos_reply_depth, 'max_depth' => $kratos_reply_max)));
                         ?>
                     </div>
                 </div>
@@ -400,6 +498,77 @@ if (!function_exists('comment_callbacks')) :
     <?php
     }
 endif;
+
+// 深层回复 end-callback：与 comment_callbacks 里 return 早退成对，跳过 </li>
+if (!function_exists('kratos_comment_callbacks_end')) :
+    function kratos_comment_callbacks_end($comment, $args, $depth)
+    {
+        if (!empty($GLOBALS['kratos_deep_skipped'][(int) $comment->comment_ID])) return;
+        echo '</li>';
+    }
+endif;
+
+// AJAX 分页加载深层回复：anchor = 顶层评论 ID；对 anchor 子树做 DFS，跳过前 threshold 条剩下即为深层；
+// 用 offset 游标做分页（DFS 顺序稳定，评论 ID 游标不适用）
+if (!function_exists('kratos_ajax_load_deep_replies')) :
+    function kratos_ajax_load_deep_replies()
+    {
+        check_ajax_referer('kratos_load_deep', 'nonce');
+        $anchor_id  = isset($_POST['anchor_id']) ? (int) $_POST['anchor_id'] : 0;
+        $offset     = isset($_POST['offset'])    ? max(0, (int) $_POST['offset']) : 0;
+        $page_size  = max(1, (int) kratos_option('g_comment_flatten_page_size', 5));
+        $threshold  = max(1, (int) kratos_option('g_comment_flatten_depth', 3));
+
+        $anchor = $anchor_id ? get_comment($anchor_id) : null;
+        if (!$anchor) wp_send_json_success(array('html' => '', 'has_more' => false, 'offset' => 0));
+
+        // 一次性拿本文所有已通过评论，构建 parent->children 顺序表（date, id 稳定序）
+        $all = get_comments(array(
+            'post_id' => (int) $anchor->comment_post_ID,
+            'status'  => 'approve',
+            'order'   => 'ASC',
+            'orderby' => array('comment_date_gmt' => 'ASC', 'comment_ID' => 'ASC'),
+        ));
+        $kids = array();
+        foreach ($all as $c) { $kids[(int) $c->comment_parent][] = $c; }
+
+        // 从 anchor 开始 DFS 收集后代
+        $order = array();
+        $stack = isset($kids[$anchor_id]) ? array_reverse($kids[$anchor_id]) : array();
+        while ($stack) {
+            $c = array_pop($stack);
+            $order[] = $c;
+            $cid = (int) $c->comment_ID;
+            if (!empty($kids[$cid])) {
+                for ($i = count($kids[$cid]) - 1; $i >= 0; $i--) $stack[] = $kids[$cid][$i];
+            }
+        }
+        // 前 threshold 条是可见的（渲染时已计入 ord 1..threshold），从第 threshold 位起算深层
+        $deep = array_slice($order, $threshold);
+        $batch = array_slice($deep, $offset, $page_size);
+        $has_more = ($offset + count($batch)) < count($deep);
+
+        ob_start();
+        foreach ($batch as $c) {
+            unset($GLOBALS['kratos_deep_skipped'][(int) $c->comment_ID]);
+            $GLOBALS['kratos_force_render_deep'] = true;
+            // 强制走 deep 分支：设定 override + 一个必然超阈值的 ord 起点
+            $GLOBALS['kratos_thread_root_override'] = $anchor_id;
+            $GLOBALS['kratos_thread_ord'] = array($anchor_id => $threshold);
+            comment_callbacks($c, array('max_depth' => $threshold), 2);
+            echo '</li>';
+            unset($GLOBALS['kratos_force_render_deep'], $GLOBALS['kratos_thread_root_override']);
+            $GLOBALS['kratos_thread_ord'] = array();
+        }
+        wp_send_json_success(array(
+            'html'     => ob_get_clean(),
+            'has_more' => (bool) $has_more,
+            'offset'   => $offset + count($batch),
+        ));
+    }
+endif;
+add_action('wp_ajax_kratos_load_deep_replies', 'kratos_ajax_load_deep_replies');
+add_action('wp_ajax_nopriv_kratos_load_deep_replies', 'kratos_ajax_load_deep_replies');
 
 // 文章评论表情
 if (empty(get_option('use_smilies'))) {
