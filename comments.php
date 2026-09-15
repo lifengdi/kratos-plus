@@ -92,6 +92,7 @@ if (comments_open()) { ?>
 			<?php if (get_comments_number() > 0) : ?>
 				<?php
 				$kratos_list_args = array('type' => 'comment', 'callback' => 'comment_callbacks');
+					if (class_exists('Kratos_Comment_Walker')) $kratos_list_args['walker'] = new Kratos_Comment_Walker();
 				if (kratos_option('g_comment_flatten_enabled', false)) {
 					$kratos_list_args['max_depth']    = max(2, (int) kratos_option('g_comment_flatten_depth', 3));
 					$kratos_list_args['end-callback'] = 'kratos_comment_callbacks_end';

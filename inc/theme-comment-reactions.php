@@ -265,7 +265,7 @@ function kratos_render_comment_group($post_id, $top_comments, $wrap_class, $titl
         comment_callbacks($c, $render_args, 1);
         $replies = kratos_collect_descendants($post_id, $c->comment_ID);
         if (!empty($replies)) {
-            echo '<ul class="children">';
+            echo '<ul class="sub_children">';
             foreach ($replies as $r) {
                 comment_callbacks($r, $render_args, 2);
                 if (empty($GLOBALS['kratos_deep_skipped'][(int) $r->comment_ID])) {

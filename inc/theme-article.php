@@ -499,6 +499,19 @@ if (!function_exists('comment_callbacks')) :
     }
 endif;
 
+// 自定义 Walker：仅覆盖 start_lvl 让嵌套 ul 的 class 从 core 硬编码的 `children` 改为 `sub_children`
+if (!class_exists('Kratos_Comment_Walker') && class_exists('Walker_Comment')) :
+    class Kratos_Comment_Walker extends Walker_Comment
+    {
+        function start_lvl(&$output, $depth = 0, $args = array())
+        {
+            $GLOBALS['comment_depth'] = $depth + 1;
+            $tag = (!empty($args['style']) && $args['style'] === 'ol') ? 'ol' : 'ul';
+            $output .= '<' . $tag . ' class="sub_children">' . "\n";
+        }
+    }
+endif;
+
 // 深层回复 end-callback：与 comment_callbacks 里 return 早退成对，跳过 </li>
 if (!function_exists('kratos_comment_callbacks_end')) :
     function kratos_comment_callbacks_end($comment, $args, $depth)

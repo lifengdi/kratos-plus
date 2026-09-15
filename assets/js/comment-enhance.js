@@ -27,10 +27,10 @@
     var deepGroups = {}; // anchor_id -> { anchorId, mirrors:[{ul,loadBtn,collapseBtn}], offset, collapsed, fetching }
 
     function ensureUlIn(host) {
-        var ul = host.querySelector(':scope > ul.children');
+        var ul = host.querySelector(':scope > ul.sub_children');
         if (!ul) {
             ul = document.createElement('ul');
-            ul.className = 'children';
+            ul.className = 'sub_children';
             host.appendChild(ul);
         }
         return ul;
