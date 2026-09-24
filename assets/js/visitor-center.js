@@ -107,7 +107,7 @@
                      '<div class="kr-ico kvc-comment-ico">' + (SVG.chat || '') + '</div>' +
                      '<div class="kvc-comment-body">' +
                        '<div class="kvc-comment-meta">' +
-                         '在<a href="' + escapeHtml(r.link) + '">' + escapeHtml(r.post_title) + '</a>中说：' +
+                         '在 <a href="' + escapeHtml(r.link) + '">' + escapeHtml(r.post_title) + '</a> 中说：' +
                        '</div>' +
                        '<p class="kvc-comment-text">' + escapeHtml(r.excerpt) + '</p>' +
                        '<div class="kvc-comment-meta">' +
