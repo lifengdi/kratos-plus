@@ -4803,6 +4803,89 @@ CSF::createSection($prefix, array(
 ));
 
 CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
+    'title' => __('游客中心', 'kratos'),
+    'icon' => 'fas fa-id-badge',
+    'fields' => array(
+        array(
+            'id' => 'g_visitor_center_enable',
+            'type' => 'switcher',
+            'title' => __('启用游客中心', 'kratos'),
+            'subtitle' => __('开启后，创建页面并选用「游客中心」模板即可展示。访客邮箱从 WP 留言 cookie 读取，未留过言者显示引导态。', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'kvc_title',
+            'type' => 'text',
+            'title' => __('标题', 'kratos'),
+            'default' => __('游客中心', 'kratos'),
+        ),
+        array(
+            'id' => 'kvc_subtitle',
+            'type' => 'text',
+            'title' => __('副标题', 'kratos'),
+            'default' => __('这里记录了你在本站留下的痕迹', 'kratos'),
+        ),
+        array(
+            'type' => 'content',
+            'content' =>
+                '<div style="padding:12px 14px;background:#f4f7ff;border:1px solid #d6e0ff;border-radius:8px;line-height:1.8;font-size:13px;">'
+                . '<p style="margin:0 0 10px;color:#666;"><strong>' . __('密钥：', 'kratos') . '</strong>'
+                . __('首次访问时自动生成 32 字节随机密钥并保存在 wp_options.kratos_vc_secret（autoload=false）。重置密钥会让所有已存在的分享链接失效，谨慎操作。', 'kratos') . '</p>'
+                . '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" onsubmit="return confirm(\''. esc_js(__('重置后所有已生成的加密链接立即失效，确定要重置吗？', 'kratos')) .'\')">'
+                . '<input type="hidden" name="action" value="kratos_vc_reset_secret">'
+                . wp_nonce_field('kratos_vc_reset_secret', '_wpnonce', true, false)
+                . '<button type="submit" class="button" style="background:#fee;border-color:#f88;color:#c33;">' . esc_html__('重置加密密钥', 'kratos') . '</button>'
+                . '</form>'
+                . '</div>',
+            'dependency' => array('g_visitor_center_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_visitor_center_manual_badges',
+            'type' => 'group',
+            'title' => __('手动徽章', 'kratos'),
+            'subtitle' => __('按邮箱授予个性化徽章（如「征文比赛冠军」「站庆老朋友」）。填入的邮箱要与访客留言时使用的邮箱一致，大小写不敏感。', 'kratos'),
+            'button_title' => __('新增徽章', 'kratos'),
+            'accordion_title' => __('徽章条目', 'kratos'),
+            'fields' => array(
+                array(
+                    'id' => 'email',
+                    'type' => 'text',
+                    'title' => __('邮箱', 'kratos'),
+                    'subtitle' => __('访客留言时用的邮箱地址', 'kratos'),
+                ),
+                array(
+                    'id' => 'icon',
+                    'type' => 'icon',
+                    'title' => __('徽章图标', 'kratos'),
+                    'subtitle' => __('从 Font Awesome 图标库中选取', 'kratos'),
+                    'default' => 'fas fa-trophy',
+                ),
+                array(
+                    'id' => 'name',
+                    'type' => 'text',
+                    'title' => __('徽章名称', 'kratos'),
+                    'placeholder' => __('如「首席评论员」', 'kratos'),
+                ),
+                array(
+                    'id' => 'desc',
+                    'type' => 'textarea',
+                    'title' => __('徽章描述', 'kratos'),
+                    'subtitle' => __('鼠标悬停显示的说明文案', 'kratos'),
+                ),
+                array(
+                    'id' => 'granted_at',
+                    'type' => 'text',
+                    'title' => __('授予日期', 'kratos'),
+                    'placeholder' => 'YYYY-MM-DD',
+                ),
+            ),
+            'dependency' => array('g_visitor_center_enable', '==', 'true'),
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
     'id' => 'kp_social',
     'title' => __('站点互联', 'kratos'),
     'icon' => 'fas fa-users',

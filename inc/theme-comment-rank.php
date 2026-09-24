@@ -339,13 +339,32 @@ function kratos_rank_badge_html($comment)
         esc_attr($bg_color)
     );
 
-    return sprintf(
+    $badge = sprintf(
         '<span class="kratos-rank-badge" title="%s（%d 条评论）" style="%s">%s</span>',
         esc_attr($title . ' · ' . $count),
         $count,
         $style,
         esc_html($title)
     );
+
+    // 若游客中心已启用，把徽章包成跳转链接（?vc=<md5(email)>），
+    // 支持匿名访客也能点开
+    if (function_exists('kratos_vc_link_for_email')) {
+        $email = (string) $comment->comment_author_email;
+        if ($email !== '') {
+            $vc_url = kratos_vc_link_for_email($email);
+            if ($vc_url !== '') {
+                return sprintf(
+                    '<a class="kratos-rank-badge-link" href="%s" title="%s" style="text-decoration:none;">%s</a>',
+                    esc_url($vc_url),
+                    esc_attr__('查看该访客的档案', 'kratos'),
+                    $badge
+                );
+            }
+        }
+    }
+
+    return $badge;
 }
 
 /* ============================================================

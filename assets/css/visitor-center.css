@@ -1,0 +1,214 @@
+.kvc-hd { text-align: center; padding: 28px 28px 22px; margin-bottom: 20px;
+    background: var(--khs-card-bg);
+    border: 1px solid var(--khs-line);
+}
+.kvc-hd-ico {
+    width: 44px; height: 44px; border-radius: 12px;
+    margin: 0 auto 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 20px;
+}
+.kvc-hd-ico .kvc-svg { width: 20px; height: 20px; }
+.kvc-hd .kr-hd-title { font-size: 22px; font-weight: 600; margin: 8px 0 4px; letter-spacing: .5px; }
+.kvc-hd .kr-hd-sub { color: var(--khs-fg-dim, #888); font-size: 13px; margin: 0 0 14px; }
+.kvc-hd .kr-hd-divider {
+    display: inline-block; width: 40px; height: 2px;
+    background: var(--khs-accent, #4b7bec); border-radius: 2px;
+}
+
+.kr-body{
+    margin-bottom: 20px;
+    background: var(--khs-card-bg);
+    border: 1px solid var(--khs-line);
+}
+
+.kratos-visitor-center .kvc-stat {
+    background: var(--khs-card-bg);
+    border: 1px solid var(--khs-line);
+    box-shadow: var(--khs-card-shadow);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.kratos-visitor-center .kvc-comment-ico {
+    background: linear-gradient(135deg, var(--khs-bg-2) 0%, var(--khs-bg-3) 100%);
+    color: var(--khs-accent);
+}
+
+/* ========== 通用小节 ========== */
+.kvc-section-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 600; margin: 0 0 16px;
+    color: var(--khs-fg, inherit);
+}
+.kvc-section-title .kr-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--khs-accent, #4b7bec);
+}
+
+/* ========== 加载态骨架 ========== */
+.kratos-visitor-center[data-state="loading"] .kvc-loading { display: block; }
+.kvc-skeleton {
+    background: linear-gradient(90deg, rgba(0,0,0,.06) 25%, rgba(0,0,0,.03) 50%, rgba(0,0,0,.06) 75%);
+    background-size: 200% 100%;
+    animation: kvc-skl 1.2s infinite;
+    border-radius: 6px;
+}
+.kvc-sk-hd { height: 96px; margin-bottom: 16px; }
+.kvc-sk-body { height: 200px; }
+@keyframes kvc-skl { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ========== 引导 / 未找到态 ========== */
+.kvc-empty { text-align: center; padding: 48px 20px; }
+.kvc-empty-ico {
+    width: 80px; height: 80px; font-size: 36px;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+}
+.kvc-empty-ico .kvc-svg { width: 36px; height: 36px; }
+.kvc-empty-title { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+.kvc-empty-desc { color: var(--khs-fg-dim, #888); margin: 0 0 20px; line-height: 1.7; }
+
+/* ========== 身份卡 ========== */
+.kvc-identity-card { padding: 20px; }
+.kvc-identity { display: flex; align-items: center; gap: 20px; }
+.kvc-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--khs-bg-2, #eee); flex-shrink: 0; overflow: hidden;
+}
+.kvc-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.kvc-id-main { flex: 1; min-width: 0; }
+.kvc-name { font-size: 20px; font-weight: 600; margin: 0 0 4px; color: var(--khs-fg, inherit); }
+.kvc-email {
+    color: var(--khs-fg-dim, #888); font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.kvc-meta-row {
+    display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;
+    align-items: center;
+}
+.kvc-meta-row .kr-pill { display: inline-flex; align-items: center; gap: 6px; }
+.kvc-meta-row .kvc-svg { width: 12px; height: 12px; }
+.kvc-meta-row .kvc-level {
+    /* 与评论区 .kratos-rank-badge 视觉一致（去掉 margin-left，因为这里 pill 之间用 gap 布局）*/
+    margin-left: 0 !important; vertical-align: middle;
+}
+
+/* ========== 统计四宫格 ========== */
+.kvc-stats {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px; margin: 20px 0;
+}
+.kvc-stat { text-align: center; padding: 18px 12px; }
+.kvc-stat-num {
+    font-size: 28px; font-weight: 700; line-height: 1.2;
+    color: var(--khs-accent, #4b7bec);
+}
+.kvc-stat-label { color: var(--khs-fg-dim, #888); font-size: 12px; margin-top: 4px; }
+
+/* ========== 徽章（demo：全部虚线边框；locked 只降不透明度） ========== */
+.kvc-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+.kvc-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-radius: 8px;
+    border: 1px dashed var(--khs-line, #eee);
+    background: transparent;
+    font-size: 13px;
+    color: var(--khs-fg, inherit);
+}
+.kvc-badge.is-locked { opacity: .4; }
+.kvc-badge.is-manual { border-style: solid; border-color: var(--khs-accent, #4b7bec); }
+.kvc-badge-ico {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    color: var(--khs-accent, #4b7bec);
+}
+.kvc-badge-svg { width: 16px; height: 16px; }
+.kvc-badge-tag {
+    font-style: normal; font-size: 11px;
+    color: var(--khs-accent, #4b7bec); margin-left: 4px;
+}
+.kvc-badge-progress {
+    font-style: normal; font-size: 11px;
+    color: var(--khs-fg-dim, #888); margin-left: 4px;
+}
+
+/* ========== 最近评论 ========== */
+.kvc-comment-list { display: flex; flex-direction: column; gap: 12px; }
+.kvc-comment {
+    display: flex; gap: 12px; border-radius: 8px;
+    transition: background .2s;
+}
+.kvc-comment:hover { background: rgba(0, 0, 0, .02); }
+.kvc-comment-ico {
+    width: 36px; height: 36px; flex-shrink: 0; font-size: 14px;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.kvc-comment-ico .kvc-svg { width: 14px; height: 14px; }
+.kvc-comment-body { flex: 1; min-width: 0; }
+.kvc-comment-text {
+    margin: 0 0 6px; color: var(--khs-fg, inherit); line-height: 1.6;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.kvc-comment-meta {
+    display: flex; gap: 5px; align-items: center;
+    color: var(--khs-fg-dim, #888); font-size: 12px;
+}
+.kvc-comment-meta a { color: var(--khs-accent, #4b7bec); text-decoration: none; }
+.kvc-comment-heart {
+    display: inline-flex; align-items: center;
+    color: var(--khs-heart-fill, var(--khs-accent, #ff6b8b));
+}
+.kvc-comment-heart .kvc-svg { width: 11px; height: 11px; }
+
+/* ========== 常访文章 ========== */
+.kvc-top-posts { display: flex; flex-direction: column; gap: 8px; }
+.kvc-top-post {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px; border-radius: 6px;
+    background: rgba(0, 0, 0, .02);
+    text-decoration: none; color: var(--khs-fg, inherit);
+    transition: background .2s;
+}
+.kvc-top-post:hover { background: rgba(0, 0, 0, .05); }
+.kvc-top-post-title {
+    flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.kvc-top-post-count { color: var(--khs-accent, #4b7bec); font-weight: 600; margin-left: 12px; }
+
+/* ========== 热度图 ========== */
+.kvc-heat { overflow-x: auto; padding-bottom: 4px; }
+.kvc-heat-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 12px);
+    grid-auto-flow: column;
+    grid-auto-columns: 12px;
+    gap: 3px;
+}
+.kvc-heat-cell {
+    width: 12px; height: 12px; border-radius: 2px;
+    background: var(--khs-line, #ebedf0);
+}
+.kvc-heat-cell.is-blank { background: transparent; }
+.kvc-heat-cell.level-0 { background: var(--khs-line, #ebedf0); }
+.kvc-heat-cell.level-1 { background: color-mix(in srgb, var(--khs-accent, #4b7bec) 25%, transparent); }
+.kvc-heat-cell.level-2 { background: color-mix(in srgb, var(--khs-accent, #4b7bec) 50%, transparent); }
+.kvc-heat-cell.level-3 { background: color-mix(in srgb, var(--khs-accent, #4b7bec) 75%, transparent); }
+.kvc-heat-cell.level-4 { background: var(--khs-accent, #4b7bec); }
+.kvc-heat-legend {
+    display: flex; align-items: center; gap: 4px;
+    justify-content: flex-end; margin-top: 10px;
+    color: var(--khs-fg-dim, #888); font-size: 12px;
+}
+.kvc-heat-legend .kvc-heat-cell { width: 10px; height: 10px; }
+
+/* ========== 响应式 ========== */
+@media (max-width: 640px) {
+    .kvc-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kvc-identity { flex-direction: column; text-align: center; }
+    .kvc-meta-row { justify-content: center; }
+}

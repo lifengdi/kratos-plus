@@ -234,6 +234,9 @@ require get_template_directory() . '/inc/theme-site-dashboard.php';
 // 自定义登录页（接管 wp-login.php）
 require get_template_directory() . '/inc/theme-login.php';
 
+// 游客中心（page-visitor-center.php 独立页面 + REST 聚合 + 手动徽章）
+require get_template_directory() . '/inc/theme-visitor-center.php';
+
 // 以下模块延迟加载：after_setup_theme 时 options 已可用且 filter 链开销更低
 add_action('after_setup_theme', function () {
     $opts = get_option('kratos_options');
