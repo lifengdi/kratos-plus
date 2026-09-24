@@ -68,11 +68,16 @@
                 + escapeHtml(d.level.bg_color) + ';color:' + escapeHtml(d.level.color) + ';">'
                 + escapeHtml(d.level.title) + '</span>';
         }
-        var heartHtml = d.stats.heart > 0
-            ? '<span class="kr-pill kvc-pill-heart">' + (SVG.heart || '') + ' ' + I18N.heart + ' × ' + d.stats.heart + '</span>'
+
+        var lastActiveHtml = d.recent
+            ? '<span class="kvc-pill-active-at">最近活跃于：' + d.recent[0].date + '</span>'
+            : '';
+
+        var urlHtml = d.url
+            ? '<span class="kr-pill kvc-pill-home">' + (SVG.home || '') + '<a target="_blank" href="' + d.url + '">个人主页</a></span>'
             : '';
         var regionHtml = d.region
-            ? '<span class="kr-pill kvc-pill-region">' + (SVG.region || '') + ' ' + escapeHtml(d.region) + '</span>'
+            ? '<span class="kr-pill kvc-pill-region">' + (SVG.region || '') + '' + escapeHtml(d.region) + '</span>'
             : '';
 
         var stats = [
@@ -127,7 +132,8 @@
                 '<div class="kvc-avatar"><img src="' + escapeHtml(d.avatar) + '" alt=""></div>' +
                 '<div class="kvc-id-main">' +
                   '<h2 class="kvc-name">' + escapeHtml(d.name || '') + '</h2>' +
-                  '<div class="kvc-meta-row">' + levelHtml + regionHtml + '</div>' +
+                  '<div class="kvc-meta-row">' + levelHtml + lastActiveHtml + '</div>' +
+                  '<div class="kvc-meta-row">' + urlHtml + regionHtml + '</div>' +
                 '</div>' +
               '</div>' +
             '</div>' +

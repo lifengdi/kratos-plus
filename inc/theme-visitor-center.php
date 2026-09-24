@@ -315,7 +315,7 @@ function kratos_vc_aggregate($email)
 
     // 地域
     $region = '';
-    if (function_exists('kratos_comment_geo_query_region')) {
+    if (function_exists('kratos_ip2region_lookup')) {
         // 复用地域解析：取该邮箱最近一条评论的 IP
         $last_ip = $wpdb->get_var($wpdb->prepare(
             "SELECT comment_author_IP FROM {$wpdb->comments}
@@ -323,7 +323,7 @@ function kratos_vc_aggregate($email)
              ORDER BY comment_ID DESC LIMIT 1",
             strtolower($email)
         ));
-        if ($last_ip && function_exists('kratos_ip2region_lookup')) {
+        if ($last_ip) {
             $info = kratos_ip2region_lookup($last_ip);
             if (is_array($info)) {
                 $region = trim(($info['province'] ?? '') . ' ' . ($info['city'] ?? ''));
@@ -676,6 +676,7 @@ function kratos_vc_enqueue()
         'heart'     => kratos_vc_icon_svg('fas fa-heart', 'kvc-svg'),
         'region'    => kratos_vc_icon_svg('fas fa-location-dot', 'kvc-svg'),
         'chat'      => kratos_vc_icon_svg('fas fa-comment', 'kvc-svg'),
+        'home'      => kratos_vc_icon_svg('fas fa-link', 'kvc-svg'),
     );
     wp_localize_script('kratos-visitor-center', 'KratosVC', array(
         'restUrl'    => esc_url_raw(rest_url('kratos/v1/visitor')),
@@ -696,9 +697,9 @@ function kratos_vc_enqueue()
             'days'         => __('陪伴天数', 'kratos'),
             'badges'       => __('成就徽章', 'kratos'),
             'recent'       => __('最近评论', 'kratos'),
-            'top_posts'    => __('你最常评论的文章', 'kratos'),
+            'top_posts'    => __('最常评论的文章', 'kratos'),
             'activity'     => __('近一年活跃', 'kratos'),
-            'manual_tag'   => __('博主授予', 'kratos'),
+            'manual_tag'   => __('特别授予', 'kratos'),
             'less'         => __('少', 'kratos'),
             'more'         => __('多', 'kratos'),
         ),

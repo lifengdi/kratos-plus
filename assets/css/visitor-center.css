@@ -86,7 +86,19 @@
     display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;
     align-items: center;
 }
-.kvc-meta-row .kr-pill { display: inline-flex; align-items: center; gap: 6px; }
+.kvc-pill-active-at {
+    font-size: 12px;
+    color: var(--khf-accent);
+}
+.kvc-meta-row .kr-pill { display: inline-flex; align-items: center; font-size: 12px;
+    gap: 3px;
+    line-height: 1;
+    border-radius: 2px;
+    padding: 5px 10px;
+    background: var(--khf-soft);
+    color: var(--khf-accent);
+    border: 1px solid var(--khs-line);
+}
 .kvc-meta-row .kvc-svg { width: 12px; height: 12px; }
 .kvc-meta-row .kvc-level {
     /* 与评论区 .kratos-rank-badge 视觉一致（去掉 margin-left，因为这里 pill 之间用 gap 布局）*/
