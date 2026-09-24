@@ -166,7 +166,7 @@
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
 .kvc-comment-meta {
-    display: flex; gap: 5px; align-items: center;
+    align-items: center;
     color: var(--khs-fg-dim, #888); font-size: 12px;
 }
 .kvc-comment-meta a { color: var(--khs-accent, #4b7bec); text-decoration: none; }
