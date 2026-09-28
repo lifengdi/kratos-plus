@@ -192,10 +192,14 @@
 }
 
 /* 单图：保持 inline-block 让锚点收缩到图片轮廓，背景不会露；
-   .kss-single-media 加 text-align:center 让异形图在放开的文章列宽下居中而不是左靠 */
+   .kss-single-media 的 text-align 跟着外层 align 类走 —— 单图时外层容器占满
+   文章列宽 (max-width:100%)，margin auto 无处可挤，此时只有 text-align
+   能真正让 inline-block 的图片在列内左/中/右移动。默认 center。 */
 .kratos-nine-grid.kratos-shuoshuo .kss-single-media {
     text-align: center;
 }
+.kratos-nine-grid--align-left.kratos-shuoshuo  .kss-single-media { text-align: left;   }
+.kratos-nine-grid--align-right.kratos-shuoshuo .kss-single-media { text-align: right;  }
 .kratos-nine-grid.kratos-shuoshuo .kss-img-single {
     display: inline-block;
     max-width: 100%;
