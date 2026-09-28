@@ -109,7 +109,7 @@
                        '<div class="kvc-comment-meta">' +
                          '在 <a href="' + escapeHtml(r.link) + '">' + escapeHtml(r.post_title) + '</a> 中说：' +
                        '</div>' +
-                       '<p class="kvc-comment-text">' + escapeHtml(r.excerpt) + '</p>' +
+                       '<p class="kvc-comment-text">' + (r.excerpt || '') + '</p>' +
                        '<div class="kvc-comment-meta">' +
                          '<span>' + escapeHtml(r.date) + '</span>'  + heart +
                        '</div>' +
@@ -158,6 +158,37 @@
               '<h3 class="kvc-section-title"><span class="kr-dot"></span>' + escapeHtml(I18N.activity) + '</h3>' +
               heatHtml +
             '</div>';
+        bindHeatmapTooltip();
+    }
+
+    function bindHeatmapTooltip() {
+        var grid = root.querySelector('.kvc-heat-grid');
+        if (!grid) return;
+        var tip = document.querySelector('.kvc-heat-tooltip');
+        if (!tip) {
+            tip = document.createElement('div');
+            tip.className = 'kvc-heat-tooltip';
+            document.body.appendChild(tip);
+        }
+        var tplHas = I18N.heat_tooltip || '%date%：%count% 条评论';
+        var tplNone = I18N.heat_tooltip_empty || '%date%：无活跃';
+        grid.addEventListener('mouseover', function (e) {
+            var c = e.target.closest('.kvc-heat-cell');
+            if (!c || !grid.contains(c)) return;
+            var date = c.getAttribute('data-date');
+            if (!date) return;
+            var count = parseInt(c.getAttribute('data-count') || '0', 10);
+            tip.textContent = (count > 0 ? tplHas : tplNone).replace('%date%', date).replace('%count%', count);
+            tip.style.opacity = '1';
+        });
+        grid.addEventListener('mousemove', function (e) {
+            if (tip.style.opacity !== '1') return;
+            tip.style.top = (e.pageY + 12) + 'px';
+            tip.style.left = (e.pageX + 12) + 'px';
+        });
+        grid.addEventListener('mouseleave', function () {
+            tip.style.opacity = '0';
+        });
     }
 
     function buildHeatmap(map) {
@@ -165,14 +196,30 @@
         var start = new Date(today);
         start.setDate(start.getDate() - 364);
         start.setDate(start.getDate() - start.getDay());
-        var cells = '';
         var maxCount = 1;
         for (var k in map) if (map.hasOwnProperty(k)) if (map[k] > maxCount) maxCount = map[k];
+
         var weeks = 53;
+        var weekdays = (I18N.weekdays && I18N.weekdays.length === 7) ? I18N.weekdays : ['日','一','二','三','四','五','六'];
+        var months = (I18N.months && I18N.months.length === 12) ? I18N.months : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+        var CS = 12, CG = 3; // 单元 12px + 间距 3px（与 CSS 保持一致）
+
+        // 星期列：与 kph 一致，只显示奇数索引（一/三/五）
+        var wdHtml = '';
+        for (var wi = 0; wi < 7; wi++) {
+            wdHtml += '<div class="kvc-heat-weekday">' + escapeHtml(wi % 2 === 1 ? weekdays[wi] : '') + '</div>';
+        }
+
+        // 月份标签：扫描每列首个日期，遇到新月份就在对应偏移打一个标签
+        var monthLabels = [];
+        var lastMonth = -1;
+        var cells = '';
         for (var w = 0; w < weeks; w++) {
+            var colFirstDate = null;
             for (var d = 0; d < 7; d++) {
                 var dt = new Date(start);
                 dt.setDate(dt.getDate() + w * 7 + d);
+                if (colFirstDate === null) colFirstDate = dt;
                 if (dt > today) { cells += '<div class="kvc-heat-cell is-blank"></div>'; continue; }
                 var key = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
                 var v = map[key] || 0;
@@ -181,9 +228,17 @@
                     var r = v / maxCount;
                     lvl = r >= 0.75 ? 4 : r >= 0.5 ? 3 : r >= 0.25 ? 2 : 1;
                 }
-                cells += '<div class="kvc-heat-cell level-' + lvl + '" title="' + key + ': ' + v + '"></div>';
+                cells += '<div class="kvc-heat-cell level-' + lvl + '" data-date="' + key + '" data-count="' + v + '"></div>';
+            }
+            var mo = colFirstDate.getMonth();
+            if (mo !== lastMonth) {
+                monthLabels.push('<div class="kvc-heat-month" style="left:' + (w * (CS + CG) + CS / 2) + 'px;">' + escapeHtml(months[mo]) + '</div>');
+                lastMonth = mo;
             }
         }
+
+        var monthsWidth = weeks * (CS + CG);
+        var monthsHtml = '<div class="kvc-heat-months" style="width:' + monthsWidth + 'px;">' + monthLabels.join('') + '</div>';
 
         var legend =
             '<div class="kvc-heat-legend">' +
@@ -195,7 +250,17 @@
               '<span class="kvc-heat-cell level-4"></span>' +
               '<span>' + escapeHtml(I18N.more) + '</span>' +
             '</div>';
-        return '<div class="kvc-heat"><div class="kvc-heat-grid">' + cells + '</div>' + legend + '</div>';
+
+        return '<div class="kvc-heat">' +
+            '<div class="kvc-heat-graph">' +
+              '<div class="kvc-heat-weekdays">' + wdHtml + '</div>' +
+              '<div class="kvc-heat-main">' +
+                monthsHtml +
+                '<div class="kvc-heat-grid">' + cells + '</div>' +
+              '</div>' +
+            '</div>' +
+            legend +
+        '</div>';
     }
 
     /* ---------- 主流程 ----------

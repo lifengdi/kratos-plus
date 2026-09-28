@@ -327,9 +327,17 @@ function kratos_top_commenters_shortcode($atts)
                     $time_full = $it['last_time'] > 0 ? wp_date($date_fmt, $it['last_time']) : '';
                     $time_rel  = $it['last_time'] > 0 ? human_time_diff($it['last_time'], time()) . __('前', 'kratos') : '';
 
-                    // 名称 span：外层根据是否有 url 决定 <a>
+                    // 名称链接：
+                    //   - 未注册游客（user_id = 0）：跳转到「游客中心」（带 vc 令牌），忽略其填写的 URL
+                    //   - 已注册用户：保持原逻辑，有 URL 则外链到本人网址
+                    $vc_url = '';
+                    if ((int) $it['user_id'] === 0 && !empty($it['email']) && function_exists('kratos_vc_link_for_email')) {
+                        $vc_url = kratos_vc_link_for_email($it['email']);
+                    }
                     $name_html = '<span class="ktc-name">' . esc_html($it['name']) . '</span>';
-                    if ($has_url) {
+                    if ($vc_url !== '') {
+                        $name_html = '<a class="ktc-name ktc-name-link ktc-name-vc" href="' . esc_url($vc_url) . '" title="' . esc_attr__('查看该访客的档案', 'kratos') . '" rel="nofollow ugc">' . esc_html($it['name']) . '</a>';
+                    } elseif ($has_url) {
                         $name_html = '<a class="ktc-name ktc-name-link" href="' . esc_url($it['url']) . '" target="_blank" rel="nofollow noopener external">' . esc_html($it['name']) . '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ktc-name-arrow"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>';
                     }
                 ?>

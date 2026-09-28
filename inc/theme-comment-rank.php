@@ -347,23 +347,7 @@ function kratos_rank_badge_html($comment)
         esc_html($title)
     );
 
-    // 若游客中心已启用，把徽章包成跳转链接（?vc=<md5(email)>），
-    // 支持匿名访客也能点开
-    if (function_exists('kratos_vc_link_for_email')) {
-        $email = (string) $comment->comment_author_email;
-        if ($email !== '') {
-            $vc_url = kratos_vc_link_for_email($email);
-            if ($vc_url !== '') {
-                return sprintf(
-                    '<a class="kratos-rank-badge-link" href="%s" title="%s" style="text-decoration:none;">%s</a>',
-                    esc_url($vc_url),
-                    esc_attr__('查看该访客的档案', 'kratos'),
-                    $badge
-                );
-            }
-        }
-    }
-
+    // 徽章本身不再挂跳转链接：改由 kratos_rank_append_badge() 在游客名称上挂链接
     return $badge;
 }
 
@@ -394,6 +378,25 @@ function kratos_rank_append_badge($author_link, $author = '', $comment_id = 0)
     }
 
     $badge = kratos_rank_badge_html($comment);
+
+    // 未注册的游客（user_id = 0）：把姓名包成到「游客中心」的跳转链接；
+    // 已注册用户：保持 WP 原生 author_link（通常指向其个人网址/资料页），不改动。
+    if ((int) $comment->user_id === 0 && function_exists('kratos_vc_link_for_email')) {
+        $email = (string) $comment->comment_author_email;
+        if ($email !== '') {
+            $vc_url = kratos_vc_link_for_email($email);
+            if ($vc_url !== '') {
+                $name = get_comment_author($comment);
+                $author_link = sprintf(
+                    '<a class="kratos-vc-name-link" href="%s" title="%s" rel="nofollow ugc">%s</a>',
+                    esc_url($vc_url),
+                    esc_attr__('查看该访客的档案', 'kratos'),
+                    esc_html($name)
+                );
+            }
+        }
+    }
+
     if ($badge === '') {
         return $author_link;
     }

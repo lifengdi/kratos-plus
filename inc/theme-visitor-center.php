@@ -158,7 +158,7 @@ function kratos_vc_pick_author_by_email($email)
         "SELECT comment_author, comment_author_email, comment_author_url
          FROM {$wpdb->comments}
          WHERE comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment')
-           AND LOWER(comment_author_email) = %s
+           AND comment_author_email = %s
          ORDER BY comment_ID DESC LIMIT 1",
         strtolower($email)
     ), ARRAY_A);
@@ -171,6 +171,27 @@ function kratos_vc_pick_author_by_email($email)
  * @param string $email 明文邮箱（服务端已 trim + lower）
  * @return array
  */
+/**
+ * 生成最近评论摘要：先剥标签、截词，再把表情 shortcode 转成 <img>，最后 kses 过滤。
+ * 顺序 matters：先截词能避免 <img> 被 wp_trim_words 破坏；再 kses 只放行 img，防 XSS。
+ */
+function kratos_vc_excerpt_with_smilies($raw)
+{
+    $text = wp_trim_words(wp_strip_all_tags((string) $raw), 60, '…');
+    // 强制启用一次表情转换：即使站点关闭了 use_smilies，评论里的 shortcode 依然渲染。
+    global $wpsmiliestrans;
+    if (empty($wpsmiliestrans) && function_exists('smilies_init')) {
+        smilies_init();
+    }
+    $text = convert_smilies($text);
+    return wp_kses($text, array(
+        'img' => array(
+            'src' => true, 'alt' => true, 'class' => true, 'style' => true,
+            'width' => true, 'height' => true,
+        ),
+    ));
+}
+
 function kratos_vc_aggregate($email)
 {
     $email  = strtolower(trim((string) $email));
@@ -183,121 +204,127 @@ function kratos_vc_aggregate($email)
 
     global $wpdb;
 
-    // 基础：总数 / 首评 / 末评 / 深夜数
-    $base = $wpdb->get_row($wpdb->prepare(
-        "SELECT COUNT(*) AS total,
-                MIN(comment_date) AS first_date,
-                MAX(comment_date) AS last_date,
-                SUM(CASE WHEN HOUR(comment_date) < 6 THEN 1 ELSE 0 END) AS night_cnt
+    // 一次拉全部记录，回到 PHP 里循环算 total / first / last / night / recent / top_posts / activity / last_ip。
+    // 单个访客一年评论量级 <5000，内存/CPU 都不是瓶颈；相比原来 5 次全表扫（base/recent/top_posts/activity/last_ip），少 4 次扫描。
+    // 注：wp_comments.comment_author_email 默认 collation utf8mb4_unicode_ci 大小写不敏感，
+    // 直接用 `=` 即可，不再用 LOWER() 包裹（函数在列上会阻止未来加索引时走 index）。
+    $rows = $wpdb->get_results($wpdb->prepare(
+        "SELECT comment_ID, comment_post_ID, comment_content, comment_date, comment_author_IP
          FROM {$wpdb->comments}
-         WHERE comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment')
-           AND LOWER(comment_author_email) = %s",
-        strtolower($email)
+         WHERE comment_author_email = %s
+           AND comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment')
+         ORDER BY comment_ID DESC
+         LIMIT 5000",
+        $email
     ), ARRAY_A);
 
-    $total     = isset($base['total']) ? (int) $base['total'] : 0;
-    $first_ts  = !empty($base['first_date']) ? strtotime($base['first_date']) : 0;
-    $night_cnt = isset($base['night_cnt']) ? (int) $base['night_cnt'] : 0;
+    $total = count((array) $rows);
+    $first_ts = 0; $last_ts = 0; $night_cnt = 0;
+    $last_ip = '';
+    $activity_map = array();
+    $post_counts  = array();      // post_id => count
+    $recent_rows  = array();      // 前 N 条（$rows 已按 comment_ID DESC）
+    $activity_cut = strtotime('-365 days');
 
-    // 走心数
+    foreach ((array) $rows as $i => $r) {
+        $ts = strtotime($r['comment_date']);
+        $h  = (int) date('G', $ts);
+        if ($h < 6) $night_cnt++;
+        if ($first_ts === 0 || $ts < $first_ts) $first_ts = $ts;
+        if ($ts > $last_ts) { $last_ts = $ts; $last_ip = (string) $r['comment_author_IP']; }
+        if ($ts >= $activity_cut) {
+            $d = date('Y-m-d', $ts);
+            $activity_map[$d] = isset($activity_map[$d]) ? $activity_map[$d] + 1 : 1;
+        }
+        $pid = (int) $r['comment_post_ID'];
+        $post_counts[$pid] = isset($post_counts[$pid]) ? $post_counts[$pid] + 1 : 1;
+        if ($i < KRATOS_VC_RECENT_LIMIT) $recent_rows[] = $r;
+    }
+    // rows 已按 ID DESC，last_ip 取第一行更稳
+    if (!empty($rows)) { $last_ip = (string) $rows[0]['comment_author_IP']; }
+
+    // 走心数（需 join commentmeta，保留独立 SQL）
     $heart_key = defined('KRATOS_HEART_META_KEY') ? KRATOS_HEART_META_KEY : 'kratos_heart';
     $heart_cnt = (int) $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(*) FROM {$wpdb->comments} c
          INNER JOIN {$wpdb->commentmeta} m ON m.comment_id = c.comment_ID
          WHERE c.comment_approved = '1'
-           AND LOWER(c.comment_author_email) = %s
+           AND c.comment_author_email = %s
            AND m.meta_key = %s AND m.meta_value = '1'",
-        strtolower($email), $heart_key
+        $email, $heart_key
     ));
 
-    // 被回复数（自己评论的 comment_parent 又被他人评论过）
+    // 被回复数（自己评论被他人回复）
     $reply_cnt = (int) $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(*) FROM {$wpdb->comments} r
          INNER JOIN {$wpdb->comments} p ON p.comment_ID = r.comment_parent
          WHERE r.comment_approved = '1' AND r.comment_parent > 0
-           AND LOWER(p.comment_author_email) = %s
-           AND LOWER(r.comment_author_email) <> %s",
-        strtolower($email), strtolower($email)
+           AND p.comment_author_email = %s
+           AND r.comment_author_email <> %s",
+        $email, $email
     ));
 
-    // 被博主回复数
-    $admin_reply_cnt = (int) $wpdb->get_var($wpdb->prepare(
-        "SELECT COUNT(*) FROM {$wpdb->comments} r
-         INNER JOIN {$wpdb->comments} p ON p.comment_ID = r.comment_parent
-         INNER JOIN {$wpdb->users} u ON u.ID = r.user_id
-         INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID
-         WHERE r.comment_approved = '1' AND r.comment_parent > 0
-           AND LOWER(p.comment_author_email) = %s
-           AND um.meta_key = %s
-           AND um.meta_value LIKE %s",
-        strtolower($email),
-        $wpdb->prefix . 'capabilities',
-        '%administrator%'
-    ));
+    // 被博主回复数：改为 user_id IN (admin_id, ...)，避免 usermeta LIKE '%administrator%' 前导通配无法走索引。
+    $admin_ids = get_users(array('role' => 'administrator', 'fields' => 'ID'));
+    $admin_reply_cnt = 0;
+    if (!empty($admin_ids)) {
+        $ids_placeholder = implode(',', array_map('intval', $admin_ids));
+        $admin_reply_cnt = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->comments} r
+             INNER JOIN {$wpdb->comments} p ON p.comment_ID = r.comment_parent
+             WHERE r.comment_approved = '1' AND r.comment_parent > 0
+               AND p.comment_author_email = %s
+               AND r.user_id IN ({$ids_placeholder})",
+            $email
+        ));
+    }
 
     // 陪伴天数
     $days = $first_ts ? max(1, floor((time() - $first_ts) / DAY_IN_SECONDS)) : 0;
 
-    // 最近评论
-    $recent = $wpdb->get_results($wpdb->prepare(
-        "SELECT comment_ID, comment_post_ID, comment_content, comment_date
-         FROM {$wpdb->comments}
-         WHERE comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment')
-           AND LOWER(comment_author_email) = %s
-         ORDER BY comment_ID DESC LIMIT %d",
-        strtolower($email), KRATOS_VC_RECENT_LIMIT
-    ), ARRAY_A);
+    // 常访文章 top N（从 post_counts 里排序取前 N）
+    arsort($post_counts);
+    $top_posts_raw = array_slice($post_counts, 0, KRATOS_VC_TOP_POSTS_LIMIT, true);
+
+    // 批量预热：post cache + 走心 meta cache，消灭下方循环里的 N+1
+    $post_ids = array_unique(array_merge(
+        array_keys($top_posts_raw),
+        array_map(function ($r) { return (int) $r['comment_post_ID']; }, $recent_rows)
+    ));
+    if (!empty($post_ids)) {
+        _prime_post_caches($post_ids, /*update_term_cache*/ false, /*update_meta_cache*/ false);
+    }
+    if (!empty($recent_rows)) {
+        update_meta_cache('comment', array_map(function ($r) { return (int) $r['comment_ID']; }, $recent_rows));
+    }
 
     $recent_list = array();
-    foreach ((array) $recent as $r) {
+    foreach ($recent_rows as $r) {
         $post_id  = (int) $r['comment_post_ID'];
-        $is_heart = get_comment_meta((int) $r['comment_ID'], $heart_key, true) === '1';
+        $cid      = (int) $r['comment_ID'];
+        $is_heart = get_comment_meta($cid, $heart_key, true) === '1';
+        // 直接拼「永久链接 + #comment-ID」锚点，避免 get_comment_link() 内部 get_page_of_comment() 引入的 COUNT 查询。
+        // 分页评论下锚点仍能定位到该 comment，只是不带 comment-page-N；对档案页面场景已足够。
         $recent_list[] = array(
-            'id'        => (int) $r['comment_ID'],
-            'excerpt'   => wp_trim_words(wp_strip_all_tags($r['comment_content']), 60, '…'),
+            'id'        => $cid,
+            'excerpt'   => kratos_vc_excerpt_with_smilies($r['comment_content']),
             'post_id'   => $post_id,
             'post_title'=> get_the_title($post_id),
-            'link'      => get_comment_link((int) $r['comment_ID']),
+            'link'      => get_permalink($post_id) . '#comment-' . $cid,
             'date'      => mysql2date('Y-m-d H:i', $r['comment_date']),
             'ts'        => strtotime($r['comment_date']),
             'heart'     => $is_heart,
         );
     }
 
-    // 常访文章 top N
-    $top_posts_raw = $wpdb->get_results($wpdb->prepare(
-        "SELECT comment_post_ID, COUNT(*) AS c
-         FROM {$wpdb->comments}
-         WHERE comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment')
-           AND LOWER(comment_author_email) = %s
-         GROUP BY comment_post_ID
-         ORDER BY c DESC LIMIT %d",
-        strtolower($email), KRATOS_VC_TOP_POSTS_LIMIT
-    ), ARRAY_A);
     $top_posts = array();
-    foreach ((array) $top_posts_raw as $r) {
-        $pid = (int) $r['comment_post_ID'];
+    foreach ($top_posts_raw as $pid => $cnt) {
         $top_posts[] = array(
-            'post_id' => $pid,
-            'title'   => get_the_title($pid),
-            'link'    => get_permalink($pid),
-            'count'   => (int) $r['c'],
+            'post_id' => (int) $pid,
+            'title'   => get_the_title((int) $pid),
+            'link'    => get_permalink((int) $pid),
+            'count'   => (int) $cnt,
         );
-    }
-
-    // 近一年活跃：按日聚合
-    $activity = $wpdb->get_results($wpdb->prepare(
-        "SELECT DATE(comment_date) AS d, COUNT(*) AS c
-         FROM {$wpdb->comments}
-         WHERE comment_approved = '1' AND (comment_type = '' OR comment_type = 'comment')
-           AND LOWER(comment_author_email) = %s
-           AND comment_date >= %s
-         GROUP BY DATE(comment_date)",
-        strtolower($email), date('Y-m-d', strtotime('-365 days'))
-    ), ARRAY_A);
-    $activity_map = array();
-    foreach ((array) $activity as $r) {
-        $activity_map[$r['d']] = (int) $r['c'];
     }
 
     // 等级（复用 comment-rank 的等级配置）
@@ -313,21 +340,12 @@ function kratos_vc_aggregate($email)
         }
     }
 
-    // 地域
+    // 地域：$last_ip 已在上方主循环里取自最新一条评论，不再单独查库
     $region = '';
-    if (function_exists('kratos_ip2region_lookup')) {
-        // 复用地域解析：取该邮箱最近一条评论的 IP
-        $last_ip = $wpdb->get_var($wpdb->prepare(
-            "SELECT comment_author_IP FROM {$wpdb->comments}
-             WHERE comment_approved = '1' AND LOWER(comment_author_email) = %s
-             ORDER BY comment_ID DESC LIMIT 1",
-            strtolower($email)
-        ));
-        if ($last_ip) {
-            $info = kratos_ip2region_lookup($last_ip);
-            if (is_array($info)) {
-                $region = trim(($info['province'] ?? '') . ' ' . ($info['city'] ?? ''));
-            }
+    if ($last_ip !== '' && function_exists('kratos_ip2region_lookup')) {
+        $info = kratos_ip2region_lookup($last_ip);
+        if (is_array($info)) {
+            $region = trim(($info['province'] ?? '') . ' ' . ($info['city'] ?? ''));
         }
     }
 
@@ -702,6 +720,19 @@ function kratos_vc_enqueue()
             'manual_tag'   => __('特别授予', 'kratos'),
             'less'         => __('少', 'kratos'),
             'more'         => __('多', 'kratos'),
+            'heat_tooltip'       => __('%date%：%count% 条评论', 'kratos'),
+            'heat_tooltip_empty' => __('%date%：无活跃', 'kratos'),
+            'weekdays'     => array(
+                __('日', 'kratos'), __('一', 'kratos'), __('二', 'kratos'),
+                __('三', 'kratos'), __('四', 'kratos'), __('五', 'kratos'),
+                __('六', 'kratos'),
+            ),
+            'months'       => array(
+                __('1月', 'kratos'), __('2月', 'kratos'), __('3月', 'kratos'),
+                __('4月', 'kratos'), __('5月', 'kratos'), __('6月', 'kratos'),
+                __('7月', 'kratos'), __('8月', 'kratos'), __('9月', 'kratos'),
+                __('10月', 'kratos'), __('11月', 'kratos'), __('12月', 'kratos'),
+            ),
         ),
         'homeUrl'    => esc_url(home_url('/')),
     ));
