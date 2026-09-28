@@ -26,7 +26,7 @@
     --khf-heading: var(--khs-fg, #2a2620);
     --khf-text: var(--khs-fg-soft, #3b342c);
     --khf-muted: var(--khs-fg-mute, #8a8073);
-    --khf-accent: var(--khs-accent, #d68c4e);
+    --khf-accent: var(--khs-accent, #336699);
     --khf-soft: color-mix(in srgb, var(--khf-accent) 8%, transparent);
     --khf-soft-line: color-mix(in srgb, var(--khf-accent) 26%, transparent);
 }
