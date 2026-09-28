@@ -167,6 +167,17 @@
     max-width: 100%;
 }
 
+/* 宽度 + 水平对齐：外层容器用 style="max-width:X%" 限宽，用 margin 控制对齐。
+   默认 center（左右 auto）。max-width 未显式声明时容器 100% 占满文章列。 */
+.kratos-nine-grid--align-left   { margin-left: 0;    margin-right: auto; }
+.kratos-nine-grid--align-center { margin-left: auto; margin-right: auto; }
+.kratos-nine-grid--align-right  { margin-left: auto; margin-right: 0;    }
+
+/* 移动端强制满宽：640px 下 40% 就是 256px，图片小到不可读，硬规则不做可配置。 */
+@media (max-width: 640px) {
+    .kratos-nine-grid { max-width: 100% !important; }
+}
+
 /* 文章通用 img 规则实际是 `.k-main .details .article .content img` = (0,4,1)，
    带一个 tag 选择器；我们的覆盖必须也带 tag 才能同特异性、由源顺序胜出。
    否则说说 base rule 的 height:100% 会被文章规则 height:auto 打回原形，

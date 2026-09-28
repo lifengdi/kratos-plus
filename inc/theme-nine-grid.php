@@ -21,7 +21,10 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * 统一渲染入口。$args['ids'] 为附件 ID 数组。
+ * 统一渲染入口。
+ *   $args['ids']      附件 ID 数组
+ *   $args['widthPct'] 宽度百分比 (20–100)，默认 100
+ *   $args['align']    left | center | right，默认 center
  */
 function kratos_nine_grid_render($args)
 {
@@ -29,6 +32,17 @@ function kratos_nine_grid_render($args)
     $ids = array_values(array_filter(array_map('intval', $ids)));
     if (empty($ids)) {
         return '';
+    }
+
+    // 宽度：限制 20–100，非法回落 100
+    $width = isset($args['widthPct']) ? (int) $args['widthPct'] : 100;
+    if ($width < 20)  $width = 20;
+    if ($width > 100) $width = 100;
+
+    // 对齐：只接受三个枚举值，否则回落 center
+    $align = isset($args['align']) ? strtolower((string) $args['align']) : 'center';
+    if (!in_array($align, array('left', 'center', 'right'), true)) {
+        $align = 'center';
     }
 
     $images = array();
@@ -65,8 +79,10 @@ function kratos_nine_grid_render($args)
     if (function_exists('kratos_shuoshuo_assets')) {
         echo kratos_shuoshuo_assets();
     }
+    $align_class = 'kratos-nine-grid--align-' . $align;
+    $style_attr  = $width < 100 ? ' style="max-width:' . $width . '%"' : '';
     ?>
-    <div class="kratos-shuoshuo kratos-nine-grid" data-lightbox-host="1">
+    <div class="kratos-shuoshuo kratos-nine-grid <?php echo esc_attr($align_class); ?>" data-lightbox-host="1"<?php echo $style_attr; ?>>
         <?php kratos_media_render($post_id ? (int) $post_id : 0, $images, array(), array(
             'grid_id'      => $grid_id,
             'data_src'     => true,
@@ -96,10 +112,14 @@ function kratos_nine_grid_register_block()
                 'default' => array(),
                 'items'   => array('type' => 'number'),
             ),
+            'widthPct' => array('type' => 'number', 'default' => 100),
+            'align'    => array('type' => 'string', 'default' => 'center'),
         ),
         'render_callback' => function ($attrs) {
             return kratos_nine_grid_render(array(
-                'ids' => isset($attrs['ids']) ? (array) $attrs['ids'] : array(),
+                'ids'      => isset($attrs['ids']) ? (array) $attrs['ids'] : array(),
+                'widthPct' => isset($attrs['widthPct']) ? $attrs['widthPct'] : 100,
+                'align'    => isset($attrs['align']) ? $attrs['align'] : 'center',
             ));
         },
     ));
@@ -112,10 +132,18 @@ add_action('init', 'kratos_nine_grid_register_block', 20);
  */
 function kratos_nine_grid_shortcode($atts)
 {
-    $atts = shortcode_atts(array('ids' => ''), $atts, 'nine_grid');
+    $atts = shortcode_atts(array(
+        'ids'   => '',
+        'width' => 100,
+        'align' => 'center',
+    ), $atts, 'nine_grid');
     $raw  = (string) $atts['ids'];
     $ids  = array_filter(array_map('intval', preg_split('/[\s,]+/', $raw)));
-    return kratos_nine_grid_render(array('ids' => $ids));
+    return kratos_nine_grid_render(array(
+        'ids'      => $ids,
+        'widthPct' => (int) $atts['width'],
+        'align'    => (string) $atts['align'],
+    ));
 }
 add_shortcode('nine_grid', 'kratos_nine_grid_shortcode');
 

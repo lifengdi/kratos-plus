@@ -22,13 +22,16 @@
     var MediaUploadCheck = blockEditor.MediaUploadCheck;
     var BlockControls = blockEditor.BlockControls;
     var InspectorControls = blockEditor.InspectorControls;
+    var AlignmentToolbar = blockEditor.AlignmentToolbar;
     var useBlockProps = blockEditor.useBlockProps || function () { return {}; };
 
     var components = wp.components;
     var ToolbarGroup = components.ToolbarGroup || components.Toolbar;
     var ToolbarButton = components.ToolbarButton;
     var Button = components.Button;
+    var ButtonGroup = components.ButtonGroup;
     var PanelBody = components.PanelBody;
+    var RangeControl = components.RangeControl;
 
     function pickThumb( media ) {
         if ( ! media ) return '';
@@ -48,6 +51,8 @@
         keywords: [ __( '九宫格', 'kratos' ), __( '相册', 'kratos' ), 'gallery' ],
         attributes: {
             ids: { type: 'array', default: [], items: { type: 'number' } },
+            widthPct: { type: 'number', default: 100 },
+            align: { type: 'string', default: 'center' },
             // 仅用于编辑器预览缓存（不入库序列化时也会存，无副作用）
             previews: { type: 'array', default: [] }
         },
@@ -57,7 +62,19 @@
             var attrs = props.attributes;
             var ids = attrs.ids || [];
             var previews = attrs.previews || [];
-            var blockProps = useBlockProps( { className: 'kratos-nine-grid-editor' } );
+            var widthPct = typeof attrs.widthPct === 'number' ? attrs.widthPct : 100;
+            var align = attrs.align || 'center';
+
+            // 编辑器画布内也用外层容器把宽度与对齐反映出来，所见即所得
+            var wrapStyle = {
+                maxWidth: widthPct < 100 ? widthPct + '%' : undefined,
+                marginLeft: align === 'left' ? '0' : 'auto',
+                marginRight: align === 'right' ? '0' : 'auto'
+            };
+            var blockProps = useBlockProps( {
+                className: 'kratos-nine-grid-editor kratos-nine-grid--align-' + align,
+                style: wrapStyle
+            } );
 
             function onSelect( medias ) {
                 var arr = Array.isArray( medias ) ? medias : [ medias ];
@@ -106,12 +123,27 @@
                 );
             } );
 
+            var presetPcts = [ 25, 50, 75, 100 ];
+            var presetBtns = presetPcts.map( function ( p ) {
+                return el( Button, {
+                    key: p,
+                    variant: widthPct === p ? 'primary' : 'secondary',
+                    onClick: function () { props.setAttributes( { widthPct: p } ); }
+                }, p + '%' );
+            } );
+
             return el(
                 Fragment,
                 {},
                 el(
                     BlockControls,
                     {},
+                    AlignmentToolbar ? el( AlignmentToolbar, {
+                        value: align,
+                        onChange: function ( v ) {
+                            props.setAttributes( { align: v || 'center' } );
+                        }
+                    } ) : null,
                     el(
                         MediaUploadCheck,
                         {},
@@ -141,9 +173,30 @@
                             __( '已选 ', 'kratos' ) + ids.length + __( ' 张图片。', 'kratos' ) +
                             ( extra > 0 ? __( '前 8 张平铺，第 9 格显示 “+', 'kratos' ) + extra + __( '” 遮罩，点击进灯箱翻阅全部。', 'kratos' ) : '' )
                         ),
+                        RangeControl ? el( RangeControl, {
+                            label: __( '宽度 (%)', 'kratos' ),
+                            value: widthPct,
+                            min: 20,
+                            max: 100,
+                            step: 5,
+                            onChange: function ( v ) {
+                                var n = parseInt( v, 10 );
+                                if ( isNaN( n ) ) n = 100;
+                                if ( n < 20 ) n = 20;
+                                if ( n > 100 ) n = 100;
+                                props.setAttributes( { widthPct: n } );
+                            }
+                        } ) : null,
+                        ButtonGroup ? el( 'div', { style: { margin: '4px 0 12px' } },
+                            el( ButtonGroup, {}, presetBtns )
+                        ) : null,
+                        el( 'p', { style: { margin: '8px 0 4px', fontSize: 12, color: '#666' } },
+                            __( '移动端 (≤640px) 强制满宽，避免小屏图片过小不可读。', 'kratos' )
+                        ),
                         el( Button, {
                             variant: 'secondary',
                             isDestructive: true,
+                            style: { marginTop: 12 },
                             onClick: function () {
                                 props.setAttributes( { ids: [], previews: [] } );
                             }
