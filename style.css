@@ -3220,6 +3220,10 @@ img {
     border-top: 1px solid #f0f0f0;
 }
 
+.k-main .details .children .children {
+    margin-left: 0;
+}
+
 #commentpage {
     display: flex;
     justify-content: center;
@@ -4674,6 +4678,10 @@ a
 .k-main .details .comments .children {
     margin-bottom: 0;
     padding-left: 30px !important;
+}
+
+.k-main .details .comments .children .children {
+    padding-left: 0 !important;
 }
 
 .k-main .details .article .header {
