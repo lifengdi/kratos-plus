@@ -114,6 +114,9 @@ require get_template_directory() . '/inc/theme-shortcode.php';
 // Gutenberg 区块（短码快捷入口）
 require get_template_directory() . '/inc/theme-gutenberg-blocks.php';
 
+// 九宫格图组区块 + [nine_grid] 短代码
+require get_template_directory() . '/inc/theme-nine-grid.php';
+
 // 添加导航目录
 require get_template_directory() . '/inc/theme-navwalker.php';
 

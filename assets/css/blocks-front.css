@@ -146,3 +146,56 @@
 .k-main .content .card.border-danger > .card-body .card-text {
     color: #333;
 }
+
+/* ============================================================
+ *  九宫格图组 kratos/nine-grid（文章正文里的说说式网格）
+ * ============================================================
+ *  说说的 .kss-img-el { height:100% } 特异性 (0,2,1) 会被文章
+ *  `.details .article .content img { height:auto; max-width:100% }` (0,3,1)
+ *  覆盖，导致 object-fit:cover 失效、方格露背景；单图同理错乱。
+ *  这里用 .kratos-nine-grid.kratos-shuoshuo 双类起头 (0,2,0)，配合下层
+ *  .kss-img-cell .kss-img-el 得到 (0,4,0)，压过文章的 (0,3,1)。
+ *  另外文章列宽远大于说说卡，外层 max-width 放开到 100%。
+ */
+.kratos-nine-grid.kratos-shuoshuo .kss-images,
+.kratos-nine-grid.kratos-shuoshuo .kss-images.kss-grid-1,
+.kratos-nine-grid.kratos-shuoshuo .kss-images.kss-grid-2,
+.kratos-nine-grid.kratos-shuoshuo .kss-images.kss-grid-3,
+.kratos-nine-grid.kratos-shuoshuo .kss-images.kss-grid-4,
+.kratos-nine-grid.kratos-shuoshuo .kss-images.kss-grid-9,
+.kratos-nine-grid.kratos-shuoshuo .kss-single-media {
+    max-width: 100%;
+}
+
+/* 文章通用 img 规则实际是 `.k-main .details .article .content img` = (0,4,1)，
+   带一个 tag 选择器；我们的覆盖必须也带 tag 才能同特异性、由源顺序胜出。
+   否则说说 base rule 的 height:100% 会被文章规则 height:auto 打回原形，
+   横图在方格里露出下方灰底、竖图溢出被裁 —— 这就是「下方空白」的根因。 */
+.kratos-nine-grid.kratos-shuoshuo .kss-img-cell img.kss-img-el,
+.kratos-nine-grid.kratos-shuoshuo .kss-img-cell img.kss-img-bg,
+.kratos-nine-grid.kratos-shuoshuo .kss-img-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: none;
+}
+
+/* 单图：保持 inline-block 让锚点收缩到图片轮廓，背景不会露；
+   .kss-single-media 加 text-align:center 让异形图在放开的文章列宽下居中而不是左靠 */
+.kratos-nine-grid.kratos-shuoshuo .kss-single-media {
+    text-align: center;
+}
+.kratos-nine-grid.kratos-shuoshuo .kss-img-single {
+    display: inline-block;
+    max-width: 100%;
+}
+/* 同理：单图 img 规则也要拼够 (0,4,1) 才能压住文章 .content img 的 height:auto，
+   否则 max-height:560px 被覆盖成无限高，超长图会把整列撑爆。 */
+.kratos-nine-grid.kratos-shuoshuo .kss-single-media a.kss-img-single img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 560px;
+    object-fit: contain;
+}

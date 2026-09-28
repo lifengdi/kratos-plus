@@ -246,3 +246,48 @@
 .kratos-block .components-base-control {
     margin-bottom: 0;
 }
+
+/* 九宫格图组 kratos/nine-grid 编辑器内预览 */
+.kratos-nine-grid-editor .kng-preview {
+    display: grid;
+    gap: 4px;
+    max-width: 520px;
+}
+.kratos-nine-grid-editor .kng-preview-1 { grid-template-columns: 1fr; }
+.kratos-nine-grid-editor .kng-preview-2 { grid-template-columns: repeat(2, 1fr); }
+.kratos-nine-grid-editor .kng-preview-3 { grid-template-columns: repeat(3, 1fr); }
+.kratos-nine-grid-editor .kng-preview-4 { grid-template-columns: repeat(2, 1fr); }
+.kratos-nine-grid-editor .kng-preview-9 { grid-template-columns: repeat(3, 1fr); }
+.kratos-nine-grid-editor .kng-cell {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: rgba(0, 0, 0, .04);
+    border-radius: 4px;
+}
+.kratos-nine-grid-editor .kng-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.kratos-nine-grid-editor .kng-cell-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 12px;
+}
+.kratos-nine-grid-editor .kng-cell-mask {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+}
