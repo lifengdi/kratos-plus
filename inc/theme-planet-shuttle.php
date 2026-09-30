@@ -137,8 +137,9 @@ function kratos_shuttle_render($target)
     $site_name = get_bloginfo('name');
     $site_desc = get_bloginfo('description');
     $site_url  = home_url('/');
-    $site_logo = '';
-    if (function_exists('kratos_option')) {
+    // 图标读取优先级：WP 后台「站点图标」→ 主题 g_logo → 首字母胶囊
+    $site_logo = function_exists('get_site_icon_url') ? get_site_icon_url(192) : '';
+    if (!$site_logo && function_exists('kratos_option')) {
         $site_logo = kratos_option('g_logo', '');
     }
 
