@@ -5545,6 +5545,76 @@ CSF::createSection($prefix, array(
     ),
 ));
 
+// 星球穿梭 Planet Shuttle
+CSF::createSection($prefix, array(
+    'parent' => 'kp_ux',
+    'title' => __('星球穿梭', 'kratos'),
+    'icon' => 'fas fa-rocket',
+    'fields' => array(
+        array(
+            'id' => 'g_shuttle_enable',
+            'type' => 'switcher',
+            'title' => __('启用星球穿梭', 'kratos'),
+            'subtitle' => __('自定义端点访问后，随机跳转到勾选分类下的一个友链', 'kratos'),
+            'default' => false,
+        ),
+        array(
+            'id' => 'g_shuttle_slug',
+            'type' => 'text',
+            'title' => __('端点 slug', 'kratos'),
+            'subtitle' => __('访问地址为 /<slug>/，默认 shuttle。修改后自动刷新固定链接', 'kratos'),
+            'default' => 'shuttle',
+            'dependency' => array('g_shuttle_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_shuttle_categories',
+            'type' => 'checkbox',
+            'title' => __('可穿梭的友链分类', 'kratos'),
+            'subtitle' => __('勾选后，端点会在这些分类下的友链中随机挑一个', 'kratos'),
+            'options' => (function () {
+                $out = array();
+                $terms = function_exists('get_terms') ? get_terms(array(
+                    'taxonomy'   => 'link_category',
+                    'hide_empty' => false,
+                )) : array();
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    foreach ($terms as $t) {
+                        $out[(int) $t->term_id] = $t->name;
+                    }
+                }
+                return $out;
+            })(),
+            'inline' => true,
+            'default' => array(),
+            'dependency' => array('g_shuttle_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_shuttle_countdown',
+            'type' => 'text',
+            'title' => __('倒计时秒数', 'kratos'),
+            'subtitle' => __('过渡页展示的倒计时，默认 5 秒', 'kratos'),
+            'default' => '5',
+            'dependency' => array('g_shuttle_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_shuttle_tip',
+            'type' => 'text',
+            'title' => __('过渡页副标题', 'kratos'),
+            'subtitle' => __('留空则用默认文案', 'kratos'),
+            'default' => '',
+            'dependency' => array('g_shuttle_enable', '==', 'true'),
+        ),
+        array(
+            'id' => 'g_shuttle_open_blank',
+            'type' => 'switcher',
+            'title' => __('新窗口打开目标', 'kratos'),
+            'subtitle' => __('默认在当前窗口 replace 跳转（历史更干净）；开启后新窗口打开，本窗口回到首页', 'kratos'),
+            'default' => false,
+            'dependency' => array('g_shuttle_enable', '==', 'true'),
+        ),
+    ),
+));
+
 // ============================================================================
 // AI 工具箱（M1：核心 SDK + 通用配置）
 // ============================================================================

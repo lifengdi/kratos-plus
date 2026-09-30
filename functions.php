@@ -8,7 +8,7 @@
  * @version 2025.02.08
  */
 
-define('THEME_VERSION', '1.1.25');
+define('THEME_VERSION', '1.1.26');
 // 内置 Font Awesome Free 版本（assets/css/fontawesome.min.css + assets/fonts/webfonts/）
 define('FA_VERSION', '7.3.1');
 // 内置 CodeMirror 版本（assets/codemirror/，取自 npm codemirror@5.62.2，
@@ -218,6 +218,9 @@ require get_template_directory() . '/inc/theme-yearly-review.php';
 
 // 随机漫步 Stumble —— 随机跳到一篇被埋没的老文章
 require get_template_directory() . '/inc/theme-stumble.php';
+
+// 星球穿梭 Planet Shuttle —— 到勾选分类下的友链中随机穿梭一个
+require get_template_directory() . '/inc/theme-planet-shuttle.php';
 
 // 搜索结果页增强（search.php 的数据层与渲染函数）
 require get_template_directory() . '/inc/theme-search.php';
