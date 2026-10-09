@@ -1556,6 +1556,7 @@ CSF::createSection($prefix, array(
                 'ebook'     => __('电子书 · 纸墨', 'kratos'),
                 'bookfold'  => __('书卷 · 半开卷', 'kratos'),
                 'bourse'    => __('金融 · 盘口', 'kratos'),
+                'loam'      => __('大地 · 壤', 'kratos'),
             ),
             'default' => 'mon',
             'dependency' => array('g_weekday_skin_mode', '==', 'locked'),
