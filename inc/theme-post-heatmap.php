@@ -13,7 +13,7 @@
  *   width        容器宽度（默认 100%）
  *   title        标题（留空则不展示标题）
  *
- * 配色：使用 --khs-* 变量，跟随皮肤（weekday-skins.css §18 已为
+ * 配色：使用 --khs-* 变量，跟随皮肤（skins/weekday-skins.css §18 已为
  * .kratos-heatmap 做统一重映射）。
  *
  * 数据接口：AJAX action = kph_get_data。

@@ -401,7 +401,7 @@ add_action('wp_enqueue_scripts', 'kratos_lpv_enqueue', 30);
 
 /**
  * 预览卡样式。挂在 `.kratos-lpv` 根容器上，变量走 --khs-*，
- * 皮肤由 components.css 的别名层统一接管（无需改皮肤文件）。
+ * 皮肤由 skins/components.css 的别名层统一接管（无需改皮肤文件）。
  */
 function kratos_lpv_inline_css()
 {

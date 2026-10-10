@@ -8,10 +8,10 @@
  * 分工约定（见 CLAUDE.md「公共组件层」）：
  *   - 形态语言（卡片圆角/边框/阴影、图标胶囊、药丸、按钮、圆点）全部由 markup 上的
  *     公共类 kr-hd / kr-hd-title / kr-hd-sub / kr-hd-divider / kr-body / kr-card /
- *     kr-ico / kr-pill / kr-btn / kr-dot 承担 —— components.css 给关闭态兜底，
+ *     kr-ico / kr-pill / kr-btn / kr-dot 承担 —— skins/components.css 给关闭态兜底，
  *     各皮肤自行接管。本文件不重复定义这些形态，只写「布局」。
  *   - 私有 .khf-* 只负责 grid / 间距 / 字号 / line-clamp / 缩略图比例。
- *   - 配色一律走 --khf-* 局部令牌，令牌本身从 --khs-*（皮肤开启时由 components.css
+ *   - 配色一律走 --khf-* 局部令牌，令牌本身从 --khs-*（皮肤开启时由 skins/components.css
  *     映射到 --kr-skin-*）取值，回落到浅色字面值；暗夜态另有一段重映射。
  *
  * @author Dylan Li

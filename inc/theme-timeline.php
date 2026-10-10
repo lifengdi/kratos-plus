@@ -10,7 +10,7 @@
  *   - 给应用了 page-timeline.php 模板的页面注入 body class
  *     `is-kratos-timeline-page`，让皮肤层豁免外层 .details 装饰，避免"盒子套盒子"。
  *
- * 配色跟随皮肤：使用 --khs-* 变量，复用 weekday-skins.css §18 已有的重映射规则。
+ * 配色跟随皮肤：使用 --khs-* 变量，复用 skins/weekday-skins.css §18 已有的重映射规则。
  *
  * 后台配置：主题设置 → 时间轴配置
  *   - timeline_sc_title       页头标题

@@ -315,7 +315,7 @@ function kratos_comment_geo_shortcode($atts = array())
         <?php } ?>
 
         <style>
-            /* === 评论者地域分布：通用骨架（--khs-* 变量驱动，皮肤由 components.css 别名层接管） === */
+            /* === 评论者地域分布：通用骨架（--khs-* 变量驱动，皮肤由 skins/components.css 别名层接管） === */
             .kratos-comment-geo {
                 --khs-fg: #333; --khs-fg-soft: #555; --khs-fg-dim: #777;
                 --khs-accent: #336699;

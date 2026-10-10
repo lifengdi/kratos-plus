@@ -1,10 +1,4 @@
 @charset "UTF-8";
-@property --kra-marker-mid {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0px;
-}
-
 /*
  * Kratos-plus 每日皮肤（周一 ~ 周日）
  * 作用域: html[data-weekday-skin="mon|tue|wed|thu|fri|sat|sun"]
@@ -2105,7 +2099,7 @@ html[data-theme="dark"][data-weekday-skin] :is(.kratos-otd .kotd-subtitle, .krat
  *   暗夜下交由后面的 dark+skin 段落单独重映射。
  * =============================================================== */
 
-/* khs 与 kas 命名空间的变量映射已上收到 components.css 的公共别名层，
+/* khs 与 kas 命名空间的变量映射已上收到 skins/components.css 的公共别名层，
  * 此处不再重复；皮肤内如需覆盖某个变量单独写一条即可。 */
 
 /* parchment scheme 自带羊皮纸大背景 + clip-path 锯齿 + 噪点伪元素 ——
@@ -2165,7 +2159,7 @@ html[data-weekday-skin]:not([data-theme="dark"]) .kratos-topcommenters .ktc-coun
     border-left-color: var(--kr-skin-card-line) !important;
 }
 
-/* 归档 kas 变量映射同样已上收到 components.css，无需在此重复。 */
+/* 归档 kas 变量映射同样已上收到 skins/components.css，无需在此重复。 */
 
 /* parchment scheme 同样关掉自带的羊皮纸 outer 背景 + 噪点伪元素 */
 html[data-weekday-skin]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment {

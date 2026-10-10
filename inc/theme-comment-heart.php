@@ -837,7 +837,7 @@ function kratos_heart_shortcode($atts)
         }
 
         /* === parchment 方案：保留 class 锚点但不再画装饰 ===
-         * 真正的做旧/锯齿/焦边由「黄绢」皮肤在 weekday-skins.css 处理。
+         * 真正的做旧/锯齿/焦边由「黄绢」皮肤在 skins/weekday-skins.css 处理。
          * 默认状态下走心区域是干净的白卡 + 浅灰底，与主题首页一致。 */
         .kratos-heart-shortcode.khs-scheme-parchment .khs-time,
         .kratos-heart-shortcode.khs-scheme-parchment .khs-from,

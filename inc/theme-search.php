@@ -337,7 +337,7 @@ function kratos_search_empty_html($kw)
 }
 
 /**
- * 搜索页样式。骨架用 --khs-* 变量驱动，皮肤层通过 components.css
+ * 搜索页样式。骨架用 --khs-* 变量驱动，皮肤层通过 skins/components.css
  * 的别名段（--khs-* 系列）统一接管配色。
  */
 function kratos_search_styles()

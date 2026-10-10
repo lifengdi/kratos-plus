@@ -334,7 +334,7 @@ function kratos_now_inline_assets()
          *     └─ h2.kratos-now-history-title
          *     └─ article.knw-item.kr-card * N 历史条目卡（左日期栏 + 右标题/正文/元信息）
          *
-         * 卡片形态由 components.css + 皮肤在 .kr-hd / .kr-body / .kr-card 上写的规则接管；
+         * 卡片形态由 skins/components.css + 皮肤在 .kr-hd / .kr-body / .kr-card 上写的规则接管；
          * 图标胶囊/圆点走 .kr-ico / .kr-dot 公共类。本文件只写 Now 特有排版 + 皮肤关闭态兜底。 */
 
         .kratos-now{margin:0 0 20px;}

@@ -21,7 +21,7 @@ html[data-theme="dark"] {
      * fallback 保持原 #4f86c6，避免未启用皮肤时的裸暗色态失色。 */
 }
 
-/* :where() 把选择器权重降为 0，好让 weekday-skins.css §16 的
+/* :where() 把选择器权重降为 0，好让 skins/weekday-skins.css §16 的
  * 手工暗色微调（如周四冷白 accent、玻璃拟态降饱和）保持胜出。 */
 html:where([data-theme="dark"][data-weekday-skin]) {
     --kr-accent: var(--kr-skin-accent, #4f86c6);

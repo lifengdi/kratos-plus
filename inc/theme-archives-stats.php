@@ -7,7 +7,7 @@
  *   - [archives_stats] 短码：渲染「文章归档」页头 + 4 张总览统计卡 +
  *     分类列表 + 标签列表。视觉与走心评论一致（米色 parchment 风格）。
  *   - 给应用了 page-archives.php 模板的页面注入 body class
- *     `is-kratos-archives-page`，让皮肤层（weekday-skins.css）能精准
+ *     `is-kratos-archives-page`，让皮肤层（skins/weekday-skins.css）能精准
  *     豁免 §5/§15 对外层 .details 的装饰，保留 shortcode 自身视觉。
  *
  * 数据来源：
@@ -588,7 +588,7 @@ function kratos_archives_stats_shortcode($atts = array())
         }
 
         /* === parchment 方案：保留 class 锚点但不再画装饰，与主题默认一致 ===
-         * 真正的羊皮纸/做旧效果由「黄绢」皮肤在 weekday-skins.css 中处理。 */
+         * 真正的羊皮纸/做旧效果由「黄绢」皮肤在 skins/weekday-skins.css 中处理。 */
 
         /* === 暗夜模式：对齐 dark.css 中性灰白调（去米黄色调）；同步重写
          * --kas-bg-* 深卡色，避免 kas-header-icon / kas-total-icon / kas-section-icon

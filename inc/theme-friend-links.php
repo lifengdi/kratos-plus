@@ -604,7 +604,7 @@ function kratos_friend_shortcode($atts)
 
     <style>
         /* === 友链页面：复用走心 / 归档 shortcode 的 --khs-* 变量体系，
-         * 让皮肤层 weekday-skins.css §18 一次性覆盖此页视觉 === */
+         * 让皮肤层 skins/weekday-skins.css §18 一次性覆盖此页视觉 === */
         .kratos-friend-links{
             --khs-bg-1:#f5f5f5;--khs-bg-2:#f0f0f0;--khs-bg-3:#ebebeb;
             --khs-fg:#333;--khs-fg-soft:#444;--khs-fg-dim:#777;--khs-fg-mute:#999;

@@ -9,7 +9,7 @@
  *   - off     不启用，回到 style.css 默认外观
  *
  * 实现策略：
- *   - 7 套皮肤的 CSS 变量集中在 assets/css/weekday-skins.css 里，按
+ *   - 7 套皮肤的 CSS 变量集中在 assets/css/skins/weekday-skins.css 里，按
  *     html[data-weekday-skin="mon|tue|..."] 选择器作用。
  *   - 启用后，PHP 在 wp_head 早期注入 inline script，由浏览器读取
  *     new Date().getDay() 把对应 attr 写到 <html> 上。这样在 CDN /
@@ -19,7 +19,7 @@
  *
  * 与暗夜模式（inc/theme-darkmode.php）的关系：
  *   两者作用在同一个 <html> 的不同 attr 上（data-theme vs data-weekday-skin），
- *   weekday-skins.css 的所有覆盖规则用 :not([data-theme="dark"]) 兜底，
+ *   skins/weekday-skins.css 的所有覆盖规则用 :not([data-theme="dark"]) 兜底，
  *   暗夜模式优先。
  *
  * @author Dylan Li (Kratos-plus fork) <https://www.lifengdi.com>
@@ -97,7 +97,7 @@ function kratos_weekday_override_enabled()
 
 /**
  * 「额外皮肤」slug → 独立 CSS 文件名映射。
- * 工作日 mon~sun 不在此列（它们共用 weekday-skins.css，见 kratos_weekday_css_map）。
+ * 工作日 mon~sun 不在此列（它们共用 skins/weekday-skins.css，见 kratos_weekday_css_map）。
  */
 function kratos_weekday_variant_files()
 {
@@ -121,13 +121,13 @@ function kratos_weekday_variant_files()
 
 /**
  * 全部皮肤 slug → CSS 文件 URL 的映射，供前端切换器按需注入 <link>。
- * mon~sun 共用 weekday-skins.css（内部按 attr 锁定），额外皮肤各自独立文件。
+ * mon~sun 共用 skins/weekday-skins.css（内部按 attr 锁定），额外皮肤各自独立文件。
  */
 function kratos_weekday_css_map()
 {
     $map = array();
     foreach (kratos_weekday_slugs() as $slug) {
-        $map[$slug] = ASSET_PATH . '/assets/css/weekday-skins.css';
+        $map[$slug] = ASSET_PATH . '/assets/css/skins/weekday-skins.css';
     }
     foreach (kratos_weekday_variant_files() as $slug => $file) {
         $map[$slug] = ASSET_PATH . '/assets/css/skins/' . $file;
@@ -202,7 +202,7 @@ function kratos_weekday_head_inline()
     // 早期解析当前皮肤：localStorage 覆盖（切换器开启时）优先于站点 auto/locked。
     // 这里只把 data-weekday-skin 写到 <html>（避免颜色 FOUC），并把解析结果暂存到
     // window.__kratosSkin，供后续注入 CSS 用。CSS <link> 的注入延后到 priority 99
-    // （见 kratos_weekday_switcher_head_css），此时 components.css 已在 DOM 中，
+    // （见 kratos_weekday_switcher_head_css），此时 skins/components.css 已在 DOM 中，
     // 动态 link 追加到其后才能保证「皮肤晚于 components」的级联顺序。
     echo "<script>(function(){try{var c=" . $cfg . ";var h=document.documentElement;var ov=null;"
         . "if(c.switcher){try{ov=window.localStorage.getItem(c.storage);}catch(e){}}"
@@ -217,7 +217,7 @@ function kratos_weekday_head_inline()
 }
 
 /**
- * 在 wp_head 末尾（components.css 已打印后）按需注入被 localStorage 覆盖的皮肤 CSS。
+ * 在 wp_head 末尾（skins/components.css 已打印后）按需注入被 localStorage 覆盖的皮肤 CSS。
  * 只在访客可覆盖皮肤时输出（页脚切换器或命令面板皮肤分组任一开启）；
  * 无覆盖或该 CSS 已由服务端入队时跳过。仍在 <head> 内、body 渲染前完成，
  * 故不会出现可见的样式闪烁。
@@ -252,8 +252,8 @@ function kratos_weekday_enqueue()
     /**
      * 额外皮肤（羊皮 / 黄绢 / 朱砂 / 莫兰迪家族）拆到独立 CSS 文件，且每个文件
      * 已内嵌通用规则副本（选择器锁定该 slug），加载它就完整自足；无需再叠加
-     * weekday-skins.css。工作日 mon~sun（auto 模式或 locked 命中 mon~sun）仍
-     * 使用统一的 weekday-skins.css。
+     * skins/weekday-skins.css。工作日 mon~sun（auto 模式或 locked 命中 mon~sun）仍
+     * 使用统一的 skins/weekday-skins.css。
      */
     $variant_files = kratos_weekday_variant_files();
     if ($s['mode'] === 'locked' && isset($variant_files[$s['locked']])) {
@@ -261,15 +261,15 @@ function kratos_weekday_enqueue()
         wp_enqueue_style(
             'kratos-weekday-skin',
             ASSET_PATH . '/assets/css/skins/' . $variant_files[$s['locked']],
-            array('kratos', 'kratos-components'),
+            array('kratos', 'kratos-components', 'kratos-skin-base'),
             THEME_VERSION
         );
     } else {
         // 工作日皮肤（auto 或 locked 命中 mon~sun）
         wp_enqueue_style(
             'kratos-weekday-skin',
-            ASSET_PATH . '/assets/css/weekday-skins.css',
-            array('kratos', 'kratos-components'),
+            ASSET_PATH . '/assets/css/skins/weekday-skins.css',
+            array('kratos', 'kratos-components', 'kratos-skin-base'),
             THEME_VERSION
         );
     }

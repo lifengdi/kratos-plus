@@ -107,7 +107,10 @@ function theme_autoload()
         // 短代码/特色页公共组件样式（kr-* 统一类的默认外观层）。
         // 必须在 style.css 之后、任何皮肤（kratos-weekday-skin）之前加载，
         // 皮肤文件通过依赖 kratos-components 锁定级联顺序，见 inc/theme-weekday-skin.php。
-        wp_enqueue_style('kratos-components', ASSET_PATH . '/assets/css/components.css', array('kratos'), THEME_VERSION);
+        wp_enqueue_style('kratos-components', ASSET_PATH . '/assets/css/skins/components.css', array('kratos'), THEME_VERSION);
+        // 皮肤公共骨架：所有皮肤共享的结构骨架，属性值 100% 走 --kr-skin-* / --kr-shape-* 令牌。
+        // 加载顺序锁定在 components 之后、皮肤文件之前；同特异性下后加载的皮肤文件可覆盖。
+        wp_enqueue_style('kratos-skin-base', ASSET_PATH . '/assets/css/skins/skin-base.css', array('kratos-components'), THEME_VERSION);
         if (is_child_theme()) {
             wp_enqueue_style('kratos-child', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
         }

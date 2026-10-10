@@ -445,7 +445,7 @@ function kratos_dash_shortcode($atts = array())
         <?php } ?>
 
         <style>
-            /* === 站点数据看板：通用骨架（--khs-* 变量驱动，皮肤由 components.css 别名层接管） === */
+            /* === 站点数据看板：通用骨架（--khs-* 变量驱动，皮肤由 skins/components.css 别名层接管） === */
             .kratos-dashboard {
                 --khs-fg: #333; --khs-fg-soft: #555; --khs-fg-dim: #777;
                 --khs-accent: #336699;

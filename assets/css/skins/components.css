@@ -1,5 +1,5 @@
 /* ============================================================
- * Kratos-plus · 短代码/特色页公共组件样式（components.css）
+ * Kratos-plus · 短代码/特色页公共组件样式（skins/components.css）
  * ------------------------------------------------------------
  * 统一类词表（kr-*），承接"标题卡 / 主体卡 / 图标胶囊 / 卡片 /
  * 分隔线 / 按钮 / 药丸 / 小圆点"的公共外观，取代此前散落在各短代码
@@ -21,7 +21,7 @@
  * 无需改任何皮肤文件（.kratos-search / .kratos-comment-geo / .kratos-dashboard
  * / .kratos-cmdk / .kratos-lpv 均按此方式接入）。
  *
- * 加载顺序：style.css → components.css → 皮肤（kratos-weekday-skin，依赖 kratos-components）。
+ * 加载顺序：style.css → skins/components.css → 皮肤（kratos-weekday-skin，依赖 kratos-components）。
  * 详见 docs/css-refactor-plan.md。
  *
  * 阶段说明：

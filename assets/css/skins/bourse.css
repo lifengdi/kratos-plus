@@ -1,10 +1,4 @@
 @charset "UTF-8";
-@property --kra-marker-mid {
-    syntax: "<length>";
-    inherits: true;
-    initial-value: 0px;
-}
-
 /* Kratos-plus 皮肤 · 金融 · 盘口 bourse
  * 视觉参考：demo/skin-bourse.html —— 专业金融终端 / 行情盘口。
  * 形态语言：冷灰蓝护眼底、白卡、1px 细边框、2px 小直角、极弱阴影、
@@ -317,13 +311,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .pagina
     color: var(--kr-skin-heading);
     font-family: var(--kr-skin-font);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations a,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .current,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
@@ -346,12 +334,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .pagination .p
     background: var(--kr-skin-accent-hover);
     color: var(--kr-skin-card-bg) !important;
     border-color: var(--kr-skin-accent-hover);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .paginations .dots {
-    background: transparent;
-    border-color: transparent;
-    color: var(--kr-skin-muted);
-    cursor: default;
 }
 
 /* ===== 侧栏列表（§ 前缀 + 点线分割） ===== */
@@ -434,123 +416,25 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer p a:hover {
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a {
     border-bottom: none !important;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a .kratos-fa-svg,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a > .kratos-fa-svg {
-    color: var(--kr-skin-footer-fg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a:hover .kratos-fa-svg,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .social a:hover > .kratos-fa-svg {
-    color: #fff;
-}
 
-/* ============ 通用规则（复用自 weekday-skins.css，锁定到本 slug） ============ */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) body {
-    background-color: var(--kr-skin-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main {
-    background-color: var(--kr-skin-bg) !important;
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main p,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main ol,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main ul,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo p,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo ul {
-    color: var(--kr-skin-text);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main a,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo a {
-    color: var(--kr-skin-link);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main a:hover,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo a:hover {
-    color: var(--kr-skin-link-hover);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-header .banner .overlay {
-    background-color: var(--kr-skin-banner-overlay);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel {
-    background-color: var(--kr-skin-card-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a {
-    color: var(--kr-skin-heading);
-}
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .title a:hover {
     color: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .content p {
-    color: var(--kr-skin-text);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta {
-    border-top-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a {
-    color: var(--kr-skin-muted);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-meta span > a:hover {
-    color: var(--kr-skin-link-hover);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label {
     background-color: var(--kr-skin-accent-hover);
 }
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .a-post .header .label .label-arrow {
     border-left-color: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .board .article-panel .search-title {
-    color: var(--kr-skin-heading);
-}
 
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article {
-    background-color: var(--kr-skin-card-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .breadcrumb-box {
-    border-bottom-color: var(--kr-skin-card-line);
-}
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .header .meta {
     color: var(--kr-skin-muted);
     font-family: var(--kr-skin-font);
     text-transform: uppercase;
     letter-spacing: .03em;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .header .meta > span:not(:last-child):after {
-    color: var(--kr-skin-muted);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content p {
-    color: var(--kr-skin-text);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .content h2.title {
-    background-color: transparent;
-    border-left: 0;
-    color: var(--kr-skin-heading);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .content h2.title::after {
-    background-color: var(--kr-skin-accent);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content hr {
-    border-top-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table th,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table td {
-    border-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content table tr:nth-child(2n) {
-    background-color: var(--kr-skin-card-soft);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main thead {
-    border-bottom-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .copyright span {
-    background-color: var(--kr-skin-card-soft);
-    color: var(--kr-skin-text);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer {
-    border-top-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer .tags span,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .footer .tool span {
-    color: var(--kr-skin-text);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .downbtn {
     border-color: var(--kr-skin-accent-hover);
     background: var(--kr-skin-accent-hover);
@@ -561,16 +445,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .arti
     background: var(--kr-skin-heading);
     box-shadow: var(--kr-shape-shadow-sm);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations span {
-    margin: 0 !important;
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations a span,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content .paginations .current span {
     display: inline-flex;
@@ -598,23 +473,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .arti
     border-color: var(--kr-skin-accent-hover);
     font-weight: 600;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next {
-    background-color: var(--kr-skin-card-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-previous a,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .post-navigation .nav-next a {
-    color: var(--kr-skin-muted);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar {
-    background-color: var(--kr-skin-card-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .motto {
-    color: var(--kr-skin-muted);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .meta .name a {
-    color: var(--kr-skin-heading);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .toolbar .share .btn-donate {
     border-color: var(--kr-skin-accent-hover);
     color: var(--kr-skin-accent-hover);
@@ -627,17 +486,10 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .tool
     color: #fff;
 }
 
-/* ===== 评论 ===== */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments {
-    background-color: var(--kr-skin-card-bg);
-}
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .title {
     color: var(--kr-skin-heading);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .list > li,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .children {
-    border-color: var(--kr-skin-card-line);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .author_name a {
     color: var(--kr-skin-accent-hover);
@@ -645,10 +497,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comm
     font-weight: 900;
     letter-spacing: .03em;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .content p span {
-    color: var(--kr-skin-text);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment .info .meta a {
     color: var(--kr-skin-muted);
@@ -687,48 +536,19 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comm
     color: var(--kr-skin-text);
     border-radius: var(--kr-shape-radius);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .form-control::placeholder {
-    color: var(--kr-skin-muted);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea {
     border-color: var(--kr-skin-card-line-strong);
     background-color: var(--kr-skin-card-soft);
     border-radius: var(--kr-shape-radius);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea {
-    background-color: transparent;
-    color: var(--kr-skin-text);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea textarea::placeholder {
-    color: var(--kr-skin-muted);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar {
-    background-color: var(--kr-skin-card-soft);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .addbtn:hover {
-    color: var(--kr-skin-text);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile {
-    background-color: var(--kr-skin-card-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .smile .smile-tabs {
-    background: var(--kr-skin-card-soft);
-    border-bottom-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab {
-    border-right-color: var(--kr-skin-card-line);
-    color: var(--kr-skin-muted);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .smile .smile-tabs .smile-tab.active {
     background: var(--kr-skin-card-bg);
     color: var(--kr-skin-heading);
     border-bottom-color: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .comment-textarea .text-bar .smile .smile-panel a {
-    background-color: var(--kr-skin-card-soft);
-    border-color: var(--kr-skin-card-bg);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comments .comment-respond .error {
     background-color: var(--kr-skin-card-soft);
     border-color: var(--kr-skin-card-line-strong);
@@ -748,24 +568,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .comm
     box-shadow: var(--kr-shape-shadow-sm);
 }
 
-/* ===== 侧栏 ===== */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget {
-    background-color: var(--kr-skin-card-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li a,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li a,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li a {
-    color: var(--kr-skin-text);
-    border-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a {
-    background-color: var(--kr-skin-tag-bg);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li {
-    border-color: var(--kr-skin-card-line);
-}
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-tags .item a:hover,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_categories ul li:hover,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_archive ul li:hover,
@@ -773,26 +575,16 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-to
     background-color: var(--kr-skin-card-soft);
     color: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item {
-    color: var(--kr-skin-text);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-item:hover {
     background-color: var(--kr-skin-card-soft);
     color: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .widget_links .wfl-desc {
-    color: var(--kr-skin-muted);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item {
-    color: var(--kr-skin-text);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-recommended .bookmark-item:hover {
     color: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .nav-tabs .nav-link {
-    border-bottom-color: var(--kr-skin-card-line);
-    color: var(--kr-skin-text);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .nav-tabs .nav-item.show .nav-link,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .nav-tabs .nav-link.active {
     background-color: transparent !important;
@@ -804,28 +596,13 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar tbody
     border-color: var(--kr-skin-accent-hover);
     color: var(--kr-skin-heading);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments a:not(:last-child) {
-    border-bottom-color: var(--kr-skin-card-line);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .message {
-    color: var(--kr-skin-text);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .author,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-comments .comments .meta .date {
-    color: var(--kr-skin-muted);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc {
-    border-left-color: var(--kr-skin-card-line);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::before,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item .ul-toc::after {
     border-color: var(--kr-skin-accent-hover);
     background-color: var(--kr-skin-card-bg);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item ul li::before {
-    border-color: var(--kr-skin-card-bg);
-    background: var(--kr-skin-muted);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .sidebar .w-toc .item li:hover::before {
     background: var(--kr-skin-accent-hover);
 }
@@ -856,9 +633,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-captcha-input:
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-captcha-input:focus {
     border-color: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-captcha-q {
-    color: var(--kr-skin-muted);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .btn-search {
     border-color: var(--kr-skin-accent-hover);
     background-color: var(--kr-skin-accent-hover);
@@ -930,43 +705,26 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-
     border-radius: var(--kr-shape-radius);
     box-shadow: var(--kr-shape-shadow);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author {
-    color: var(--kr-skin-heading);
-    border-bottom-color: var(--kr-skin-card-line);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-author::before {
     background: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-text {
-    color: var(--kr-skin-text);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-time {
     color: var(--kr-skin-muted);
     font-style: normal;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle {
-    color: var(--kr-skin-link);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle::after {
-    border-top-color: var(--kr-skin-link);
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-collapse-toggle:hover {
-    color: var(--kr-skin-link-hover);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header {
     background: var(--kr-skin-card-bg);
     border: var(--kr-shape-border-strong);
     border-radius: var(--kr-shape-radius);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title {
-    color: var(--kr-skin-heading);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-title::before {
     background: var(--kr-skin-accent-hover);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-header .kss-h-subtitle {
-    color: var(--kr-skin-muted);
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo-back {
     background: var(--kr-skin-card-bg);
     border-color: var(--kr-skin-card-line-strong);
@@ -995,47 +753,9 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-
     color: #fff !important;
     border-radius: var(--kr-shape-radius);
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-shuoshuo .kss-ellipsis {
-    color: var(--kr-skin-muted) !important;
-    background: transparent;
-    border-color: transparent;
-}
-
-/* ===== 详情页 header 强制统一色 ===== */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article h1,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h1,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h2,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h3,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h4,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h5,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .article .content h6 {
-    color: var(--kr-skin-heading);
-}
-
-/* ===== 底部工具盒图标 ===== */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .search,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .cmdk-launch,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .stumble,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .wechat,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .darkmode,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .skin-switcher,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-footer .f-toolbox .gotop.active {
-    background: color-mix(in srgb, var(--kr-skin-accent) 55%, #ffffff 45%);
-    transition: background .2s ease, box-shadow .2s ease, transform .15s ease;
-}
 
 /* ===== 短代码 shortcode 变量映射 ===== */
-/* khs / kas 通用映射见 components.css：本皮肤 accent 即金融红，
- * 与公共别名层取值一致，故无需逐短代码重抄映射（仅下方个别形态覆盖）。 */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment {
-    background: transparent !important;
-    box-shadow: none !important;
-    clip-path: none !important;
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::before,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode.khs-scheme-parchment::after {
-    display: none !important;
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-stat,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-heart-shortcode .khs-card,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-stat,
@@ -1049,9 +769,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .k
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-feed .kff-card {
     border-color: var(--kr-skin-card-line-strong) !important;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-section-count {
-    background: var(--kr-skin-bg) !important;
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-input:focus {
     border-color: var(--kr-skin-accent-hover) !important;
     box-shadow: 0 0 0 3px rgba(0, 0, 0, .06) !important;
@@ -1062,26 +780,11 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-friend-links .kfl-submit:hover {
     background: var(--kr-skin-heading) !important;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
-    background: var(--kr-skin-bg) !important;
-    color: var(--kr-skin-text) !important;
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count-num {
     color: var(--kr-skin-accent-hover) !important;
 }
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-topcommenters .ktc-count {
-    border-left-color: var(--kr-skin-card-line) !important;
-}
-/* 归档 kas：通用映射见 components.css，取值即金融红，无需在此对调 */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment {
-    background: transparent !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::before,
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode.kas-scheme-parchment::after {
-    display: none !important;
-}
+
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-pill-count,
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kratos-archives-shortcode .kas-total,
@@ -1103,13 +806,7 @@ html[data-theme="dark"][data-weekday-skin="bourse"] .k-main::after,
 html[data-theme="dark"][data-weekday-skin="bourse"] .k-main .board .article-panel::before {
     display: none !important;
 }
-html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-topcommenters .ktc-rank:not(.ktc-rank-medal) {
-    background: rgba(255, 255, 255, .06) !important;
-    color: var(--kr-fg, #d6d8db) !important;
-}
-html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-topcommenters .ktc-count-num {
-    color: var(--kr-accent) !important;
-}
+
 html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-heart-shortcode.khs-scheme-parchment,
 html[data-theme="dark"][data-weekday-skin="bourse"] .kratos-archives-shortcode.kas-scheme-parchment {
     background: transparent !important;
@@ -1146,18 +843,6 @@ html[data-weekday-skin="bourse"] body.is-kratos-now-page .k-main .details {
     border-radius: var(--kr-shape-radius) !important;
     padding: 0 !important;
 }
-html[data-weekday-skin="bourse"] body.is-kratos-archives-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-dashboard-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-heart-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-visitor-center-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-shuoshuo-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-topcommenters-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-friend-links-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-home-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-timeline-page .k-main .details::after,
-html[data-weekday-skin="bourse"] body.is-kratos-friend-feed-page .k-main .details::after {
-    display: none !important;
-}
 
 /* ===== 滚动条 ===== */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) {
@@ -1192,36 +877,6 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .k-main .details .arti
     color: var(--kr-skin-accent-hover);
 }
 
-html[data-weekday-skin="bourse"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list),
-html[data-weekday-skin="bourse"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list),
-html[data-weekday-skin="bourse"] .widget_recent_entries ul,
-html[data-weekday-skin="bourse"] .widget_recent_comments ul,
-html[data-weekday-skin="bourse"] .widget_pages ul,
-html[data-weekday-skin="bourse"] .widget_meta ul,
-html[data-weekday-skin="bourse"] .widget_rss ul,
-html[data-weekday-skin="bourse"] .widget_nav_menu ul,
-html[data-weekday-skin="bourse"] .widget_block ul {
-    list-style: none;
-    padding-left: 1.6em;
-}
-html[data-weekday-skin="bourse"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) {
-    counter-reset: kra-ol;
-}
-html[data-weekday-skin="bourse"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
-html[data-weekday-skin="bourse"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li,
-html[data-weekday-skin="bourse"] .widget_recent_entries ul > li,
-html[data-weekday-skin="bourse"] .widget_recent_comments ul > li,
-html[data-weekday-skin="bourse"] .widget_pages ul > li,
-html[data-weekday-skin="bourse"] .widget_meta ul > li,
-html[data-weekday-skin="bourse"] .widget_rss ul > li,
-html[data-weekday-skin="bourse"] .widget_nav_menu ul > li,
-html[data-weekday-skin="bourse"] .widget_block ul > li {
-    position: relative;
-    /* 半行高：marker 与首行文字垂直居中的基准（行高 1.8 → 0.9em） */
-    --kra-marker-mid: 0.9em;
-    margin-bottom: 6px;
-    padding-left: 0.4em;
-}
 /* 支持 lh 的浏览器改用真实半行高，皮肤若改动行高也能自动跟随 */
 @supports (top: 0.5lh) {
 html[data-weekday-skin="bourse"] .k-main .details .article .content ul:where(:not([class]), .wp-block-list) > li,
@@ -1247,20 +902,6 @@ html[data-weekday-skin="bourse"] .k-main .details .article .content ul:where(:no
     height: 6px;
     border-radius: 50%;
     background: var(--kr-skin-accent, currentColor);
-}
-html[data-weekday-skin="bourse"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li {
-    counter-increment: kra-ol;
-}
-html[data-weekday-skin="bourse"] .k-main .details .article .content ol:where(:not([class]), .wp-block-list) > li::before {
-    content: counter(kra-ol) ".";
-    position: absolute;
-    left: -1.4em;
-    top: var(--kra-marker-mid);
-    transform: translateY(-50%);
-    min-width: 1.2em;
-    text-align: right;
-    color: var(--kr-skin-accent, currentColor);
-    font-weight: 600;
 }
 
 /* ============================================================
@@ -1993,17 +1634,7 @@ html[data-weekday-skin="bourse"]:not([data-theme="dark"]) {
     --kr-skin-icon-radius:  var(--kr-shape-radius-sm);    /* 1px 小直角 */
     --kr-skin-icon-shadow:  var(--kr-shape-inset);        /* 实心底压边 */
 }
-/* 图标胶囊统一走公共类 .kr-ico（等价于此前 14 成员的 :is 枚举，且自动覆盖新增短代码的图标） */
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-ico {
-    border-radius: var(--kr-skin-icon-radius) !important;
-    background: var(--kr-skin-icon-bg) !important;
-    color: var(--kr-skin-icon-fg) !important;
-    border: 1px solid var(--kr-skin-icon-border) !important;
-    box-shadow: var(--kr-skin-icon-shadow) !important;
-}
-html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-ico > * {
-    color: var(--kr-skin-icon-fg) !important;
-}
+
 /* SVG 里 fill=currentColor 的走跟色；带 stroke 的中空图标保持中空
  * （只让描边跟色，fill 强制透明，避免把空腔填死） */
 html[data-weekday-skin="bourse"]:not([data-theme="dark"]) .kr-ico svg {
