@@ -6,7 +6,7 @@ html[data-weekday-skin="loam"] {
     --kr-skin-card-bg:     #1F1912;
     --kr-skin-card-soft:   #0E0B07;
     --kr-skin-card-line:   rgba(242,232,206,0.09);
-    --kr-skin-heading:     #1A2A2A;
+    --kr-skin-heading:     #15110A;
     --kr-skin-text:        #CDBF9E;
     --kr-skin-muted:       #80725A;
     --kr-skin-link:        #C8A96A;
@@ -793,7 +793,7 @@ html[data-weekday-skin="loam"] .k-main .details .article .content h3,
 html[data-weekday-skin="loam"] .k-main .details .article .content h4,
 html[data-weekday-skin="loam"] .k-main .details .article .content h5,
 html[data-weekday-skin="loam"] .k-main .details .article .content h6 {
-    color: var(--kr-skin-font-head);
+    color: var(--kr-skin-font-head) !important;
 }
 
 html[data-weekday-skin="loam"] .k-footer .f-toolbox .search,
