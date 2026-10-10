@@ -55,9 +55,12 @@ html[data-weekday-skin="loam"] .k-nav.nav-sticky .navbar-nav .nav-link,
 html[data-weekday-skin="loam"] .k-nav.nav-sticky .navbar-nav .nav-link:focus {
     color: var(--kr-skin-muted) !important;
 }
-html[data-weekday-skin="loam"] .k-nav.nav-sticky .navbar-nav .nav-link:hover,
-html[data-weekday-skin="loam"] .k-nav.nav-sticky .navbar-nav .active > .nav-link {
-    color: var(--kr-skin-accent) !important;
+html[data-weekday-skin="loam"] .k-nav.nav-sticky .navbar-nav .nav-link,
+html[data-weekday-skin="loam"] .k-nav.nav-sticky .navbar-nav .nav-link:focus {
+    color: var(--kr-skin-muted) !important;
+}
+html[data-weekday-skin="loam"] .a-date-ym {
+    color: var(--kr-skin-muted);
 }
 html[data-weekday-skin="loam"] .k-nav.nav-sticky .line {
     background: var(--kr-skin-heading) !important;
@@ -1101,15 +1104,25 @@ html[data-weekday-skin="loam"] .kratos-heatmap .kph-year-select {
 }
 
 /* ============== 大地·壤 loam · 「优雅的五彩斑斓的黑」专属增补 ==============
-   1. 额外令牌：青玉 jade / 朱砂 cinnabar / 鎏金内描边 gold-rim
-   2. body 底：四层径向辉光叠在乌金底上（右上鎏金 + 左下青玉 + 中部绛紫 + 乌金墨玉）
-   3. 所有主要卡片容器加鎏金内描边 1px，像漆器描金 */
+   三色点睛的职责分工（让三色稳定复现、形成心智锚点）：
+   - 鎏金 accent（主）：身份 / 链接 / 导航 / 主 CTA
+   - 青玉 accent-2（次）：结构 / 数据 / 元信息徽标（stat 数字、pill、tab 下划线、TOC、热度图色阶）
+   - 朱砂 accent-3（点睛）：状态 / 时间性（置顶、首节点、走心、第一名、键帽）
+   验收：首页列表页 / 详情页任意一屏都应能同时看到三色；热度图不能是鎏金单色渐变。 */
 
 html[data-weekday-skin="loam"] {
-    --kr-skin-jade:         #4A6E6E;
-    --kr-skin-jade-hover:   #6B9292;
-    --kr-skin-cinnabar:     #B64632;
-    --kr-skin-gold-rim:     rgba(200,169,106,0.09);
+    /* 青玉：次强调。承担"数据/结构"语义 */
+    --kr-skin-accent-2:        #4A6E6E;
+    --kr-skin-accent-2-hover:  #6B9292;
+    /* 朱砂：点睛。承担"时间性/状态"语义 */
+    --kr-skin-accent-3:        #B64632;
+    --kr-skin-accent-3-fg:     #F3E8D2;
+    --kr-skin-accent-3-glow:   rgba(182,70,50,0.45);
+    /* 旧别名：保留与前文规则兼容（jade / cinnabar / gold-rim） */
+    --kr-skin-jade:            var(--kr-skin-accent-2);
+    --kr-skin-jade-hover:      var(--kr-skin-accent-2-hover);
+    --kr-skin-cinnabar:        var(--kr-skin-accent-3);
+    --kr-skin-gold-rim:        rgba(200,169,106,0.09);
     --kr-skin-gold-rim-strong: rgba(200,169,106,0.18);
 }
 
@@ -1196,13 +1209,121 @@ html[data-weekday-skin="loam"] .ktl-year:first-of-type .ktl-year-dot {
     box-shadow: 0 0 0 1px var(--kr-skin-cinnabar), 0 0 10px rgba(182,70,50,0.45) !important;
 }
 
-/* 走心评论 / 友链 / 徽标 —— 青玉次强调（避免整站全部鎏金单调） */
-html[data-weekday-skin="loam"] .khs-stat,
-html[data-weekday-skin="loam"] .ktc-stat,
-html[data-weekday-skin="loam"] .kas-pill,
+/* ===== 青玉：数据 / 结构 / 元信息徽标家族（次强调）=====
+   凡"数字型"、"计数型"、"分组标签型"、"当前节点型"元素，一律走青玉，
+   让读者在任何一屏都能感知到第二色，避免整站全鎏金单调 */
+html[data-weekday-skin="loam"] :is(
+    .khs-stat, .ktc-stat, .ktc-count-num,
+    .kff-stat-num, .kff-stat,
+    .kas-pill, .kas-pill-count, .kas-total, .kas-total-num,
+    .kfl-section-count,
+    .kph-stats-value, .kph-cat-percent,
+    .kml-mood-bar .pct,
+    .khs-current-count,
+    .khs-stat-num, .ktc-stat-num,
+    .kdb-stat-num
+) {
+    color: var(--kr-skin-accent-2-hover) !important;
+    border-color: var(--kr-skin-accent-2) !important;
+    background: transparent !important;
+}
+html[data-weekday-skin="loam"] :is(.kph-cat-name) {
+    color: var(--khs-fg-mute) !important;
+    border-color: var(--kr-skin-accent-2) !important;
+    background: transparent !important;
+}
+/* tab 下划线 / TOC 当前节点 / 系列当前项编号：结构性"你在这里"锚点 → 青玉 */
+html[data-weekday-skin="loam"] .nav-tabs .nav-link.active,
+html[data-weekday-skin="loam"] .nav-tabs .nav-item.show .nav-link {
+    border-bottom-color: var(--kr-skin-accent-2) !important;
+}
+html[data-weekday-skin="loam"] .k-main .sidebar .w-toc .item li.active::before,
+html[data-weekday-skin="loam"] .k-main .sidebar .w-toc .item li:hover::before {
+    background: var(--kr-skin-accent-2) !important;
+}
+html[data-weekday-skin="loam"] .kratos-series .kratos-series-item.is-current .kratos-series-num,
+html[data-weekday-skin="loam"] .kratos-series .kratos-series-item.is-current {
+    color: var(--kr-skin-accent-2-hover) !important;
+    border-color: var(--kr-skin-accent-2) !important;
+}
+
+/* 热度图：把短代码域内的 --khs-accent 从鎏金改映射到青玉。
+   热度图是大面积色块（52×7 cell + 分类进度条），本就该让第二色当主演，
+   否则就浪费了一整个页面的点睛机会。tooltip / year-tag.is-active 一并跟进。
+   注意 selector 形状必须与 components.css 第 110 行对齐（特异性 0,3,0），
+   否则 components.css 的 `--khs-accent: var(--kr-skin-accent) !important` 会以
+   更高特异性胜出，导致本处覆盖失效（进度条/色阶会继续显示鎏金） */
+/* 纯数据展示型短码：整个 shortcode 的 --khs-accent 都切青玉。
+   heatmap（色阶 + 分类条）、dashboard（柱状图 + 大数字 + 分类进度）、
+   comment-geo（地域进度条）— 这些 shortcode 的核心语义就是"数据"，
+   accent 读到的所有位置（gradient / hover color / icon color）全部让给青玉主演。
+   selector 形状必须与 components.css 第 110 行对齐（特异性 0,3,1 相等 + loam.css 后加载即胜） */
+html[data-weekday-skin="loam"]:not([data-theme="dark"]) :is(
+    .kratos-heatmap, .kratos-dashboard, .kratos-comment-geo
+) {
+    --khs-accent: var(--kr-skin-accent-2) !important;
+    --khs-accent-2: var(--kr-skin-accent-2-hover) !important;
+}
+
+/* 走心评论 heart SVG：fill 走 --khs-heart-fill（独立于 kr-ico 的 color），
+   必须用与 components.css 同形的 selector (特异性 0,3,0 + loam.css 后加载) 才能覆盖 */
+html[data-weekday-skin="loam"]:not([data-theme="dark"]) :is(.kratos-heart-shortcode) {
+    --khs-heart-fill: var(--kr-skin-accent-3) !important;
+}
+html[data-weekday-skin="loam"] .kratos-heatmap .kph-year-tag.is-active {
+    background: var(--kr-skin-accent-2) !important;
+    color: #fff !important;
+    border-color: var(--kr-skin-accent-2) !important;
+}
+
+/* ===== 朱砂：时间性 / 状态 / 点睛家族 =====
+   凡"新 / 热 / 置顶 / 第一 / 刚刚发生"的时间性语义，一律走朱砂。
+   出现频次低但密度高，是整张皮肤的视觉重音 */
+
+/* 走心评论的 heart：从默认鎏金 icon 改成朱砂（心本来就该是红的） */
+html[data-weekday-skin="loam"] .kratos-heart-shortcode .khs-heart-icon,
+html[data-weekday-skin="loam"] .kratos-heart-shortcode .kr-ico--heart,
+html[data-weekday-skin="loam"] .khs-badge-heart {
+    color: var(--kr-skin-accent-3) !important;
+    background: color-mix(in srgb, var(--kr-skin-accent-3) 14%, transparent) !important;
+    border-color: color-mix(in srgb, var(--kr-skin-accent-3) 40%, transparent) !important;
+}
+
+/* 榜首第一名奖牌：朱砂（金银铜序列里的最高位用点睛色反而更抓眼） */
+html[data-weekday-skin="loam"] .kratos-topcommenters .ktc-rank-medal.ktc-rank-1,
+html[data-weekday-skin="loam"] .kratos-topcommenters .ktc-row:first-child .ktc-rank-medal {
+    background: var(--kr-skin-accent-3) !important;
+    color: var(--kr-skin-accent-3-fg) !important;
+    box-shadow: 0 0 0 1px var(--kr-skin-accent-3), 0 0 10px var(--kr-skin-accent-3-glow) !important;
+}
+
+/* ⌘K 键帽：命令面板里的朱砂点睛，让"快捷键存在"这件事被看见 */
+html[data-weekday-skin="loam"] .kratos-cmdk .cmdk-kbd,
+html[data-weekday-skin="loam"] .cmdk-launch .cmdk-kbd {
+    background: var(--kr-skin-accent-3) !important;
+    color: var(--kr-skin-accent-3-fg) !important;
+    border-color: var(--kr-skin-accent-3) !important;
+}
+
+/* 搜索结果高亮：朱砂（关键词命中是"当下关注焦点"，天然属于点睛语义） */
+html[data-weekday-skin="loam"] mark.ksr-hl,
+html[data-weekday-skin="loam"] .kratos-search mark {
+    background: color-mix(in srgb, var(--kr-skin-accent-3) 22%, transparent) !important;
+    color: var(--kr-skin-heading) !important;
+    border-bottom: 1px solid var(--kr-skin-accent-3) !important;
+}
+
+/* 博友圈"新文章"徽标：朱砂（时间性语义天然属于点睛） */
+html[data-weekday-skin="loam"] .kratos-friend-feed .kff-badge,
+html[data-weekday-skin="loam"] .kff-badge.is-new {
+    background: var(--kr-skin-accent-3) !important;
+    color: var(--kr-skin-accent-3-fg) !important;
+    border-color: var(--kr-skin-accent-3) !important;
+}
+
+/* 旧的青玉次强调规则保留，但 .khs-stat 已上移到前面统一规则里，
+   这里只保留友链 section-count 的透明胶囊外观兜底（避免被 bg 覆盖） */
 html[data-weekday-skin="loam"] .kfl-section-count {
-    color: var(--kr-skin-jade-hover) !important;
-    border: 1px solid var(--kr-skin-jade) !important;
     background: transparent !important;
 }
 
