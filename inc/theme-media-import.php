@@ -401,20 +401,60 @@ function kratos_kml_parse_douban($html, $url)
     if (!$out['cover'] && preg_match('#<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)#i', $html, $m)) {
         $out['cover'] = $m[1];
     }
+    if (!$out['excerpt'] && preg_match('#<meta[^>]+property=["\']og:description["\'][^>]+content=["\']([^"\']+)#i', $html, $m)) {
+        $out['excerpt'] = html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
     if (!$out['type']) {
         if (strpos($url, 'book.douban.com') !== false) $out['type'] = 'book';
         elseif (strpos($url, 'movie.douban.com') !== false) $out['type'] = 'movie';
     }
 
-    // 3) 正则补齐：IMDb / 原名（豆瓣电影右侧 info 块 "又名:" 和 "IMDb:"）
-    if (!$out['imdb_id'] && preg_match('#IMDb:?\s*</span>\s*(tt\d+)#i', $html, $m)) {
+    // 3) HTML 正则补齐：ld+json 和 og 都盖不到的字段
+    //    评分（豆瓣用 <strong class="ll rating_num" property="v:average">8.5</strong>）
+    if (!$out['rating'] && preg_match('#class=["\']ll rating_num["\'][^>]*>\s*([\d.]+)\s*<#i', $html, $m)) {
+        $out['rating'] = $m[1];
+    }
+    //    年份（书：出版年；电影：年份藏在标题 (YYYY) 或 info 的「年代」）
+    if (!$out['year']) {
+        if (preg_match('#出版年[:：]</span>\s*(\d{4})#u', $html, $m)) {
+            $out['year'] = $m[1];
+        } elseif (preg_match('#<span[^>]*class=["\']year["\'][^>]*>\s*\((\d{4})\)#i', $html, $m)) {
+            $out['year'] = $m[1];
+        } elseif (preg_match('#年代[:：]</span>\s*(\d{4})#u', $html, $m)) {
+            $out['year'] = $m[1];
+        }
+    }
+    //    IMDb（电影 info 右侧）
+    if (!$out['imdb_id'] && preg_match('#IMDb[:：]?\s*</span>\s*(tt\d+)#i', $html, $m)) {
         $out['imdb_id'] = $m[1];
     } elseif (!$out['imdb_id'] && preg_match('#(tt\d{6,})#', $html, $m)) {
         $out['imdb_id'] = $m[1];
     }
-    if (!$out['orig_title'] && preg_match('#又名:?</span>\s*([^<]+)#u', $html, $m)) {
-        $parts = array_filter(array_map('trim', explode('/', $m[1])));
-        if ($parts) $out['orig_title'] = reset($parts);
+    //    原名 / 又名（书的「原作名」或电影的「又名」）
+    if (!$out['orig_title']) {
+        if (preg_match('#原作名[:：]</span>\s*([^<]+?)<br#u', $html, $m)) {
+            $out['orig_title'] = trim($m[1]);
+        } elseif (preg_match('#又名[:：]</span>\s*([^<]+?)<br#u', $html, $m)) {
+            $parts = array_filter(array_map('trim', explode('/', $m[1])));
+            if ($parts) $out['orig_title'] = reset($parts);
+        }
+    }
+    //    ISBN（书，ld+json 没给出时）
+    if (!$out['isbn'] && preg_match('#ISBN[:：]?</span>\s*(\d[\dxX-]+)#iu', $html, $m)) {
+        $out['isbn'] = preg_replace('/[^0-9Xx]/', '', $m[1]);
+    }
+    //    作者 / 导演 回落（info 块中「作者:」或「导演:」后紧跟 <a>）
+    if (!$out['creator']) {
+        if (preg_match('#(?:作者|导演)[:：]</span>(.*?)<br#us', $html, $m)) {
+            $names = array();
+            if (preg_match_all('#>([^<]+)</a>#u', $m[1], $nm)) {
+                foreach ($nm[1] as $n) {
+                    $n = trim($n);
+                    if ($n !== '') $names[] = $n;
+                }
+            }
+            if ($names) $out['creator'] = implode(' / ', $names);
+        }
     }
 
     // 清洗
