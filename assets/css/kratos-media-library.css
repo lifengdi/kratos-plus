@@ -1,0 +1,786 @@
+/**
+ * 观影读书录（Media Library）
+ *
+ * 根容器：.kratos-media-library（列表） / .kratos-media-single（详情）
+ * 变量命名空间统一走 --khs-*；配色/形态由 components.css 的皮肤别名层注入。
+ * 皮肤关闭态默认外观（直角 / 边框 / 轻阴影）由 components.css 顶层已覆盖，
+ * 本文件只写布局 + 本模块专属视觉。
+ *
+ * @author Dylan Li
+ * @license GPL-3.0 License
+ */
+
+/* 模块级 --khs-* 默认值：皮肤关闭/暗夜未命中别名层时的兜底，
+ * 避免「var(--khs-fg) is not defined」类告警并保证所有嵌套规则取值一致。
+ * 皮肤激活时 components.css 的别名层会以 !important 覆盖这些值。
+ */
+.kratos-media-library,
+.kratos-media-single {
+    --khs-bg-1: #f5f5f5;
+    --khs-bg-2: #f0f0f0;
+    --khs-bg-3: #ebebeb;
+    --khs-fg: #262626;
+    --khs-fg-soft: #4a4a4a;
+    --khs-fg-dim: #8b8b8b;
+    --khs-accent: #336699;
+    --khs-accent-2: #2b5278;
+    --khs-line: rgba(0,0,0,.08);
+    --khs-line-strong: rgba(0,0,0,.16);
+    --khs-card-bg: #ffffff;
+    --khs-card-shadow: 0 1px 2px rgba(0,0,0,.1);
+    --khs-rate: #e0a94f;
+    color: var(--khs-fg);
+}
+html[data-theme="dark"] .kratos-media-library,
+html[data-theme="dark"] .kratos-media-single {
+    --khs-bg-1: #2a2a2a;
+    --khs-bg-2: #303030;
+    --khs-bg-3: #363636;
+    --khs-fg: #e6e8ec;
+    --khs-fg-soft: #c9ced6;
+    --khs-fg-dim: #8a8f99;
+    --khs-line: rgba(255,255,255,.08);
+    --khs-line-strong: rgba(255,255,255,.18);
+    --khs-card-bg: #26292d;
+    --khs-card-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+
+/* 默认态（无皮肤）下，让 .k-main .details 外壳透明，避免"盒子套盒子" —
+ * 皮肤层各自已在 §7 透明化名单里处理过，这里只补默认态。
+ */
+body.is-kratos-media-page .k-main .details,
+body.is-kratos-media-single .k-main .details {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* .kr-body / .kr-hd 在主题里没有基础 padding/background（只有皮肤会接管），
+ * 详情页去掉 .details 外壳后内容会贴边，这里为本模块的 .kr-body 补一套
+ * 卡片基础样式（demo 里是文件内直接写的）。
+ */
+.kratos-media-single .kr-body {
+    background: var(--khs-card-bg, #fff);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 2px;
+}
+
+/* ========== 列表：标题头（复用 kfl-header 结构，视觉对齐 page-featured-title）==========
+ * [friend_links] 的样式只在该短码渲染时内联，列表页用不到那条链路，
+ * 这里按 .kratos-featured-title 的做法把头部最小样式内联到本模块。
+ */
+.kratos-media-library .kfl-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 24px 28px;
+    margin-bottom: 18px;
+    background: var(--khs-card-bg, #fff);
+    border: 1px solid var(--khs-line, rgba(0,0,0,.08));
+    border-radius: 14px;
+    box-shadow: var(--khs-card-shadow, 0 1px 3px rgba(0,0,0,.06));
+}
+.kratos-media-library .kfl-title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--khs-bg-2, #f0f0f0) 0%, var(--khs-bg-3, #ebebeb) 100%);
+    color: var(--khs-accent, #336699);
+    flex-shrink: 0;
+}
+.kratos-media-library .kfl-title-icon .kratos-fa-svg { width: 18px; height: 18px; }
+.kratos-media-library .kfl-title {
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--khs-fg, #262626);
+}
+.kratos-media-library .kfl-header-divider {
+    display: inline-block;
+    width: 1px;
+    height: 22px;
+    background: var(--khs-line-strong, rgba(0,0,0,.16));
+}
+.kratos-media-library .kfl-subtitle {
+    margin: 0;
+    padding: 0;
+    color: var(--khs-fg-soft, #666);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ========== 列表：统计条 ========== */
+.kratos-media-library .kml-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.kratos-media-library .kml-stat {
+    background: var(--khs-card-bg, #fff);
+    border: 1px solid var(--khs-line, #e8e6e0);
+    border-radius: 12px;
+    box-shadow: var(--khs-card-shadow, 0 1px 3px rgba(0,0,0,.05));
+    padding: 16px;
+    text-align: center;
+}
+.kratos-media-library .kml-stat-num {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--khs-accent, #336699);
+    line-height: 1.2;
+}
+.kratos-media-library .kml-stat-label {
+    color: var(--khs-fg-dim, #8b8b8b);
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+/* ========== 列表：工具条 / tabs ========== */
+.kratos-media-library .kml-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+.kratos-media-library .kml-tabs {
+    display: inline-flex;
+    gap: 4px;
+    background: var(--khs-card-bg, #fff);
+    border: 1px solid var(--khs-line, #e8e6e0);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: var(--khs-card-shadow, 0 1px 3px rgba(0,0,0,.05));
+    flex-wrap: wrap;
+}
+.kratos-media-library a.kml-tab,
+.kratos-media-library a.kml-tab:visited {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--khs-fg-soft, #666);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background .18s, color .18s, border-color .18s;
+    border: 1px solid transparent;
+    background: transparent;
+}
+.kratos-media-library a.kml-tab:hover {
+    color: var(--khs-accent, #336699);
+    background: var(--khs-bg-2, rgba(0,0,0,.03));
+    text-decoration: none;
+}
+.kratos-media-library a.kml-tab.is-active,
+.kratos-media-library a.kml-tab.is-active:visited,
+.kratos-media-library a.kml-tab.is-active:hover {
+    background: var(--khs-accent, #336699);
+    color: #fff;
+    border-color: var(--khs-accent, #336699);
+}
+.kratos-media-library .kml-tab-icon {
+    font-size: 14px;
+    line-height: 1;
+    font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+}
+.kratos-media-library .kml-tab-count {
+    font-size: 11px;
+    opacity: .72;
+    font-feature-settings: "tnum";
+}
+
+/* 移动端：标题头收紧 + 隐藏竖线分隔，让副标题下折到第二行，对齐友链 / 归档等特色页做法 */
+@media (max-width: 560px) {
+    .kratos-media-library .kfl-header { padding: 18px 20px; gap: 10px; }
+    .kratos-media-library .kfl-title { font-size: 19px; }
+    .kratos-media-library .kfl-header-divider { display: none; }
+    .kratos-media-library .kfl-subtitle { flex-basis: 100%; font-size: 13px; }
+}
+
+/* 移动端：tabs 改成横向滚动条，避免小屏换行堆叠或药丸被挤扁；
+ * -webkit-overflow-scrolling 让 iOS 惯性滚动顺手。
+ */
+@media (max-width: 640px) {
+    .kratos-media-library .kml-toolbar {
+        gap: 10px;
+        margin-left: -4px;
+        margin-right: -4px;
+    }
+    .kratos-media-library .kml-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        padding: 4px 6px;
+        gap: 2px;
+        scrollbar-width: none;
+    }
+    .kratos-media-library .kml-tabs::-webkit-scrollbar { display: none; }
+    .kratos-media-library a.kml-tab {
+        flex: 0 0 auto;
+        padding: 6px 12px;
+        font-size: 12.5px;
+        gap: 4px;
+    }
+    .kratos-media-library .kml-tab-count {
+        font-size: 10.5px;
+    }
+    .kratos-media-library .kml-sort { margin-left: 0; width: 100%; }
+}
+
+/* ========== 列表：卡片网格 ========== */
+.kratos-media-library .kml-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+.kratos-media-library .kml-item,
+.kratos-media-single .kmd-related .kml-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--khs-card-bg, #fff);
+    border: 1px solid var(--khs-line, #e8e6e0);
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .2s, box-shadow .2s;
+}
+.kratos-media-library .kml-item:hover,
+.kratos-media-single .kmd-related .kml-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--khs-card-shadow-hv, 0 8px 24px rgba(0,0,0,.08));
+}
+.kratos-media-library .kml-cover,
+.kratos-media-single .kmd-related .kml-cover {
+    aspect-ratio: 2 / 3;
+    background: var(--khs-line, #e8e6e0) center/cover no-repeat;
+    position: relative;
+}
+.kratos-media-library .kml-cover::after,
+.kratos-media-single .kmd-related .kml-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.55));
+}
+.kratos-media-library .kml-type-tag, .kratos-media-single .kmd-related .kml-type-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    font-size: 11px;
+    letter-spacing: .5px;
+}
+.kratos-media-library .kml-status, .kratos-media-single .kmd-related .kml-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.9);
+    color: #333;
+    font-size: 10px;
+    font-weight: 500;
+}
+.kratos-media-library .kml-status.is-doing,
+.kratos-media-single .kmd-related .kml-status.is-doing { background: #fff3d5; color: #a06a1c; }
+.kratos-media-library .kml-status.is-plan,
+.kratos-media-single .kmd-related .kml-status.is-plan  { background: #e5efff; color: #3864a8; }
+.kratos-media-library .kml-rate, .kratos-media-single .kmd-related .kml-rate {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 2;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+.kratos-media-library .kml-info, .kratos-media-single .kmd-related .kml-info { padding: 12px 14px 14px; }
+.kratos-media-library .kml-title,
+.kratos-media-single .kmd-related .kml-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.6em;
+    line-height: 1.3;
+    color: var(--khs-fg, #262626);
+}
+.kratos-media-library .kml-sub, .kratos-media-single .kmd-related .kml-sub {
+    color: var(--khs-fg-dim, #8b8b8b);
+    font-size: 12px;
+}
+
+/* ========== 列表：分页 ========== */
+.kratos-media-library .kml-page {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+.kratos-media-library .kml-page a,
+.kratos-media-library .kml-page span {
+    padding: 6px 11px;
+    border-radius: 6px;
+    background: var(--khs-card-bg, #fff);
+    border: 1px solid var(--khs-line, #e8e6e0);
+    font-size: 13px;
+    color: var(--khs-fg-dim, #8b8b8b);
+    text-decoration: none;
+}
+.kratos-media-library .kml-page .is-current {
+    background: var(--khs-accent, #336699);
+    color: #fff;
+    border-color: var(--khs-accent, #336699);
+}
+
+/* ========== 列表：空态 ========== */
+.kratos-media-library .kml-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--khs-fg-dim, #8b8b8b);
+    background: var(--khs-card-bg, #fff);
+    border: 1px dashed var(--khs-line, #e8e6e0);
+    border-radius: 12px;
+}
+
+/* ========== 详情：hero ==========
+ * 布局拆成「封面 | 头部（胶囊/标题/原名） / 下部（信息/评分/按钮）」3 格：
+ *   桌面：封面占左列 1-2 行，头部和下部堆叠在右列
+ *   移动：封面 + 头部在第一行各占一列，下部跨两列独占第二行满宽
+ */
+.kratos-media-single .kmd-hero {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 28px;
+    row-gap: 14px;
+    align-items: start;
+}
+.kratos-media-single .kmd-hero .kmd-cover { grid-row: 1 / span 2; grid-column: 1; }
+.kratos-media-single .kmd-hero .kmd-head  { grid-row: 1; grid-column: 2; }
+.kratos-media-single .kmd-hero .kmd-body  { grid-row: 2; grid-column: 2; }
+.kratos-media-single .kmd-cover {
+    aspect-ratio: 2 / 3;
+    border-radius: 8px;
+    background: var(--khs-line, #e8e6e0) center/cover no-repeat;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+}
+.kratos-media-single .kmd-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+/* .kr-pill 没有主题级基础样式（各短码/页面各自给），这里给本模块的药丸配基础形态
+ * ———————————————————————————————————————————————
+ * 之前类型胶囊靠 inline hex+22 (13% 透明度) 当底色、状态胶囊靠 inline #eaeaea，
+ * 两条路径在暗夜下表现完全不同：13% 透明在暗底几乎看不见，#eaeaea 在暗底又异常亮，
+ * 两枚胶囊视觉大小、权重都不一致。改成同一套 class 规则 + 通过 CSS 变量 --kml-pill-c
+ * 注入 term 色，color-mix 自动适配亮/暗。
+ */
+.kratos-media-single .kmd-pills .kr-pill,
+.kratos-media-library .kml-item .kr-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.6;
+    background: var(--khs-bg-2, #f2f2f2);
+    color: var(--khs-fg-soft, #666);
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+/* 类型胶囊：以 term 色 --kml-pill-c 为中心，亮/暗各自 mix 出可读底色与前景色 */
+.kratos-media-single .kmd-pills .kmd-pill-type {
+    color: var(--kml-pill-c, #666);
+    background: color-mix(in srgb, var(--kml-pill-c, #666) 14%, transparent);
+    border-color: color-mix(in srgb, var(--kml-pill-c, #666) 28%, transparent);
+}
+html[data-theme="dark"] .kratos-media-single .kmd-pills .kmd-pill-type {
+    color: color-mix(in srgb, var(--kml-pill-c, #999) 30%, #fff 70%);
+    background: color-mix(in srgb, var(--kml-pill-c, #999) 32%, transparent);
+    border-color: color-mix(in srgb, var(--kml-pill-c, #999) 48%, transparent);
+}
+/* 状态胶囊：三态单独配色，亮/暗各一套 */
+.kratos-media-single .kmd-pills .kmd-pill-status            { background: #eaeaea; color: #555; }
+.kratos-media-single .kmd-pills .kmd-pill-status.is-doing   { background: #fff3d5; color: #a06a1c; }
+.kratos-media-single .kmd-pills .kmd-pill-status.is-plan    { background: #e5efff; color: #3864a8; }
+html[data-theme="dark"] .kratos-media-single .kmd-pills .kmd-pill-status            { background: rgba(255,255,255,.1); color: #c9ced6; }
+html[data-theme="dark"] .kratos-media-single .kmd-pills .kmd-pill-status.is-doing   { background: rgba(224,169,79,.18); color: #e8c074; }
+html[data-theme="dark"] .kratos-media-single .kmd-pills .kmd-pill-status.is-plan    { background: rgba(74,111,165,.22); color: #a4bde8; }
+.kratos-media-single .kmd-head h1 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--khs-fg, #262626);
+}
+.kratos-media-single .kmd-orig {
+    color: var(--khs-fg-dim, #8b8b8b);
+    font-size: 14px;
+    margin: 0 0 14px;
+    font-style: italic;
+}
+/* 暗夜模式下 --khs-fg-dim 会被映射到更暗的灰（和卡片底几乎同色），
+ * 原名读起来发虚；这里不走变量，直接钉一个可读的浅灰并抬一档不透明度。
+ */
+html[data-theme="dark"] .kratos-media-single .kmd-orig { color: #c9ced6 !important; opacity: 1; }
+.kratos-media-single .kmd-info-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 6px 12px;
+    margin: 14px 0;
+    font-size: 13px;
+}
+.kratos-media-single .kmd-info-row dt { color: var(--khs-fg-dim, #8b8b8b); margin: 0; }
+.kratos-media-single .kmd-info-row dd { margin: 0; color: var(--khs-fg, #262626); word-break: break-all; }
+
+/* 详情：评分 */
+.kratos-media-single .kmd-rating {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    background: color-mix(in srgb, var(--khs-rate) 10%, transparent);
+    border-left: 3px solid var(--khs-rate);
+    border-radius: 6px;
+}
+.kratos-media-single .kmd-rating-num {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--khs-rate);
+    line-height: 1;
+}
+.kratos-media-single .kmd-stars { display: inline-flex; gap: 2px; }
+.kratos-media-single .kmd-stars svg { fill: #d9d9d9; }
+.kratos-media-single .kmd-stars svg.is-on { fill: var(--khs-rate); }
+.kratos-media-single .kmd-rating-text {
+    font-size: 12px;
+    color: var(--khs-fg-dim, #8b8b8b);
+    margin-top: 2px;
+}
+
+/* .kr-btn 同 .kr-pill 一样无主题级基础样式，这里为本模块补基础按钮形态。
+ * 实心按钮必须显式写 color 并覆盖 :visited/:hover/:focus 四态，不然主题的
+ * .k-main .details a:hover (0,2,2) 会把文字色改到链接色（朱砂红 / 复古铁锈等
+ * 深色 accent 底色 + 深色文字 = 视觉不可见）。
+ */
+.kratos-media-single a.kr-btn,
+.kratos-media-single a.kr-btn:link,
+.kratos-media-single a.kr-btn:visited {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: var(--khs-accent, #336699) !important;
+    color: #fff !important;
+    border: 1px solid transparent;
+    font-size: 13px;
+    line-height: 1.5;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: opacity .18s, background .18s, color .18s, border-color .18s;
+}
+.kratos-media-single a.kr-btn:hover,
+.kratos-media-single a.kr-btn:focus,
+.kratos-media-single a.kr-btn:active {
+    color: #fff !important;
+    background: var(--khs-accent-2, var(--khs-accent, #336699)) !important;
+    text-decoration: none !important;
+    opacity: 1;
+}
+.kratos-media-single a.kr-btn.is-ghost,
+.kratos-media-single a.kr-btn.is-ghost:link,
+.kratos-media-single a.kr-btn.is-ghost:visited {
+    background: transparent !important;
+    color: var(--khs-accent, #336699) !important;
+    border-color: var(--khs-accent, #336699);
+}
+.kratos-media-single a.kr-btn.is-ghost:hover,
+.kratos-media-single a.kr-btn.is-ghost:focus,
+.kratos-media-single a.kr-btn.is-ghost:active {
+    background: var(--khs-accent, #336699) !important;
+    color: #fff !important;
+    border-color: var(--khs-accent, #336699);
+}
+
+.kratos-media-single .kmd-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+/* 详情：section */
+.kratos-media-single .kmd-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 14px;
+    color: var(--khs-fg, #262626);
+}
+.kratos-media-single .kmd-section-title .kr-ico {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+/* 详情：心得体会 */
+.kratos-media-single .kmd-review { font-size: 15px; line-height: 1.9; color: var(--khs-fg, #333); }
+.kratos-media-single .kmd-review p { margin: 0 0 12px; }
+.kratos-media-single .kmd-review blockquote {
+    margin: 0 0 12px;
+    padding: 12px 16px;
+    background: var(--khs-bg-2, #f6f5f2);
+    border-left: 3px solid var(--khs-accent, #336699);
+    color: var(--khs-fg-soft, #555);
+    font-style: italic;
+    border-radius: 0 6px 6px 0;
+}
+
+/* 详情：划线 */
+.kratos-media-single .kmd-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.kratos-media-single .kmd-highlight {
+    padding: 12px 14px;
+    border-radius: 6px;
+    background: var(--khs-bg-2, #f6f5f2);
+    border-left: 2px solid var(--khs-line-strong, var(--khs-accent, #336699));
+    font-size: 13px;
+    color: var(--khs-fg, #333);
+    text-decoration: none;
+    display: block;
+}
+.kratos-media-single .kmd-highlight-meta {
+    color: var(--khs-fg-dim, #8b8b8b);
+    font-size: 11px;
+    margin-top: 6px;
+}
+
+/* 详情：相关 —— 卡片本体样式复用列表页的 .kml-item/.kml-cover/... 规则，
+ * 这里只控制网格布局，让"你可能也会喜欢"视觉上与列表页卡片一致。
+ */
+.kratos-media-single .kmd-related {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+/* 详情：上下条 */
+.kratos-media-single .kmd-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 12px;
+}
+.kratos-media-single .kmd-nav-item {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: var(--khs-card-bg, #fff);
+    border: 1px solid var(--khs-line, #e8e6e0);
+    font-size: 13px;
+    color: var(--khs-fg, #262626);
+    text-decoration: none;
+}
+.kratos-media-single .kmd-nav-item small {
+    display: block;
+    color: var(--khs-fg-dim, #8b8b8b);
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+.kratos-media-single .kmd-nav-item.is-next { text-align: right; }
+
+/* 评论里的评分徽章 */
+.kml-c-rate {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--khs-rate, #e0a94f) 18%, transparent);
+    color: var(--khs-rate, #e0a94f);
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 6px;
+    vertical-align: baseline;
+}
+
+/* 评论表单里的评分下拉（由 kratos_kml_comment_rate_field 输出） */
+.kmd-cform-rate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--khs-fg-dim, #8b8b8b);
+    font-size: 13px;
+}
+/* 评论里的访客打分徽章：挂在评论作者名字之后；支持半星 */
+.kml-c-rate {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(224,169,79,.14);
+    color: #a06a1c;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    vertical-align: middle;
+}
+.kml-c-rate-stars { display: inline-flex; gap: 1px; }
+.kml-c-rate-s {
+    position: relative;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    line-height: 0;
+}
+.kml-c-rate-s svg {
+    position: absolute;
+    inset: 0;
+    width: 12px;
+    height: 12px;
+}
+.kml-c-rate-s .s-bg { fill: #d9d9d9; }
+.kml-c-rate-s .s-fg { fill: #e0a94f; clip-path: inset(0 100% 0 0); }
+.kml-c-rate-s.is-half .s-fg { clip-path: inset(0 50% 0 0); }
+.kml-c-rate-s.is-on   .s-fg { clip-path: inset(0 0 0 0); }
+.kml-c-rate-num { font-feature-settings: "tnum"; }
+html[data-theme="dark"] .kml-c-rate {
+    background: rgba(224,169,79,.18);
+    color: #e8c074;
+}
+html[data-theme="dark"] .kml-c-rate-s .s-bg { fill: #4a4e55; }
+html[data-theme="dark"] .kml-c-rate-s .s-fg { fill: #e8c074; }
+.kmd-cform-rate-hint {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    color: var(--khs-fg-dim, #8b8b8b);
+    font-size: 11px;
+}
+.kmd-cform-rate {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 0;
+}
+.kmd-cform-rate-label {
+    color: var(--khs-fg-soft, #4a4a4a);
+    font-size: 13px;
+    font-weight: 500;
+}
+/* 豆瓣式星级：5 颗星支持半星（左半/右半），hover 预览，click 设定，同值再点清除 */
+.kml-rate-ui {
+    display: inline-flex;
+    gap: 2px;
+}
+.kml-rate-ui .kml-rate-star {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 2px;
+    cursor: pointer;
+    line-height: 0;
+    outline: none;
+}
+.kml-rate-ui .kml-star {
+    position: relative;
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+}
+.kml-rate-ui .kml-star svg {
+    position: absolute;
+    inset: 0;
+    width: 22px;
+    height: 22px;
+}
+.kml-rate-ui .kml-star .s-bg { fill: #d9d9d9; }
+.kml-rate-ui .kml-star .s-fg {
+    fill: #e0a94f;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path .1s linear;
+}
+.kml-rate-ui .kml-rate-star.is-half .s-fg { clip-path: inset(0 50% 0 0); }
+.kml-rate-ui .kml-rate-star.is-on   .s-fg { clip-path: inset(0 0 0 0); }
+html[data-theme="dark"] .kml-rate-ui .kml-star .s-bg { fill: #4a4e55; }
+html[data-theme="dark"] .kml-rate-ui .kml-star .s-fg { fill: #e8c074; }
+.kml-rate-text {
+    font-size: 12px;
+    color: #a06a1c;
+    min-width: 90px;
+    font-feature-settings: "tnum";
+}
+html[data-theme="dark"] .kml-rate-text { color: #e8c074; }
+
+.kmd-cform-rate select {
+    border: 1px solid var(--khs-line, #e8e6e0);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 12px;
+    background: var(--khs-card-bg, #fff);
+    color: var(--khs-fg, #262626);
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+    .kratos-media-library .kml-stats { grid-template-columns: repeat(2, 1fr); }
+    /* 移动端：封面 + head 还是左右两栏；body 跨两列满宽，不留封面空位 */
+    .kratos-media-single .kmd-hero {
+        grid-template-columns: 110px minmax(0, 1fr);
+        column-gap: 14px;
+        row-gap: 14px;
+    }
+    .kratos-media-single .kmd-hero .kmd-cover { grid-row: 1; }
+    .kratos-media-single .kmd-hero .kmd-head  { grid-row: 1; grid-column: 2; align-self: start; }
+    .kratos-media-single .kmd-hero .kmd-body  { grid-row: 2; grid-column: 1 / -1; }
+    .kratos-media-single .kmd-head h1 { font-size: 18px; }
+    .kratos-media-single .kmd-orig { font-size: 13px; margin-bottom: 0; }
+    .kratos-media-single .kmd-info-row { grid-template-columns: 72px 1fr; font-size: 12.5px; }
+    .kratos-media-single .kmd-related { grid-template-columns: repeat(3, 1fr); }
+}

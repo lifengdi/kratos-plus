@@ -195,6 +195,10 @@ require get_template_directory() . '/inc/theme-mood-log.php';
 // 「Kratos-plus 特色标题」页面模板 metabox（标题 / 副标题 / 图标）
 require get_template_directory() . '/inc/theme-featured-title.php';
 
+// 观影读书录（CPT media_item + taxonomy media_type + [media_library]/[media_stats]）
+require get_template_directory() . '/inc/theme-media-library.php';
+require get_template_directory() . '/inc/theme-media-import.php';
+
 // 阅读增强（阅读进度条 / 字数 & 预计阅读时间 / 更新提示条 / 相关文章）
 require get_template_directory() . '/inc/theme-reading-enhance.php';
 

@@ -4508,6 +4508,76 @@ CSF::createSection($prefix, array(
 
 CSF::createSection($prefix, array(
     'parent' => 'kp_pages',
+    'title' => __('观影读书录配置', 'kratos'),
+    'icon' => 'fas fa-book-open',
+    'fields' => array(
+        array(
+            'type' => 'subheading',
+            'content' => __('显示在「观影读书录」模板页与 [media_library] 顶部，留空则隐藏；短码同名参数优先。', 'kratos'),
+        ),
+        array(
+            'id' => 'media_sc_title',
+            'type' => 'text',
+            'title' => __('页面标题', 'kratos'),
+            'subtitle' => __('[media_library] 未传 title 时用它；留空则不显示标题', 'kratos'),
+            'default' => __('观影读书录', 'kratos'),
+        ),
+        array(
+            'id' => 'media_sc_subtitle',
+            'type' => 'text',
+            'title' => __('页面副标题', 'kratos'),
+            'subtitle' => __('[media_library] 未传 subtitle 时用它；留空则不显示副标题', 'kratos'),
+            'default' => __('记录读过的书、看过的影剧、玩过的游戏', 'kratos'),
+        ),
+        array(
+            'id' => 'media_sc_icon',
+            'type' => 'icon',
+            'title' => __('标题图标', 'kratos'),
+            'subtitle' => __('标题左侧图标胶囊里的图标', 'kratos'),
+            'default' => 'fas fa-book-open',
+        ),
+        array(
+            'type' => 'subheading',
+            'content' => __('列表展示', 'kratos'),
+        ),
+        array(
+            'id' => 'media_sc_per_page',
+            'type' => 'number',
+            'title' => __('每页条数', 'kratos'),
+            'subtitle' => __('每页显示多少条，短码可用 per_page 覆盖', 'kratos'),
+            'default' => 24,
+            'attributes' => array(
+                'min' => 1,
+                'step' => 1,
+            ),
+        ),
+        array(
+            'id' => 'media_sc_orderby',
+            'type' => 'select',
+            'title' => __('默认排序', 'kratos'),
+            'subtitle' => __('短码可用 orderby 覆盖', 'kratos'),
+            'options' => array(
+                'date'    => __('最近记录', 'kratos'),
+                'rating'  => __('最高评分', 'kratos'),
+                'year'    => __('发布年份', 'kratos'),
+                'title'   => __('标题 A→Z', 'kratos'),
+            ),
+            'default' => 'date',
+        ),
+        array(
+            'id' => 'media_sc_show_stats',
+            'type' => 'switcher',
+            'title' => __('展示统计条', 'kratos'),
+            'subtitle' => __('标题下方的四格统计（累计 / 均分 / 本年 / 在看）', 'kratos'),
+            'text_on' => __('显示', 'kratos'),
+            'text_off' => __('隐藏', 'kratos'),
+            'default' => true,
+        ),
+    ),
+));
+
+CSF::createSection($prefix, array(
+    'parent' => 'kp_pages',
     'title' => __('数据看板', 'kratos'),
     'icon' => 'fas fa-chart-bar',
     'fields' => array(
