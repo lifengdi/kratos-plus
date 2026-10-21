@@ -255,8 +255,9 @@ function kratos_kml_host_allowed($url)
     $host = parse_url($url, PHP_URL_HOST);
     if (!$host) return false;
     $host = strtolower($host);
-    static $white = array('www.douban.com', 'book.douban.com', 'movie.douban.com', 'm.douban.com', 'douban.com');
-    return in_array($host, $white, true);
+    // 允许 douban.com 本体与任意子域（反爬 sec.douban.com、移动 m.douban.com 等都是官方）
+    // 仍然拒掉其它主机，防 SSRF 到内网 / 云厂商 metadata。
+    return $host === 'douban.com' || preg_match('/\.douban\.com$/', $host);
 }
 
 function kratos_kml_do_request($url)
@@ -399,7 +400,8 @@ function kratos_kml_parse_douban($html, $url)
         $out['title'] = html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
     if (!$out['cover'] && preg_match('#<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)#i', $html, $m)) {
-        $out['cover'] = $m[1];
+        // og 内容是 HTML 属性值，URL 中的 & 被编码成 &amp;，直接用会 404；解回原始 URL
+        $out['cover'] = html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
     if (!$out['excerpt'] && preg_match('#<meta[^>]+property=["\']og:description["\'][^>]+content=["\']([^"\']+)#i', $html, $m)) {
         $out['excerpt'] = html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -410,9 +412,32 @@ function kratos_kml_parse_douban($html, $url)
     }
 
     // 3) HTML 正则补齐：ld+json 和 og 都盖不到的字段
-    //    评分（豆瓣用 <strong class="ll rating_num" property="v:average">8.5</strong>）
+    //    评分：桌面版用 .rating_num；移动版（电影走 sec 拦截被迫落 m.douban.com）
+    //    把评分埋在 og:description "XX豆瓣评分：9.0" 里
     if (!$out['rating'] && preg_match('#class=["\']ll rating_num["\'][^>]*>\s*([\d.]+)\s*<#i', $html, $m)) {
         $out['rating'] = $m[1];
+    } elseif (!$out['rating'] && $out['excerpt'] && preg_match('#豆瓣评分[:：]\s*([\d.]+)#u', $out['excerpt'], $m)) {
+        $out['rating'] = $m[1];
+    }
+    //    移动版电影：标题带 (YYYY)，形如 <div class="sub-original-title">名字（2018）</div>
+    if (!$out['year'] && preg_match('#sub-original-title[^>]*>[^<]*?[\(（](\d{4})[\)）]#u', $html, $m)) {
+        $out['year'] = $m[1];
+    }
+    //    移动版电影剧情简介（.subject-intro .bd p，比 og:description 完整）
+    if (preg_match('#subject-intro.*?<p[^>]*>(.+?)</p>#usi', $html, $m)) {
+        $plot = trim(preg_replace('#\s+#u', ' ', strip_tags(str_replace(array('<br/>', '<br>', '<br />'), "\n", $m[1]))));
+        if ($plot !== '' && mb_strlen($plot) > mb_strlen((string)$out['excerpt'])) {
+            $out['excerpt'] = $plot;
+        }
+    }
+    //    og:description 常以「XX豆瓣评分：N 简介：…」开头，去掉前缀
+    if ($out['excerpt'] && preg_match('#简介[:：]\s*(.+)$#us', $out['excerpt'], $m)) {
+        $out['excerpt'] = trim($m[1]);
+    }
+    //    标题常带 " - 电影" / " (豆瓣)" / " - 读书" 之类后缀，去掉
+    if ($out['title']) {
+        $out['title'] = preg_replace('#\s*[-\x{2014}]\s*(电影|读书|豆瓣)\s*$#u', '', $out['title']);
+        $out['title'] = preg_replace('#\s*[\(（]豆瓣[\)）]\s*$#u', '', $out['title']);
     }
     //    年份（书：出版年；电影：年份藏在标题 (YYYY) 或 info 的「年代」）
     if (!$out['year']) {
