@@ -426,25 +426,15 @@ function kratos_kml_status_label($status, $type_slug = '')
 /* ========== 条目 meta 读取 ========== */
 
 /**
- * 归一化读条目字段。
- * CSF 的 unserialize data_type 会把这些 key 都塞进单个 '_kml_meta' 的 serialized 数组里，
- * 这里把它展开。
+ * 归一化读条目字段。CSF data_type=unserialize 让每个字段独立成一条 postmeta
+ * （key 即字段 id），直接 get_post_meta 即可。
  */
 function kratos_kml_item_meta($post_id)
 {
-    // CSF 的 data_type=unserialize 让每个字段独立成一条 post_meta（key 即字段 id），
-    // 而豆瓣导入模块同时也写了 _kml_meta 聚合数组做兼容。读取时两边都查：
-    // 优先独立 key，回落聚合数组。
     $keys = array('_kml_cover', '_kml_orig_title', '_kml_creator', '_kml_year', '_kml_rating', '_kml_status', '_kml_finished_at', '_kml_douban_url', '_kml_imdb_id', '_kml_isbn');
-    $agg = get_post_meta($post_id, '_kml_meta', true);
-    $agg = is_array($agg) ? $agg : array();
     $out = array();
     foreach ($keys as $k) {
-        $v = get_post_meta($post_id, $k, true);
-        if ($v === '' || $v === null) {
-            $v = isset($agg[$k]) ? $agg[$k] : '';
-        }
-        $out[$k] = $v;
+        $out[$k] = get_post_meta($post_id, $k, true);
     }
     if ($out['_kml_cover'] === '' && has_post_thumbnail($post_id)) {
         $out['_kml_cover'] = get_the_post_thumbnail_url($post_id, 'large');
@@ -496,9 +486,7 @@ add_shortcode('media_stats', 'kratos_kml_stats_shortcode');
 function kratos_kml_stats_shortcode($atts)
 {
     global $wpdb;
-    // 全部聚合走 SQL：之前 WP_Query -1 + N×11 get_post_meta，几百条就线性退化。
-    // 另外之前均分 SQL 在 _kml_meta serialized blob 上切字符串，但 CSF data_type=unserialize
-    // 实际是独立 postmeta 行，blob 根本不存在 → 均分恒为 0。
+    // 全部聚合走 SQL，避免 WP_Query(-1) + N×11 get_post_meta 的线性退化
     $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_type='media_item' AND post_status='publish'");
     $avg = (float) $wpdb->get_var(
         "SELECT AVG(CAST(pm.meta_value AS DECIMAL(4,1)))

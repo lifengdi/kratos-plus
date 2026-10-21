@@ -451,9 +451,7 @@ function kratos_kml_ajax_create_from_douban()
         wp_send_json_error(array('msg' => $pid->get_error_message()));
     }
 
-    // CSF data_type=unserialize 把每个字段写成独立 postmeta；这里只写独立 key，
-    // 不再冗余写 _kml_meta 聚合键 —— 否则用户之后在编辑页清空某字段时，
-    // 独立 key 变空、fallback 还会从 _kml_meta 读到旧值。
+    // CSF data_type=unserialize 把每个字段写成独立 postmeta
     $map = array(
         '_kml_cover'       => isset($_POST['cover']) ? esc_url_raw(wp_unslash($_POST['cover'])) : '',
         '_kml_orig_title'  => isset($_POST['orig_title']) ? sanitize_text_field(wp_unslash($_POST['orig_title'])) : '',
