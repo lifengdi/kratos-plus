@@ -246,12 +246,58 @@ function kratos_kml_fetch_url($url)
     return $body;
 }
 
+/**
+ * 允许抓取的 host 白名单：豆瓣主域及移动站。拒绝任何 302 跳到白名单之外的目标，
+ * 防止通过 /link2/?url=xxx 之类的中转把服务端请求引向内网或云厂商 metadata（SSRF）。
+ */
+function kratos_kml_host_allowed($url)
+{
+    $host = parse_url($url, PHP_URL_HOST);
+    if (!$host) return false;
+    $host = strtolower($host);
+    static $white = array('www.douban.com', 'book.douban.com', 'movie.douban.com', 'm.douban.com', 'douban.com');
+    return in_array($host, $white, true);
+}
+
 function kratos_kml_do_request($url)
+{
+    if (!kratos_kml_host_allowed($url)) {
+        return new WP_Error('kml_host', __('不允许的目标主机', 'kratos'));
+    }
+    // 自己 follow 重定向，每一跳都强制走 host 白名单
+    $max_hops = 3;
+    for ($i = 0; $i <= $max_hops; $i++) {
+        $resp = kratos_kml_single_request($url);
+        if (is_wp_error($resp)) return $resp;
+        $code = wp_remote_retrieve_response_code($resp);
+        if ($code >= 300 && $code < 400) {
+            $next = wp_remote_retrieve_header($resp, 'location');
+            if (!$next) return new WP_Error('kml_redirect', __('重定向无 Location 头', 'kratos'));
+            // 相对 URL 补全
+            if (strpos($next, '//') === 0)   $next = 'https:' . $next;
+            elseif (strpos($next, '/') === 0) $next = 'https://' . parse_url($url, PHP_URL_HOST) . $next;
+            if (!kratos_kml_host_allowed($next)) {
+                return new WP_Error('kml_redirect_host', sprintf(__('豆瓣跳转到了白名单外的 host：%s', 'kratos'), parse_url($next, PHP_URL_HOST)));
+            }
+            $url = $next;
+            continue;
+        }
+        if ($code >= 400) {
+            return new WP_Error('kml_http', sprintf(__('豆瓣返回 HTTP %d（可能被反爬拦截）', 'kratos'), $code));
+        }
+        $body = wp_remote_retrieve_body($resp);
+        if (!$body) return new WP_Error('kml_empty', __('返回体为空', 'kratos'));
+        return $body;
+    }
+    return new WP_Error('kml_redirect_loop', __('重定向过多', 'kratos'));
+}
+
+function kratos_kml_single_request($url)
 {
     $bid = kratos_kml_random_bid();
     $args = array(
         'timeout'     => 15,
-        'redirection' => 3,
+        'redirection' => 0,
         'user-agent'  => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'headers'     => array(
             'Accept'                    => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
@@ -270,15 +316,9 @@ function kratos_kml_do_request($url)
             'Upgrade-Insecure-Requests' => '1',
         ),
     );
-    $resp = wp_remote_get($url, $args);
-    if (is_wp_error($resp)) return $resp;
-    $code = wp_remote_retrieve_response_code($resp);
-    if ($code >= 400) {
-        return new WP_Error('kml_http', sprintf(__('豆瓣返回 HTTP %d（可能被反爬拦截）', 'kratos'), $code));
-    }
-    $body = wp_remote_retrieve_body($resp);
-    if (!$body) return new WP_Error('kml_empty', __('返回体为空', 'kratos'));
-    return $body;
+    // reject_unsafe_urls=true 让 WP 自身也拒掉 IP 字面量 / 本机 host 这类 URL
+    $args['reject_unsafe_urls'] = true;
+    return wp_remote_get($url, $args);
 }
 
 /**
@@ -411,8 +451,9 @@ function kratos_kml_ajax_create_from_douban()
         wp_send_json_error(array('msg' => $pid->get_error_message()));
     }
 
-    // CSF 的 unserialize 单 key 结构：所有字段放到一个数组里存入 _kml_meta。
-    // 读取端 kratos_kml_item_meta() 会展开。
+    // CSF data_type=unserialize 把每个字段写成独立 postmeta；这里只写独立 key，
+    // 不再冗余写 _kml_meta 聚合键 —— 否则用户之后在编辑页清空某字段时，
+    // 独立 key 变空、fallback 还会从 _kml_meta 读到旧值。
     $map = array(
         '_kml_cover'       => isset($_POST['cover']) ? esc_url_raw(wp_unslash($_POST['cover'])) : '',
         '_kml_orig_title'  => isset($_POST['orig_title']) ? sanitize_text_field(wp_unslash($_POST['orig_title'])) : '',
@@ -425,7 +466,6 @@ function kratos_kml_ajax_create_from_douban()
         '_kml_status'      => 'done',
         '_kml_finished_at' => current_time('Y-m-d'),
     );
-    update_post_meta($pid, '_kml_meta', $map);
     foreach ($map as $k => $v) update_post_meta($pid, $k, $v);
 
     $type_slug = isset($_POST['type']) ? sanitize_key(wp_unslash($_POST['type'])) : '';

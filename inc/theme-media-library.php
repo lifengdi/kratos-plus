@@ -496,25 +496,33 @@ add_shortcode('media_stats', 'kratos_kml_stats_shortcode');
 function kratos_kml_stats_shortcode($atts)
 {
     global $wpdb;
+    // 全部聚合走 SQL：之前 WP_Query -1 + N×11 get_post_meta，几百条就线性退化。
+    // 另外之前均分 SQL 在 _kml_meta serialized blob 上切字符串，但 CSF data_type=unserialize
+    // 实际是独立 postmeta 行，blob 根本不存在 → 均分恒为 0。
     $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_type='media_item' AND post_status='publish'");
-    $avg = (float) $wpdb->get_var($wpdb->prepare(
-        "SELECT AVG(CAST(pm_val AS DECIMAL(4,1))) FROM (
-            SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(pm.meta_value, '\"_kml_rating\";s:', -1), '\"', 2) AS pm_val
-            FROM $wpdb->postmeta pm
-            INNER JOIN $wpdb->posts p ON p.ID = pm.post_id
-            WHERE pm.meta_key = %s AND p.post_type='media_item' AND p.post_status='publish'
-        ) t WHERE pm_val REGEXP '^[0-9]'",
-        '_kml_meta'
+    $avg = (float) $wpdb->get_var(
+        "SELECT AVG(CAST(pm.meta_value AS DECIMAL(4,1)))
+         FROM $wpdb->postmeta pm
+         INNER JOIN $wpdb->posts p ON p.ID = pm.post_id
+         WHERE pm.meta_key='_kml_rating' AND pm.meta_value REGEXP '^[0-9]'
+           AND p.post_type='media_item' AND p.post_status='publish'"
+    );
+    $doing = (int) $wpdb->get_var(
+        "SELECT COUNT(*)
+         FROM $wpdb->postmeta pm
+         INNER JOIN $wpdb->posts p ON p.ID = pm.post_id
+         WHERE pm.meta_key='_kml_status' AND pm.meta_value='doing'
+           AND p.post_type='media_item' AND p.post_status='publish'"
+    );
+    $year = wp_date('Y');
+    $year_count = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*)
+         FROM $wpdb->postmeta pm
+         INNER JOIN $wpdb->posts p ON p.ID = pm.post_id
+         WHERE pm.meta_key='_kml_finished_at' AND pm.meta_value LIKE %s
+           AND p.post_type='media_item' AND p.post_status='publish'",
+        $wpdb->esc_like($year) . '%'
     ));
-    $year = (int) wp_date('Y');
-    $year_count = 0;
-    $doing = 0;
-    $q = new WP_Query(array('post_type' => 'media_item', 'posts_per_page' => -1, 'post_status' => 'publish', 'fields' => 'ids', 'no_found_rows' => true));
-    foreach ($q->posts as $pid) {
-        $m = kratos_kml_item_meta($pid);
-        if (!empty($m['_kml_finished_at']) && strpos((string)$m['_kml_finished_at'], (string)$year) === 0) $year_count++;
-        if ($m['_kml_status'] === 'doing') $doing++;
-    }
     ob_start(); ?>
     <div class="kml-stats">
         <div class="kml-stat"><div class="kml-stat-num"><?php echo esc_html($total); ?></div><div class="kml-stat-label"><?php _e('累计条目', 'kratos'); ?></div></div>
@@ -840,9 +848,15 @@ add_filter('get_comment_author_link', 'kratos_kml_comment_author_rate_link', 20,
 function kratos_kml_comment_author_rate_link($link, $author = '', $comment_id = 0)
 {
     if (is_admin()) return $link;
+    // 评论列表全在同一帖子下，post_type 本次请求只会有一个值 —— 用 static 一次性判断，
+    // 避免 50 条评论跑 50 次 get_post_type 查 posts 表。
+    static $is_media = null;
+    if ($is_media === null) {
+        $is_media = is_singular('media_item');
+    }
+    if (!$is_media) return $link;
     $comment = get_comment($comment_id);
     if (!$comment) return $link;
-    if (get_post_type($comment->comment_post_ID) !== 'media_item') return $link;
     if (!empty($comment->comment_parent)) return $link;
     $r = (int) get_comment_meta($comment->comment_ID, '_kml_c_rate', true);
     if ($r <= 0) return $link;
