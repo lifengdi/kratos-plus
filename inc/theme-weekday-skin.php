@@ -60,7 +60,6 @@ function kratos_weekday_options()
         'ebook'     => __('电子书 · 纸墨', 'kratos'),
         'bookfold'  => __('书卷 · 半开卷', 'kratos'),
         'bourse'    => __('金融 · 盘口', 'kratos'),
-        'loam'      => __('大地 · 壤', 'kratos'),
     );
 }
 
@@ -115,7 +114,6 @@ function kratos_weekday_variant_files()
         'ebook'     => 'ebook.css',
         'bookfold'  => 'bookfold.css',
         'bourse'    => 'bourse.css',
-        'loam'      => 'loam.css',
     );
 }
 
