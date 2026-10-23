@@ -369,11 +369,19 @@ function kratos_vc_aggregate($email)
     // 邮箱脱敏
     $masked_email = kratos_vc_mask_email($email);
 
+    // 不活跃访客隐藏「个人主页」胶囊：擦掉 url，JS 侧 d.url ? pill : '' 自然不渲染。
+    // last_ts=0 的空邮箱分支上面已 early return，这里不会命中。
+    $author_url = (string) $author['comment_author_url'];
+    $stale_days = (int) kratos_option('g_visitor_center_stale_days', 0);
+    if ($stale_days > 0 && $last_ts > 0 && (time() - $last_ts) > $stale_days * 86400) {
+        $author_url = '';
+    }
+
     return array(
         'found'          => true,
         'name'           => $author['comment_author'],
         'email_masked'   => $masked_email,
-        'url'            => $author['comment_author_url'],
+        'url'            => $author_url,
         'avatar'         => get_avatar_url($email, array('size' => 144)),
         'level'          => $level,
         'region'         => $region,

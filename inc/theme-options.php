@@ -4897,6 +4897,14 @@ CSF::createSection($prefix, array(
             'default' => __('这里记录了你在本站留下的痕迹', 'kratos'),
         ),
         array(
+            'id' => 'g_visitor_center_stale_days',
+            'type' => 'number',
+            'title' => __('隐藏不活跃访客的个人主页按钮', 'kratos'),
+            'subtitle' => __('若访客最后一次评论距今超过该天数，游客中心页不再显示其「个人主页」胶囊。0 = 不限制。', 'kratos'),
+            'default' => 0,
+            'dependency' => array('g_visitor_center_enable', '==', 'true'),
+        ),
+        array(
             'type' => 'content',
             'content' =>
                 '<div style="padding:12px 14px;background:#f4f7ff;border:1px solid #d6e0ff;border-radius:8px;line-height:1.8;font-size:13px;">'
