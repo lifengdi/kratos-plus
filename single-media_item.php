@@ -61,7 +61,7 @@ $kratos_cols = kratos_layout_cols();
                                     <?php if ($m['_kml_year']): ?><dt>年份</dt><dd><?php echo esc_html($m['_kml_year']); ?></dd><?php endif; ?>
                                     <?php if ($m['_kml_isbn']): ?><dt>ISBN</dt><dd><?php echo esc_html($m['_kml_isbn']); ?></dd><?php endif; ?>
                                     <?php if ($m['_kml_imdb_id']): ?><dt>IMDb</dt><dd><?php echo esc_html($m['_kml_imdb_id']); ?></dd><?php endif; ?>
-                                    <?php if ($m['_kml_finished_at']): ?><dt>完成于</dt><dd><?php echo esc_html($m['_kml_finished_at']); ?></dd><?php endif; ?>
+                                    <?php if ($m['_kml_finished_at']): ?><dt>完成于</dt><dd><?php echo esc_html(mysql2date(get_option('date_format'), $m['_kml_finished_at'])); ?></dd><?php endif; ?>
                                     <?php if ($m['_kml_douban_url']): ?><dt>豆瓣</dt><dd><a href="<?php echo esc_url($m['_kml_douban_url']); ?>" target="_blank" rel="noopener"><?php echo esc_html($m['_kml_douban_url']); ?></a></dd><?php endif; ?>
                                 </dl>
 

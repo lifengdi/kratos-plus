@@ -308,7 +308,7 @@ if (class_exists('CSF')) {
             array(
                 'id'    => '_kml_orig_title',
                 'type'  => 'text',
-                'title' => __('原名', 'kratos'),
+                'title' => __('又名', 'kratos'),
             ),
             array(
                 'id'       => '_kml_creator',
