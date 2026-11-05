@@ -20,7 +20,7 @@
 defined('ABSPATH') || exit;
 
 const KRATOS_VC_TRANSIENT_PREFIX = 'kratos_vc_';
-const KRATOS_VC_TRANSIENT_TTL    = 10 * MINUTE_IN_SECONDS;
+const KRATOS_VC_TRANSIENT_TTL    = DAY_IN_SECONDS;
 const KRATOS_VC_RECENT_LIMIT     = 10;
 const KRATOS_VC_TOP_POSTS_LIMIT  = 5;
 
@@ -606,7 +606,7 @@ function kratos_vc_rest_post($request)
         }
     }
 
-    $cache_key = KRATOS_VC_TRANSIENT_PREFIX . md5($email);
+    $cache_key = kratos_vc_cache_key($email);
     $cached = get_transient($cache_key);
     if (is_array($cached)) {
         $cached['_cached'] = true;
@@ -623,6 +623,25 @@ function kratos_vc_rest_post($request)
 }
 
 /**
+ * key 带「代际号」：手动徽章/选项、评论编辑、文章标题或链接变化这类无法按邮箱精确定位的变更，
+ * 递增代际号即让全部旧缓存作废；TTL 因此可以放到 24h，旧 key 由 TTL / 对象缓存淘汰自然回收。
+ */
+function kratos_vc_cache_key($email)
+{
+    $gen = (int) get_option('kratos_vc_cache_gen', 0);
+    return KRATOS_VC_TRANSIENT_PREFIX . $gen . '_' . md5(strtolower(trim((string) $email)));
+}
+
+function kratos_vc_bump_cache_gen()
+{
+    update_option('kratos_vc_cache_gen', (int) get_option('kratos_vc_cache_gen', 0) + 1);
+}
+add_action('csf_kratos_options_saved', 'kratos_vc_bump_cache_gen');
+add_action('edit_comment', 'kratos_vc_bump_cache_gen');
+add_action('post_updated', 'kratos_vc_bump_cache_gen');
+add_action('deleted_post', 'kratos_vc_bump_cache_gen');
+
+/**
  * 新评论审核通过时按邮箱 hash 让缓存失效
  */
 function kratos_vc_invalidate_on_status($new_status, $old_status, $comment)
@@ -631,7 +650,7 @@ function kratos_vc_invalidate_on_status($new_status, $old_status, $comment)
     if ($new_status === $old_status) return;
     $email = (string) $comment->comment_author_email;
     if ($email === '') return;
-    delete_transient(KRATOS_VC_TRANSIENT_PREFIX . md5(strtolower($email)));
+    delete_transient(kratos_vc_cache_key($email));
 }
 add_action('transition_comment_status', 'kratos_vc_invalidate_on_status', 10, 3);
 
@@ -641,7 +660,7 @@ function kratos_vc_invalidate_on_insert($comment_id, $comment)
         $comment = get_comment($comment_id);
     }
     if (!$comment) return;
-    delete_transient(KRATOS_VC_TRANSIENT_PREFIX . md5(strtolower((string) $comment->comment_author_email)));
+    delete_transient(kratos_vc_cache_key((string) $comment->comment_author_email));
 }
 add_action('wp_insert_comment', 'kratos_vc_invalidate_on_insert', 10, 2);
 
@@ -653,7 +672,7 @@ function kratos_vc_invalidate_on_heart($meta_id, $comment_id, $meta_key)
     if ($meta_key !== (defined('KRATOS_HEART_META_KEY') ? KRATOS_HEART_META_KEY : 'kratos_heart')) return;
     $c = get_comment((int) $comment_id);
     if (!$c) return;
-    delete_transient(KRATOS_VC_TRANSIENT_PREFIX . md5(strtolower((string) $c->comment_author_email)));
+    delete_transient(kratos_vc_cache_key((string) $c->comment_author_email));
 }
 add_action('updated_comment_meta', 'kratos_vc_invalidate_on_heart', 10, 3);
 add_action('added_comment_meta',   'kratos_vc_invalidate_on_heart', 10, 3);
