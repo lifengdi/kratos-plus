@@ -45,24 +45,39 @@ function kratos_release_api($endpoint, $cache_key, $force = false)
         }
     }
 
-    $resp = wp_remote_get(
-        'https://api.github.com/repos/' . KRATOS_UPDATE_REPO . '/' . ltrim($endpoint, '/'),
-        array(
-            'timeout' => 8,
-            'headers' => array(
-                'Accept'     => 'application/vnd.github+json',
-                'User-Agent' => 'Kratos-Plus-Theme',
-            ),
-        )
+    // 国内站点连不上或被限流 GitHub API（403），故按「更新下载源」选项决定先后，失败回落另一端
+    $gitee_first = function_exists('kratos_plus_should_use_gitee') && kratos_plus_should_use_gitee();
+    $bases = array(
+        'github' => 'https://api.github.com/repos/' . KRATOS_UPDATE_REPO . '/',
+        'gitee'  => 'https://gitee.com/api/v5/repos/' . KRATOS_UPDATE_REPO . '/',
     );
-
-    if (is_wp_error($resp) || wp_remote_retrieve_response_code($resp) !== 200) {
-        set_transient($cache_key, array(), 10 * MINUTE_IN_SECONDS);
-        return null;
+    if ($gitee_first) {
+        $bases = array_reverse($bases, true);
     }
 
-    $data = json_decode(wp_remote_retrieve_body($resp), true);
-    if (!is_array($data) || empty($data['tag_name'])) {
+    $data = null;
+    $from = '';
+    foreach ($bases as $name => $base) {
+        $resp = wp_remote_get($base . ltrim($endpoint, '/'), array(
+            'timeout' => 8,
+            // Gitee 对 "WordPress/x.x" UA 返回 403
+            'headers' => array(
+                'Accept'     => 'application/json',
+                'User-Agent' => 'Mozilla/5.0 Kratos-Plus-Theme',
+            ),
+        ));
+        if (is_wp_error($resp) || wp_remote_retrieve_response_code($resp) !== 200) {
+            continue;
+        }
+        $json = json_decode(wp_remote_retrieve_body($resp), true);
+        if (is_array($json) && !empty($json['tag_name'])) {
+            $data = $json;
+            $from = $name;
+            break;
+        }
+    }
+
+    if (!$data) {
         set_transient($cache_key, array(), 10 * MINUTE_IN_SECONDS);
         return null;
     }
@@ -73,7 +88,8 @@ function kratos_release_api($endpoint, $cache_key, $force = false)
         'version'      => ltrim($tag, 'vV'),
         'name'         => (string) ($data['name'] ?? $tag),
         'body'         => (string) ($data['body'] ?? ''),
-        'url'          => (string) ($data['html_url'] ?? ''),
+        'url'          => (string) ($data['html_url'] ?? ('https://' . ($from === 'gitee' ? 'gitee.com' : 'github.com') . '/' . KRATOS_UPDATE_REPO . '/releases/tag/' . $tag)),
+        'source'       => $from,
         'published_at' => (string) ($data['published_at'] ?? ''),
     );
     set_transient($cache_key, $release, KRATOS_UPDATE_CACHE_TTL);
