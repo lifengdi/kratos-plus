@@ -176,11 +176,12 @@ $kratos_cols = kratos_layout_cols();
                 } else { ?>
                 <nav class="navigation post-navigation clearfix" role="navigation">
                     <?php
-                    $prev_post = get_previous_post(TRUE);
+                    $navi_same_term = (bool) kratos_option('g_single_navi_same_term', true);
+                    $prev_post = get_previous_post($navi_same_term);
                     if (!empty($prev_post)) {
                         echo '<div class="nav-previous clearfix"><a title="' . $prev_post->post_title . '" href="' . get_permalink($prev_post->ID) . '">' . __('< 上一篇', 'kratos') . '</a></div>';
                     }
-                    $next_post = get_next_post(TRUE);
+                    $next_post = get_next_post($navi_same_term);
                     if (!empty($next_post)) {
                         echo '<div class="nav-next"><a title="' . $next_post->post_title . '" href="' . get_permalink($next_post->ID) . '">' . __('下一篇 >', 'kratos') . '</a></div>';
                     } ?>

@@ -2344,6 +2344,13 @@ CSF::createSection($prefix, array(
             'default' => true,
         ),
         array(
+            'id' => 'g_single_navi_same_term',
+            'type' => 'switcher',
+            'title' => __('上下篇仅限同分类', 'kratos'),
+            'subtitle' => __('开启：只在同分类内查找上一篇/下一篇；关闭：按发布时间在全站相邻', 'kratos'),
+            'default' => true,
+        ),
+        array(
             'id' => 'g_image_filter',
             'type' => 'switcher',
             'title' => __('按类型筛选媒体库功能', 'kratos'),
